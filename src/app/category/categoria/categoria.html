@@ -1,0 +1,46 @@
+<div class="img-container">
+  <img
+    src="assets/imagens/fundos/pessoas-torcendo-com-varios-cocktails.jpg"
+    alt=""
+    class="background"
+  />
+  <h1 class="title">BEBIDAS</h1>
+</div>
+
+<div class="filter-container">
+  <div class="filters">
+    <bra-filter-dropdown
+      [optionsDropwdown]="optionsDropwdown"
+    ></bra-filter-dropdown>
+    <bra-filter-dropdown
+      [optionsDropwdown]="optionsDropwdown2"
+    ></bra-filter-dropdown>
+    <bra-custom-button
+      [label]="'Limpar filtros'"
+      [type]="'filter'"
+    ></bra-custom-button>
+  </div>
+  <span class="qtdReceitas"> {{ this.myRecipes.length }} receitas encontradas</span>
+</div>
+<div class="content">
+  <div class="cards">
+    @for (recipe of RecipesPage; track $index) {
+    <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
+    }
+  </div>
+  <div class="pages">
+    <span (click)="prevPage()" class="setas"><</span>
+
+    @for (page of pagesArray; track page) {
+    <span
+      (click)="goToPage(page)"
+      class="numbers"
+      [class.active]="page === currentPage"
+    >
+      {{ page }}
+    </span>
+    }
+
+    <span (click)="nextPage()" class="setas">></span>
+  </div>
+</div>

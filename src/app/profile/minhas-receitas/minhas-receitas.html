@@ -1,0 +1,39 @@
+<div class="myRecipes">
+  <bra-perfil></bra-perfil>
+
+  <div class="cabecalho">
+    <div class="details">
+      <h1 class="title">Minhas receitas</h1>
+      <span class="qtdReceitas">
+        {{ this.myRecipes.length }} receitas enviadas</span
+      >
+    </div>
+    <bra-custom-button
+      [label]="'Adicionar receitas'"
+      [type]="'add'"
+    ></bra-custom-button>
+  </div>
+
+  <div class="content">
+    <div class="cards">
+      @for (recipe of myRecipesPage; track $index) {
+      <bra-recipe-card [myRecipe]="true" [recipe]="recipe"></bra-recipe-card>
+      }
+    </div>
+    <div class="pages">
+      <span (click)="prevPage()" class="setas"><</span>
+
+      @for (page of pagesArray; track page) {
+      <span
+        (click)="goToPage(page)"
+        class="numbers"
+        [class.active]="page === currentPage"
+      >
+        {{ page }}
+      </span>
+      }
+
+      <span (click)="nextPage()" class="setas">></span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="oneHalf">
+    <img class="one" (click)="openLightbox(0)" [src]="imageList[0]" alt="" />
+  </div>
+
+  <div class="twoHalf">
+    <img class="two" (click)="openLightbox(1)" [src]="imageList[1]" alt="" />
+    <img class="three" (click)="openLightbox(2)" [src]="imageList[2]" alt="" />
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" *ngIf="isLightboxOpen">
+  <div class="lightbox-content">
+    <button class="close" (click)="closeLightbox()">✖</button>
+
+    <div class="all">
+
+        <button class="prev" (click)="prevImage()"><</button>
+        
+        <img [src]="imageList[currentIndex()]" class="lightbox-image" />
+        
+        <button class="next" (click)="nextImage()">></button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+@use "variables" as *;
+
+.credit {
+  padding: 20px;
+  font-size: 13px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  background-color: $primary-blue;
+}

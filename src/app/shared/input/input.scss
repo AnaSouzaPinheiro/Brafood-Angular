@@ -1,0 +1,33 @@
+@use "variables" as *;
+
+.input-text {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid $primary-gray;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.textbox {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+label {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.textarea {
+  height: 125px;
+  resize: none;
+}
+
+.input-text::placeholder {
+  color: $primary-gray;
+  font-size: 16px;
+}

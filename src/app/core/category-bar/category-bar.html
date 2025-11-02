@@ -1,0 +1,11 @@
+<div class="category-bar">
+  <ul>
+    <li *ngFor="let category of categories" [ngClass]="category.cssClass" [routerLink]="'/categoria'">
+      <img class="icon"
+        [src]="category.icon"
+        alt="{{ category.name }} ícone"
+      />
+      {{ category.name }}
+    </li>
+  </ul>
+</div>

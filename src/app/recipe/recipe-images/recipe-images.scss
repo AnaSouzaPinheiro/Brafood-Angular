@@ -1,0 +1,112 @@
+.container {
+  width: 100%;
+  height: 600px;
+  display: flex;
+
+  .oneHalf {
+    width: 70%;
+
+    .one {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      object-fit: cover;
+    }
+  }
+
+  .twoHalf {
+    width: 30%;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+
+    .two,
+    .three {
+      width: 100%;
+      height: 50%;
+      cursor: pointer;
+      object-fit: cover;
+    }
+  }
+}
+
+img {
+  width: 100%;
+  cursor: pointer;
+}
+
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.lightbox-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.lightbox-image {
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.close,
+.prev,
+.next {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 4rem;
+  cursor: pointer;
+}
+
+.close {
+  top: 20px;
+  right: 50px;
+  font-size: 2rem;
+  position: absolute;
+}
+
+.all {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+@media (max-width: 992px) {
+  .container {
+    height: 500px;
+    
+    .twoHalf {
+      height: 500px;
+    }
+  }
+}
+
+@media (max-width: 771px) {
+  .container {
+    height: 400px;
+
+    .twoHalf {
+      height: 400px;
+    }
+  }
+}

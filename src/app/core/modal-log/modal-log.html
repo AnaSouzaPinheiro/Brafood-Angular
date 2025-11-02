@@ -1,0 +1,21 @@
+<div class="modal">
+  @if (loggedOut) {
+  <ul>
+    <li class="enter" [routerLink]="'/login'">Entrar</li>
+    <hr />
+    <li class="register" [routerLink]="'/cadastro'">Cadastrar</li>
+  </ul>
+  } @else {
+  <div class="user">
+    <ul>
+      <li class="name">Olá, {{ modalLogged.personName }}!</li>
+      <a [routerLink]="modalLogged.myAccount" class="click"><li class="myAccount">Minha conta</li></a>
+      <a [routerLink]="modalLogged.myRecipes" class="click"><li class="myRecipes">Minhas Receitas</li></a>
+      <a [routerLink]="modalLogged.favs" class="click"><li class="favs">Favoritas</li></a>
+      <li class="logOut">
+        <img src="assets/imagens/icones/sair-do-usuario (1).png" alt="" /> Sair
+      </li>
+    </ul>
+  </div>
+  }
+</div>

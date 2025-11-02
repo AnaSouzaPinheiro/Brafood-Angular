@@ -1,0 +1,10 @@
+<bra-navbar *ngIf="isBrowser && showLayout" ngSkipHydration></bra-navbar>
+
+<main [class.with-navbar]="showLayout">
+  <bra-category-bar *ngIf="showLayout"></bra-category-bar>
+</main>
+
+<router-outlet></router-outlet>
+
+<bra-footer *ngIf="isBrowser && showLayout" ngSkipHydration></bra-footer>
+<bra-credit></bra-credit>

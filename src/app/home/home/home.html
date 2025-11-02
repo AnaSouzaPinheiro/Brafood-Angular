@@ -1,0 +1,7 @@
+<bra-slide-home [recipes]="recipes"></bra-slide-home>
+@for (section of sections; track $index) {
+<bra-recipe-section
+  [section]="section"
+  [recipes]="section.recipes"
+></bra-recipe-section>
+}

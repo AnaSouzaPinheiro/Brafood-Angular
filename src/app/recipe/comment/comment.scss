@@ -1,0 +1,87 @@
+@use "variables" as *;
+
+.comment {
+  display: flex;
+  gap: 35px;
+  padding: 15px;
+  background-color: #fff;
+
+  .person {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  bra-user-icon {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+  }
+
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+
+    .data {
+      font-weight: 400;
+      color: $primary-gray;
+    }
+
+    .text {
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    .response,
+    .seeReplies {
+      font-weight: 300;
+      color: $primary-gray;
+      text-decoration: underline;
+
+      &:hover {
+        color: $primary-blue;
+        cursor: pointer;
+      }
+    }
+
+    .replies {
+      display: flex;
+      gap: 15px;
+    }
+  }
+
+  .reply,
+  .replying {
+    display: flex;
+    flex-direction: row;
+    gap: 35px;
+    margin-left: 50px;
+  }
+
+  .replying {
+    ::ng-deep bra-input textarea {
+      width: 800px;
+      height: 100px;
+    }
+
+    .writing {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .send {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}

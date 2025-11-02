@@ -1,0 +1,220 @@
+@use "variables" as *;
+
+* {
+  font-family: $font-footer;
+  color: $secondary-gray;
+}
+
+footer {
+  background-color: $secondary-blue;
+  padding: 100px 148px;
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+hr {
+  color: $secondary-gray;
+  opacity: 0.06;
+}
+
+/* Acesso rápido */
+.acesso-rapido {
+  display: flex;
+  gap: 140px;
+
+  a {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: medium;
+    opacity: 0.5;
+  }
+
+  p {
+    opacity: 0.5;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+.primary-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.categorias,
+.conta,
+.acesso,
+.subscribe {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Newsletter */
+.subscribe {
+  gap: 40px;
+  width: 248px;
+
+  p {
+    font-size: 14px;
+    opacity: 0.5;
+  }
+}
+
+.inputNews {
+  display: flex;
+
+  input {
+    border-radius: 6px 0 0 6px;
+    height: 50px;
+    border: 1.5px solid $thirdary-blue;
+    width: 198px;
+    padding: 0 25px;
+    color: black;
+
+    &::placeholder {
+      opacity: 0.5;
+      font-size: 14px;
+    }
+  }
+
+  button {
+    background-color: $thirdary-blue;
+    border: 1.5px solid $thirdary-blue;
+    height: 52px;
+    width: 50px;
+    border-radius: 0 6px 6px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* Parte inferior */
+.second-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  height: 80px;
+}
+
+.terms {
+  ul {
+    display: flex;
+    gap: 36px;
+
+    a {
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
+}
+
+.BraFoodLogo {
+  height: 80px;
+}
+
+/* Redes Sociais */
+.redes-sociais {
+  ul {
+    display: flex;
+    gap: 15px !important;
+  }
+
+  li {
+    width: 35px;
+    height: 35px;
+    border: 1.5px solid rgba($secondary-gray, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+  }
+
+  img {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 992px) {
+  footer {
+    padding: 85px;
+    gap: 54px;
+  }
+
+  .primary-footer {
+    gap: 54px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .acesso-rapido {
+    gap: 75px;
+  }
+
+  .subscribe {
+    gap: 40px;
+    width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 65px;
+  }
+
+  h4,
+  li {
+    text-align: center;
+  }
+
+  .primary-footer {
+    gap: 50px;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .acesso-rapido {
+    gap: 50px;
+    flex-direction: column;
+  }
+
+  .subscribe {
+    width: auto;
+    align-items: center;
+
+    p {
+      width: 248px;
+      text-align: center;
+    }
+  }
+  .terms ul,
+  .redes-sociais ul {
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 576px) {
+  footer {
+    padding: 45px;
+  }
+}

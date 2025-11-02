@@ -1,0 +1,20 @@
+<div class="textbox ">
+  <label [for]="inputId()">{{ label() }}</label>
+
+  @if (inType() === 'input') {
+    <input
+      [type]="type()"
+      [placeholder]="placeholder()"
+      (input)="onInput()"
+      class="input-text"
+      [formControl]="control"
+    />
+  } @else if (inType() === 'textarea') {
+    <textarea
+      class="input-text textarea"
+      [placeholder]="placeholder()"
+      (input)="onInput()"
+      [formControl]="control"
+    ></textarea>
+  }
+</div>

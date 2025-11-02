@@ -1,0 +1,27 @@
+<div class="containerDrop">
+  <label class="title"> {{ optionsDropwdown.labelTitle }} </label>
+
+  <div
+    class="custom-dropdown"
+    (click)="toggleDropdown()"
+    [class.open]="dropdownOpen"
+  >
+    <button class="dropbtn">
+      {{ getSelectedText() }}
+      <span class="arrow">></span>
+    </button>
+    <div class="dropdown-content" (click)="$event.stopPropagation()">
+      @for (item of optionsDropwdown.items; track item.name) {
+      <label
+        class="custom-checkbox"
+        [class.selected]="item.checked"
+        (click)="selectItem(item)"
+      >
+        <input type="checkbox" [checked]="item.checked" readonly />
+        <span class="checkmark"></span>
+        {{ item.name }}
+      </label>
+      }
+    </div>
+  </div>
+</div>

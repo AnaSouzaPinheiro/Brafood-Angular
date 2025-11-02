@@ -1,0 +1,98 @@
+@use "variables" as *;
+
+.containerDrop {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.title {
+  font-size: 19px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.dropbtn {
+  padding: 3px 20px;
+  font-size: 16px;
+  text-align: left;
+  font-weight: 200;
+  background-color: #fff;
+  border: 1px solid #000;
+  gap: 75px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+  min-width: 101%;
+  cursor: pointer;
+}
+
+.arrow {
+  font-size: 1.5em;
+  font-weight: 300;
+  transform: rotate(90deg);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 95%;
+  left: 0;
+  min-width: 100%;
+  background-color: #fff;
+  border: 1px solid #000;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.custom-dropdown.open .dropdown-content {
+  display: block;
+}
+
+.dropdown-content label {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-weight: 200;
+  white-space: nowrap;
+}
+
+.dropdown-content input {
+  margin-right: 8px;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0; /* esconde o checkbox original */
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox .checkmark {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: white; /* cor quando não está marcado */
+  border: 1px solid #000;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: background-color 0.2s;
+}
+
+/* Cor sólida quando marcado */
+.custom-checkbox input:checked + .checkmark {
+  background-color: $primary-blue; /* a cor sólida que você quiser */
+  border-color: $primary-blue;
+  color: $primary-blue;
+}
+
+.custom-checkbox.selected {
+  color: $primary-blue;
+}

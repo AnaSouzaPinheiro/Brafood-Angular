@@ -1,0 +1,92 @@
+[
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/delicioso-arranjo-de-doces-mexicanos.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Pé de moleque",
+      "qtdFav": 258,
+      "text": "Tradicional e irresistível, o pé de moleque traz a crocância do amendoim com o doce sabor do caramelo brasileiro."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/deliciosa-variedade-de-tamales-tradicionais.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Pamonha",
+      "qtdFav": 312,
+      "text": "Feita com milho verde ralado e cozido, a pamonha é um dos pratos mais queridos das festas juninas."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/canjica.png",
+    "url": "/recipe",
+    "resume": {
+      "title": "Canjica",
+      "qtdFav": 185,
+      "text": "A canjica cremosa combina grãos de milho branco com leite, açúcar e canela, trazendo aconchego em cada colherada."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/sobremesa-de-granita-saborosa-com-alto-angulo-laranja.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Cuscuz doce",
+      "qtdFav": 97,
+      "text": "Cuscuz de milho com coco e leite condensado, perfeito para adoçar a sua festa junina."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/arroz-con-leche-arroz-doce-com-canela-em-tigela-sobre-mesa-de-madeira.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Arroz doce",
+      "qtdFav": 144,
+      "text": "Cremoso e aromatizado com canela, o arroz doce é um clássico irresistível das festas juninas."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/bolo-e-limoes-deliciosos-de-alto-angulo.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Bolo de fubá cremoso",
+      "qtdFav": 223,
+      "text": "Com textura macia e sabor delicado, o bolo de fubá cremoso é presença garantida no arraial."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/arranjo-plano-de-tigelas-de-sopa-de-creme.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Curau de milho",
+      "qtdFav": 201,
+      "text": "Feito com milho verde e leite, o curau é doce, macio e polvilhado com canela para dar aquele toque especial."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/vinho-quente-com-canela-em-pau-e-limao.jpg",
+    "url": "/recipe",
+    "resume": {
+      "title": "Quentão",
+      "qtdFav": 341,
+      "text": "Bebida quente e aromática com gengibre, canela e cravo, ideal para aquecer as noites juninas."
+    }
+  },
+  {
+    "category": "Festa Junina",
+    "img": "assets/imagens/receita/image.png",
+    "url": "/recipe",
+    "resume": {
+      "title": "Maçã do amor",
+      "qtdFav": 289,
+      "text": "Com sua casquinha de açúcar vermelha e brilhante, a maçã do amor é símbolo doce e divertido da festa."
+    }
+  }
+]

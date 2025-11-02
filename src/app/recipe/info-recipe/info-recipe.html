@@ -1,0 +1,54 @@
+<div class="info-recipe">
+  <div class="main">
+    <h1 class="title">{{ recipe.title }}</h1>
+
+    <div class="categories">
+      <bra-custom-button
+        *ngFor="let category of recipe.categories"
+        type="category"
+        [label]="category"
+      ></bra-custom-button>
+    </div>
+
+    <div class="description">
+      <div class="difficult" [ngClass]="recipe.difficulty">
+        <img [src]="getDifficultyImage(recipe.difficulty)" />
+        <p>Dificuldade</p>
+      </div>
+      <div class="time">
+        <img src="assets/imagens/icones/relogio (4).png" alt="" />
+        <p>{{ recipe.time }} {{ recipe.typeTime }}</p>
+      </div>
+      <div class="unid">
+        <img src="assets/imagens/icones/bandeja-de-comida (2).png" />
+        <p>{{ recipe.unid }} {{ recipe.typeUnid }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="things">
+    <div class="item" (click)="toggleFavorite()">
+      <img
+        [src]="isFavorite ? 'assets/imagens/icones/favorito.png' : 'assets/imagens/icones/favorito (1).png'"
+      />
+      <bra-hover-things
+        class="hover"
+        hoverText="Favorite essa receita"
+      ></bra-hover-things>
+    </div>
+
+    <div class="item">
+      <img class="comments" src="assets/imagens/icones/mensagem.png" />
+      <bra-hover-things
+        class="hover"
+        hoverText="Comentários"
+      ></bra-hover-things>
+    </div>
+    <div class="item">
+      <img class="share" src="assets/imagens/icones/compartilhar.png" />
+      <bra-hover-things
+        class="hover"
+        hoverText="Compartilhe"
+      ></bra-hover-things>
+    </div>
+  </div>
+</div>

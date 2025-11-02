@@ -1,0 +1,142 @@
+@use "variables" as *;
+
+.infos-recipe {
+  display: flex;
+  flex-direction: column;
+
+  .main-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    bra-recipe-images {
+      width: 100%;
+      position: relative; // mudar de absolute para relative
+    }
+
+    bra-info-recipe {
+      position: relative;
+      top: 0; // remove o top
+      margin-top: -210px; // sobe visualmente, mas o container acompanha melhor
+    }
+  }
+}
+
+.receita {
+  margin: 60px 145px 60px 145px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+
+  .title {
+    font-size: 50px;
+    color: $primary-blue;
+  }
+
+  .ingredientes {
+    .temaIng {
+      font-size: 26px;
+      font-weight: 600;
+      color: $primary-blue;
+    }
+  }
+
+  .preparo {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .topic-title {
+      font-size: 26px;
+      color: $primary-blue;
+      font-weight: 400;
+    }
+  }
+}
+
+li {
+  line-height: 3;
+  font-size: 20px;
+  margin-left: 40px;
+}
+
+ul li::marker {
+  font-size: 10px; /* diminui só a bolinha */
+  color: #000; /* muda a cor da bolinha, opcional */
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.autor {
+  display: flex;
+  gap: 10px;
+
+  bra-user-icon {
+    width: 65px;
+    height: 65px;
+  }
+
+  .data {
+    display: flex;
+    flex-direction: column;
+
+    .person {
+      font-size: 25px;
+    }
+
+    .date {
+      font-size: 14px;
+      font-weight: 200;
+    }
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.whatsApp {
+  font-size: 25px;
+  border-radius: 20px;
+  background-color: #0dc143;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 35px;
+  gap: 25px;
+  max-width: 350px;
+  text-align: center;
+
+  span {
+    font-size: 18px;
+  }
+
+  .zap {
+    border: none;
+    color: #0dc143;
+    border-radius: 35px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 11px 20px;
+    font-weight: 600;
+    cursor: pointer;
+
+    img {
+      width: 21px;
+      height: 21px;
+      margin-right: 10px;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

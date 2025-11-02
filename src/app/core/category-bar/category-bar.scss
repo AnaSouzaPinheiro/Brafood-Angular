@@ -1,0 +1,120 @@
+@use "variables" as *;
+
+.category-bar ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.category-bar ul li {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  height: 120px;
+  text-align: center;
+
+  .icon {
+    width: 55px;
+    height: 55px;
+  }
+
+  &:hover {
+    color: #fff;
+    cursor: pointer;
+
+    img {
+      filter: brightness(0) invert(1);
+    }
+  }
+}
+
+// Cores personalizadas por categoria
+.bg-especiais {
+  background-color: $category-one;
+
+  &:hover {
+    background: $first-gradient;
+  }
+}
+.bg-cafe {
+  background-color: $category-two;
+
+  &:hover {
+    background: $second-gradient;
+  }
+}
+.bg-principais {
+  background-color: $category-three;
+
+  &:hover {
+    background: $third-gradient;
+  }
+}
+.bg-vegan {
+  background-color: $category-four;
+
+  &:hover {
+    background: $fourth-gradient;
+  }
+}
+.bg-sopas {
+  background-color: $category-five;
+
+  &:hover {
+    background: $fifth-gradient;
+  }
+}
+.bg-sobremesas {
+  background-color: $category-six;
+
+  &:hover {
+    background: $sixth-gradient;
+  }
+}
+.bg-bebidas {
+  background-color: $category-seven;
+
+  &:hover {
+    background: $seventh-gradient;
+  }
+}
+
+@media (max-width: 992px) {
+  .category-bar ul {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    justify-content: flex-start;
+  }
+
+  .category-bar ul li {
+    flex: 0 0 250px !important; // largura fixa para cada item
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .category-bar ul li {
+    gap: 10px;
+    height: 95px;
+    font-size: 12px;
+    flex: 0 0 200px !important;
+
+    .icon {
+      width: 35px;
+      height: 35px;
+    }
+  }
+}

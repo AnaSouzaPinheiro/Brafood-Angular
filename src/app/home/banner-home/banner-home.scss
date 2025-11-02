@@ -1,0 +1,40 @@
+.banner-container-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.banner-container {
+  position: relative;
+  width: 100%;
+  height: 490px;
+  overflow: hidden;
+}
+
+.banner-resume {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 80px;
+}
+
+img {
+  width: 100%;
+  height: 490px;
+  object-fit: cover;
+}
+
+@media (max-width: 576px) {
+  .banner-container {
+    height: 290px;
+    img {
+      height: 290px;
+    }
+
+    .banner-resume {
+      right: 30px;
+      padding: 31px;
+    }
+  }
+}

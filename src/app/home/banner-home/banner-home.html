@@ -1,0 +1,12 @@
+<a [href]="recipe.link" class="banner-container-link">
+  <div class="banner-container">
+    <img [src]="recipe.bannerFoto" alt="Banner da Receita" />
+
+    <bra-recipe-resume
+      class="banner-resume"
+      [resume]="recipe.resume"
+      [type]="'banner'"
+    >
+    </bra-recipe-resume>
+  </div>
+</a>

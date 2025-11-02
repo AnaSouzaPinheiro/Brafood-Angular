@@ -1,0 +1,123 @@
+@use "variables" as *;
+
+.custom-dropdown {
+  position: relative;
+  display: flex;
+  margin-top: 15px;
+}
+
+.dropdown-label {
+  font-size: 24px;
+}
+
+.single-dropdown {
+  .dropdown-header {
+    max-width: 170px;
+  }
+
+  .dropdown-options {
+    max-width: 189px;
+  }
+}
+
+.dropdown-header {
+  width: 530px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  max-width: 530px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid $primary-gray;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.dropdown-header__selected {
+  flex-grow: 1;
+  padding-left: 0.4rem;
+  font-size: 20px;
+  font-weight: 200;
+  color: $primary-gray;
+  text-align: left;
+}
+
+.dropdown-header__arrow {
+  display: flex;
+  align-items: center;
+  font-weight: 200;
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+.dropdown--open .dropdown-header__arrow {
+  transform: rotate(270deg);
+}
+
+.dropdown-options {
+  list-style: none;
+  position: absolute;
+  top: calc(100% + -0.5rem);
+  left: 0;
+  right: 0;
+  max-width: 548.5px;
+
+  border-left: 1px solid $primary-gray;
+  border-right: 1px solid $primary-gray;
+  border-bottom: 1px solid $primary-gray;
+
+  font-weight: 200;
+  border-radius: 0 0 5px 5px;
+  background-color: #fff;
+  z-index: 1000;
+  display: none;
+}
+
+.dropdown-options--open {
+  display: block;
+}
+
+.dropdown-option {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  color: $primary-gray;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-option:last-child {
+  border-bottom: none;
+  border-radius: 0 0 0.3rem 0.3rem;
+}
+
+.dropdown-option:hover {
+  background-color: #f9f9f9;
+}
+
+.adicionar,
+.remover {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-left: 35px;
+  cursor: pointer;
+  font-weight: 200;
+  font-size: 30px;
+  background: transparent;
+  border-radius: 50px;
+}
+
+.adicionar {
+  color: $primary-gray;
+  border: 1px solid $primary-gray;
+}
+
+.remover {
+  color: #e53935;
+  border: 1px solid #e53935;
+}

@@ -1,0 +1,74 @@
+h2,
+.infos p {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.resume {
+  width: 400px;
+  padding: 20px 43px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  gap: 13px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0px 4px 50px 0px #00000040;
+}
+
+.infos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infos p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.star {
+  width: 30px;
+  height: 30px;
+}
+
+.text {
+  font-size: 12px;
+  font-weight: 300;
+  text-align: justify;
+}
+
+.resume.card {
+  width: 245px;
+  background-color: #fff;
+
+  h2, .infos p {
+    font-size: 14px;
+  }
+
+  .text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+.resume {
+    width: 200px;
+    padding: 20px 30px;
+    gap: 0px;
+
+    h2,
+.infos p {
+  font-size: 11px;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+}
+
+.text{
+    font-size: 9px;
+}
+}
+}

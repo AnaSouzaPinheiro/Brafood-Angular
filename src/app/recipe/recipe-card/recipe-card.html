@@ -1,0 +1,14 @@
+<div class="receita-card" [routerLink]="mappedRecipe.url">
+  <div class="infos">
+    <h2 class="categoria">{{ mappedRecipe.category }}</h2>
+    <img [src]="mappedRecipe.img" alt="" class="img-receita" />
+
+    <span [hidden]="myRecipe === false" class="icons" id="edit"><img src="assets/imagens/icones/arquivo.png" alt=""></span>
+    <span [hidden]="myRecipe === false" class="icons" id="trash"><img src="assets/imagens/icones/lixo.png" alt=""></span>
+  </div>
+  <bra-recipe-resume
+    class="resume"
+    [resume]="mappedRecipe.resume"
+    [type]="'card'"
+  ></bra-recipe-resume>
+</div>

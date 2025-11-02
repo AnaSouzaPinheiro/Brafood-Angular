@@ -1,0 +1,65 @@
+@use "variables" as *;
+
+.modal {
+  width: 280px;
+  font-size: 20px;
+  border-radius: 15px;
+  background-color: #fff;
+  transition: opacity 0.5s ease-in-out;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  li {
+    padding: 25px;
+    list-style: none;
+    cursor: pointer;
+    color: $thirdary-gray;
+
+    &:hover {
+      color: $primary-blue;
+    }
+  }
+
+  hr {
+    text-align: center;
+    border-color: $quaternary-gray;
+    margin: 0 25px;
+  }
+
+  .name,
+  .logOut {
+    color: $primary-blue;
+    font-weight: 500;
+  }
+
+  .name {
+    border-bottom: 2px solid $quaternary-gray;
+  }
+
+  .logOut {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 2px solid $quaternary-gray;
+  }
+
+  .myAccount,
+  .myRecipes {
+    border-bottom: 1px solid $quaternary-gray;
+  }
+
+  img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .click {
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .modal {
+    width: 230px;
+    font-size: 15px;
+  }
+}

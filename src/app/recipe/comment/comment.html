@@ -1,0 +1,57 @@
+<div class="comment">
+  @if (isReply() === 'normal') {
+  <div class="person">
+    <bra-user-icon></bra-user-icon>
+    <span class="name"> {{ comment.name }} </span>
+  </div>
+
+  <div class="content">
+    <span class="data"> {{ comment.data }} </span>
+    <p class="text">{{ comment.text }}</p>
+
+    <div class="replies">
+      <span class="response"> Responder </span>
+      <span class="seeReplies" [hidden]="comment.qtdReplies < 0" (click)="viewReplies.emit()"> Ver {{ comment.qtdReplies}} respostas </span>
+    </div>
+  </div>
+  } @else if (isReply() === 'reply') {
+  <div class="reply">
+    <div class="seta">
+      <img src="assets/imagens/icones/Arrow 3.svg" alt="" />
+    </div>
+    <div class="person">
+      <bra-user-icon></bra-user-icon>
+      <span class="name"> {{ comment.name }} </span>
+    </div>
+
+    <div class="content">
+      <span class="data"> {{ comment.data }} </span>
+      <p class="text">{{ comment.text }}</p>
+
+      <div class="replies">
+        <span class="response"> Responder </span>
+        <span class="seeReplies" [hidden]="comment.qtdReplies < 0" (click)="viewReplies.emit()"> Ver {{ comment.qtdReplies}} respostas </span>
+      </div>
+    </div>
+  </div>
+
+  } @else if (isReply() === 'replying') {
+  <div class="replying">
+    <div class="seta">
+      <img src="assets/imagens/icones/Arrow 3.svg" alt="" />
+    </div>
+    <div class="person">
+      <bra-user-icon></bra-user-icon>
+      <span class="name"> {{ comment.name }} </span>
+    </div>
+
+    <div class="writing">
+      <bra-input inType="textarea" placeholder="Escreva sua resposta aqui...">
+      </bra-input>
+
+      <bra-custom-button class="send" label="Responder" type="comment">
+      </bra-custom-button>
+    </div>
+  </div>
+  }
+</div>

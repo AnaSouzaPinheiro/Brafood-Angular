@@ -1,0 +1,107 @@
+<div
+  class="dropdown-wrapper"
+  [ngClass]="{ 'multi-dropdown': multiSelect, 'single-dropdown': !multiSelect }"
+  (document:click)="closeDropdown($event)"
+>
+  <label class="dropdown-label">{{ label }}</label>
+
+  <!-- MODO MULTI -->
+  <ng-container *ngIf="multiSelect; else singleDropdown">
+    <div
+      class="custom-dropdown"
+      *ngFor="let selectedValue of selected(); let i = index"
+      [class.dropdown--open]="isOpen()[i]"
+    >
+      <div class="dropdown-header" (click)="toggleDropdown(i)" tabindex="0">
+        <span class="dropdown-header__selected"
+          >{{ selected()[i] || 'Selecione' }}</span
+        >
+        <div class="dropdown-header__arrow">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#868686"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 6 15 12 9 18" />
+          </svg>
+        </div>
+      </div>
+
+      <ul class="dropdown-options" [class.dropdown-options--open]="isOpen()[i]">
+        <li
+          class="dropdown-option"
+          *ngFor="let option of options"
+          (click)="selectOption(i, option)"
+          tabindex="0"
+        >
+          {{ option.label }}
+        </li>
+      </ul>
+
+      <button
+        class="remover"
+        *ngIf="selected().length > 1 && i > 0"
+        (click)="removeDropdown(i)"
+        type="button"
+      >
+        ×
+      </button>
+
+      <!-- Botão + aparece só no primeiro dropdown -->
+      <button
+        class="adicionar"
+        *ngIf="i === 0"
+        (click)="addDropdown()"
+        [disabled]="selected().length >= maxItems"
+        type="button"
+      >
+        +
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- MODO ÚNICO -->
+  <ng-template #singleDropdown>
+    <div class="custom-dropdown" [class.dropdown--open]="isOpen()[0]">
+      <div
+        class="dropdown-header"
+        (click)="toggleDropdown(0); $event.stopPropagation()"
+        tabindex="0"
+      >
+        <span class="dropdown-header__selected"
+          >{{ selected()[0] || 'Selecione' }}</span
+        >
+        <div class="dropdown-header__arrow">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#868686"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 6 15 12 9 18" />
+          </svg>
+        </div>
+      </div>
+
+      <ul class="dropdown-options" [class.dropdown-options--open]="isOpen()[0]">
+        <li
+          class="dropdown-option"
+          *ngFor="let option of options"
+          (click)="selectOption(0, option); $event.stopPropagation()"
+          tabindex="0"
+        >
+          {{ option.label }}
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+</div>

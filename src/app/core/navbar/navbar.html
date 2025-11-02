@@ -1,0 +1,23 @@
+<header>
+  <a [routerLink]="'/home'">
+    <img
+      class="logo-area"
+      src="assets/imagens/icones/BraFoodLogoR.png"
+      alt="Logo BraFood"
+    />
+  </a>
+
+  <bra-search-bar class="search-area"></bra-search-bar>
+
+  <bra-user-icon
+    class="icon-area"
+    (clickIcon)="togglePopup($event)"
+  ></bra-user-icon>
+
+  <bra-modal-log
+    [modalLogged]="modalLogged"
+    [hidden]="!openModal()"
+    [loggedOut]="!isLoggedIn()"
+    class="profile-container"
+  ></bra-modal-log>
+</header>

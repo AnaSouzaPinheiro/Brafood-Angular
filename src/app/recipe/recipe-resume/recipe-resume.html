@@ -1,0 +1,10 @@
+<div class="resume" [ngClass]="getClasses()">
+  <div class="infos">
+    <h2>{{ resume.title }}</h2>
+    <p>
+      <img class="star" src="assets/imagens/icones/favorito.png" alt="Favorito" />
+      {{ resume.qtdFav }}
+    </p>
+  </div>
+  <p class="text">{{ resume.text }}</p>
+</div>

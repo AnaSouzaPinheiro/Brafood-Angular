@@ -1,0 +1,89 @@
+<div class="container-fotos">
+  <div class="first-image">
+    <label class="picture" for="picture_input1">
+      <input
+        type="file"
+        accept="image/png, image/jpg"
+        id="picture_input1"
+        (change)="onFileChange($event, 1)"
+      />
+      <div class="infos">
+        <ng-container *ngIf="!hasPreview(previewSrc1); else showPreview1">
+          <img
+            class="picture_image"
+            src="assets/imagens/icones/foto (1).png"
+            alt=""
+          />
+          <p>Formato: jpg ou png</p>
+          <p>Dimensões ideais em pixels: 920 x 600</p>
+          <p>Peso: até 3mb cada</p>
+        </ng-container>
+        <ng-template #showPreview1>
+          <img
+            class="picture__img"
+            [src]="previewSrc1"
+            alt="Imagem selecionada"
+          />
+        </ng-template>
+      </div>
+    </label>
+  </div>
+
+  <div class="others">
+    <label class="picture" for="picture_input2">
+      <input
+        type="file"
+        accept="image/png, image/jpg"
+        id="picture_input2"
+        (change)="onFileChange($event, 2)"
+      />
+      <div class="infos">
+        <ng-container *ngIf="!hasPreview(previewSrc2); else showPreview2">
+          <img
+            class="picture_image"
+            src="assets/imagens/icones/foto (1).png"
+            alt=""
+          />
+          <p>Formato: jpg ou png</p>
+          <p>Dimensões ideais em pixels: 510 x 300</p>
+          <p>Peso: até 3mb cada</p>
+        </ng-container>
+        <ng-template #showPreview2>
+          <img
+            class="picture__img"
+            [src]="previewSrc2"
+            alt="Imagem selecionada"
+          />
+        </ng-template>
+      </div>
+    </label>
+
+    <label class="picture" for="picture_input3">
+      <input
+        type="file"
+        accept="image/png, image/jpg"
+        id="picture_input3"
+        (change)="onFileChange($event, 3)"
+      />
+      <div class="infos">
+        <ng-container *ngIf="!hasPreview(previewSrc3); else showPreview3">
+          <img
+            class="picture_image"
+            src="assets/imagens/icones/foto (1).png"
+            alt=""
+          />
+          <p>Formato: jpg ou png</p>
+          <p>Dimensões ideais em pixels: 510 x 300</p>
+          <p>Peso: até 3mb cada</p>
+        </ng-container>
+        <ng-template #showPreview3>
+          <img
+            class="picture__img"
+            [src]="previewSrc3"
+            alt="Imagem selecionada"
+          />
+        </ng-template>
+      </div>
+    </label>
+  </div>
+</div>

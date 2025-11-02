@@ -1,0 +1,31 @@
+.slide-home-container {
+  position: relative;
+  width: 100%;
+  height: 490px; /* ajuste conforme seu banner */
+  overflow: hidden;
+}
+
+.slide-home-container bra-banner-home {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.slide-home-container bra-banner-home[hidden] {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.slide-home-container bra-banner-home:not([hidden]) {
+  opacity: 1;
+  z-index: 1;
+}
+
+@media (max-width: 576px) {
+  .slide-home-container {
+    height: 290px;
+  }
+}

@@ -1,0 +1,30 @@
+$primary-blue: #002C99;
+$secondary-blue: #445DAF;
+$thirdary-blue: #188CFF;
+$quaternary-blue: #8AABFF;
+
+$hover-blue: #4E6CB8;
+
+$primary-gray: #A8A8A8;
+$secondary-gray: #D0DAF5;
+$thirdary-gray: #4A4A4A;
+$quaternary-gray: #D8D8D8;
+
+$font-footer: 'DM Sans', sans-serif;
+
+$category-one: #8BACFF; 
+$category-two: #729AFF; 
+$category-three: #5F8CFF;
+$category-four: #4479FF; 
+$category-five: #2F6AFF; 
+$category-six: #195AFF; 
+$category-seven: #0049FF; 
+
+$first-gradient: linear-gradient(180deg, $category-one 0%, #536799 100%);
+$second-gradient: linear-gradient(180deg, $category-two 0%, #455D99 100%);
+$third-gradient: linear-gradient(180deg, $category-three 0%, #395499 100%);
+$fourth-gradient: linear-gradient(180deg, $category-four 0%, #294999 100%);
+$fifth-gradient: linear-gradient(180deg, $category-five 0%, #1C4099 100%);
+$sixth-gradient: linear-gradient(180deg, $category-six 0%, #0F3699 100%);
+$seventh-gradient: linear-gradient(180deg, $category-seven 0%, #002C99 100%);
+$eighth-gradient: linear-gradient(90deg, $category-two 0%, #083AB8 100%);

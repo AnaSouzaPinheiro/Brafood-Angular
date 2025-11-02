@@ -1,0 +1,52 @@
+<div class="cont">
+  @if (modo() === 'carrossel') {
+
+  <section
+    class="container"
+    [ngStyle]="{ 'background-image': 'url(' + section.urlSection + ')' }"
+  >
+    <div class="titulo">
+      <h1 class="title">{{ section.title }}</h1>
+      <img [src]="section.fundoTitle" class="fundoTitle" />
+    </div>
+
+    <div class="main">
+      <span class="seta" (click)="prevPage()"><</span>
+      <div class="content">
+        @for (recipe of recipesPage; track recipe.img) {
+        <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
+        }
+      </div>
+      <span class="seta" (click)="nextPage()">></span>
+    </div>
+    <div class="page">
+      <span
+        class="marking"
+        [ngStyle]="{'background-color': back1}"
+        id="m1"
+      ></span>
+      <span
+        class="marking"
+        [ngStyle]="{'background-color': back2}"
+        id="m2"
+      ></span>
+      <span
+        class="marking"
+        [ngStyle]="{'background-color': back3}"
+        id="m3"
+      ></span>
+    </div>
+  </section>
+  } @else if (modo() === 'grid') {
+
+  <section class="container">
+    <div class="main">
+      <div class="content">
+        @for (recipe of recipesPage; track recipe.img) {
+        <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
+        }
+      </div>
+    </div>
+  </section>
+  }
+</div>
