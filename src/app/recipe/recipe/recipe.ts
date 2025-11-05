@@ -1,15 +1,64 @@
 import { Component } from '@angular/core';
-import { RecipeImages } from "../recipe-images/recipe-images";
-import { InfoRecipe } from "../info-recipe/info-recipe";
-import { UserIcon } from "../../core/user-icon/user-icon";
+import { RecipeImages } from '../recipe-images/recipe-images';
+import { InfoRecipe } from '../info-recipe/info-recipe';
+import { UserIcon } from '../../core/user-icon/user-icon';
+
+import { ActivatedRoute } from '@angular/router';
+
+import {
+  Receita,
+  Ingrediente,
+  Etapa,
+  Descricao,
+} from '../../recipe/model/receita';
+import { MyRecipesService } from '../../recipe/services/my-recipes';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'bra-recipe',
-  imports: [RecipeImages, InfoRecipe, UserIcon],
+  imports: [RecipeImages, InfoRecipe, UserIcon, CommonModule],
   templateUrl: './recipe.html',
-  styleUrl: './recipe.scss'
+  styleUrl: './recipe.scss',
 })
 export class Recipe {
+  recipe!: Receita;
 
+  constructor(
+    private route: ActivatedRoute,
+    private myRecipesServices: MyRecipesService
+  ) {}
 
+  ngOnInit() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.myRecipesServices.buscarPorId(id).subscribe((r: any) => {
+      this.recipe = {
+        id: Number(r.id),
+        titulo: r.titulo,
+        categoria: r.categoria,
+        dificuldade: Number(r.dificuldade),
+        tempo_preparo: r.tempo_preparo,
+        tipo_tempo: r.tipo_tempo,
+        porcoes: r.porcoes,
+        tipo_porcao: r.tipo_porcao,
+        imagem1: r.imagem1,
+        imagem2: r.imagem2,
+        imagem3: r.imagem3,
+        qtd_fav: Number(r.qtd_fav),
+        data_criacao: r.data_criacao,
+        autor: r.autor,
+        ingredientes: (r.ingredientes || []).map((i: any) => ({
+          titulo: i.titulo,
+          itens: i.itens || [],
+        })),
+        etapas: (r.etapas || []).map((e: any) => ({
+          titulo: e.titulo,
+          ordem: Number(e.ordem),
+          descricoes: (e.descricoes || []).map((d: any) => ({
+            descricao: d.descricao,
+            ordem: Number(d.ordem),
+          })),
+        })),
+      };
+    });
+  }
 }
