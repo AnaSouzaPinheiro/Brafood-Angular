@@ -16,8 +16,8 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/login/login').then((m) => m.Login),
   },
   {
-    path: 'recipe',
-    loadComponent: () => import('./recipe/recipe/recipe').then((m) => m.Recipe),
+    path: 'receita/:id', 
+    loadComponent: () => import('./recipe/recipe/recipe').then(m => m.Recipe) ,
   },
   {
     path: 'editar-perfil',
