@@ -4,14 +4,13 @@ import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
-import { MyRecipesService } from './services/my-recipes';
-import { Observable } from 'rxjs';
-import { Myrecipes } from './model/myrecipes';
+import { MyRecipesService } from '../../recipe/services/my-recipes';
+import { Recipes } from '../../recipe/model/myrecipes';
 
 @Component({
   selector: 'bra-minhas-receitas',
   standalone: true,
-  imports: [Perfil, CustomButton, RecipeSection, RecipeCard, RouterModule],
+  imports: [Perfil, CustomButton, RecipeCard, RouterModule],
   templateUrl: './minhas-receitas.html',
   styleUrls: ['./minhas-receitas.scss'],
 })
@@ -19,7 +18,7 @@ export class MinhasReceitas {
   indice!: number;
   currentPage!: number;
 
-  myRecipes: Myrecipes[] = [];
+  Recipes: Recipes[] = [];
 
   //myRecipesServices: MyRecipes;
 
@@ -28,7 +27,7 @@ export class MinhasReceitas {
     // this.myRecipes$ = this.myRecipesServices.list();
 
     this.myRecipesServices.list().subscribe((data) => {
-      this.myRecipes = data;
+      this.Recipes = data;
     });
   }
 
@@ -38,11 +37,11 @@ export class MinhasReceitas {
   }
 
   get myRecipesPage() {
-    return this.myRecipes.slice(this.indice, this.indice + 6);
+    return this.Recipes.slice(this.indice, this.indice + 6);
   }
 
   get pages(): number {
-    return Math.ceil(this.myRecipes.length / 6);
+    return Math.ceil(this.Recipes.length / 6);
   }
 
   get pagesArray(): number[] {
@@ -51,7 +50,7 @@ export class MinhasReceitas {
 
   nextPage() {
     let newIndex = this.indice + 6;
-    if (newIndex >= this.myRecipes.length) {
+    if (newIndex >= this.Recipes.length) {
       newIndex = 0;
     }
     this.indice = newIndex;

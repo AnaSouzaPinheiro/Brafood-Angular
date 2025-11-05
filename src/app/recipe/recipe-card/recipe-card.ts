@@ -20,7 +20,7 @@ export class RecipeCard {
       img: this.recipe.imagem1,
       url: `/receita/${this.recipe.id}`,
       resume: {
-        title: this.recipe.titulo,
+          title: this.recipe.titulo,
           qtdFav: Number(this.recipe.qtd_fav),
           text: this.recipe.resumo,
       },

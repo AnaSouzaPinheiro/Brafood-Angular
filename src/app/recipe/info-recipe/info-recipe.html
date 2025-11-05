@@ -1,27 +1,27 @@
 <div class="info-recipe">
   <div class="main">
-    <h1 class="title">{{ recipe.title }}</h1>
+    <h1 class="title">{{ mappedInfoRecipe.titulo }}</h1>
 
     <div class="categories">
       <bra-custom-button
-        *ngFor="let category of recipe.categories"
+        *ngFor="let category of mappedInfoRecipe.categoria"
         type="category"
         [label]="category"
       ></bra-custom-button>
     </div>
 
     <div class="description">
-      <div class="difficult" [ngClass]="recipe.difficulty">
-        <img [src]="getDifficultyImage(recipe.difficulty)" />
+      <div class="difficult">
+        <img [src]="getDifficultyImage(mappedInfoRecipe.dificuldade)" />
         <p>Dificuldade</p>
       </div>
       <div class="time">
         <img src="assets/imagens/icones/relogio (4).png" alt="" />
-        <p>{{ recipe.time }} {{ recipe.typeTime }}</p>
+        <p>{{ mappedInfoRecipe.tempo_preparo }} {{ mappedInfoRecipe.tipo_tempo }}</p>
       </div>
       <div class="unid">
         <img src="assets/imagens/icones/bandeja-de-comida (2).png" />
-        <p>{{ recipe.unid }} {{ recipe.typeUnid }}</p>
+        <p>{{ mappedInfoRecipe.porcoes }} {{ mappedInfoRecipe.tipo_porcao }}</p>
       </div>
     </div>
   </div>

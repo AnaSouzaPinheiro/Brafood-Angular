@@ -1,5 +1,5 @@
 <div class="cont">
-  @if (modo() === 'carrossel') {
+  @if (modo === 'carrossel') {
 
   <section
     class="container"
@@ -11,38 +11,40 @@
     </div>
 
     <div class="main">
-      <span class="seta" (click)="prevPage()"><</span>
+      <span class="seta" *ngIf="section.recipes.length > 3" (click)="prevPage()"><</span>
       <div class="content">
-        @for (recipe of recipesPage; track recipe.img) {
+        @for (recipe of recipesPage; track recipe.id ?? $index) {
         <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
         }
       </div>
-      <span class="seta" (click)="nextPage()">></span>
+      <span class="seta" *ngIf="section.recipes.length > 3" (click)="nextPage()">></span>
     </div>
     <div class="page">
       <span
         class="marking"
         [ngStyle]="{'background-color': back1}"
         id="m1"
-      ></span>
-      <span
+        ></span>
+        <span
         class="marking"
+        *ngIf="section.recipes.length > 3" 
         [ngStyle]="{'background-color': back2}"
         id="m2"
-      ></span>
-      <span
+        ></span>
+        <span
         class="marking"
+        *ngIf="section.recipes.length > 6" 
         [ngStyle]="{'background-color': back3}"
         id="m3"
       ></span>
     </div>
   </section>
-  } @else if (modo() === 'grid') {
+  } @else if (modo === 'grid') {
 
   <section class="container">
     <div class="main">
       <div class="content">
-        @for (recipe of recipesPage; track recipe.img) {
+        @for (recipe of recipesPage; track recipe.id ?? $index) {
         <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
         }
       </div>

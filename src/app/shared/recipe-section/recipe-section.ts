@@ -1,6 +1,8 @@
-import { Component, HostListener, input, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
+import {  Section } from '../../recipe/model/section-home';
+import { Recipes } from '../../recipe/model/myrecipes';
 
 export type modo = 'carrossel' | 'grid';
 
@@ -9,7 +11,7 @@ export type modo = 'carrossel' | 'grid';
   standalone: true,
   imports: [RecipeCard, CommonModule],
   templateUrl: './recipe-section.html',
-  styleUrl: './recipe-section.scss',
+  styleUrls: ['./recipe-section.scss'],
 })
 export class RecipeSection {
   indice = 0;
@@ -17,27 +19,14 @@ export class RecipeSection {
   back2 = '';
   back3 = '';
 
-  type = input('text');
-  modo = input<modo>('carrossel');
+  @Input() modo: modo = 'carrossel';
+  @Input() type: string = ''; 
 
-  isMobile = false; // inicia com valor padrão
+  @Input() section!: Section;
 
-  @Input() section!: {
-    title: string;
-    urlSection: string;
-    fundoTitle: string;
-  };
-
-  @Input() recipes: Array<{
-    category: string;
-    img: string;
-    url: string;
-    
-    resume: { title: string; qtdFav: number; text: string };
-  }> = [];
+  isMobile = false; 
 
   ngOnInit() {
-    // só roda no navegador
     if (typeof window !== 'undefined') {
       this.isMobile = window.innerWidth <= 768;
     }
@@ -51,10 +40,11 @@ export class RecipeSection {
     }
   }
 
-  get recipesPage() {
+  get recipesPage(): Recipes[] {
+    if (!this.section) return [];
     return this.isMobile
-      ? this.recipes
-      : this.recipes.slice(this.indice, this.indice + 3);
+      ? this.section.recipes
+      : this.section.recipes.slice(this.indice, this.indice + 3);
   }
 
   async preloadImages(urls: string[]) {
@@ -72,12 +62,14 @@ export class RecipeSection {
   }
 
   async nextPage() {
+    if (!this.section) return;
+
     let newIndex = this.indice + 3;
-    if (newIndex >= this.recipes.length) {
+    if (newIndex >= this.section.recipes.length) {
       newIndex = 0;
     }
 
-    const nextRecipes = this.recipes.slice(newIndex, newIndex + 3);
+    const nextRecipes = this.section.recipes.slice(newIndex, newIndex + 3);
     await this.preloadImages(nextRecipes.map((r) => r.img));
 
     this.indice = newIndex;
@@ -85,12 +77,14 @@ export class RecipeSection {
   }
 
   async prevPage() {
+    if (!this.section) return;
+
     let newIndex = this.indice - 3;
     if (newIndex < 0) {
-      newIndex = this.recipes.length - 3;
+      newIndex = this.section.recipes.length - 3;
     }
 
-    const prevRecipes = this.recipes.slice(newIndex, newIndex + 3);
+    const prevRecipes = this.section.recipes.slice(newIndex, newIndex + 3);
     await this.preloadImages(prevRecipes.map((r) => r.img));
 
     this.indice = newIndex;
@@ -103,9 +97,9 @@ export class RecipeSection {
     this.back3 = qual === 3 ? '#002C99' : '';
   }
 
-    getClasses() {
+  getClasses() {
     return {
-      [this.type()]: true,
+      [this.type]: true,
     };
   }
 }

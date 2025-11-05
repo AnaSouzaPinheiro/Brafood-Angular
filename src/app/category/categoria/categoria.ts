@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FilterDropdown } from '../filter-dropdown/filter-dropdown';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Myrecipes } from '../../profile/minhas-receitas/model/myrecipes';
-import { MyRecipesService } from '../../profile/minhas-receitas/services/my-recipes';
+import { Recipes } from '../../recipe/model/myrecipes';
+import { MyRecipesService } from '../../recipe/services/my-recipes';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
 
@@ -17,15 +17,15 @@ export class Categoria {
   optionsDropwdown = {
     labelTitle: 'Ordenar Por:',
     items: [
-      { name: 'Mais favoritas', checked: true },
-      { name: 'Mais antigas', checked: false },
+      { name: 'Por nome', checked: true },
       { name: 'Mais novas', checked: false },
-      { name: 'Por nome', checked: false },
+      { name: 'Mais antigas', checked: false },
+      { name: 'Mais favoritas', checked: false },
     ],
   };
 
   optionsDropwdown2 = {
-    labelTitle: 'Subctagorias: ',
+    labelTitle: 'Subcategorias: ',
     items: [
       { name: 'Cafés & Chás', checked: true },
       { name: 'Drinks & Coquetéis', checked: false },
@@ -36,7 +36,7 @@ export class Categoria {
   indice!: number;
   currentPage!: number;
 
-  myRecipes: Myrecipes[] = [];
+  Recipes: Recipes[] = [];
 
   //myRecipesServices: MyRecipes;
 
@@ -45,7 +45,7 @@ export class Categoria {
     // this.myRecipes$ = this.myRecipesServices.list();
 
     this.myRecipesServices.list().subscribe((data) => {
-      this.myRecipes = data;
+      this.Recipes = data;
     });
   }
 
@@ -55,11 +55,11 @@ export class Categoria {
   }
 
   get RecipesPage() {
-    return this.myRecipes.slice(this.indice, this.indice + 6);
+    return this.Recipes.slice(this.indice, this.indice + 6);
   }
 
   get pages(): number {
-    return Math.ceil(this.myRecipes.length / 6);
+    return Math.ceil(this.Recipes.length / 6);
   }
 
   get pagesArray(): number[] {
@@ -68,7 +68,7 @@ export class Categoria {
 
   nextPage() {
     let newIndex = this.indice + 6;
-    if (newIndex >= this.myRecipes.length) {
+    if (newIndex >= this.Recipes.length) {
       newIndex = 0;
     }
     this.indice = newIndex;

@@ -1,7 +1,5 @@
-<bra-slide-home [recipes]="recipes"></bra-slide-home>
-@for (section of sections; track $index) {
+<bra-slide-home [recipes]="slides"></bra-slide-home>
 <bra-recipe-section
+  *ngFor="let section of sections, trackBy: trackById"
   [section]="section"
-  [recipes]="section.recipes"
 ></bra-recipe-section>
-}

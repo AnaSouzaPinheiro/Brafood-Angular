@@ -1,6 +1,7 @@
 <div class="slide-home-container">
   <bra-banner-home
     *ngIf="recipes.length > 0"
-    [recipe]="recipes[currentIndex()]">
+    [recipe]="currentRecipe"
+  >
   </bra-banner-home>
 </div>
