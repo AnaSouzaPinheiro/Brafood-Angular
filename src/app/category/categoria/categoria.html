@@ -1,10 +1,6 @@
 <div class="img-container">
-  <img
-    src="assets/imagens/fundos/pessoas-torcendo-com-varios-cocktails.jpg"
-    alt=""
-    class="background"
-  />
-  <h1 class="title">BEBIDAS</h1>
+  <img [src]="categoria?.fundo" [alt]="categoria?.nome" class="background" />
+  <h1 class="title">{{ categoria?.nome }}</h1>
 </div>
 
 <div class="filter-container">
@@ -20,9 +16,13 @@
       [type]="'filter'"
     ></bra-custom-button>
   </div>
-  <span class="qtdReceitas"> {{ this.Recipes.length }} receitas encontradas</span>
+
+  <span class="qtdReceitas">
+    {{ Recipes?.length || 0 }} receitas encontradas
+  </span>
 </div>
-<div class="content">
+
+<div class="content" *ngIf="categoria">
   <div class="cards">
     @for (recipe of RecipesPage; track $index) {
     <bra-recipe-card [recipe]="recipe"></bra-recipe-card>

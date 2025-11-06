@@ -1,11 +1,11 @@
 <div class="category-bar">
   <ul>
-    <li *ngFor="let category of categories" [ngClass]="category.cssClass" [routerLink]="'/categoria'">
+    <li *ngFor="let categoria of categorias" [ngClass]="categoria.cssClass" [routerLink]="categoria.url">
       <img class="icon"
-        [src]="category.icon"
-        alt="{{ category.name }} ícone"
+        [src]="categoria.icon"
+        alt="{{ categoria.nome }} ícone"
       />
-      {{ category.name }}
+      {{ categoria.nome }}
     </li>
   </ul>
 </div>

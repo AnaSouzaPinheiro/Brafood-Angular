@@ -9,23 +9,44 @@ import { Receita } from '../model/receita';
   providedIn: 'root',
 })
 export class MyRecipesService {
+  // URL base da API
   private readonly API =
-    'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas.php';
+    'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes';
+
   private httpClient = inject(HttpClient);
 
-  list(): Observable<Recipes[]> {
-    return this.httpClient.get<Recipes[]>(this.API);
+  // Método auxiliar pra evitar repetição
+  private url(path: string): string {
+    return `${this.API}/${path}`;
   }
 
-  listRandom(limit: number): Observable<Slide[]> {
-    return this.httpClient.get<Slide[]>(
-      `http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/slide_home.php?limit=${limit}`
+  // Lista todas as receitas
+  list(): Observable<Recipes[]> {
+    return this.httpClient.get<Recipes[]>(this.url('receitas.php'));
+  }
+
+  // Lista receitas por categoria (usando id e nome na URL)
+  listCat(categoria: { id: number; nome: string }): Observable<Recipes[]> {
+    return this.httpClient.get<Recipes[]>(
+      this.url(
+        `receitas_categoria.php?id=${categoria.id}&nome=${encodeURIComponent(
+          categoria.nome
+        )}`
+      )
     );
   }
 
-  buscarPorId(id: number) {
+  // Lista receitas aleatórias pro slide da home
+  listRandom(limit: number): Observable<Slide[]> {
+    return this.httpClient.get<Slide[]>(
+      this.url(`slide_home.php?limit=${limit}`)
+    );
+  }
+
+  // Busca receita específica pelo ID
+  buscarPorId(id: number): Observable<Receita[]> {
     return this.httpClient.get<Receita[]>(
-      `http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/buscar.php?id=${id}`
+      this.url(`receitas/buscar.php?id=${id}`)
     );
   }
 }

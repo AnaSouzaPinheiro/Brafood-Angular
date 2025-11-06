@@ -28,7 +28,7 @@ export const routes: Routes = [
     loadComponent: () => import('./profile/minhas-receitas/minhas-receitas').then((m) => m.MinhasReceitas),
   },
   {
-    path: 'categoria',
+    path: 'categoria/:id/:nome',
     loadComponent: () => import('./category/categoria/categoria').then((m) => m.Categoria),
   },
   { path: '**', redirectTo: 'home' } 
