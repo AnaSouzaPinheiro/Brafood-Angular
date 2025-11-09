@@ -4,8 +4,8 @@ import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
-import { MyRecipesService } from '../../recipe/services/my-recipes';
-import { Recipes } from '../../recipe/model/myrecipes';
+import { MyRecipesService } from '../../services/my-recipes';
+import { Recipes } from '../../model/myrecipes';
 
 @Component({
   selector: 'bra-minhas-receitas',

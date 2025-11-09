@@ -1,22 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 
 @Component({
   selector: 'bra-recipe-images',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [CommonModule],
   templateUrl: './recipe-images.html',
   styleUrls: ['./recipe-images.scss'],
 })
 export class RecipeImages {
-  imageList = [
-    'assets/imagens/receita/delicioso-arranjo-de-doces-mexicanos (1).jpg',
-    'assets/imagens/receita/delicioso-arranjo-de-doces-mexicanos (2).jpg',
-    'assets/imagens/receita/delicioso-arranjo-de-doces-mexicanos.jpg'
-  ];
-
+  @Input() images!: any;
   currentIndex = signal(0);
   isLightboxOpen = false;
+
+  get imageList() {
+    return [
+      this.images?.imagem1,
+      this.images?.imagem2,
+      this.images?.imagem3,
+    ].filter(Boolean);
+  }
 
   openLightbox(index: number) {
     this.currentIndex.set(index);
@@ -34,8 +37,6 @@ export class RecipeImages {
   }
 
   nextImage() {
-    this.currentIndex.set(
-      (this.currentIndex() + 1) % this.imageList.length
-    );
+    this.currentIndex.set((this.currentIndex() + 1) % this.imageList.length);
   }
 }

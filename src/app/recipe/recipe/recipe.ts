@@ -10,8 +10,8 @@ import {
   Ingrediente,
   Etapa,
   Descricao,
-} from '../../recipe/model/receita';
-import { MyRecipesService } from '../../recipe/services/my-recipes';
+} from '../../model/receita';
+import { MyRecipesService } from '../../services/my-recipes';
 import { CommonModule } from '@angular/common';
 
 @Component({

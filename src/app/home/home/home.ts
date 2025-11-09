@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { SlideHome } from '../slide-home/slide-home';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { CommonModule } from '@angular/common';
-import { Section } from '../../recipe/model/section-home';
-import { MyRecipesService } from '../../recipe/services/my-recipes';
-import { SecaoCarrosselService } from '../../recipe/services/secao-carrossel';
-import { Recipes } from '../../recipe/model/myrecipes';
+import { Section } from '../../model/section-home';
+import { MyRecipesService } from '../../services/my-recipes';
+import { SecaoCarrosselService } from '../../services/secao-carrossel';
+import { Recipes } from '../../model/myrecipes';
 
 @Component({
   selector: 'bra-home',

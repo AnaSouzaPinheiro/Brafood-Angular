@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FilterDropdown } from '../filter-dropdown/filter-dropdown';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Recipes } from '../../recipe/model/myrecipes';
-import { MyRecipesService } from '../../recipe/services/my-recipes';
-import { CategoriaService } from '../../core/services/categoria';
-import { Categoria as CategoriaModel } from '../../core/model/categoria'; // 👈 renomeado aqui
+import { Recipes } from '../../model/myrecipes';
+import { MyRecipesService } from '../../services/my-recipes';
+import { CategoriaService } from '../../services/categoria';
+import { Categoria as CategoriaModel } from '../../model/categoria'; // 👈 renomeado aqui
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -35,7 +35,7 @@ export class Categoria {
   indice!: number;
   currentPage!: number;
 
-  categoria?: CategoriaModel; // 👈 usando o novo nome
+  categoria?: CategoriaModel;
   Recipes: Recipes[] = [];
 
   constructor(
@@ -68,7 +68,7 @@ export class Categoria {
           }
         );
 
-        // 🔹 busca os dados da categoria
+        // busca os dados da categoria
         this.categoriaService.getCatById(Number(id)).subscribe({
           next: (res: CategoriaModel) => {
             this.categoria = res;

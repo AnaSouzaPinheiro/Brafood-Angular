@@ -9,27 +9,40 @@ export const routes: Routes = [
   },
   {
     path: 'cadastro',
-    loadComponent: () => import('./auth/cadastro/cadastro').then((m) => m.Cadastro),
+    loadComponent: () =>
+      import('./auth/cadastro/cadastro').then((m) => m.Cadastro),
   },
   {
     path: 'login',
     loadComponent: () => import('./auth/login/login').then((m) => m.Login),
   },
   {
-    path: 'receita/:id', 
-    loadComponent: () => import('./recipe/recipe/recipe').then(m => m.Recipe) ,
+    path: 'receita/:id',
+    loadComponent: () => import('./recipe/recipe/recipe').then((m) => m.Recipe),
   },
   {
     path: 'editar-perfil',
-    loadComponent: () => import('./profile/editar-perfil/editar-perfil').then((m) => m.EditarPerfil),
+    loadComponent: () =>
+      import('./profile/editar-perfil/editar-perfil').then(
+        (m) => m.EditarPerfil
+      ),
   },
   {
     path: 'minhas-receitas',
-    loadComponent: () => import('./profile/minhas-receitas/minhas-receitas').then((m) => m.MinhasReceitas),
+    loadComponent: () =>
+      import('./profile/minhas-receitas/minhas-receitas').then(
+        (m) => m.MinhasReceitas
+      ),
+  },
+  {
+    path: 'adicionar-receita',
+    loadComponent: () =>
+      import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
   },
   {
     path: 'categoria/:id/:nome',
-    loadComponent: () => import('./category/categoria/categoria').then((m) => m.Categoria),
+    loadComponent: () =>
+      import('./category/categoria/categoria').then((m) => m.Categoria),
   },
-  { path: '**', redirectTo: 'home' } 
+  { path: '**', redirectTo: 'home' },
 ];

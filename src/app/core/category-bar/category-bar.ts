@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Categoria } from '../../core/model/categoria';
+import { Categoria } from '../../model/categoria';
 
-import { CategoriaService } from '../../core/services/categoria';
+import { CategoriaService } from '../../services/categoria';
 
 @Component({
   selector: 'bra-category-bar',

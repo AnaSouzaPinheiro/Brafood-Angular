@@ -1,8 +1,8 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
-import {  Section } from '../../recipe/model/section-home';
-import { Recipes } from '../../recipe/model/myrecipes';
+import {  Section } from '../../model/section-home';
+import { Recipes } from '../../model/myrecipes';
 
 export type modo = 'carrossel' | 'grid';
 
