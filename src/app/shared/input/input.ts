@@ -52,11 +52,12 @@ export class Input implements OnInit, ControlValueAccessor {
   }
 
   writeValue(value: string): void {
-    this.value = value;
+    this.control.setValue(value, { emitEvent: false });
   }
 
   registerOnChange(fn: (value: string) => void): void {
     this._onChange = fn;
+    this.control.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: () => void): void {

@@ -1,0 +1,116 @@
+<div class="container">
+  <bra-perfil></bra-perfil>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()" class="adding">
+    <h1 class="title">Adicionando minha receita</h1>
+
+    <h3>Anexe até 3 imagens da receita:</h3>
+    <bra-input-images></bra-input-images>
+
+    <div class="inputs">
+      <div class="input-box">
+        <bra-input
+          [label]="'Título da receita*'"
+          [inType]="'input'"
+          [placeholder]="'Pé de moleque'"
+          formControlName="titulo"
+        ></bra-input>
+      </div>
+
+      <div class="input-box">
+        <bra-input
+          [label]="'Resumo da receita*'"
+          [inType]="'textarea'"
+          [placeholder]="'Receita tradicional deliciosa e fácil de preparar.'"
+          formControlName="resumo"
+        ></bra-input>
+      </div>
+
+      <!-- Categorias -->
+      <div class="input-box">
+        <bra-dropdown
+          [label]="'Categorias*'"
+          [options]="categoriasDropdown"
+          [multiSelect]="true"
+          (optionSelected)="onCategoriaSelecionada($event)"
+        ></bra-dropdown>
+      </div>
+
+      <!-- Subcategorias dinâmicas -->
+      <div
+        class="input-box"
+        *ngFor="let cat of categoriasSelecionadas; let i = index"
+      >
+        <bra-dropdown
+          [label]="'Subcategorias de ' + cat.label"
+          [options]="subcategoriasPorCategoria[cat.value] || []"
+        ></bra-dropdown>
+      </div>
+    </div>
+
+    <!-- Ingredientes -->
+    <h2>Ingredientes*</h2>
+    <div class="inputs">
+      <div class="input-box">
+        <div
+          *ngFor="let grupo of receita.ingredientes; let i = index"
+          class="grupo-ingrediente"
+        >
+          <bra-input
+            [label]="'Título do grupo'"
+            [placeholder]="'Ex: Calda, Massa, Cobertura...'"
+            (valueChange)="receita.ingredientes[i].titulo = $event"
+          ></bra-input>
+
+          <bra-input-list
+            [label]="'Itens'"
+            [placeholder]="'Ex: 1 xícara de açúcar'"
+            (listChange)="onListChangeIngrediente(i, $event)"
+          ></bra-input-list>
+
+          <button type="button" (click)="removerGrupoIngrediente(i)">
+            Remover grupo
+          </button>
+
+          <button type="button" (click)="adicionarGrupoIngrediente()">
+            + Adicionar grupo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo de preparo -->
+    <h2>Modo de preparo*</h2>
+
+    <div *ngFor="let etapa of receita.etapas; let j = index" class="etapa">
+      <div class="inputs">
+        <div class="input-box">
+          <bra-input
+            [label]="'Título da etapa'"
+            [placeholder]="'Ex: Prepare a calda'"
+            (valueChange)="receita.etapas[j].titulo = $event"
+          ></bra-input>
+        </div>
+
+        <bra-input-list
+          [label]="'Descrições'"
+          [placeholder]="'Ex: Misture o açúcar com água e leve ao fogo...'"
+          [inType]="'textarea'"
+          (listChange)="onListChangeEtapa(j, $event)"
+        ></bra-input-list>
+      </div>
+      <button type="button" (click)="removerEtapa(j)">Remover etapa</button>
+
+      <button type="button" (click)="adicionarEtapa()">
+        + Adicionar etapa
+      </button>
+    </div>
+
+    <bra-custom-button
+      [type]="'add'"
+      [label]="'Enviar receita'"
+      (clicked)="salvar()"
+    >
+    </bra-custom-button>
+  </form>
+</div>

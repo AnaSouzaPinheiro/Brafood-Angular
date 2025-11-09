@@ -1,0 +1,61 @@
+<div class="input-list-wrapper">
+  <label class="input-list-label">{{ label }}</label>
+
+  <!-- Loop dos itens (ex: Calda, Massa, etc.) -->
+  <div
+    class="item-wrapper"
+    *ngFor="let item of items(); let i = index; trackBy: trackByIndex"
+  >
+    <!-- Input do título -->
+    <bra-input
+      inType="input"
+      placeholder="Título do item"
+      [label]="'Título'"
+      [formControl]="titleControls[i]"
+      (valueChange)="updateTitle(i, $event)"
+    ></bra-input>
+
+    <!-- Subinputs (ingredientes ou etapas) -->
+    <div
+      class="input-row"
+      *ngFor="let sub of item.subitems; let j = index; trackBy: trackByIndex"
+    >
+      <bra-input
+        [inType]="inType"
+        [placeholder]="placeholder"
+        [label]="''"
+        [formControl]="subitemControls[i][j]"
+        (valueChange)="updateSubitem(i, j, $event)"
+      ></bra-input>
+
+      <button
+        class="remover"
+        *ngIf="item.subitems.length > 1 && j > 0"
+        type="button"
+        (click)="removeSubitem(i, j)"
+      >
+        ×
+      </button>
+
+      <button
+        class="adicionar"
+        *ngIf="j === 0"
+        type="button"
+        (click)="addSubitem(i)"
+        [disabled]="item.subitems.length >= maxItems"
+      >
+        +
+      </button>
+    </div>
+
+    <!-- Remover o item inteiro -->
+    <button class="remover-item" (click)="removeItem(i)">
+      Remover item
+    </button>
+  </div>
+
+  <!-- Adicionar novo item -->
+  <button class="adicionar-item" type="button" (click)="addItem()">
+    + Adicionar item
+  </button>
+</div>

@@ -9,13 +9,13 @@
   <ng-container *ngIf="multiSelect; else singleDropdown">
     <div
       class="custom-dropdown"
-      *ngFor="let selectedValue of selected(); let i = index"
+      *ngFor="let selectedValue of selected(); let i = index; trackBy: trackByIndex"
       [class.dropdown--open]="isOpen()[i]"
     >
       <div class="dropdown-header" (click)="toggleDropdown(i)" tabindex="0">
-        <span class="dropdown-header__selected"
-          >{{ selected()[i] || 'Selecione' }}</span
-        >
+        <span class="dropdown-header__selected">
+          {{ selected()[i] || 'Selecione' }}
+        </span>
         <div class="dropdown-header__arrow">
           <svg
             width="24"
@@ -52,7 +52,6 @@
         ×
       </button>
 
-      <!-- Botão + aparece só no primeiro dropdown -->
       <button
         class="adicionar"
         *ngIf="i === 0"

@@ -9,7 +9,7 @@ export interface Option {
 @Component({
   selector: 'bra-dropdown',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, NgClass], // Adicione as diretivas que você usa no template aqui
+  imports: [CommonModule, NgFor, NgIf, NgClass], 
   templateUrl: './dropdown.html',
   styleUrl: './dropdown.scss',
 })
@@ -20,7 +20,8 @@ export class Dropdown {
   @Input() multiSelect: boolean = false;
   @Input() maxItems: number = 5;
 
-  @Output() optionSelected = new EventEmitter<string | string[]>();
+  @Output() optionSelected = new EventEmitter<Option[]>();
+  @Output() selectionChange = new EventEmitter<string | string[]>();
 
   isOpen = signal<boolean[]>([false]);
   selected = signal<string[]>(['']);
@@ -33,6 +34,8 @@ export class Dropdown {
 
   selectOption(index: number, option: Option) {
     const current = [...this.selected()];
+
+    // Salva o LABEL ao invés do VALUE para exibição
     current[index] = option.label;
     this.selected.set(current);
 
@@ -41,9 +44,11 @@ export class Dropdown {
     this.isOpen.set(openStates);
 
     if (this.multiSelect) {
-      this.optionSelected.emit(current);
+      this.optionSelected.emit(
+        current.map((label) => this.options.find((opt) => opt.label === label)!)
+      );
     } else {
-      this.optionSelected.emit(option.value);
+      this.optionSelected.emit([option]);
     }
   }
 
@@ -70,6 +75,10 @@ export class Dropdown {
     isOpenCopy.splice(index, 1);
     this.isOpen.set(isOpenCopy);
 
-    this.optionSelected.emit(this.selected());
+    this.selectionChange.emit(this.selected());
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 }
