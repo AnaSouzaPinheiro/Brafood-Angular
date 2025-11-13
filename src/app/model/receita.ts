@@ -1,7 +1,9 @@
 export interface Receita {
   id: number;
   titulo: string;
+  resumo: string;
   categoria: string;
+  subcategoria: string;
   dificuldade: number;
   tempo_preparo: number;
   tipo_tempo: string;

@@ -1,4 +1,6 @@
-.container {
+.all-container,
+.two-container,
+.one-container {
   width: 100%;
   height: 600px;
   display: flex;
@@ -27,6 +29,18 @@
       cursor: pointer;
       object-fit: cover;
     }
+  }
+}
+
+.one-container .oneHalf {
+  width: 100%;
+}
+
+.two-container .oneHalf, .two-container .twoHalf {
+  width: 50%;
+
+  .two {
+    height: 100%;
   }
 }
 
@@ -92,9 +106,11 @@ img {
 }
 
 @media (max-width: 992px) {
-  .container {
+  .all-container,
+  .two-container,
+  .one-container {
     height: 500px;
-    
+
     .twoHalf {
       height: 500px;
     }
@@ -102,7 +118,9 @@ img {
 }
 
 @media (max-width: 771px) {
-  .container {
+  .all-container,
+  .two-container,
+  .one-container {
     height: 400px;
 
     .twoHalf {

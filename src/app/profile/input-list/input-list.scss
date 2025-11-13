@@ -5,6 +5,19 @@
   flex-direction: column;
   gap: 1rem;
 
+  .item-wrapper {
+    border: 1px solid $primary-blue;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .input-list-label {
+      font-size: 20px;
+    }
+  }
+
   .input-row {
     display: flex;
     align-items: center;
@@ -13,13 +26,12 @@
 
   .adicionar,
   .remover {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    margin-left: 35px;
     cursor: pointer;
     font-weight: 200;
     font-size: 30px;
@@ -36,4 +48,15 @@
     color: #e53935;
     border: 1px solid #e53935;
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

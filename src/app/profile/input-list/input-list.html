@@ -1,36 +1,35 @@
 <div class="input-list-wrapper">
-  <label class="input-list-label">{{ label }}</label>
-
-  <!-- Loop dos itens (ex: Calda, Massa, etc.) -->
   <div
     class="item-wrapper"
-    *ngFor="let item of items(); let i = index; trackBy: trackByIndex"
+    *ngFor="let item of items; let i = index; trackBy: trackByIndex"
   >
+    <label class="input-list-label">{{ label }}</label>
+
     <!-- Input do título -->
     <bra-input
       inType="input"
-      placeholder="Título do item"
-      [label]="'Título'"
-      [formControl]="titleControls[i]"
+      [label]="''"
+      [placeholder]="titlePlaceholder"
       (valueChange)="updateTitle(i, $event)"
+      [autocomplete]="'item-title-'+i"
     ></bra-input>
 
-    <!-- Subinputs (ingredientes ou etapas) -->
+    <!-- Subinputs -->
     <div
       class="input-row"
       *ngFor="let sub of item.subitems; let j = index; trackBy: trackByIndex"
     >
       <bra-input
         [inType]="inType"
-        [placeholder]="placeholder"
         [label]="''"
-        [formControl]="subitemControls[i][j]"
+        [placeholder]="subitemPlaceholder"
         (valueChange)="updateSubitem(i, j, $event)"
+        [autocomplete]="'item-sub-'+i+'-'+j"
       ></bra-input>
 
       <button
         class="remover"
-        *ngIf="item.subitems.length > 1 && j > 0"
+        *ngIf="item.subitems.length > 1"
         type="button"
         (click)="removeSubitem(i, j)"
       >
@@ -39,7 +38,7 @@
 
       <button
         class="adicionar"
-        *ngIf="j === 0"
+        *ngIf="j === item.subitems.length - 1"
         type="button"
         (click)="addSubitem(i)"
         [disabled]="item.subitems.length >= maxItems"
@@ -48,14 +47,18 @@
       </button>
     </div>
 
-    <!-- Remover o item inteiro -->
-    <button class="remover-item" (click)="removeItem(i)">
-      Remover item
-    </button>
+    <bra-custom-button
+      [type]="'comment'"
+      [label]="removeLabel"
+      class="remover-item"
+      (clicked)="removeItem(i)"
+    ></bra-custom-button>
   </div>
 
-  <!-- Adicionar novo item -->
-  <button class="adicionar-item" type="button" (click)="addItem()">
-    + Adicionar item
-  </button>
+  <bra-custom-button
+    [type]="'comment'"
+    [label]="addLabel"
+    class="adicionar-item"
+    (clicked)="addItem()"
+  ></bra-custom-button>
 </div>

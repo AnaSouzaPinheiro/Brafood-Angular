@@ -5,12 +5,7 @@ import { UserIcon } from '../../core/user-icon/user-icon';
 
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  Receita,
-  Ingrediente,
-  Etapa,
-  Descricao,
-} from '../../model/receita';
+import { Receita, Ingrediente, Etapa, Descricao } from '../../model/receita';
 import { MyRecipesService } from '../../services/my-recipes';
 import { CommonModule } from '@angular/common';
 
@@ -34,7 +29,9 @@ export class Recipe {
       this.recipe = {
         id: Number(r.id),
         titulo: r.titulo,
+        resumo: '',
         categoria: r.categoria,
+        subcategoria: '',
         dificuldade: Number(r.dificuldade),
         tempo_preparo: r.tempo_preparo,
         tipo_tempo: r.tipo_tempo,
@@ -44,7 +41,9 @@ export class Recipe {
         imagem2: r.imagem2,
         imagem3: r.imagem3,
         qtd_fav: Number(r.qtd_fav),
-        data_criacao: r.data_criacao,
+        data_criacao: r.data_criacao
+          ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
+          : '',
         autor: r.autor,
         ingredientes: (r.ingredientes || []).map((i: any) => ({
           titulo: i.titulo,
