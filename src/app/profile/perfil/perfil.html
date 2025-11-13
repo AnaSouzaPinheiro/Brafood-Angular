@@ -1,12 +1,12 @@
 <div class="menuPerfil">
   <div class="main">
     <div class="account">
-      <bra-user-icon [photoUrl]="person.photoUrl"></bra-user-icon>
-      <h1 class="name">{{ person.name }}</h1>
+      <bra-user-icon [user]="user"></bra-user-icon>
+      <h1 class="name">{{ user?.nome }} {{ user?.sobrenome }}</h1>
     </div>
     <div class="resume">
       <h2 class="title">Resume</h2>
-      <p class="text">{{ person.text }}</p>
+      <p class="text">{{ user?.bio }}</p>
     </div>
   </div>
   <div class="options">

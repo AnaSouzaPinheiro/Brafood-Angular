@@ -1,6 +1,6 @@
 import { Component, EventEmitter, input, Output } from '@angular/core';
 import { UserIcon } from "../../core/user-icon/user-icon";
-import { Input } from "../../shared/input/input";
+import { BraInput } from "../../shared/input/input";
 import { CustomButton } from "../../shared/custom-button/custom-button";
 import { CommonModule } from '@angular/common';
 
@@ -10,7 +10,7 @@ export type isReply = 'normal' | 'reply' | 'replying';
 @Component({
   selector: 'bra-comment',
   standalone: true,
-  imports: [UserIcon, Input, CustomButton, CommonModule],
+  imports: [UserIcon, BraInput, CustomButton, CommonModule],
   templateUrl: './comment.html',
   styleUrl: './comment.scss'
 })

@@ -1,7 +1,7 @@
 <button (click)="togglePopup($event)" class="icon-modal">
   <img
     class="icon"
-    src="assets/imagens/icones/pessoas.png"
+    [src]="mappedUser.foto_perfil || defaultIcon"
     alt="Ícone do perfil"
   />
 </button>

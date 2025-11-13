@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Recipes } from '../model/myrecipes';
 import { Slide } from '../model/slide';
 import { Receita } from '../model/receita';
+import { User } from '../model/user';
 
 @Injectable({
   providedIn: 'root',
@@ -38,15 +39,32 @@ export class MyRecipesService {
 
   // Lista receitas aleatórias pro slide da home
   listRandom(limit: number): Observable<Slide[]> {
-    return this.httpClient.get<Slide[]>(
-      this.url(`slide_home.php?limit=${limit}`)
-    );
+    return this.httpClient.get<Slide[]>(this.url(`slide_home.php?limit=${limit}`));
   }
 
   // Busca receita específica pelo ID
   buscarPorId(id: number): Observable<Receita[]> {
-    return this.httpClient.get<Receita[]>(
-      this.url(`receitas/buscar.php?id=${id}`)
+    return this.httpClient.get<Receita[]>(this.url(`receitas/buscar.php?id=${id}`));
+  }
+
+  // Envia uma nova receita (dados + imagens)
+  addReceita(formValue: any, imagens: File[]): Observable<any> {
+    const formData = new FormData();
+    formData.append('dados', JSON.stringify(formValue));
+
+    // Adiciona até 3 imagens, se existirem
+    imagens.forEach((img, i) => {
+      if (img) formData.append(`imagem${i + 1}`, img);
+    });
+
+    return this.httpClient.post<any>(
+      'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/add.php',
+      formData
     );
+  }
+
+  // Busca receita específica pelo ID
+  buscarUserPorId(id: number): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.url(`user.php?id=${id}`));
   }
 }

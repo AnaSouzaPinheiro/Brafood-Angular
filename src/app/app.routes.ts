@@ -28,7 +28,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'minhas-receitas',
+    path: 'minhas-receitas/:id',
     loadComponent: () =>
       import('./profile/minhas-receitas/minhas-receitas').then(
         (m) => m.MinhasReceitas
