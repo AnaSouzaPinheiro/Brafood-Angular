@@ -5,8 +5,8 @@ export interface Receita {
   categoria: string;
   subcategoria: string;
   dificuldade: number;
-  tempo_preparo: number;
-  tipo_tempo: string;
+  tempo_hora: number;
+  tempo_min: number;
   porcoes: number;
   tipo_porcao: string;
   imagem1: string;

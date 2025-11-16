@@ -1,0 +1,43 @@
+<div class="content">
+  <div class="result">
+    <div class="infos">
+      <h1>
+        Resultados da pesquisa: <span class="name">{{ nomePesquisado }}</span>
+      </h1>
+      <span>
+        Encontrado:
+        <span class="qtd">{{ pagesArray.length }} </span> receitas</span
+      >
+    </div>
+
+    <div class="filter-container">
+      <bra-filter-dropdown
+        [optionsDropwdown]="optionsDropwdown"
+      ></bra-filter-dropdown>
+      <bra-custom-button
+        [label]="'Limpar filtro'"
+        [type]="'filter'"
+      ></bra-custom-button>
+    </div>
+  </div>
+  <div class="cards">
+    @for (recipe of myRecipesPage; track $index) {
+    <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
+    }
+  </div>
+  <div class="pages">
+    <span (click)="prevPage()" class="setas"><</span>
+
+    @for (page of pagesArray; track page) {
+    <span
+      (click)="goToPage(page)"
+      class="numbers"
+      [class.active]="page === currentPage"
+    >
+      {{ page }}
+    </span>
+    }
+
+    <span (click)="nextPage()" class="setas">></span>
+  </div>
+</div>

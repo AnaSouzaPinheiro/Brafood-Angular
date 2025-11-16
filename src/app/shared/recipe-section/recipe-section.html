@@ -12,7 +12,7 @@
 
     <div class="main">
       <span class="seta" *ngIf="section.recipes.length > 3" (click)="prevPage()"><</span>
-      <div class="content">
+      <div class="content" #contentRef>
         @for (recipe of recipesPage; track recipe.id ?? $index) {
         <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
         }

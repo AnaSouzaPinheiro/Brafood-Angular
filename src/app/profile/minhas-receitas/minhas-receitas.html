@@ -18,7 +18,12 @@
   <div class="content">
     <div class="cards">
       @for (recipe of myRecipesPage; track $index) {
-      <bra-recipe-card [myRecipe]="true" [recipe]="recipe"></bra-recipe-card>
+      <bra-recipe-card 
+      [myRecipe]="true" 
+      [recipe]="recipe"
+      (editar)="editarReceita($event)"
+      (excluir)="excluirReceita($event)"
+      ></bra-recipe-card>
       }
     </div>
     <div class="pages">

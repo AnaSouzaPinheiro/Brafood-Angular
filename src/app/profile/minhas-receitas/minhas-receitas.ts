@@ -22,10 +22,10 @@ export class MinhasReceitas {
 
   //myRecipesServices: MyRecipes;
 
-  constructor(private myRecipesServices: MyRecipesService) {
-    // this.myRecipesServices = new MyRecipes();
-    // this.myRecipes$ = this.myRecipesServices.list();
-
+  constructor(
+    private myRecipesServices: MyRecipesService,
+    private router: Router
+  ) {
     this.myRecipesServices.list().subscribe((data) => {
       this.Recipes = data;
     });
@@ -69,5 +69,15 @@ export class MinhasReceitas {
   goToPage(page: number) {
     this.indice = (page - 1) * 6;
     this.currentPage = page;
+  }
+
+  editarReceita(id: number) {
+    this.router.navigate(['/editar-receita', id]);
+  }
+
+  excluirReceita(id: number) {
+    this.myRecipesServices.excluir(id).subscribe(() => {
+      this.Recipes = this.Recipes.filter((r) => r.id !== id);
+    });
   }
 }

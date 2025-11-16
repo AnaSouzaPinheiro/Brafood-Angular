@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecipeResume } from '../recipe-resume/recipe-resume';
 import { RouterModule } from '@angular/router';
 
@@ -20,10 +20,23 @@ export class RecipeCard {
       img: this.recipe.imagem1,
       url: `/receita/${this.recipe.id}`,
       resume: {
-          title: this.recipe.titulo,
-          qtdFav: Number(this.recipe.qtd_fav),
-          text: this.recipe.resumo,
+        title: this.recipe.titulo,
+        qtdFav: Number(this.recipe.qtd_fav),
+        text: this.recipe.resumo,
       },
     };
+  }
+
+  @Output() editar = new EventEmitter<number>();
+  @Output() excluir = new EventEmitter<number>();
+
+  onEditar(event: Event) {
+    event.stopPropagation();
+    this.editar.emit(this.recipe.id);
+  }
+
+  onExcluir(event: Event) {
+    event.stopPropagation();
+    this.excluir.emit(this.recipe.id);
   }
 }

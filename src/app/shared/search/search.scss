@@ -1,0 +1,64 @@
+@use "variables" as *;
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .cards {
+    width: 100%;
+    display: grid;
+    gap: 0 50px;
+    grid-template-columns: auto auto auto;
+    justify-items: center;
+    justify-content: center;
+  }
+
+  .pages {
+    display: flex;
+    gap: 15px;
+    font-size: 18px;
+    margin: 50px 0;
+
+    .setas {
+      cursor: pointer;
+    }
+
+    .numbers {
+      display: flex;
+      gap: 15px;
+      cursor: pointer;
+    }
+
+    span.active {
+      color: $primary-blue;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+}
+
+.result {
+  width: 80%;
+  padding: 20px;
+
+  .infos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .name {
+      color: $primary-blue;
+    }
+  }
+
+  .qtd {
+    color: $primary-blue;
+  }
+
+  .filter-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+}

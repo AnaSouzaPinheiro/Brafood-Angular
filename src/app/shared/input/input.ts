@@ -37,9 +37,9 @@ export class BraInput implements OnInit, ControlValueAccessor {
   @Input() inType: inType = 'input';
   @Input() autocomplete: string = 'off';
 
-  @Output() valueChange = new EventEmitter<string>();
+  @Input() value: string | null = null;
 
-  value = '';
+  @Output() valueChange = new EventEmitter<string>();
 
   private _onChange?: (value: string) => void;
   private _onTouched?: () => void;

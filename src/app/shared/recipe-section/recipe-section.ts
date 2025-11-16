@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, ElementRef, ViewChild } from '@angular/core';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
 import { Section } from '../../model/section-home';
@@ -14,6 +14,8 @@ export type modo = 'carrossel' | 'grid';
   styleUrls: ['./recipe-section.scss'],
 })
 export class RecipeSection {
+  @ViewChild('contentRef') contentRef!: ElementRef<HTMLDivElement>;
+
   indice = 0;
   back1 = '';
   back2 = '';
@@ -78,19 +80,23 @@ export class RecipeSection {
 
   async animateSlide() {
     this.animando = true;
-    const el = document.querySelector('.content') as HTMLElement;
+
+    const el = this.contentRef?.nativeElement;
     if (!el) return;
 
     // Etapa 1: anima a saída
     el.classList.add(
       this.direcao === 'right' ? 'slide-out-left' : 'slide-out-right'
     );
+
     await new Promise((r) => setTimeout(r, 400)); // tempo da animação
 
     // Troca o conteúdo após a saída
     let newIndex = this.indice + (this.direcao === 'right' ? 3 : -3);
+
     if (newIndex < 0) newIndex = this.section.recipes.length - 3;
     if (newIndex >= this.section.recipes.length) newIndex = 0;
+
     this.indice = newIndex;
     this.atualizaCor(Math.floor(this.indice / 3) + 1);
 
@@ -99,6 +105,7 @@ export class RecipeSection {
     el.classList.add(
       this.direcao === 'right' ? 'slide-in-right' : 'slide-in-left'
     );
+    
     await new Promise((r) => setTimeout(r, 400));
 
     // Limpa e libera nova animação

@@ -17,7 +17,16 @@
       </div>
       <div class="time">
         <img src="assets/imagens/icones/relogio (4).png" alt="" />
-        <p>{{ mappedInfoRecipe.tempo_preparo }} {{ mappedInfoRecipe.tipo_tempo }}</p>
+        @if (mappedInfoRecipe.tempo_hora > 0 && mappedInfoRecipe.tempo_min > 0)
+        {
+        <p>
+          {{ mappedInfoRecipe.tempo_hora }}h {{ mappedInfoRecipe.tempo_min }}min
+        </p>
+        } @else if (mappedInfoRecipe.tempo_hora > 0) {
+        <p>{{ mappedInfoRecipe.tempo_hora }}h</p>
+        } @else if (mappedInfoRecipe.tempo_min > 0) {
+        <p>{{ mappedInfoRecipe.tempo_min }}min</p>
+        }
       </div>
       <div class="unid">
         <img src="assets/imagens/icones/bandeja-de-comida (2).png" />
