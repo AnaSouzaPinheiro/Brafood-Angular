@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,6 +12,10 @@ export class InputImages {
   previewSrc1: string | null = null;
   previewSrc2: string | null = null;
   previewSrc3: string | null = null;
+
+  @Input() initialImage1!: string | null;
+  @Input() initialImage2!: string | null;
+  @Input() initialImage3!: string | null;
 
   @Output() imagesChange = new EventEmitter<File[]>();
 
@@ -90,5 +94,23 @@ export class InputImages {
 
   hasPreview(src: string | null | undefined): boolean {
     return !!src && src.trim() !== '';
+  }
+
+  ngOnInit() {
+    if (this.initialImage1) this.previewSrc1 = this.initialImage1;
+    if (this.initialImage2) this.previewSrc2 = this.initialImage2;
+    if (this.initialImage3) this.previewSrc3 = this.initialImage3;
+  }
+
+  ngOnChanges() {
+    if (this.initialImage1 !== undefined) {
+      this.previewSrc1 = this.initialImage1;
+    }
+    if (this.initialImage2 !== undefined) {
+      this.previewSrc2 = this.initialImage2;
+    }
+    if (this.initialImage3 !== undefined) {
+      this.previewSrc3 = this.initialImage3;
+    }
   }
 }

@@ -10,6 +10,7 @@
       inType="input"
       [label]="''"
       [placeholder]="titlePlaceholder"
+      [value]="titleControls[i].value"
       (valueChange)="updateTitle(i, $event)"
       [autocomplete]="'item-title-'+i"
     ></bra-input>
@@ -23,6 +24,7 @@
         [inType]="inType"
         [label]="''"
         [placeholder]="subitemPlaceholder"
+        [value]="subitemControls[i][j].value" 
         (valueChange)="updateSubitem(i, j, $event)"
         [autocomplete]="'item-sub-'+i+'-'+j"
       ></bra-input>

@@ -21,7 +21,7 @@ export const routes: Routes = [
     loadComponent: () => import('./recipe/recipe/recipe').then((m) => m.Recipe),
   },
   {
-    path: 'editar-perfil',
+    path: 'editar-perfil/:id',
     loadComponent: () =>
       import('./profile/editar-perfil/editar-perfil').then(
         (m) => m.EditarPerfil
@@ -40,9 +40,19 @@ export const routes: Routes = [
       import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
   },
   {
+    path: 'editar-receita/:id',
+    loadComponent: () =>
+      import('./recipe/update-recipe/update-recipe').then((m) => m.UpdateRecipe),
+  },
+  {
     path: 'categoria/:id/:nome',
     loadComponent: () =>
       import('./category/categoria/categoria').then((m) => m.Categoria),
+  },
+  {
+    path: 'pesquisa/:nome',
+    loadComponent: () =>
+      import('./shared/search/search').then((m) => m.Search),
   },
   { path: '**', redirectTo: 'home' },
 ];

@@ -38,67 +38,9 @@
           [label]="'Categorias*'"
           [options]="categoriasDropdown"
           [multiSelect]="true"
+          [selected]="categoriasSelecionadas"
           (optionSelected)="onCategoriaSelecionada($event)"
         ></bra-dropdown>
-      </div>
-
-      <!-- Dificuldade -->
-      <div class="some">
-        <div class="input-box">
-          <bra-input
-            [label]="'Dificuldade*'"
-            [inType]="'input'"
-            [placeholder]="'Digite de 1 a 3'"
-            formControlName="dificuldade"
-            name="dificuldadeReceita"
-            autocomplete="recipe-difficulty"
-          ></bra-input>
-        </div>
-
-        <!-- Tempo de preparo -->
-        <div class="time">
-          <label for="">Tempo de preparo*</label>
-          <div class="input-box">
-            <bra-input
-              [label]="''"
-              [inType]="'input'"
-              [placeholder]="'hora(s)'"
-              formControlName="tempo_hora"
-              name="hrTempoReceita"
-              autocomplete="recipe-hour"
-            ></bra-input>
-            :
-            <bra-input
-              [label]="''"
-              [inType]="'input'"
-              [placeholder]="'minuto(s)'"
-              formControlName="tempo_min"
-              name="minTempoReceita"
-              autocomplete="recipe-minute"
-            ></bra-input>
-          </div>
-        </div>
-
-        <!-- Porções -->
-        <div class="porcoes">
-          <label for="">Porções*</label>
-          <div class="input-box">
-            <bra-input
-              [label]="''"
-              [inType]="'input'"
-              [placeholder]="''"
-              formControlName="porcoes"
-              name="qtdPorcoesReceita"
-              autocomplete="recipe-portion"
-            ></bra-input>
-            <bra-dropdown
-              [label]="''"
-              [multiSelect]="false"
-              [options]="porcoesDropdown"
-              (optionSelected)="onPorcaoSelecionada($event)"
-            ></bra-dropdown>
-          </div>
-        </div>
       </div>
 
       <!-- Subcategorias dinâmicas -->
@@ -110,8 +52,68 @@
           [label]="'Subcategorias de ' + cat.label"
           [options]="subcategoriasPorCategoria[cat.value] || []"
           [multiSelect]="false"
+          [selected]="subcategoriasSelecionadas[cat.value] || []"
           (optionSelected)="onSubcategoriaSelecionada(cat.value, $event)"
         ></bra-dropdown>
+      </div>
+    </div>
+
+    <!-- Dificuldade -->
+    <div class="some">
+      <div class="input-box">
+        <bra-input
+          [label]="'Dificuldade*'"
+          [inType]="'input'"
+          [placeholder]="'Digite de 1 a 3'"
+          formControlName="dificuldade"
+          name="dificuldadeReceita"
+          autocomplete="recipe-difficulty"
+        ></bra-input>
+      </div>
+
+      <!-- Tempo de preparo -->
+      <div class="time">
+        <label for="">Tempo de preparo*</label>
+        <div class="input-box">
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="'hora(s)'"
+            formControlName="tempo_hora"
+            name="hrTempoReceita"
+            autocomplete="recipe-hour"
+          ></bra-input>
+          :
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="'minuto(s)'"
+            formControlName="tempo_min"
+            name="minTempoReceita"
+            autocomplete="recipe-minute"
+          ></bra-input>
+        </div>
+      </div>
+
+      <!-- Porções -->
+      <div class="porcoes">
+        <label for="">Porções*</label>
+        <div class="input-box">
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="''"
+            formControlName="porcoes"
+            name="qtdPorcoesReceita"
+            autocomplete="recipe-portion"
+          ></bra-input>
+          <bra-dropdown
+            [label]="''"
+            [multiSelect]="false"
+            [options]="porcoesDropdown"
+            (optionSelected)="onPorcaoSelecionada($event)"
+          ></bra-dropdown>
+        </div>
       </div>
     </div>
 

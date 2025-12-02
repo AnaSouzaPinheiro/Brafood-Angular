@@ -1,0 +1,77 @@
+@use "variables" as *;
+
+.container {
+  /*display: flex;
+  flex-direction: column;*/
+
+  .adding {
+    display: flex;
+    gap: 60px;
+    flex-direction: column;
+
+    .title {
+      font-size: 48px;
+    }
+
+    h2 {
+      font-size: 40px;
+    }
+
+    .title,
+    h2 {
+      font-weight: 600;
+      color: #002c99;
+    }
+
+    .title,
+    h2,
+    h3,
+    .inputs {
+      align-items: center;
+      margin: 0 145px;
+    }
+
+    .input-box {
+      margin-bottom: 60px;
+    }
+
+    .some {
+      display: flex;
+      justify-content: space-evenly;
+    }
+    .time label,
+    .porcoes label {
+      font-size: 24px;
+    }
+
+    .time .input-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      max-width: 245px;
+      margin-top: 10px;
+    }
+    .porcoes .input-box {
+      display: flex;
+      gap: 10px;
+      max-width: 250px;
+      margin-top: 10px;
+    }
+
+    bra-custom-button {
+      display: flex;
+      width: 100%;
+      margin-bottom: 50px;
+      justify-content: center;
+    }
+  }
+}
+
+.input-box ::ng-deep bra-input {
+  width: 100%;
+}
+
+.input-box ::ng-deep bra-dropdown .custom-dropdown {
+  margin-top: 0;
+}
+

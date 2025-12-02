@@ -1,0 +1,175 @@
+<div class="container">
+  <bra-perfil></bra-perfil>
+
+  <form [formGroup]="form" class="adding">
+    <h1 class="title">Adicionando minha receita</h1>
+
+    <h3>Anexe até 3 imagens da receita:</h3>
+    <bra-input-images
+      [initialImage1]="imagemPreview1"
+      [initialImage2]="imagemPreview2"
+      [initialImage3]="imagemPreview3"
+      (imagesChange)="onImagensSelecionadas($event)"
+    ></bra-input-images>
+
+    <div class="inputs">
+      <div class="input-box">
+        <bra-input
+          [label]="'Título da receita*'"
+          [inType]="'input'"
+          [placeholder]="'Pé de moleque'"
+          formControlName="titulo"
+          name="tituloReceita"
+          autocomplete="recipe-title"
+        ></bra-input>
+      </div>
+
+      <div class="input-box">
+        <bra-input
+          [label]="'Resumo da receita*'"
+          [inType]="'textarea'"
+          [placeholder]="'Receita tradicional deliciosa e fácil de preparar.'"
+          formControlName="resumo"
+          name="resumoReceita"
+          autocomplete="recipe-description"
+        ></bra-input>
+      </div>
+
+      <!-- Categorias -->
+      <div class="input-box">
+        <bra-dropdown
+          [label]="'Categorias*'"
+          [options]="categoriasDropdown"
+          [multiSelect]="true"
+          [selected]="categoriasSelecionadas"
+          (optionSelected)="onCategoriaSelecionada($event)"
+        ></bra-dropdown>
+      </div>
+
+      <!-- Subcategorias dinâmicas -->
+      <div
+        class="input-box"
+        *ngFor="let cat of categoriasSelecionadas; let i = index"
+      >
+        <bra-dropdown
+          [label]="'Subcategorias de ' + cat.label"
+          [options]="subcategoriasPorCategoria[cat.value] || []"
+          [multiSelect]="false"
+          [selected]="subcategoriasSelecionadas[cat.value] || []"
+          (optionSelected)="onSubcategoriaSelecionada(cat.value, $event)"
+        ></bra-dropdown>
+      </div>
+    </div>
+
+    <!-- Dificuldade -->
+    <div class="some">
+      <div class="input-box">
+        <bra-input
+          [label]="'Dificuldade*'"
+          [inType]="'input'"
+          [placeholder]="'Digite de 1 a 3'"
+          formControlName="dificuldade"
+          name="dificuldadeReceita"
+          autocomplete="recipe-difficulty"
+        ></bra-input>
+      </div>
+
+      <!-- Tempo de preparo -->
+      <div class="time">
+        <label for="">Tempo de preparo*</label>
+        <div class="input-box">
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="'hora(s)'"
+            formControlName="tempo_hora"
+            name="hrTempoReceita"
+            autocomplete="recipe-hour"
+          ></bra-input>
+          :
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="'minuto(s)'"
+            formControlName="tempo_min"
+            name="minTempoReceita"
+            autocomplete="recipe-minute"
+          ></bra-input>
+        </div>
+      </div>
+
+      <!-- Porções -->
+      <div class="porcoes">
+        <label for="">Porções*</label>
+        <div class="input-box">
+          <bra-input
+            [label]="''"
+            [inType]="'input'"
+            [placeholder]="''"
+            formControlName="porcoes"
+            name="qtdPorcoesReceita"
+            autocomplete="recipe-portion"
+          ></bra-input>
+          <bra-dropdown
+            [label]="''"
+            [multiSelect]="false"
+            [options]="porcoesDropdown"
+            [selected]="[ { label: receita.tipo_porcao, value: receita.tipo_porcao } ]"
+            (optionSelected)="onPorcaoSelecionada($event)"
+          ></bra-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingredientes -->
+    <h2>Ingredientes*</h2>
+    <div class="inputs">
+      <div class="input-box">
+        <div class="grupo-ingrediente">
+          <bra-input-list
+            [label]="'Título do item'"
+            [titlePlaceholder]="'Ex: Calda'"
+            [subitemPlaceholder]="'Ex: 1 xícara de açúcar'"
+            [items]="ingredientesComoItems"
+            (listChange)="atualizarIngredientes($event)"
+            [removeLabel]="'Remover item'"
+            [addLabel]="'Adicionar mais um item'"
+          ></bra-input-list>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo de preparo -->
+    <h2>Modo de preparo*</h2>
+
+    <div class="inputs">
+      <div class="input-box">
+        <div class="etapa">
+          <bra-input-list
+            [label]="'Etapa'"
+            [titlePlaceholder]="'Ex: Preparando a calda'"
+            [subitemPlaceholder]="'Ex: Misture o açúcar com água e leve ao fogo...'"
+            [inType]="'textarea'"
+            [items]="etapasComoItems"
+            (listChange)="atualizarEtapas($event)"
+            [removeLabel]="'Remover etapa'"
+            [addLabel]="'Adicionar mais uma etapa'"
+          ></bra-input-list>
+        </div>
+      </div>
+    </div>
+
+    <bra-custom-button
+      [label]="'Cancelar'"
+      [type]="'other'"
+      [route]="'/minhas-receitas'"
+    ></bra-custom-button>
+
+    <bra-custom-button
+      [type]="'add'"
+      [label]="'Editar receita'"
+      (clicked)="salvar()"
+    >
+    </bra-custom-button>
+  </form>
+</div>
