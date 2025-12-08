@@ -1,30 +1,28 @@
 <div class="menuPerfil">
   <div class="main">
     <div class="account">
-      <bra-user-icon [user]="user"></bra-user-icon>
-      <h1 class="name">{{ user?.nome }} {{ user?.sobrenome }}</h1>
+      <bra-user-icon [userSignal]="user"></bra-user-icon>
+      <h1 class="name">{{ user()?.nome }} {{ user()?.sobrenome }} </h1>
     </div>
     <div class="resume">
       <h2 class="title">Resume</h2>
-      <p class="text">{{ user?.bio }}</p>
+      <p class="text">{{ user()?.bio }}</p>
     </div>
   </div>
   <div class="options">
-    <a [routerLink]="'/editar-perfil'" class="url">
-      <bra-custom-button
-        [label]="'Editar perfil'"
-        [type]="'other'"
-        [route]="'/editar-perfil'"
-      ></bra-custom-button>
-    </a>
+    <bra-custom-button
+      [label]="'Editar perfil'"
+      [type]="'other'"
+      [routerLink]="'/editar-perfil/' + userId"
+      [active]="isEditarPerfil"
+    ></bra-custom-button>
 
-    <a [routerLink]="'/minhas-receitas'" class="url">
-      <bra-custom-button
-        [label]="'Minhas receitas'"
-        [type]="'other'"
-        [route]="'/minhas-receitas'"
-      ></bra-custom-button>
-    </a>
+    <bra-custom-button
+      [label]="'Minhas receitas'"
+      [type]="'other'"
+      [routerLink]="'/minhas-receitas/' + userId"
+      [active]="isMinhasReceitas"
+    ></bra-custom-button>
   </div>
   <hr />
 </div>

@@ -1,39 +1,43 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Signal } from '@angular/core';
+import { Auth } from '../../services/auth';
+import { User } from '../../model/user';
 
 @Component({
   selector: 'bra-user-icon',
   standalone: true,
-  template: `
-    <img
-      class="icon icon-modal"
-      [src]="mappedUser.foto_perfil || defaultIcon"
-      alt="Foto do usuário"
-      (click)="iconClicked($event)"
-    />
-  `,
+  templateUrl: './user-icon.html',
   styleUrl: './user-icon.scss',
 })
 export class UserIcon {
-  @Input() user: any = {}; // evita erro se não for passado
   @Output() clickIcon = new EventEmitter<Event>();
+  @Input() user?: User; // opcional
+  @Input() userSignal?: Signal<User | undefined>; // opcional
 
   defaultIcon = 'assets/imagens/icones/pessoas.png';
 
-  get mappedUser() {
-    // usa optional chaining (?.) e fallback pra evitar erros
-    return {
-      id: this.user?.id || 0,
-      nome: this.user?.nome || '',
-      sobrenome: this.user?.sobrenome || '',
-      apelido: this.user?.apelido || '',
-      email: this.user?.email || '',
-      genero: this.user?.genero || '',
-      bio: this.user?.bio || '',
-      foto_perfil: this.user?.foto_perfil || '',
-    };
+  constructor(private auth: Auth) {
+    // Se quiser inicializar com o usuário do Auth, você pode:
+    this.auth.loadFromStorage();
+    if (!this.userSignal) {
+      this.userSignal = this.auth.user(); // pega o usuário logado
+    }
   }
 
-  iconClicked(event: Event): void {
+  iconClicked(event: Event) {
     this.clickIcon.emit(event);
+  }
+
+  get mappedUser() {
+    const u: User | undefined = this.userSignal?.() || this.user;
+    return {
+      id: u?.id || 0,
+      nome: u?.nome || '',
+      sobrenome: u?.sobrenome || '',
+      apelido: u?.apelido || '',
+      email: u?.email || '',
+      genero: u?.genero || '',
+      bio: u?.bio || '',
+      foto_perfil: u?.foto_perfil || this.defaultIcon,
+    };
   }
 }

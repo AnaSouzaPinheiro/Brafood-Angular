@@ -1,9 +1,8 @@
-<button (click)="togglePopup($event)" class="icon-modal">
+<button (click)="iconClicked($event)" class="icon-modal">
   <img
     class="icon"
-    [src]="mappedUser.foto_perfil || defaultIcon"
-    alt="Ícone do perfil"
+    [src]="mappedUser.foto_perfil"
+    [alt]="mappedUser.nome || 'Ícone do perfil'"
+    (click)="iconClicked($event)"
   />
 </button>
-
-<bra-modal-log [loggedOut]="true" class="profile-container"></bra-modal-log>

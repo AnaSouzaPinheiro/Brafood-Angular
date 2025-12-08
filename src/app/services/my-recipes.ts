@@ -26,6 +26,11 @@ export class MyRecipesService {
     return this.httpClient.get<Recipes[]>(this.url('receitas.php'));
   }
 
+  // listar por user
+  listPorUser(id: number): Observable<Recipes[]> {
+    return this.httpClient.get<Recipes[]>(this.url(`minhas_receitas.php?id=${id}`));
+  }
+
   // Lista todas as receitas
   listForSerach(pesquisa: string): Observable<Recipes[]> {
     return this.httpClient.get<Recipes[]>(

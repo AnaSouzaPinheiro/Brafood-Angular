@@ -198,6 +198,9 @@ export class AddRecipe {
 
   // ========== Salvar ==========
   salvar() {
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = userData?.id;
+
     const categoriaSelecionada = this.categoriasSelecionadas[0]; // pega a primeira categoria selecionada
     const subcategoriaSelecionada =
       this.subcategoriasSelecionadas[categoriaSelecionada?.value]?.[0]; // primeira subcategoria
@@ -219,6 +222,7 @@ export class AddRecipe {
       ingredientes: this.receita.ingredientes,
       etapas: this.receita.etapas,
       data_criacao: new Date().toISOString(),
+      autor: userId,
     };
 
     const formData = new FormData();
@@ -230,20 +234,6 @@ export class AddRecipe {
     this.imagensSelecionadas.forEach((file, i) => {
       formData.append('imagem' + (i + 1), file);
     });
-
-    /*this.myRecipesService
-      .addReceita(receitaPronta, this.imagensSelecionadas)
-      .subscribe({
-        next: (res) => {
-          alert('Receita cadastrada!');
-          this.form.reset();
-          this.imagensSelecionadas = [];
-        },
-        error: (err) => {
-          alert('Erro ao cadastrar receita.');
-          console.error(err);
-        },
-      });*/
 
     console.log('🍳 Enviando receita:', receitaPronta);
     this.myRecipesService

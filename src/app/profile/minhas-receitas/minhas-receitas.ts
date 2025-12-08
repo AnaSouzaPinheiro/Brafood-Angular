@@ -6,6 +6,8 @@ import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { MyRecipesService } from '../../services/my-recipes';
 import { Recipes } from '../../model/myrecipes';
+import { Auth } from '../../services/auth';
+import { User } from '../../model/user';
 
 @Component({
   selector: 'bra-minhas-receitas',
@@ -20,15 +22,29 @@ export class MinhasReceitas {
 
   Recipes: Recipes[] = [];
 
-  //myRecipesServices: MyRecipes;
+  logado = false;
+  userId: string | null = null;
+  user!: User;
 
   constructor(
     private myRecipesServices: MyRecipesService,
+    private auth: Auth,
     private router: Router
   ) {
-    this.myRecipesServices.list().subscribe((data) => {
-      this.Recipes = data;
-    });
+    this.logado = this.auth.isLoggedIn();
+
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.userId = JSON.parse(userData).id;
+    }
+
+    if (this.userId) {
+      this.myRecipesServices
+        .listPorUser(Number(this.userId))
+        .subscribe((data) => {
+          this.Recipes = data;
+        });
+    }
   }
 
   ngOnInit(): void {

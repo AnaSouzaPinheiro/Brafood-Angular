@@ -1,43 +1,59 @@
-import { Component } from '@angular/core';
-import { UserIcon } from "../../core/user-icon/user-icon";
+import { Component, signal } from '@angular/core';
+import { UserIcon } from '../../core/user-icon/user-icon';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MyRecipesService } from '../../services/my-recipes';
 import { User } from '../../model/user';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'bra-perfil',
   imports: [UserIcon, CustomButton, RouterModule],
   templateUrl: './perfil.html',
-  styleUrl: './perfil.scss'
+  styleUrl: './perfil.scss',
 })
 export class Perfil {
-  user!: User;
+  logado = false;
+  userId: string | null = null;
+  user = signal<User | undefined>(undefined);
 
   constructor(
-    private route: ActivatedRoute,
-    private myRecipesServices: MyRecipesService
+    private myRecipesServices: MyRecipesService,
+    private auth: Auth,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.myRecipesServices.buscarUserPorId(id).subscribe((s: any) => {
-      this.user = {
-        id: Number(s.id),
-        nome: s.nome,
-        sobrenome: s.sobrenome,
-        apelido: s.apelido,
-        email: s.email,
-        genero: s.genero,
-        bio: s.bio,
-        foto_perfil: s.foto_perfil,
-      };
-    });
+    this.logado = this.auth.isLoggedIn();
+
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.userId = JSON.parse(userData).id;
+    }
+
+    if (this.userId) {
+      this.myRecipesServices
+        .buscarUserPorId(Number(this.userId))
+        .subscribe((s: any) => {
+          this.user.set({
+            id: Number(s.id),
+            nome: s.nome,
+            sobrenome: s.sobrenome,
+            apelido: s.apelido,
+            email: s.email,
+            genero: s.genero,
+            bio: s.bio,
+            foto_perfil: s.foto_perfil,
+          });
+        });
+    }
   }
 
-  /*person = {
-    photoUrl: 'assets/imagens/icones/pessoas.png',
-    name: 'Ana Letícia',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  };*/
+  get isEditarPerfil() {
+    return this.router.url === `/editar-perfil/${this.userId}`;
+  }
+
+  get isMinhasReceitas() {
+    return this.router.url === `/minhas-receitas/${this.userId}`;
+  }
 }

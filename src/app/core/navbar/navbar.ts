@@ -1,10 +1,11 @@
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, HostListener, signal, WritableSignal } from '@angular/core';
 import { ModalLog } from '../modal-log/modal-log';
 import { SearchBar } from '../search-bar/search-bar';
 import { UserIcon } from '../user-icon/user-icon';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MyRecipesService } from '../../services/my-recipes';
 import { Auth } from '../../services/auth';
+import { User } from '../../model/user';
 
 @Component({
   selector: 'bra-navbar',
@@ -14,36 +15,39 @@ import { Auth } from '../../services/auth';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
-  isLoggedIn = signal(false);
   openModal = signal(false);
-  user: any;
+  logado = false;
+  userId: string | null = null;
+  user: WritableSignal<User | undefined>; // 🔹 corrigido para WritableSignal
 
   modalData: any = null;
 
   constructor(
-    private route: ActivatedRoute,
     private myRecipesServices: MyRecipesService,
     private auth: Auth,
     private router: Router
   ) {
-    // aqui auth já foi inicializado
-    this.user = this.auth.user;
+    this.auth.loadFromStorage();
+    this.user = signal<User | undefined>(this.auth.user());
   }
 
   ngOnInit() {
-    this.auth.loadFromStorage();
-    this.isLoggedIn.set(this.auth.isLoggedIn());
+    this.logado = this.auth.isLoggedIn();
 
-    if (this.isLoggedIn()) {
-      const currentUser = this.user();
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.userId = JSON.parse(userData).id;
+    }
 
+    if (this.auth.isLoggedIn()) {
+      const currentUser = this.auth.user();
       if (currentUser?.id) {
         this.myRecipesServices
           .buscarUserPorId(currentUser.id)
           .subscribe((s: any) => {
-            // atualiza o signal corretamente
             this.user.set({
-              id: currentUser.id,
+              // agora funciona
+              id: s.id,
               nome: s.nome,
               sobrenome: s.sobrenome,
               apelido: s.apelido,
@@ -54,8 +58,6 @@ export class Navbar {
             });
 
             const u = this.user();
-
-            // monta os dados do modal corretamente
             this.modalData = {
               personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
               myAccount: '/editar-perfil',
@@ -88,7 +90,12 @@ export class Navbar {
 
   logout() {
     this.auth.logout();
-    this.isLoggedIn.set(false);
+    this.logado = false;
+    this.user.set(undefined); // 🔹 agora funciona
     this.router.navigate(['/login']);
+  }
+
+  atualizarUser(novoUser: User) {
+    this.user.set(novoUser); // funciona porque é WritableSignal
   }
 }

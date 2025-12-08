@@ -5,7 +5,7 @@ import { User } from '../model/user';
   providedIn: 'root',
 })
 export class Auth {
-  user = signal<User | null>(null); // usuário logado
+  user = signal<any>(null);
 
   login(user: User) {
     this.user.set(user);

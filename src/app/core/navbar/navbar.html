@@ -11,14 +11,14 @@
 
   <bra-user-icon
     class="icon-area"
-    [user]="user"
+    [userSignal]="user"
     (clickIcon)="togglePopup($event)"
   ></bra-user-icon>
 
   <bra-modal-log
     [modalLogged]="modalData"
     [hidden]="!openModal()"
-    [loggedOut]="!isLoggedIn()"
+    [loggedOut]="!logado"
     [logout]="logout.bind(this)"
     class="profile-container"
   ></bra-modal-log>
