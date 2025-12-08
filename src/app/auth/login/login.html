@@ -2,21 +2,32 @@
   <img src="assets/imagens/icones/BraFoodLogo.png" alt="" class="logo" />
 
   <div class="modal">
-    <span class="back">< Voltar</span>
+    <span class="back" (click)="voltar()">< Voltar</span>
 
     <div class="infos">
       <h1 class="title">Acesse sua conta</h1>
       <p class="description">Faça o login para publicar suas receitas!</p>
     </div>
 
-    <bra-input-acesso [type]="'email'"></bra-input-acesso>
-    <bra-input-acesso [type]="'senha'"></bra-input-acesso>
-    <span class="forgot">Esqueceu a senha?</span>
+    <bra-input-acesso
+      [type]="'email'"
+      [(ngModel)]="email"
+      name="emailLogin"
+      autocomplete="email"
+    ></bra-input-acesso>
+    <bra-input-acesso
+      [type]="'senha'"
+      [(ngModel)]="senha"
+      name="passwordLogin"
+      autocomplete="current-password"
+    ></bra-input-acesso>
+    <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
 
-    <bra-custom-button label="Entrar"></bra-custom-button>
+    <bra-custom-button label="Entrar" (click)="entrar()"></bra-custom-button>
 
     <p class="cadastre">
-      Não possui uma conta? <span class="register" [routerLink]="'/cadastro'">Cadastre-se.</span>
+      Não possui uma conta?
+      <span class="register" [routerLink]="'/cadastro'">Cadastre-se.</span>
     </p>
   </div>
 </div>

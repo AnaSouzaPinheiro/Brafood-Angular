@@ -1,44 +1,84 @@
-import { Component, input, signal, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 export type InputType = 'email' | 'senha' | 'nome' | 'confirmarSenha';
 
 @Component({
   selector: 'bra-input-acesso',
   standalone: true,
-  imports: [],
   templateUrl: './input-acesso.html',
-  styleUrl: './input-acesso.scss',
+  styleUrls: ['./input-acesso.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputAcesso),
+      multi: true,
+    },
+  ],
 })
-export class InputAcesso implements OnInit {
-  type = input<InputType>('email');
+export class InputAcesso implements OnInit, ControlValueAccessor {
+  @Input() type: InputType = 'email';
+  @Input() autocomplete: string = 'off';
 
-  placeholder = signal('');
-  icon = signal('');
+  @Input() inputId: string = '';
+  @Input() name: string = '';
+
+  placeholder: string = '';
+  icon: string = '';
+
+  value: string = '';
+  onChange = (value: string) => {};
+  onTouched = () => {};
 
   ngOnInit() {
-    switch (this.type()) {
+    if (!this.inputId) {
+      this.inputId = 'input-' + Math.random().toString(36).substring(2, 10);
+    }
+
+    if (!this.name) {
+      this.name = this.inputId;
+    }
+
+    // já existia:
+    switch (this.type) {
       case 'email':
-        this.placeholder.set('E-mail');
-        this.icon.set('assets/imagens/icones/o-email.png');
+        this.placeholder = 'E-mail';
+        this.icon = 'assets/imagens/icones/o-email.png';
         break;
       case 'senha':
-        this.placeholder.set('Senha');
-        this.icon.set('assets/imagens/icones/trancar.png');
+        this.placeholder = 'Senha';
+        this.icon = 'assets/imagens/icones/trancar.png';
+        this.autocomplete = 'current-password';
         break;
       case 'nome':
-        this.placeholder.set('Nome');
-        this.icon.set('assets/imagens/icones/do-utilizador.png');
+        this.placeholder = 'Nome';
+        this.icon = 'assets/imagens/icones/do-utilizador.png';
+        this.autocomplete = 'name';
         break;
       case 'confirmarSenha':
-        this.placeholder.set('Confirme sua senha');
-        this.icon.set('assets/imagens/icones/trancar.png');
+        this.placeholder = 'Confirme sua senha';
+        this.icon = 'assets/imagens/icones/trancar.png';
+        this.autocomplete = 'new-password';
         break;
     }
   }
 
-  getClasses() {
-    return {
-      [this.type()]: true,
-    };
+  writeValue(value: string): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  inputChanged(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.value = target.value;
+    this.onChange(this.value);
+    this.onTouched();
   }
 }

@@ -3,7 +3,7 @@
     <div class="acesso-rapido">
       <div class="categorias">
         <h4>Categorias</h4>
-        <ul>
+        <!-- <ul>
           <li><a href="#">Café da Manhã & Lanches</a></li>
           <li><a href="#">Vegetarianas & Veganas</a></li>
           <li><a href="#">Rápidas & Fáceis</a></li>
@@ -11,22 +11,35 @@
           <li><a href="#">Carnes & Grelhados</a></li>
           <li><a href="#">Sobremesas</a></li>
           <li><a href="#">Favoritos</a></li>
+        </ul> -->
+
+        <ul>
+          <li *ngFor="let categoria of categorias">
+            <a [routerLink]="categoria.url"> {{ categoria.nome }} </a>
+          </li>
         </ul>
       </div>
 
-      <div class="conta">
+      <!-- Mostrar "Conta" apenas se estiver logado -->
+      <div *ngIf="service.isLoggedIn()" class="conta">
         <h4>Conta</h4>
         <ul>
-          <li><a href="#">Minha conta</a></li>
-          <li><a href="#">Minhas receitas</a></li>
+          <li><a routerLink="'/editar-perfil/' + userId">Minha conta</a></li>
+          <li>
+            <a routerLink="'/minhas-receitas/' + userId">Minhas receitas</a>
+          </li>
+          <li>
+            <a routerLink="'/favoritas/' + userId">Favoritas</a>
+          </li>
         </ul>
       </div>
 
-      <div class="acesso">
+      <!-- Mostrar "Acesse sua conta" apenas se estiver deslogado -->
+      <div *ngIf="!service.isLoggedIn()" class="acesso">
         <h4>Acesse sua conta</h4>
         <ul>
-          <li><a href="#">Entrar</a></li>
-          <li><a href="#">Cadastrar</a></li>
+          <li><a routerLink="/login">Entrar</a></li>
+          <li><a routerLink="/cadastro">Cadastrar</a></li>
         </ul>
       </div>
     </div>
@@ -50,7 +63,11 @@
   <hr />
 
   <div class="second-footer">
-    <img class="BraFoodLogo" src="assets/imagens/icones/BraFoodLogoR.png" alt="Logo BraFood" />
+    <img
+      class="BraFoodLogo"
+      src="assets/imagens/icones/BraFoodLogoR.png"
+      alt="Logo BraFood"
+    />
 
     <div class="terms">
       <ul>
@@ -62,9 +79,21 @@
 
     <div class="redes-sociais">
       <ul>
-        <li><a href="#"><img src="assets/imagens/icones/linkedin.png" alt="LinkedIn" /></a></li>
-        <li><a href="#"><img src="assets/imagens/icones/github.png" alt="GitHub" /></a></li>
-        <li><a href="#"><img src="assets/imagens/icones/instagram.png" alt="Instagram" /></a></li>
+        <li>
+          <a href="#"
+            ><img src="assets/imagens/icones/linkedin.png" alt="LinkedIn"
+          /></a>
+        </li>
+        <li>
+          <a href="#"
+            ><img src="assets/imagens/icones/github.png" alt="GitHub"
+          /></a>
+        </li>
+        <li>
+          <a href="#"
+            ><img src="assets/imagens/icones/instagram.png" alt="Instagram"
+          /></a>
+        </li>
       </ul>
     </div>
   </div>

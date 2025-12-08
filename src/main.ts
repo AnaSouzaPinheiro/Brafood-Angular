@@ -5,9 +5,10 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import {
   provideRouter,
   withInMemoryScrolling,
-  withHashLocation,
+  //withHashLocation,
 } from '@angular/router';
 import { routes } from './app/app.routes';
+import { Auth } from './app/services/auth';
 
 bootstrapApplication(App, {
   ...appConfig,
@@ -19,8 +20,13 @@ bootstrapApplication(App, {
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',
         anchorScrolling: 'enabled',
-      }),
-      withHashLocation()
+      })
+      //withHashLocation()
     ),
   ],
-}).catch((err) => console.error(err));
+})
+  .then((appRef) => {
+    const auth = appRef.injector.get(Auth);
+    auth.loadFromStorage();
+  })
+  .catch((err) => console.error(err));

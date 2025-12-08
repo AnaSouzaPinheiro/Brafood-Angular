@@ -13,7 +13,15 @@ import { Footer } from './core/footer/footer';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, Navbar, CategoryBar, Footer, Credit, RouterModule],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    Navbar,
+    CategoryBar,
+    Footer,
+    Credit,
+    RouterModule,
+  ],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
 })
@@ -32,8 +40,15 @@ export class App {
       this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
         .subscribe((event: NavigationEnd) => {
-          const hideOn = ['login', 'cadastro'];
-          this.showLayout = !hideOn.includes(event.urlAfterRedirects.replace('/', ''));
+          const url = event.urlAfterRedirects.replace('/', '');
+          const hideOn = [
+            'login',
+            'cadastro',
+            'recuperar-senha',
+            'resetar-senha',
+          ];
+
+          this.showLayout = !hideOn.some((path) => url.startsWith(path));
         });
     }
   }

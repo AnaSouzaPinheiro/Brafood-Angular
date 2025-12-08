@@ -23,6 +23,7 @@ export class CustomButton {
   type = input<ButtonType>('normal');
   @Input() route?: string;  // rota que o botão representa
   clicked = output();
+  @Input() active = false; 
 
   constructor(private router: Router) {}
 

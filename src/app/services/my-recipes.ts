@@ -28,12 +28,16 @@ export class MyRecipesService {
 
   // Lista todas as receitas
   listForSerach(pesquisa: string): Observable<Recipes[]> {
-    return this.httpClient.get<Recipes[]>(this.url(`receitas.php?pesquisa=${pesquisa}`));
+    return this.httpClient.get<Recipes[]>(
+      this.url(`receitas.php?pesquisa=${pesquisa}`)
+    );
   }
 
   // Lista todas as receitas
   excluir(id: number): Observable<Recipes[]> {
-    return this.httpClient.get<Recipes[]>(this.url(`receitas/excluir.php?id=${id}`));
+    return this.httpClient.get<Recipes[]>(
+      this.url(`receitas/excluir.php?id=${id}`)
+    );
   }
 
   // Lista receitas por categoria (usando id e nome na URL)
@@ -77,7 +81,7 @@ export class MyRecipesService {
     );
   }
 
-  updateReceita(id:number, formValue: any, imagens: File[]): Observable<any> {
+  updateReceita(id: number, formValue: any, imagens: File[]): Observable<any> {
     const formData = new FormData();
     formData.append('dados', JSON.stringify(formValue));
 
@@ -95,5 +99,53 @@ export class MyRecipesService {
   // Busca receita específica pelo ID
   buscarUserPorId(id: number): Observable<User[]> {
     return this.httpClient.get<User[]>(this.url(`user.php?id=${id}`));
+  }
+
+  login(email: string, senha: string): Observable<any> {
+    return this.httpClient.post<any>(this.url('login.php'), { email, senha });
+  }
+
+  cadastro(
+    nome: string,
+    email: string,
+    senha: string,
+    confirmarSenha: string
+  ): Observable<any> {
+    return this.httpClient.post<any>(this.url('cadastro.php'), {
+      nome,
+      email,
+      senha,
+      confirmarSenha,
+    });
+  }
+
+  solicitarRecuperacao(email: string) {
+    return this.httpClient.post(this.url('solicitar_recuperacao.php'), {
+      email,
+    });
+  }
+
+  resetarSenha(token: string, senha: string, confirmarSenha: string) {
+    return this.httpClient.post(this.url('resetar_senha.php'), {
+      token,
+      senha,
+      confirmarSenha,
+    });
+  }
+
+  // Verifica se o usuário está logado
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('user');
+  }
+
+  // Retorna os dados do usuário logado
+  getUser(): any {
+    const data = localStorage.getItem('user');
+    return data ? JSON.parse(data) : null;
+  }
+
+  // Faz logout
+  logout() {
+    localStorage.removeItem('user');
   }
 }

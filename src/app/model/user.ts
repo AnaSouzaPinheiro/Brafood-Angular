@@ -1,10 +1,10 @@
 export interface User {
-  id: number;
-  nome: string;
-  sobrenome: string;
-  apelido: string;
+  id: any;
   email: string;
-  genero: string;
-  bio: string;
-  foto_perfil: string;
+  nome?: string;
+  sobrenome?: string;
+  apelido?: string;
+  genero?: string;
+  bio?: string;
+  foto_perfil?: string;
 }

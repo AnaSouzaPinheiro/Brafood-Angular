@@ -1,0 +1,29 @@
+<div class="container">
+  <img src="assets/imagens/icones/BraFoodLogo.png" alt="" class="logo" />
+
+  <div class="modal">
+    <span class="back" (click)="voltar()">< Voltar</span>
+
+    <div class="infos">
+      <h1 class="title">Recuperar senha</h1>
+      <p class="description">
+        Informe seu e-mail e enviaremos instruções para redefinir sua senha.
+      </p>
+    </div>
+
+    <bra-input-acesso
+      [type]="'email'"
+      [(ngModel)]="email"
+      name="emailRecuperacao"
+      autocomplete="email"
+    ></bra-input-acesso>
+
+    <p class="erro" *ngIf="erro">{{ erro }}</p>
+    <p class="sucesso" *ngIf="sucesso">{{ sucesso }}</p>
+
+    <bra-custom-button
+      label="Enviar instruções"
+      (click)="enviar()"
+    ></bra-custom-button>
+  </div>
+</div>

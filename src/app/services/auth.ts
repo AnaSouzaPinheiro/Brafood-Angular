@@ -1,0 +1,30 @@
+import { Injectable, signal } from '@angular/core';
+import { User } from '../model/user';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class Auth {
+  user = signal<User | null>(null); // usuário logado
+
+  login(user: User) {
+    this.user.set(user);
+    localStorage.setItem('user', JSON.stringify(user)); // opcional, pra manter após reload
+  }
+
+  logout() {
+    this.user.set(null);
+    localStorage.removeItem('user');
+  }
+
+  isLoggedIn(): boolean {
+    return this.user() !== null;
+  }
+
+  loadFromStorage() {
+    const data = localStorage.getItem('user');
+    if (data) {
+      this.user.set(JSON.parse(data));
+    }
+  }
+}

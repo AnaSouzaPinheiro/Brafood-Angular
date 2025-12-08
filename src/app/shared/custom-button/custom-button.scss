@@ -101,3 +101,10 @@ button.filter {
     background: transparent;
   }
 }
+
+@media (max-width: 575px) {
+  button {
+    font-size: 90% !important;
+    padding: 10% 60% !important;
+  }
+}

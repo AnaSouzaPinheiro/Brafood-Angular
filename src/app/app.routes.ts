@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { AuthGuard } from './services/auth-guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -33,7 +34,9 @@ export const routes: Routes = [
       import('./profile/minhas-receitas/minhas-receitas').then(
         (m) => m.MinhasReceitas
       ),
+    canActivate: [AuthGuard], // <-- aqui você protege a rota
   },
+
   {
     path: 'adicionar-receita',
     loadComponent: () =>
@@ -42,7 +45,9 @@ export const routes: Routes = [
   {
     path: 'editar-receita/:id',
     loadComponent: () =>
-      import('./recipe/update-recipe/update-recipe').then((m) => m.UpdateRecipe),
+      import('./recipe/update-recipe/update-recipe').then(
+        (m) => m.UpdateRecipe
+      ),
   },
   {
     path: 'categoria/:id/:nome',
@@ -51,8 +56,19 @@ export const routes: Routes = [
   },
   {
     path: 'pesquisa/:nome',
+    loadComponent: () => import('./shared/search/search').then((m) => m.Search),
+  },
+  {
+    path: 'recuperar-senha',
     loadComponent: () =>
-      import('./shared/search/search').then((m) => m.Search),
+      import('./auth/recuperar-senha/recuperar-senha').then(
+        (m) => m.RecuperarSenha
+      ),
+  },
+  {
+    path: 'resetar-senha/:token',
+    loadComponent: () =>
+      import('./auth/resetar-senha/resetar-senha').then((m) => m.ResetarSenha),
   },
   { path: '**', redirectTo: 'home' },
 ];

@@ -1,0 +1,42 @@
+<div class="container">
+  <img src="assets/imagens/icones/BraFoodLogo.png" alt="" class="logo" />
+
+  <div class="modal">
+    <span class="back" (click)="voltar()">< Voltar</span>
+
+    <div class="infos">
+      <h1 class="title">Redefinir senha</h1>
+      <p class="description">
+        Digite sua nova senha abaixo para concluir a redefinição.
+      </p>
+    </div>
+
+    <div class="inputs">
+      <!-- Senha -->
+      <bra-input-acesso
+        [type]="'senha'"
+        [(ngModel)]="senha"
+        name="senha"
+        placeholder="Nova senha"
+        autocomplete="new-password"
+      ></bra-input-acesso>
+
+      <!-- Confirmar senha -->
+      <bra-input-acesso
+        [type]="'confirmarSenha'"
+        [(ngModel)]="confirmarSenha"
+        name="confirmarSenha"
+        placeholder="Confirmar senha"
+        autocomplete="new-password"
+      ></bra-input-acesso>
+    </div>
+
+    <p class="erro" *ngIf="mensagem && !sucesso">{{ mensagem }}</p>
+    <p class="sucesso" *ngIf="sucesso">{{ mensagem }}</p>
+
+    <bra-custom-button
+      label="Redefinir"
+      (click)="resetar()"
+    ></bra-custom-button>
+  </div>
+</div>
