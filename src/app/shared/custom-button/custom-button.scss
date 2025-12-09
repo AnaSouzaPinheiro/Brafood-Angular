@@ -102,9 +102,9 @@ button.filter {
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 768px) {
   button {
     font-size: 90% !important;
-    padding: 10% 60% !important;
+    //padding: 10% 60% !important;
   }
 }

@@ -42,7 +42,7 @@
       grid-template-columns: auto auto;
     }
 
-    ul.rules {
+    ul#rules {
       width: 100%;
       font-size: 12px;
 
@@ -73,4 +73,11 @@
   .register {
     font-weight: 600;
   }
+}
+
+#cadastro {
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

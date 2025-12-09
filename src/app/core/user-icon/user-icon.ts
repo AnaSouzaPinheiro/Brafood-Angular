@@ -19,7 +19,7 @@ export class UserIcon {
     // Se quiser inicializar com o usuário do Auth, você pode:
     this.auth.loadFromStorage();
     if (!this.userSignal) {
-      this.userSignal = this.auth.user(); // pega o usuário logado
+      this.userSignal = this.auth.user; // pega o usuário logado
     }
   }
 

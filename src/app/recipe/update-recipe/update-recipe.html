@@ -159,17 +159,19 @@
       </div>
     </div>
 
-    <bra-custom-button
-      [label]="'Cancelar'"
-      [type]="'other'"
-      [route]="'/minhas-receitas'"
-    ></bra-custom-button>
+    <div class="buttons">
+      <bra-custom-button
+        [label]="'Cancelar'"
+        [type]="'add'"
+        [route]="'/minhas-receitas'"
+      ></bra-custom-button>
 
-    <bra-custom-button
-      [type]="'add'"
-      [label]="'Editar receita'"
-      (clicked)="salvar()"
-    >
-    </bra-custom-button>
+      <bra-custom-button
+        [type]="'add'"
+        [label]="'Editar receita'"
+        (clicked)="salvar()"
+      >
+      </bra-custom-button>
+    </div>
   </form>
 </div>

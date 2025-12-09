@@ -12,13 +12,13 @@
 
     bra-recipe-images {
       width: 100%;
-      position: relative; // mudar de absolute para relative
+      position: relative;
     }
 
     bra-info-recipe {
       position: relative;
-      top: 0; // remove o top
-      margin-top: -210px; // sobe visualmente, mas o container acompanha melhor
+      top: 0;
+      margin-top: -210px;
     }
   }
 }
@@ -62,8 +62,8 @@ li {
 }
 
 ul li::marker {
-  font-size: 10px; /* diminui só a bolinha */
-  color: #000; /* muda a cor da bolinha, opcional */
+  font-size: 10px;
+  color: #000;
 }
 
 .list {
@@ -139,5 +139,38 @@ ul li::marker {
     &:hover {
       opacity: 0.8;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  bra-info-recipe {
+    margin-top: -125px !important;
+  }
+
+  .receita {
+    margin: 50px;
+  }
+
+  .container {
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  li,
+  .autor span {
+    font-size: 90% !important;
+  }
+
+  .title {
+    font-size: 230% !important;
+  }
+
+  .autor bra-user-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .whatsApp, .whatsApp span {
+    font-size: 90%;
   }
 }

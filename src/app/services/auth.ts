@@ -22,9 +22,12 @@ export class Auth {
   }
 
   loadFromStorage() {
-    const data = localStorage.getItem('user');
-    if (data) {
-      this.user.set(JSON.parse(data));
+    // só roda se estiver no navegador
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem('user');
+      if (data) {
+        this.user.set(JSON.parse(data));
+      }
     }
   }
 }

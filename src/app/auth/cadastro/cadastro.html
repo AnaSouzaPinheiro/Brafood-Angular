@@ -1,33 +1,60 @@
 <div class="container">
-  <img src="assets/imagens/icones/BraFoodLogo.png" alt="" class="logo" />
+  <a [routerLink]="'/home'">
+    <img
+      class="logo"
+      src="assets/imagens/icones/BraFoodLogoR.png"
+      alt="Logo BraFood"
+    />
+  </a>
 
   <div class="modal">
-    <span class="back">< Voltar</span>
-
+    <span class="back" (click)="voltar()">< Voltar</span>
     <div class="infos">
       <h1 class="title">Crie sua conta</h1>
       <p class="description">Cadastre-se para publicar suas receitas!</p>
     </div>
 
-    <div class="inputsCadastro">
-      <bra-input-acesso [type]="'nome'"></bra-input-acesso
-      ><bra-input-acesso [type]="'email'"></bra-input-acesso>
-      <bra-input-acesso [type]="'senha'"></bra-input-acesso
-      ><bra-input-acesso [type]="'confirmarSenha'"></bra-input-acesso>
-    </div>
-    <ul class="rules">
-      Sua senha deve atender aos seguintes requisitos
-      <li>8 caracteres mínimo</li>
-      <li>1 dígito</li>
-      <li>1 minúscula</li>
-      <li>1 maiúscula</li>
-      <li>1 carácter especial (ex : ! &#64; # $)</li>
-    </ul>
+    <form id="cadastro" (ngSubmit)="cadastrar()">
+      <div class="inputsCadastro">
+        <bra-input-acesso
+          [type]="'nome'"
+          [(ngModel)]="nome"
+          name="nome"
+        ></bra-input-acesso>
+        <bra-input-acesso
+          [type]="'email'"
+          [(ngModel)]="email"
+          name="email"
+        ></bra-input-acesso>
+        <bra-input-acesso
+          [type]="'senha'"
+          [(ngModel)]="senha"
+          name="senha"
+          (input)="validarSenhaFront()"
+        ></bra-input-acesso>
+        <bra-input-acesso
+          [type]="'confirmarSenha'"
+          [(ngModel)]="confirmarSenha"
+          name="confirmarSenha"
+          (input)="validarSenhaFront()"
+        ></bra-input-acesso>
+      </div>
 
-    <bra-custom-button label="Cadastrar"></bra-custom-button>
+      <ul id="rules">
+        Sua senha deve atender aos seguintes requisitos
+        <li id="r0">8 caracteres mínimo</li>
+        <li id="r1">1 dígito</li>
+        <li id="r2">1 minúscula</li>
+        <li id="r3">1 maiúscula</li>
+        <li id="r4">1 carácter especial (ex : ! &#64; # $)</li>
+      </ul>
+
+      <bra-custom-button label="Cadastrar"></bra-custom-button>
+    </form>
 
     <p class="cadastre">
-      Já tem uma conta? <span class="register" [routerLink]="'/login'">Faça o login.</span>
+      Já tem uma conta?
+      <span class="register" [routerLink]="'/login'">Faça o login.</span>
     </p>
   </div>
 </div>

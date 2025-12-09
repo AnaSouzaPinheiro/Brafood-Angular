@@ -109,14 +109,51 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
-
 
 .item {
   position: relative;
 
   &:hover .hover {
     display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    height: 235px !important;
+
+    .title {
+      font-size: 200%;
+    }
+  }
+
+  .time img,
+  .unid img {
+    width: 20px;
+  }
+
+  .difficult img {
+    width: 85px;
+  }
+
+  .description p {
+    font-size: 80%;
+  }
+
+  .things {
+    gap: 0;
+    padding: 10px;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .info-recipe {
+    width: 85%;
+    margin: 0 8%;
   }
 }

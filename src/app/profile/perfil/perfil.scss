@@ -68,3 +68,31 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .menuPerfil {
+    gap: 55px;
+    margin: 35px 0 35px 0;
+  }
+
+  .main {
+    gap: 35px !important;
+    flex-direction: column !important;
+  }
+
+  .options {
+    gap: 10px !important;
+  }
+
+  .resume {
+    align-items: center;
+  }
+
+  .text {
+    text-align: center;
+  }
+
+  hr {
+    margin: 0 50px 0 50px !important;
+  }
+}

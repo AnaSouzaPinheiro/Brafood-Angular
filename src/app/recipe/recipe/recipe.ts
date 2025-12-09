@@ -26,20 +26,22 @@ export class Recipe {
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.myRecipesServices.buscarPorId(id).subscribe((r: any) => {
+      //console.log(r); 
+
       this.recipe = {
         id: Number(r.id),
         titulo: r.titulo,
         resumo: '',
-        categoria: r.categoria,
-        subcategoria: '',
+        categoria: r.categoria ?? '',
+        subcategoria: r.subcategoria ?? '',
         dificuldade: Number(r.dificuldade),
         tempo_hora: Number(r.tempo_hora),
         tempo_min: Number(r.tempo_min),
         porcoes: r.porcoes,
         tipo_porcao: r.tipo_porcao,
-        imagem1: r.imagem1,
-        imagem2: r.imagem2,
-        imagem3: r.imagem3,
+        imagem1: r.imagem1 || '',
+        imagem2: r.imagem2 || '',
+        imagem3: r.imagem3 || '',
         qtd_fav: Number(r.qtd_fav),
         data_criacao: r.data_criacao
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')

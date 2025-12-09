@@ -7,10 +7,13 @@
   <div class="filters">
     <bra-filter-dropdown
       [optionsDropwdown]="optionsDropwdown"
+      (changeFilter)="filtrarPorOrdem($event)"
     ></bra-filter-dropdown>
     <bra-filter-dropdown
       [optionsDropwdown]="optionsDropwdown2"
+      (change)="filtrarPorSubcategoria($event.id)"
     ></bra-filter-dropdown>
+
     <bra-custom-button
       [label]="'Limpar filtros'"
       [type]="'filter'"
@@ -25,7 +28,10 @@
 <div class="content" *ngIf="categoria">
   <div class="cards">
     @for (recipe of RecipesPage; track $index) {
-    <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
+    <bra-recipe-card
+      [recipe]="recipe"
+      [selectedSubcategory]="selectedSubcategory"
+    ></bra-recipe-card>
     }
   </div>
   <div class="pages">

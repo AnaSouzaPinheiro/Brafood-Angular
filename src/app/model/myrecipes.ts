@@ -8,4 +8,5 @@ export interface Recipes {
     qtdFav: number;
     text: string;
   };
+  subcategorias?: string[];
 }

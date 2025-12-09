@@ -96,6 +96,7 @@ export class UpdateRecipe implements OnInit {
       titulo: ['', Validators.required],
       resumo: ['', Validators.required],
       categoriasSelecionadas: [[], Validators.required],
+      subcategoria: [null, Validators.required], // adicionamos o controle de subcategoria
       dificuldade: [
         null,
         [Validators.required, Validators.min(1), Validators.max(3)],
@@ -116,7 +117,13 @@ export class UpdateRecipe implements OnInit {
 
     this.carregarCategorias().subscribe(() => {
       this.myRecipesService.buscarPorId(this.idReceita).subscribe((receita) => {
-        this.receita = receita;
+        this.receita = {
+          ...this.receita,
+          ...receita,
+          resumo: receita.resumo ?? '',
+          categoria: receita.categoria ?? '',
+          subcategoria: receita.subcategoria ?? '',
+        };
 
         this.carregarReceita(receita);
         this.form.patchValue({
@@ -147,8 +154,8 @@ export class UpdateRecipe implements OnInit {
     }));
 
     this.imagemPreview1 = receita.imagem1;
-    this.imagemPreview2 = receita.imagem2;
-    this.imagemPreview3 = receita.imagem3;
+    this.imagemPreview2 = receita.imagem2 ?? null;
+    this.imagemPreview3 = receita.imagem3 ?? null;
   }
 
   // TRANSFORMA ID -> LABEL PARA UPDATE
@@ -157,36 +164,31 @@ export class UpdateRecipe implements OnInit {
       (c) => c.id === Number(receita.categoria)
     );
 
-    if (categoriaEncontrada) {
-      const optionCat: Option = {
-        label: categoriaEncontrada.nome,
-        value: categoriaEncontrada.id.toString(),
-      };
+    if (!categoriaEncontrada) return;
 
-      // Deixa a opção carregada, mas espera um ciclo para atualizar visualmente
-      this.categoriasSelecionadas = [optionCat];
+    // Prepara a opção da categoria
+    const optionCat: Option = {
+      label: categoriaEncontrada.nome,
+      value: categoriaEncontrada.id.toString(),
+    };
 
-      const subs = this.subcategoriasPorCategoria[categoriaEncontrada.id];
+    this.categoriasSelecionadas = [optionCat];
 
-      if (subs) {
-        const subEncontrada = subs.find(
-          (s) => s.value === receita.subcategoria.toString()
-        );
+    // Prepara subcategorias
+    const subs = this.subcategoriasPorCategoria[categoriaEncontrada.id] || [];
+    const subEncontrada = subs.find(
+      (s) => s.value === (receita.subcategoria ?? '').toString()
+    );
 
-        if (subEncontrada) {
-          this.subcategoriasSelecionadas[categoriaEncontrada.id] = [
-            subEncontrada,
-          ];
-        }
-      }
-
-      // Agora sim: empurra o patch de volta para o componente filho no próximo ciclo
-      setTimeout(() => {
-        this.form.patchValue({
-          categoriasSelecionadas: [optionCat],
-        });
-      });
+    if (subEncontrada) {
+      this.subcategoriasSelecionadas[categoriaEncontrada.id] = [subEncontrada];
     }
+
+    // Atualiza o formulário
+    this.form.patchValue({
+      categoriasSelecionadas: [optionCat],
+      subcategoria: subEncontrada?.value ?? null,
+    });
   }
 
   // CARREGAR CATEGORIAS/SUBS
@@ -216,22 +218,25 @@ export class UpdateRecipe implements OnInit {
   // SELETORES
 
   onCategoriaSelecionada(event: Option[]) {
-    // Cria uma nova referência para o Angular enxergar
     this.categoriasSelecionadas = [...event];
+    this.form.patchValue({
+      categoriasSelecionadas: this.categoriasSelecionadas,
+      subcategoria: null, // reseta a subcategoria ao mudar a categoria
+    });
 
-    const cat = event[0]?.value;
-
-    if (cat) {
-      // Reseta as subcategorias e cria nova referência
+    const catValue = event[0]?.value;
+    if (catValue) {
       this.subcategoriasSelecionadas = {};
-      this.receita.categoria = cat;
+      this.receita.categoria = catValue;
     }
   }
 
   onSubcategoriaSelecionada(catId: string, selecionadas: Option[]) {
-    this.subcategoriasSelecionadas[catId] = selecionadas;
-    this.subcategoriasSelecionadas = { ...this.subcategoriasSelecionadas };
+    this.subcategoriasSelecionadas[catId] = [...selecionadas];
     this.receita.subcategoria = selecionadas[0]?.value ?? '';
+
+    // Atualiza o form control
+    this.form.patchValue({ subcategoria: selecionadas[0]?.value ?? null });
   }
 
   onPorcaoSelecionada(event: Option[]) {
@@ -296,8 +301,8 @@ export class UpdateRecipe implements OnInit {
       ...this.receita,
       titulo: this.form.value.titulo,
       resumo: this.form.value.resumo,
-      categoria: categoriaSelecionada?.value ?? '',
-      subcategoria: subSelecionada?.value ?? '',
+      categoria: this.form.value.categoriasSelecionadas[0]?.value ?? '',
+      subcategoria: this.form.value.subcategoria ?? '',
       dificuldade: this.form.value.dificuldade,
       tempo_hora: this.form.value.tempo_hora,
       tempo_min: this.form.value.tempo_min,
@@ -306,6 +311,8 @@ export class UpdateRecipe implements OnInit {
       ingredientes: this.receita.ingredientes,
       etapas: this.receita.etapas,
     };
+
+    console.log(receitaPronta);
 
     this.myRecipesService
       .updateReceita(this.idReceita, receitaPronta, this.imagensSelecionadas)

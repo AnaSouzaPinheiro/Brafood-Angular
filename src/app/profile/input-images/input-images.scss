@@ -66,3 +66,19 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .infos {
+    .picture_image {
+      width: 85px !important;
+    }
+
+    p {
+      font-size: 70% !important;
+    }
+  }
+
+  .container-fotos, .first-image .infos, .others {
+    height: 400px !important;
+  }
+}

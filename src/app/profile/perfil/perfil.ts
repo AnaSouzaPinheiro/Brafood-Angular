@@ -26,9 +26,11 @@ export class Perfil {
   ngOnInit() {
     this.logado = this.auth.isLoggedIn();
 
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      this.userId = JSON.parse(userData).id;
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        this.userId = JSON.parse(userData).id;
+      }
     }
 
     if (this.userId) {

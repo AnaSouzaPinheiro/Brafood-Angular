@@ -28,7 +28,9 @@ export class MyRecipesService {
 
   // listar por user
   listPorUser(id: number): Observable<Recipes[]> {
-    return this.httpClient.get<Recipes[]>(this.url(`minhas_receitas.php?id=${id}`));
+    return this.httpClient.get<Recipes[]>(
+      this.url(`minhas_receitas.php?id=${id}`)
+    );
   }
 
   // Lista todas as receitas
@@ -46,13 +48,27 @@ export class MyRecipesService {
   }
 
   // Lista receitas por categoria (usando id e nome na URL)
-  listCat(categoria: { id: number; nome: string }): Observable<Recipes[]> {
+  listCat(
+    categoria: { id: number; nome: string },
+    filtros?: any
+  ): Observable<Recipes[]> {
+    let params: any = {};
+
+    if (filtros?.ordenar) {
+      params.ordenar = filtros.ordenar;
+    }
+
+    if (filtros?.subcategorias && filtros.subcategorias.length > 0) {
+      params.subcategorias = filtros.subcategorias; // automaticamente vira array no GET
+    }
+
     return this.httpClient.get<Recipes[]>(
       this.url(
         `receitas_categoria.php?id=${categoria.id}&nome=${encodeURIComponent(
           categoria.nome
         )}`
-      )
+      ),
+      { params }
     );
   }
 

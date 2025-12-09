@@ -29,14 +29,18 @@ export class Categoria {
 
   optionsDropwdown2 = {
     labelTitle: 'Subcategorias:',
-    items: [] as { name: string; checked: boolean }[],
+    items: [] as { id: number; name: string; checked: boolean }[],
   };
+
+  selectedSubcategory: number | null = null;
 
   indice!: number;
   currentPage!: number;
 
   categoria?: CategoriaModel;
   Recipes: Recipes[] = [];
+
+  RecipesFiltradas: Recipes[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -57,6 +61,7 @@ export class Categoria {
           (res: any) => {
             if (Array.isArray(res)) {
               this.Recipes = res;
+              this.RecipesFiltradas = res;
             } else {
               this.Recipes = [];
               console.warn('Nenhuma receita encontrada.');
@@ -73,10 +78,24 @@ export class Categoria {
           next: (res: CategoriaModel) => {
             this.categoria = res;
 
-            this.optionsDropwdown2.items = res.subcategorias.map((s) => ({
-              name: s.nome,
-              checked: s.nome.toLowerCase() === 'todas', // 🔹 marca "Todas" como default
-            }));
+            // limpar antes de preencher
+            this.optionsDropwdown2.items = [];
+
+            // adiciona opção "Todas"
+            this.optionsDropwdown2.items.push({
+              id: 0,
+              name: 'Todas',
+              checked: true, // começa marcada
+            });
+
+            // adiciona subcategorias vindas da API
+            this.optionsDropwdown2.items.push(
+              ...res.subcategorias.map((s) => ({
+                id: s.id,
+                name: s.nome,
+                checked: false,
+              }))
+            );
           },
           error: (err) => console.error('Erro ao carregar categoria:', err),
         });
@@ -85,13 +104,13 @@ export class Categoria {
   }
 
   get RecipesPage() {
-    return Array.isArray(this.Recipes)
-      ? this.Recipes.slice(this.indice, this.indice + 6)
+    return Array.isArray(this.RecipesFiltradas)
+      ? this.RecipesFiltradas.slice(this.indice, this.indice + 6)
       : [];
   }
 
   get pages(): number {
-    return Math.ceil(this.Recipes.length / 6);
+    return Math.ceil(this.RecipesFiltradas.length / 6);
   }
 
   get pagesArray(): number[] {
@@ -119,5 +138,57 @@ export class Categoria {
   goToPage(page: number) {
     this.indice = (page - 1) * 6;
     this.currentPage = page;
+  }
+
+  filtrarPorOrdem(filtro: string) {
+    let ordenar = 'nome';
+
+    if (filtro === 'Por nome') ordenar = 'nome';
+    if (filtro === 'Mais novas') ordenar = 'mais_novos';
+    if (filtro === 'Mais antigas') ordenar = 'mais_antigos';
+    if (filtro === 'Mais favoritas') ordenar = 'mais_favoritos';
+
+    // Se estiver filtrando por subcategoria:
+    this.buscarReceitas({
+      ordenar,
+      subcategorias: this.selectedSubcategory ? [this.selectedSubcategory] : [],
+    });
+
+    this.resetarPaginacao();
+  }
+
+  filtrarPorSubcategoria(id: number) {
+    // usuário escolheu "Todas"
+    if (id === 0) {
+      this.selectedSubcategory = null;
+
+      // marcar "Todas"
+      this.optionsDropwdown2.items.forEach((i) => (i.checked = i.id === 0));
+
+      this.buscarReceitas({ subcategorias: [] });
+      return;
+    }
+
+    // Marca o item correto
+    this.optionsDropwdown2.items.forEach((i) => (i.checked = i.id === id));
+
+    this.selectedSubcategory = id;
+
+    this.buscarReceitas({ subcategorias: [id] });
+  }
+
+  buscarReceitas(filtros?: any) {
+    this.myRecipesServices
+      .listCat({ id: this.categoria!.id, nome: this.categoria!.nome }, filtros)
+      .subscribe((res) => {
+        this.Recipes = res;
+        this.RecipesFiltradas = [...res];
+        this.resetarPaginacao();
+      });
+  }
+
+  resetarPaginacao() {
+    this.indice = 0;
+    this.currentPage = 1;
   }
 }
