@@ -1,17 +1,14 @@
 import { Component } from '@angular/core';
 import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
-import { UserIcon } from '../../core/user-icon/user-icon';
-
 import { ActivatedRoute } from '@angular/router';
-
 import { Receita, Ingrediente, Etapa, Descricao } from '../../model/receita';
 import { MyRecipesService } from '../../services/my-recipes';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'bra-recipe',
-  imports: [RecipeImages, InfoRecipe, UserIcon, CommonModule],
+  imports: [RecipeImages, InfoRecipe, CommonModule],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
 })
@@ -47,6 +44,7 @@ export class Recipe {
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
           : '',
         autor: r.autor,
+        foto_perfil: r.foto_perfil  || '',
         ingredientes: (r.ingredientes || []).map((i: any) => ({
           titulo: i.titulo,
           itens: i.itens || [],

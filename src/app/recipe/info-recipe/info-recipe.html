@@ -35,10 +35,13 @@
     </div>
   </div>
   <div class="things">
-    <div class="item" (click)="toggleFavorite()">
+    <div class="item" (click)="toggleFavorito()">
       <img
-        [src]="isFavorite ? 'assets/imagens/icones/favorito.png' : 'assets/imagens/icones/favorito (1).png'"
+        [src]="isFavorite 
+    ? 'assets/imagens/icones/favorito.png' 
+    : 'assets/imagens/icones/favorito (1).png'"
       />
+
       <bra-hover-things
         class="hover"
         hoverText="Favorite essa receita"

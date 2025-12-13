@@ -36,11 +36,12 @@ export const routes: Routes = [
       ),
     canActivate: [AuthGuard], // <-- aqui você protege a rota
   },
-
   {
-    path: 'adicionar-receita',
+    path: 'favoritas/:id',
     loadComponent: () =>
-      import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
+      import('./profile/favoritas/favoritas').then(
+        (m) => m.Favoritas
+      ),
   },
   {
     path: 'editar-receita/:id',
@@ -48,6 +49,11 @@ export const routes: Routes = [
       import('./recipe/update-recipe/update-recipe').then(
         (m) => m.UpdateRecipe
       ),
+  },
+  {
+    path: 'adicionar-receita',
+    loadComponent: () =>
+      import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
   },
   {
     path: 'categoria/:id/:nome',

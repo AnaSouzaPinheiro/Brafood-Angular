@@ -1,0 +1,64 @@
+@use "variables" as *;
+
+.myRecipes {
+  display: flex;
+  flex-direction: column;
+
+  .cabecalho {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 145px;
+    gap: 50px;
+
+    h1.title {
+      font-size: 48px;
+      font-weight: 600;
+      color: $primary-blue;
+    }
+
+    .qtdReceitas {
+      color: $primary-gray;
+      font-size: 24px;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .cards {
+      width: 100%;
+      display: grid;
+      gap: 0 50px;
+      grid-template-columns: auto auto auto;
+      justify-items: center;
+      justify-content: center;
+    }
+
+    .pages {
+      display: flex;
+      gap: 15px;
+      font-size: 18px;
+      margin: 50px 0;
+
+      .setas {
+        cursor: pointer;
+      }
+
+      .numbers {
+        display: flex;
+        gap: 15px;
+        cursor: pointer;
+      }
+
+      span.active {
+        color: $primary-blue;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+    }
+  }
+}

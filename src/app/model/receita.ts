@@ -15,6 +15,7 @@ export interface Receita {
   qtd_fav: number;
   data_criacao: string;
   autor: string;
+  foto_perfil?: string;
   ingredientes: Ingrediente[];
   etapas: Etapa[];
 }

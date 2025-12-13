@@ -30,15 +30,12 @@ export class Login {
     this.service.login(this.email, this.senha).subscribe(
       (res: any) => {
         if (res.success) {
-          console.log('Resposta do login:', res);
-
           // Salva no Auth e localStorage
           this.auth.login({ id: res.id, email: this.email });
 
           // Redireciona
           this.router.navigate(['/home']);
         } else {
-          console.log('Resposta do login:', res);
           this.erro = res.message || 'Erro no login.';
         }
       },

@@ -77,9 +77,10 @@ ul li::marker {
   display: flex;
   gap: 10px;
 
-  bra-user-icon {
+  .bra-user-icon {
     width: 65px;
     height: 65px;
+    border-radius: 50%;
   }
 
   .data {

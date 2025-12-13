@@ -60,11 +60,15 @@ export class Navbar {
             const u = this.user();
             this.modalData = {
               personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
-              myAccount: '/editar-perfil',
+              myAccount: u?.id
+                ? `/editar-perfil/${u.id}`
+                : '/editar-perfil',
               myRecipes: u?.id
                 ? `/minhas-receitas/${u.id}`
                 : '/minhas-receitas',
-              favs: '/favoritos',
+              favs: u?.id
+                ? `/favoritas/${u.id}`
+                : '/favoritas',
             };
           });
       }

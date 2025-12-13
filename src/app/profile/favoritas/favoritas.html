@@ -1,0 +1,35 @@
+<div class="myRecipes">
+  <bra-perfil></bra-perfil>
+
+  <div class="cabecalho">
+      <h1 class="title">Minhas receitas favoritas</h1>
+      <span class="qtdReceitas">
+        {{ this.Recipes.length }} receitas favoritas</span
+      >
+  </div>
+
+  <div class="content">
+    <div class="cards">
+      @for (recipe of myRecipesPage; track $index) {
+      <bra-recipe-card
+      [recipe]="recipe"
+      ></bra-recipe-card>
+      }
+    </div>
+    <div class="pages">
+      <span (click)="prevPage()" class="setas"><</span>
+
+      @for (page of pagesArray; track page) {
+      <span
+        (click)="goToPage(page)"
+        class="numbers"
+        [class.active]="page === currentPage"
+      >
+        {{ page }}
+      </span>
+      }
+
+      <span (click)="nextPage()" class="setas">></span>
+    </div>
+  </div>
+</div>
