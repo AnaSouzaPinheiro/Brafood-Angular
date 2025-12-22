@@ -7,7 +7,7 @@ import { FilterDropdown } from '../../category/filter-dropdown/filter-dropdown';
 import { CustomButton } from "../custom-button/custom-button";
 
 @Component({
-  selector: 'app-search',
+  selector: 'bra-search',
   imports: [RecipeCard, FilterDropdown, CustomButton],
   standalone: true,
   templateUrl: './search.html',

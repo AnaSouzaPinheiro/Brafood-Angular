@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Optional } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Router, RouterModule } from '@angular/router';
 import { MyRecipesService } from '../../services/my-recipes';
 import { FormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'bra-login',
-  imports: [FormsModule, InputAcesso, CustomButton, RouterModule],
+  imports: [FormsModule, InputAcesso, CustomButton, RouterModule, CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -21,8 +21,8 @@ export class Login {
   constructor(
     private service: MyRecipesService,
     private router: Router,
-    private location: Location,
-    private auth: Auth // <--- injetar Auth
+    @Optional() private location: Location,
+    private auth: Auth
   ) {}
 
   entrar() {
@@ -40,11 +40,9 @@ export class Login {
         }
       },
       (err) => {
-        this.erro = 'Erro ao conectar com o servidor.';
+        this.erro = err.error?.message || 'Erro ao conectar com o servidor.';
       }
     );
-    //console.log(localStorage.getItem('user'));
-
   }
 
   irParaRecuperacao() {
@@ -53,7 +51,7 @@ export class Login {
 
   voltar() {
     // Se houver histórico real no navegador
-    if (window.history.length > 1) {
+    if (this.location && window.history.length > 1) {
       this.location.back();
     } else {
       // Se o usuário entrou direto na URL

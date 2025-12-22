@@ -2,15 +2,15 @@
 
 .container {
   display: flex;
-  align-items: center; // Centraliza verticalmente
+  align-items: center;
   flex-direction: column;
   justify-content: space-evenly;
-  min-height: 95vh; // Garante que o container ocupe a tela inteira
+  min-height: 95vh;
 
   background-image: url("/assets/imagens/fundos/comida.png");
-  background-size: cover; // Faz a imagem cobrir todo o container
-  background-position: center; // Centraliza a imagem
-  background-repeat: no-repeat; // Evita repetição da imagem
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   img.logo {
     width: 150px;
@@ -58,4 +58,9 @@
   .register {
     font-weight: 600;
   }
+}
+
+span.error {
+  color: red;
+  font-weight: bold;
 }

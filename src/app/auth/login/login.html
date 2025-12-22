@@ -27,6 +27,9 @@
       name="passwordLogin"
       autocomplete="current-password"
     ></bra-input-acesso>
+
+    <span class="error" *ngIf="erro">{{ erro }}</span>
+
     <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
 
     <bra-custom-button label="Entrar" (click)="entrar()"></bra-custom-button>
