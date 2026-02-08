@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { MyRecipesService } from '../../services/my-recipes';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
 import { CategoriaService } from '../../services/categoria';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'bra-footer',
@@ -17,14 +17,15 @@ export class Footer {
   categorias: Categoria[] = [];
 
   constructor(
-    public service: MyRecipesService,
-    private route: ActivatedRoute,
+    public auth: Auth,
     private categoriaServices: CategoriaService
   ) {}
 
   ngOnInit() {
-    this.logado = this.service.isLoggedIn();
-    this.userId = localStorage.getItem('userId');
+    this.logado = this.auth.isLoggedIn();
+
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    this.userId = user?.id ?? null;
 
     this.categoriaServices.listCats().subscribe((categorias) => {
       this.categorias = categorias.map((c: any) => ({
@@ -40,8 +41,7 @@ export class Footer {
   }
 
   logout() {
-    localStorage.removeItem('userId');
-    this.logado = false;
-    location.reload(); // limpa visual e navbar
+    this.auth.logout();
+    location.reload();
   }
 }

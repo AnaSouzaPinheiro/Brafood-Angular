@@ -2,29 +2,45 @@ import { Component } from '@angular/core';
 import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
 import { ActivatedRoute } from '@angular/router';
-import { Receita, Ingrediente, Etapa, Descricao } from '../../model/receita';
+import { Receita } from '../../model/receita';
 import { MyRecipesService } from '../../services/my-recipes';
 import { CommonModule } from '@angular/common';
+import { Comment } from '../comment/comment';
+import { BraInput } from '../../shared/input/input';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { Comentario } from '../../model/comentario';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'bra-recipe',
-  imports: [RecipeImages, InfoRecipe, CommonModule],
+  imports: [
+    RecipeImages,
+    InfoRecipe,
+    CommonModule,
+    Comment,
+    BraInput,
+    CustomButton,
+    FormsModule,
+  ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
 })
 export class Recipe {
-  recipe!: Receita;
+  recipe?: Receita;
+  comentarios: Comentario[] = [];
+
+  novoComentario = '';
+  visibleCommentsCount = 3;
 
   constructor(
     private route: ActivatedRoute,
-    private myRecipesServices: MyRecipesService
+    private myRecipesServices: MyRecipesService,
   ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.myRecipesServices.buscarPorId(id).subscribe((r: any) => {
-      //console.log(r); 
 
+    this.myRecipesServices.buscarPorId(id).subscribe((r: any) => {
       this.recipe = {
         id: Number(r.id),
         titulo: r.titulo,
@@ -44,7 +60,7 @@ export class Recipe {
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
           : '',
         autor: r.autor,
-        foto_perfil: r.foto_perfil  || '',
+        foto_perfil: r.foto_perfil || '',
         ingredientes: (r.ingredientes || []).map((i: any) => ({
           titulo: i.titulo,
           itens: i.itens || [],
@@ -58,6 +74,66 @@ export class Recipe {
           })),
         })),
       };
+
+      // 👇 AGORA SIM
+      this.recarregarComentarios();
     });
+  }
+
+  buildTree(comments: Comentario[]) {
+    const map = new Map<number, Comentario>();
+
+    comments.forEach((c) => {
+      c.replies = [];
+      map.set(c.id, c);
+    });
+
+    return comments.filter((c) => {
+      if (c.id_comentario_pai) {
+        map.get(c.id_comentario_pai)?.replies?.push(c);
+        return false;
+      }
+      return true;
+    });
+  }
+
+  comentar() {
+    if (!this.recipe || !this.novoComentario.trim()) return;
+
+    this.myRecipesServices
+      .criar({
+        id_receita: this.recipe.id,
+        texto: this.novoComentario,
+      })
+      .subscribe(() => {
+        this.novoComentario = '';
+        this.recarregarComentarios();
+      });
+  }
+
+  recarregarComentarios() {
+    if (!this.recipe) return;
+
+    this.myRecipesServices
+      .listarcommentsPorReceita(this.recipe.id)
+      .subscribe((cs) => {
+        this.comentarios = this.buildTree(cs);
+      });
+  }
+
+  enviarComentario(payload: { texto: string; id_comentario_pai: number }) {
+    if (!this.recipe) return;
+
+    this.myRecipesServices
+      .criar({
+        id_receita: this.recipe.id,
+        texto: payload.texto,
+        id_comentario_pai: payload.id_comentario_pai,
+      })
+      .subscribe(() => this.recarregarComentarios());
+  }
+
+  verMaisComentarios() {
+    this.visibleCommentsCount += 3;
   }
 }

@@ -10,7 +10,7 @@ import { User } from '../../model/user';
 })
 export class UserIcon {
   @Output() clickIcon = new EventEmitter<Event>();
-  @Input() user?: User; // opcional
+  @Input() user?: Partial<User>; // opcional
   @Input() userSignal?: Signal<User | undefined>; // opcional
 
   defaultIcon = 'assets/imagens/icones/pessoas.png';
@@ -28,15 +28,16 @@ export class UserIcon {
   }
 
   get mappedUser() {
-    const u: User | undefined = this.userSignal?.() || this.user;
+    const u = this.userSignal?.() || this.user;
+
     return {
-      id: u?.id || 0,
-      nome: u?.nome || '',
-      sobrenome: u?.sobrenome || '',
-      apelido: u?.apelido || '',
-      email: u?.email || '',
-      genero: u?.genero || '',
-      bio: u?.bio || '',
+      id: u?.id ?? 0,
+      nome: u?.nome ?? '',
+      sobrenome: u?.sobrenome ?? '',
+      apelido: u?.apelido ?? '',
+      email: u?.email ?? '',
+      genero: u?.genero ?? '',
+      bio: u?.bio ?? '',
       foto_perfil: u?.foto_perfil || this.defaultIcon,
     };
   }

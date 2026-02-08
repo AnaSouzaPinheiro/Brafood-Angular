@@ -19,7 +19,7 @@
 
       <div class="list">
         <div class="autor">
-          <img class="bra-user-icon" [src]="recipe?.foto_perfil">
+          <img class="bra-user-icon" [src]="recipe?.foto_perfil" />
           <div class="data">
             <span class="person"> Por {{ recipe?.autor }} </span>
             <span class="date">Publicado em: {{ recipe?.data_criacao }} </span>
@@ -42,10 +42,42 @@
       <div *ngFor="let etapa of recipe?.etapas">
         <h2 class="topic-title">{{ etapa.ordem }}. {{ etapa.titulo }}</h2>
         <ul class="ul-preparo">
-          <li *ngFor="let desc of etapa.descricoes">
-            {{ desc.descricao }}
-          </li>
+          <li *ngFor="let desc of etapa.descricoes">{{ desc.descricao }}</li>
         </ul>
+      </div>
+    </section>
+
+    <section class="commmets">
+      <div class="container com">
+        <h1 class="title sec">Comentários</h1>
+
+        <bra-input
+          inType="textarea"
+          placeholder="Nos conte o que achou dessa receita..."
+          [(ngModel)]="novoComentario"
+        ></bra-input>
+
+        <bra-custom-button
+          label="Comentar"
+          (click)="comentar()"
+        ></bra-custom-button>
+
+        <div class="c">
+          <bra-comment
+            *ngFor="let comment of comentarios | slice:0:visibleCommentsCount"
+            [comment]="comment"
+            (sendReply)="enviarComentario($event)"
+          ></bra-comment>
+        </div>
+
+        <bra-custom-button
+          *ngIf="comentarios.length > visibleCommentsCount"
+          class="seeReplies"
+          type="comment"
+          label="Ver mais comentários"
+          (click)="verMaisComentarios()"
+        >
+        </bra-custom-button>
       </div>
     </section>
   </div>

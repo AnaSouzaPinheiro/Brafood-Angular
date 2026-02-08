@@ -98,6 +98,10 @@ ul li::marker {
   }
 }
 
+bra-input {
+  width: 100%;
+}
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -143,6 +147,23 @@ ul li::marker {
   }
 }
 
+.sec {
+  background: -webkit-linear-gradient(#8aabff, #0049ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.com {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.c {
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   bra-info-recipe {
     margin-top: -125px !important;
@@ -171,7 +192,8 @@ ul li::marker {
     height: 45px;
   }
 
-  .whatsApp, .whatsApp span {
+  .whatsApp,
+  .whatsApp span {
     font-size: 90%;
   }
 }

@@ -10,6 +10,7 @@ export class Auth {
   login(user: User) {
     this.user.set(user);
     localStorage.setItem('user', JSON.stringify(user)); // opcional, pra manter após reload
+    localStorage.setItem('userId', String(user.id));
   }
 
   logout() {

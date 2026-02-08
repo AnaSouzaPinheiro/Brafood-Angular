@@ -3,16 +3,6 @@
     <div class="acesso-rapido">
       <div class="categorias">
         <h4>Categorias</h4>
-        <!-- <ul>
-          <li><a href="#">Café da Manhã & Lanches</a></li>
-          <li><a href="#">Vegetarianas & Veganas</a></li>
-          <li><a href="#">Rápidas & Fáceis</a></li>
-          <li><a href="#">Massas & Molhos</a></li>
-          <li><a href="#">Carnes & Grelhados</a></li>
-          <li><a href="#">Sobremesas</a></li>
-          <li><a href="#">Favoritos</a></li>
-        </ul> -->
-
         <ul>
           <li *ngFor="let categoria of categorias">
             <a [routerLink]="categoria.url"> {{ categoria.nome }} </a>
@@ -21,21 +11,21 @@
       </div>
 
       <!-- Mostrar "Conta" apenas se estiver logado -->
-      <div *ngIf="service.isLoggedIn()" class="conta">
+      <div *ngIf="auth.isLoggedIn()" class="conta">
         <h4>Conta</h4>
         <ul>
-          <li><a routerLink="'/editar-perfil/' + userId">Minha conta</a></li>
+          <li><a [routerLink]="'/editar-perfil/' + userId">Minha conta</a></li>
           <li>
-            <a routerLink="'/minhas-receitas/' + userId">Minhas receitas</a>
+            <a [routerLink]="'/minhas-receitas/' + userId">Minhas receitas</a>
           </li>
           <li>
-            <a routerLink="'/favoritas/' + userId">Favoritas</a>
+            <a [routerLink]="'/favoritas/' + userId">Favoritas</a>
           </li>
         </ul>
       </div>
 
       <!-- Mostrar "Acesse sua conta" apenas se estiver deslogado -->
-      <div *ngIf="!service.isLoggedIn()" class="acesso">
+      <div *ngIf="!auth.isLoggedIn()" class="acesso">
         <h4>Acesse sua conta</h4>
         <ul>
           <li><a routerLink="/login">Entrar</a></li>

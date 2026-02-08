@@ -1,57 +1,118 @@
 <div class="comment">
-  @if (isReply() === 'normal') {
+  <!-- COMENTÁRIO NORMAL (RAIZ) -->
+  @if (!isReply()) {
   <div class="person">
-    <bra-user-icon></bra-user-icon>
-    <span class="name"> {{ comment.name }} </span>
+    <bra-user-icon
+      [user]="{
+    id: comment.id_usuario,
+    nome: comment.nome_usuario,
+    foto_perfil: comment.foto_perfil
+  }"
+    ></bra-user-icon>
+
+    <span class="name">{{ comment.nome_usuario }}</span>
   </div>
 
   <div class="content">
-    <span class="data"> {{ comment.data }} </span>
-    <p class="text">{{ comment.text }}</p>
+    <span class="data">
+      {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
+    </span>
+
+    <p class="text">{{ comment.texto }}</p>
 
     <div class="replies">
-      <span class="response"> Responder </span>
-      <span class="seeReplies" [hidden]="comment.qtdReplies < 0" (click)="viewReplies.emit()"> Ver {{ comment.qtdReplies}} respostas </span>
-    </div>
-  </div>
-  } @else if (isReply() === 'reply') {
-  <div class="reply">
-    <div class="seta">
-      <img src="assets/imagens/icones/Arrow 3.svg" alt="" />
-    </div>
-    <div class="person">
-      <bra-user-icon></bra-user-icon>
-      <span class="name"> {{ comment.name }} </span>
-    </div>
+      <span class="response" (click)="responder()">Responder</span>
 
-    <div class="content">
-      <span class="data"> {{ comment.data }} </span>
-      <p class="text">{{ comment.text }}</p>
-
-      <div class="replies">
-        <span class="response"> Responder </span>
-        <span class="seeReplies" [hidden]="comment.qtdReplies < 0" (click)="viewReplies.emit()"> Ver {{ comment.qtdReplies}} respostas </span>
-      </div>
-    </div>
-  </div>
-
-  } @else if (isReply() === 'replying') {
-  <div class="replying">
-    <div class="seta">
-      <img src="assets/imagens/icones/Arrow 3.svg" alt="" />
-    </div>
-    <div class="person">
-      <bra-user-icon></bra-user-icon>
-      <span class="name"> {{ comment.name }} </span>
-    </div>
-
-    <div class="writing">
-      <bra-input inType="textarea" placeholder="Escreva sua resposta aqui...">
-      </bra-input>
-
-      <bra-custom-button class="send" label="Responder" type="comment">
-      </bra-custom-button>
+      <span
+        class="seeReplies"
+        *ngIf="(comment.replies?.length || 0) && !showReplies"
+        (click)="toggleReplies()"
+      >
+        Ver {{ comment.replies?.length || 0 }} respostas
+      </span>
     </div>
   </div>
   }
+
+  <!-- COMENTÁRIO REPLY (JÁ É RESPOSTA) -->
+  @if (isReply()) {
+  <div class="reply">
+    <div class="seta">
+      <img src="assets/imagens/icones/Arrow 3.svg" />
+    </div>
+
+    <div class="person">
+      <bra-user-icon
+        [user]="{
+    id: comment.id_usuario,
+    nome: comment.nome_usuario,
+    foto_perfil: comment.foto_perfil
+  }"
+      ></bra-user-icon>
+
+      <span class="name">{{ comment.nome_usuario }}</span>
+    </div>
+
+    <div class="content">
+      <span class="data">
+        {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
+      </span>
+
+      <p class="text">{{ comment.texto }}</p>
+
+      <div class="replies">
+        <span class="response" (click)="responder()">Responder</span>
+
+        <span
+          class="seeReplies"
+          *ngIf="(comment.replies?.length || 0) && !showReplies"
+          (click)="toggleReplies()"
+        >
+          Ver {{ comment.replies?.length || 0 }} respostas
+        </span>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- RESPONDENDO -->
+  @if (replying) {
+  <div class="replying">
+    <div class="seta">
+      <img src="assets/imagens/icones/Arrow 3.svg" />
+    </div>
+
+    <div class="writing">
+      <bra-input
+        inType="textarea"
+        placeholder="Escreva sua resposta..."
+        [(ngModel)]="textoResposta"
+      ></bra-input>
+
+      <bra-custom-button
+        class="send"
+        label="Responder"
+        (click)="enviar()"
+      ></bra-custom-button>
+    </div>
+  </div>
+  }
+</div>
+
+<!-- REPLIES -->
+<div *ngIf="showReplies">
+  <bra-comment
+    *ngFor="let reply of comment.replies || [] | slice:0:visibleRepliesCount"
+    [comment]="reply"
+    (sendReply)="sendReply.emit($event)"
+  ></bra-comment>
+
+  <bra-custom-button
+    *ngIf="(comment.replies?.length || 0) > visibleRepliesCount"
+    class="seeReplies"
+    type="comment"
+    label="Ver mais respostas"
+    (click)="verMaisRespostas()"
+  >
+  </bra-custom-button>
 </div>

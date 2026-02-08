@@ -1,4 +1,4 @@
-import { Component, Input, input, output } from '@angular/core';
+import { Component, Input, input, output, Optional } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -21,14 +21,15 @@ export type ButtonType =
 export class CustomButton {
   label = input('');
   type = input<ButtonType>('normal');
-  @Input() route?: string;  // rota que o botão representa
+  @Input() route?: string; // rota que o botão representa
   clicked = output();
-  @Input() active = false; 
+  @Input() active = false;
 
-  constructor(private router: Router) {}
+  constructor(@Optional() private router: Router) {}
 
   // retorna true se a rota atual for a mesma do botão
   isActive(): boolean {
+    if (!this.router || !this.route) return false;
     return this.router.url === this.route;
   }
 

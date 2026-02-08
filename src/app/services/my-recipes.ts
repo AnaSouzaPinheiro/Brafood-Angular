@@ -1,10 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Recipes } from '../model/myrecipes';
 import { Slide } from '../model/slide';
 import { Receita } from '../model/receita';
 import { User } from '../model/user';
+import { Comentario, CriarComentarioPayload } from '../model/comentario';
 
 @Injectable({
   providedIn: 'root',
@@ -52,14 +54,16 @@ export class MyRecipesService {
     categoria: { id: number; nome: string },
     filtros?: any
   ): Observable<Recipes[]> {
-    let params: any = {};
+    let params = new HttpParams();
 
     if (filtros?.ordenar) {
-      params.ordenar = filtros.ordenar;
+      params = params.set('ordenar', filtros.ordenar);
     }
 
-    if (filtros?.subcategorias && filtros.subcategorias.length > 0) {
-      params.subcategorias = filtros.subcategorias; // automaticamente vira array no GET
+    if (filtros?.subcategorias?.length) {
+      filtros.subcategorias.forEach((id: number) => {
+        params = params.append('subcategorias[]', id.toString());
+      });
     }
 
     return this.httpClient.get<Recipes[]>(
@@ -197,5 +201,18 @@ export class MyRecipesService {
     return this.httpClient.request('DELETE', this.url('favorito.php'), {
       body: { idUser: userId, idReceita: receitaId },
     });
+  }
+
+  listarcommentsPorReceita(idReceita: number) {
+    return this.httpClient.get<Comentario[]>(
+      this.url(`comentarios.php?receita=${idReceita}`)
+    );
+  }
+
+  criar(payload: CriarComentarioPayload) {
+    return this.httpClient.post(
+      this.url('comentarios.php'),
+      payload
+    );
   }
 }
