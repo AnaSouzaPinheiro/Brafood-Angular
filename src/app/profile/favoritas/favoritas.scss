@@ -43,9 +43,14 @@
       gap: 15px;
       font-size: 18px;
       margin: 50px 0;
+      justify-content: center;
+      align-items: center;
 
       .setas {
         cursor: pointer;
+        // background: pink;
+        // border-radius: 50%;
+        // padding: 15% 35%;
       }
 
       .numbers {
@@ -57,7 +62,10 @@
       span.active {
         color: $primary-blue;
         font-weight: bold;
-        text-decoration: underline;
+        text-decoration: none;
+        // background: pink;
+        // border-radius: 50%;
+        // padding: 15% 35%;
       }
     }
   }

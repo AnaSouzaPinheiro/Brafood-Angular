@@ -1,5 +1,5 @@
 <div class="containerDrop">
-  <label class="title"> {{ optionsDropwdown.labelTitle }} </label>
+  <!--<label class="title"> {{ optionsDropwdown.labelTitle }} </label>
 
   <div
     class="custom-dropdown"
@@ -10,18 +10,84 @@
       {{ getSelectedText() }}
       <span class="arrow">></span>
     </button>
+
     <div class="dropdown-content" (click)="$event.stopPropagation()">
       @for (item of optionsDropwdown.items; track item.name) {
-      <label
-        class="custom-checkbox"
-        [class.selected]="item.checked"
-        (click)="selectItem(item)"
-      >
-        <input type="checkbox" [checked]="item.checked" readonly />
-        <span class="checkmark"></span>
-        {{ item.name }}
-      </label>
+        <label
+          class="custom-checkbox"
+          [class.selected]="item.checked"
+          (change)="selectItem(item)"
+        >
+           Use [checked] para mostrar o estado visual 
+          <input
+            type="checkbox"
+            [checked]="item.checked"
+          />
+          <span class="checkmark"></span>
+          {{ item.name }}
+        </label>
       }
     </div>
-  </div>
+  </div>-->
+
+  <!-- 🔹 SINGLE SELECT -->
+  <ng-container *ngIf="type === 'single'">
+    <label class="title">{{ optionsDropwdown.labelTitle }}</label>
+
+    <div
+      class="custom-dropdown"
+      (click)="toggleDropdown()"
+      [class.open]="dropdownOpen"
+    >
+      <button class="dropbtn">
+        {{ getSelectedText() }}
+        <span class="arrow">></span>
+      </button>
+
+      <div class="dropdown-content" (click)="$event.stopPropagation()">
+        @for (item of optionsDropwdown.items; track item.name) {
+        <label
+          class="custom-checkbox"
+          [class.selected]="item.checked"
+          (click)="selectSingle(item)"
+        >
+          <!-- Use [checked] para mostrar o estado visual  -->
+          <input type="checkbox" [checked]="item.checked" (click)="$event.preventDefault()" >
+          <span class="checkmark"></span>
+          {{ item.name }}
+        </label>
+        }
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- 🔹 MULTI SELECT -->
+  <ng-container *ngIf="type === 'multi'">
+    <label class="title">{{ optionsDropwdown.labelTitle }}</label>
+
+    <div
+      class="custom-dropdown"
+      (click)="toggleDropdown()"
+      [class.open]="dropdownOpen"
+    >
+      <button class="dropbtn">
+        {{ getSelectedText() }}
+        <span class="arrow">></span>
+      </button>
+
+      <div class="dropdown-content" (click)="$event.stopPropagation()">
+        @for (item of optionsDropwdown.items; track item.name) {
+        <label
+          class="custom-checkbox"
+          [class.selected]="item.checked"
+          (change)="selectMulti(item)"
+        >
+          <input type="checkbox" [checked]="item.checked" />
+          <span class="checkmark"></span>
+          {{ item.name }}
+        </label>
+        }
+      </div>
+    </div>
+  </ng-container>
 </div>

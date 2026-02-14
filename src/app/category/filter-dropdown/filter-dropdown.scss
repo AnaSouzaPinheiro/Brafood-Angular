@@ -54,6 +54,7 @@
 
 .custom-dropdown.open .dropdown-content {
   display: block;
+  z-index: 1;
 }
 
 .dropdown-content label {

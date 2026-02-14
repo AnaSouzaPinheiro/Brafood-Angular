@@ -17,7 +17,7 @@ export class SearchBar {
     const texto = this.termo.trim();
     if (texto.length > 0) {
 
-      console.log(texto);
+      //console.log(texto);
       this.router.navigate(['/pesquisa', texto]);
     }
   }

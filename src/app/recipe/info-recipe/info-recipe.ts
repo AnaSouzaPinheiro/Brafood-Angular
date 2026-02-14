@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
@@ -15,7 +15,7 @@ import { Recipes } from '../../model/myrecipes';
   templateUrl: './info-recipe.html',
   styleUrl: './info-recipe.scss',
 })
-export class InfoRecipe {
+export class InfoRecipe implements OnChanges {
   @Input() recipe!: any;
 
   get mappedInfoRecipe() {
@@ -47,12 +47,12 @@ export class InfoRecipe {
   Recipes: Recipes[] = [];
 
   constructor(
-    private service: MyRecipesService, 
+    private service: MyRecipesService,
     private auth: Auth,
-    private router: Router
+    private router: Router,
   ) {}
 
-  ngOnInit() {
+  /*ngOnInit() {
     // garante que só roda no navegador
     if (typeof window === 'undefined') return;
 
@@ -73,27 +73,56 @@ export class InfoRecipe {
         console.error('ERRO AQUI NÃO PODE MAIS ACONTECER', err);
       },
     });
+  }*/
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes['recipe'] || !this.recipe?.id) return;
+
+    // garante que só roda no navegador
+    if (typeof window === 'undefined') return;
+
+    this.logado = this.auth.isLoggedIn();
+
+    const userData = localStorage.getItem('user');
+    if (!userData) return;
+
+    const parsedUser = JSON.parse(userData);
+    this.userId = Number(parsedUser.id);
+
+    this.service.isFavorita(this.userId, Number(this.recipe.id)).subscribe({
+      next: (res) => {
+        this.isFavorite = res.favorite;
+      },
+      error: (err) => {
+        console.error('Erro ao verificar favorito', err);
+      },
+    });
   }
 
   toggleFavorito() {
     if (!this.userId) {
-      this.router.navigate(['/login']) 
+      this.router.navigate(['/login']);
       return;
     }
 
-    const userIdNum = this.userId;
     const receitaIdNum = Number(this.recipe.id);
+    const userIdNum = this.userId;
 
-    this.service.isFavorita(userIdNum, receitaIdNum).subscribe((res) => {
-      if (res.favorite) {
-        this.service.desfavoritar(userIdNum, receitaIdNum).subscribe(() => {
-          this.isFavorite = false; // 🔹 AQUI
-        });
-      } else {
-        this.service.favoritar(userIdNum, receitaIdNum).subscribe(() => {
-          this.isFavorite = true; // 🔹 AQUI
-        });
-      }
-    });
+    if (this.isFavorite) {
+      this.service.desfavoritar(userIdNum, receitaIdNum).subscribe(() => {
+        this.isFavorite = false;
+      });
+    } else {
+      this.service.favoritar(userIdNum, receitaIdNum).subscribe(() => {
+        this.isFavorite = true;
+      });
+    }
+  }
+
+  scrollToComentarios() {
+    const element = document.getElementById('comentarios');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 }

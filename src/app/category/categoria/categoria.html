@@ -7,16 +7,20 @@
   <div class="filters">
     <bra-filter-dropdown
       [optionsDropwdown]="optionsDropwdown"
+      type="single"
       (changeFilter)="filtrarPorOrdem($event)"
     ></bra-filter-dropdown>
+
     <bra-filter-dropdown
       [optionsDropwdown]="optionsDropwdown2"
-      (change)="filtrarPorSubcategoria($event.id)"
+      type="multi"
+      (changeMulti)="filtrarPorSubcategoria($event)"
     ></bra-filter-dropdown>
 
     <bra-custom-button
       [label]="'Limpar filtros'"
       [type]="'filter'"
+      (click)="limparFiltros()"
     ></bra-custom-button>
   </div>
 
@@ -30,12 +34,12 @@
     @for (recipe of RecipesPage; track $index) {
     <bra-recipe-card
       [recipe]="recipe"
-      [selectedSubcategory]="selectedSubcategory"
+      [selectedSubcategories]="filtros.subcategorias"
     ></bra-recipe-card>
     }
   </div>
   <div class="pages">
-    <span (click)="prevPage()" class="setas"><</span>
+    <!-- <span (click)="prevPage()" class="setas"><</span>
 
     @for (page of pagesArray; track page) {
     <span
@@ -48,5 +52,7 @@
     }
 
     <span (click)="nextPage()" class="setas">></span>
-  </div>
+  </div> -->
+
+  <bra-custom-button [hidden]="RecipesFiltradas.length  < end" [label]="'Ver mais receitas'" [type]="'comment'" (click)="verMais()"></bra-custom-button>
 </div>

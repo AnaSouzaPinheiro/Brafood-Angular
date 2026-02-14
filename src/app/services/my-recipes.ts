@@ -31,30 +31,34 @@ export class MyRecipesService {
   // listar por user
   listPorUser(id: number): Observable<Recipes[]> {
     return this.httpClient.get<Recipes[]>(
-      this.url(`minhas_receitas.php?id=${id}`)
+      this.url(`minhas_receitas.php?id=${id}`),
     );
   }
 
   // Lista todas as receitas
   listForSerach(pesquisa: string): Observable<Recipes[]> {
     return this.httpClient.get<Recipes[]>(
-      this.url(`receitas.php?pesquisa=${pesquisa}`)
+      this.url(`receitas.php?pesquisa=${pesquisa}`),
     );
   }
 
   // Lista todas as receitas
   excluir(id: number): Observable<Recipes[]> {
     return this.httpClient.get<Recipes[]>(
-      this.url(`receitas/excluir.php?id=${id}`)
+      this.url(`receitas/excluir.php?id=${id}`),
     );
   }
 
   // Lista receitas por categoria (usando id e nome na URL)
   listCat(
-    categoria: { id: number; nome: string },
-    filtros?: any
+    categoria: { id: number; slug: string },
+    filtros?: any,
   ): Observable<Recipes[]> {
-    let params = new HttpParams();
+    let params = new HttpParams().set('id', categoria.id.toString());
+
+    if (categoria.slug) {
+      params = params.set('slug', categoria.slug);
+    }
 
     if (filtros?.ordenar) {
       params = params.set('ordenar', filtros.ordenar);
@@ -66,27 +70,22 @@ export class MyRecipesService {
       });
     }
 
-    return this.httpClient.get<Recipes[]>(
-      this.url(
-        `receitas_categoria.php?id=${categoria.id}&nome=${encodeURIComponent(
-          categoria.nome
-        )}`
-      ),
-      { params }
-    );
+    return this.httpClient.get<Recipes[]>(this.url('receitas_categoria.php'), {
+      params,
+    });
   }
 
   // Lista receitas aleatórias pro slide da home
   listRandom(limit: number): Observable<Slide[]> {
     return this.httpClient.get<Slide[]>(
-      this.url(`slide_home.php?limit=${limit}`)
+      this.url(`slide_home.php?limit=${limit}`),
     );
   }
 
   // Busca receita específica pelo ID
   buscarPorId(id: number): Observable<Receita> {
     return this.httpClient.get<Receita>(
-      this.url(`receitas/buscar.php?id=${id}`)
+      this.url(`receitas/buscar.php?id=${id}`),
     );
   }
 
@@ -102,7 +101,7 @@ export class MyRecipesService {
 
     return this.httpClient.post<any>(
       'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/add.php',
-      formData
+      formData,
     );
   }
 
@@ -117,7 +116,7 @@ export class MyRecipesService {
 
     return this.httpClient.post<any>(
       `http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/update.php?id=${id}`,
-      formData
+      formData,
     );
   }
 
@@ -134,7 +133,7 @@ export class MyRecipesService {
     nome: string,
     email: string,
     senha: string,
-    confirmarSenha: string
+    confirmarSenha: string,
   ): Observable<any> {
     return this.httpClient.post<any>(this.url('cadastro.php'), {
       nome,
@@ -177,14 +176,14 @@ export class MyRecipesService {
   // LISTAR favoritos do usuário
   listarFavoritos(userId: number): Observable<Recipes[]> {
     return this.httpClient.get<Recipes[]>(
-      this.url(`favorito.php?idUser=${userId}`)
+      this.url(`favorito.php?idUser=${userId}`),
     );
   }
 
   // VERIFICAR se receita é favorita
   isFavorita(userId: number, receitaId: number) {
     return this.httpClient.get<{ favorite: boolean }>(
-      this.url(`favorito.php?check=1&idUser=${userId}&idReceita=${receitaId}`)
+      this.url(`favorito.php?check=1&idUser=${userId}&idReceita=${receitaId}`),
     );
   }
 
@@ -205,14 +204,11 @@ export class MyRecipesService {
 
   listarcommentsPorReceita(idReceita: number) {
     return this.httpClient.get<Comentario[]>(
-      this.url(`comentarios.php?receita=${idReceita}`)
+      this.url(`comentarios.php?receita=${idReceita}`),
     );
   }
 
   criar(payload: CriarComentarioPayload) {
-    return this.httpClient.post(
-      this.url('comentarios.php'),
-      payload
-    );
+    return this.httpClient.post(this.url('comentarios.php'), payload);
   }
 }

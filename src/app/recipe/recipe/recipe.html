@@ -1,7 +1,7 @@
 <div class="infos-recipe">
   <div class="main-info">
     <bra-recipe-images [images]="recipe"></bra-recipe-images>
-    <bra-info-recipe [recipe]="recipe"></bra-info-recipe>
+    <bra-info-recipe *ngIf="recipe" [recipe]="recipe"></bra-info-recipe>
   </div>
 
   <div class="receita">
@@ -47,7 +47,7 @@
       </div>
     </section>
 
-    <section class="commmets">
+    <section class="commmets" id="comentarios">
       <div class="container com">
         <h1 class="title sec">Comentários</h1>
 

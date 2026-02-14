@@ -4,10 +4,13 @@ import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Recipes } from '../../model/myrecipes';
 import { MyRecipesService } from '../../services/my-recipes';
 import { CategoriaService } from '../../services/categoria';
-import { Categoria as CategoriaModel } from '../../model/categoria'; // 👈 renomeado aqui
+import { Categoria as CategoriaModel } from '../../model/categoria';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { ChangeDetectorRef } from '@angular/core';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'bra-categoria',
@@ -32,163 +35,125 @@ export class Categoria {
     items: [] as { id: number; name: string; checked: boolean }[],
   };
 
-  selectedSubcategory: number | null = null;
-
-  indice!: number;
-  currentPage!: number;
+  filtros = {
+    ordenar: 'nome',
+    subcategorias: [] as number[], // vazio = Todas
+  };
 
   categoria?: CategoriaModel;
-  Recipes: Recipes[] = [];
 
+  Recipes: Recipes[] = [];
   RecipesFiltradas: Recipes[] = [];
+
+  begin = 0;
+  end = 6;
 
   constructor(
     private route: ActivatedRoute,
     private myRecipesServices: MyRecipesService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.indice = 0;
-    this.currentPage = 1;
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          const id = params.get('id');
+          const nome = params.get('nome');
 
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      const nome = params.get('nome');
+          if (!id || !nome) throw new Error('Categoria inválida');
 
-      if (id && nome) {
-        this.myRecipesServices.listCat({ id: Number(id), nome }).subscribe(
-          (res: any) => {
-            if (Array.isArray(res)) {
-              this.Recipes = res;
-              this.RecipesFiltradas = res;
-            } else {
-              this.Recipes = [];
-              console.warn('Nenhuma receita encontrada.');
-            }
-          },
-          (error) => {
-            console.error('Erro ao carregar receitas:', error);
-            this.Recipes = [];
-          }
-        );
+          return this.categoriaService.getCatById(Number(id));
+        }),
+      )
+      .subscribe((categoria) => {
+        this.categoria = categoria;
 
-        // busca os dados da categoria
-        this.categoriaService.getCatById(Number(id)).subscribe({
-          next: (res: CategoriaModel) => {
-            this.categoria = res;
+        this.optionsDropwdown2.items = [
+          { id: 0, name: 'Todas', checked: true },
+          ...categoria.subcategorias.map((s) => ({
+            id: s.id,
+            name: s.nome,
+            checked: false,
+          })),
+        ];
 
-            // limpar antes de preencher
-            this.optionsDropwdown2.items = [];
-
-            // adiciona opção "Todas"
-            this.optionsDropwdown2.items.push({
-              id: 0,
-              name: 'Todas',
-              checked: true, // começa marcada
-            });
-
-            // adiciona subcategorias vindas da API
-            this.optionsDropwdown2.items.push(
-              ...res.subcategorias.map((s) => ({
-                id: s.id,
-                name: s.nome,
-                checked: false,
-              }))
-            );
-          },
-          error: (err) => console.error('Erro ao carregar categoria:', err),
-        });
-      }
-    });
-  }
-
-  get RecipesPage() {
-    return Array.isArray(this.RecipesFiltradas)
-      ? this.RecipesFiltradas.slice(this.indice, this.indice + 6)
-      : [];
-  }
-
-  get pages(): number {
-    return Math.ceil(this.RecipesFiltradas.length / 6);
-  }
-
-  get pagesArray(): number[] {
-    return Array.from({ length: this.pages }, (_, i) => i + 1);
-  }
-
-  nextPage() {
-    let newIndex = this.indice + 6;
-    if (newIndex >= this.Recipes.length) {
-      newIndex = 0;
-    }
-    this.indice = newIndex;
-    this.currentPage = this.indice / 6 + 1;
-  }
-
-  prevPage() {
-    let newIndex = this.indice - 6;
-    if (newIndex < 0) {
-      newIndex = (this.pages - 1) * 6;
-    }
-    this.indice = newIndex;
-    this.currentPage = this.indice / 6 + 1;
-  }
-
-  goToPage(page: number) {
-    this.indice = (page - 1) * 6;
-    this.currentPage = page;
-  }
-
-  filtrarPorOrdem(filtro: string) {
-    let ordenar = 'nome';
-
-    if (filtro === 'Por nome') ordenar = 'nome';
-    if (filtro === 'Mais novas') ordenar = 'mais_novos';
-    if (filtro === 'Mais antigas') ordenar = 'mais_antigos';
-    if (filtro === 'Mais favoritas') ordenar = 'mais_favoritos';
-
-    // Se estiver filtrando por subcategoria:
-    this.buscarReceitas({
-      ordenar,
-      subcategorias: this.selectedSubcategory ? [this.selectedSubcategory] : [],
-    });
-
-    this.resetarPaginacao();
-  }
-
-  filtrarPorSubcategoria(id: number) {
-    // usuário escolheu "Todas"
-    if (id === 0) {
-      this.selectedSubcategory = null;
-
-      // marcar "Todas"
-      this.optionsDropwdown2.items.forEach((i) => (i.checked = i.id === 0));
-
-      this.buscarReceitas({ subcategorias: [] });
-      return;
-    }
-
-    // Marca o item correto
-    this.optionsDropwdown2.items.forEach((i) => (i.checked = i.id === id));
-
-    this.selectedSubcategory = id;
-
-    this.buscarReceitas({ subcategorias: [id] });
-  }
-
-  buscarReceitas(filtros?: any) {
-    this.myRecipesServices
-      .listCat({ id: this.categoria!.id, nome: this.categoria!.nome }, filtros)
-      .subscribe((res) => {
-        this.Recipes = res;
-        this.RecipesFiltradas = [...res];
-        this.resetarPaginacao();
+        this.buscarReceitas();
       });
   }
 
-  resetarPaginacao() {
-    this.indice = 0;
-    this.currentPage = 1;
+  private mapaOrdenacao: Record<string, string> = {
+    'Por nome': 'nome',
+    'Mais novas': 'mais_novos',
+    'Mais antigas': 'mais_antigos',
+    'Mais favoritas': 'mais_favoritos',
+  };
+
+  filtrarPorOrdem(filtro: string) {
+    this.filtros.ordenar = this.mapaOrdenacao[filtro] ?? 'nome';
+    this.buscarReceitas();
+  }
+
+  filtrarPorSubcategoria(ids: number[]) {
+    this.filtros.subcategorias = ids;
+    this.buscarReceitas();
+  }
+
+  buscarReceitas() {
+    if (!this.categoria) return;
+
+    const filtrosRequest: any = {
+      ordenar: this.filtros.ordenar,
+    };
+
+    // Apenas adicione 'subcategorias' se houver IDs específicas para filtrar (não vazio/não "Todas")
+    if (this.filtros.subcategorias.length > 0) {
+      filtrosRequest.subcategorias = this.filtros.subcategorias;
+    }
+
+    // Log do request final para debug (opcional)
+    // console.log(
+    //   `Enviando request com filtros:`,
+    //   filtrosRequest,
+    //   `(length: ${this.filtros.subcategorias.length})`,
+    // );
+
+    this.myRecipesServices
+      .listCat(
+        { id: this.categoria.id, slug: this.categoria.slug },
+        filtrosRequest,
+      )
+      .subscribe((res) => {
+        this.Recipes = res;
+        this.RecipesFiltradas = [...res];
+        this.begin = 0;
+        this.end = 6;
+      });
+  }
+
+  get RecipesPage() {
+    return this.RecipesFiltradas.slice(this.begin, this.end);
+  }
+
+  verMais() {
+    this.end += 6;
+  }
+
+  limparFiltros() {
+    this.filtros = {
+      ordenar: 'nome',
+      subcategorias: [],
+    };
+
+    // Reseta o dropdown de Ordenação para "Por nome"
+    this.optionsDropwdown.items.forEach((i, idx) => (i.checked = idx === 0));
+
+    // Reseta o dropdown de Subcategorias para "Todas"
+    this.optionsDropwdown2.items.forEach((i) => {
+      i.checked = i.id === 0;
+    });
+
+    this.buscarReceitas();
   }
 }
