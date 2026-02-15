@@ -8,6 +8,7 @@ import { MyRecipesService } from '../../services/my-recipes';
 import { Recipes } from '../../model/myrecipes';
 import { Auth } from '../../services/auth';
 import { User } from '../../model/user';
+import { ModalService } from '../../services/modal-service';
 
 @Component({
   selector: 'bra-minhas-receitas',
@@ -29,7 +30,8 @@ export class MinhasReceitas {
   constructor(
     private myRecipesServices: MyRecipesService,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService,
   ) {
     this.logado = this.auth.isLoggedIn();
 
@@ -92,8 +94,39 @@ export class MinhasReceitas {
   }
 
   excluirReceita(id: number) {
-    this.myRecipesServices.excluir(id).subscribe(() => {
-      this.Recipes = this.Recipes.filter((r) => r.id !== id);
+    this.modalService.open({
+      type: 'warning',
+      title: 'Excluir receita',
+      message:
+        'Tem certeza que deseja excluir esta receita? Essa ação não pode ser desfeita.',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        this.confirmarExclusao(id);
+      },
+    });
+  }
+
+  private confirmarExclusao(id: number) {
+    this.myRecipesServices.excluir(id).subscribe({
+      next: () => {
+        // remove da lista sem reload
+        this.Recipes = this.Recipes.filter((r) => r.id !== id);
+
+        this.modalService.open({
+          type: 'success',
+          title: 'Receita excluída',
+          message: 'A receita foi excluída com sucesso!',
+          confirmText: 'OK',
+        });
+      },
+      error: () => {
+        this.modalService.open({
+          type: 'error',
+          title: 'Erro',
+          message: 'Não foi possível excluir a receita. Tente novamente.',
+        });
+      },
     });
   }
 }

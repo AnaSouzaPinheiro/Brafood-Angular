@@ -18,6 +18,8 @@ import { Categoria } from '../../model/categoria';
 import { CategoriaService } from '../../services/categoria';
 import { Option } from '../../profile/dropdown/dropdown';
 import { MyRecipesService } from '../../services/my-recipes';
+import { ModalService } from '../../services/modal-service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'bra-add-recipe',
@@ -94,7 +96,10 @@ export class AddRecipe {
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private myRecipesService: MyRecipesService
+    private myRecipesService: MyRecipesService,
+    private modalService: ModalService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
     this.form = this.fb.group({
       titulo: ['', Validators.required],
@@ -228,26 +233,41 @@ export class AddRecipe {
     const formData = new FormData();
     formData.append(
       'dados',
-      new Blob([JSON.stringify(receitaPronta)], { type: 'application/json' })
+      new Blob([JSON.stringify(receitaPronta)], { type: 'application/json' }),
     );
 
     this.imagensSelecionadas.forEach((file, i) => {
       formData.append('imagem' + (i + 1), file);
     });
 
-    console.log('🍳 Enviando receita:', receitaPronta);
     this.myRecipesService
       .addReceita(receitaPronta, this.imagensSelecionadas)
       .subscribe({
         next: (res) => {
-          console.log('✅ Receita enviada com sucesso!', res);
-          alert('Receita cadastrada!');
-          this.form.reset();
-          this.imagensSelecionadas = [];
+          if (res?.sucesso) {
+            this.form.reset();
+            this.imagensSelecionadas = [];
+            this.modalService.open({
+              type: 'success',
+              title: 'Perfil atualizado',
+              message: 'Suas informações foram salvas com sucesso!',
+              confirmText: 'OK',
+              onConfirm: () => {
+                const idUsuario = Number(this.route.snapshot.queryParamMap.get('user'));
+                this.router.navigate(['/minhas-receitas', idUsuario]);
+              },
+            });
+          } else {
+            this.modalService.open({
+              type: 'error',
+              title: 'Erro',
+              message: res?.mensagem || 'Erro ao atualizar perfil.',
+            });
+          }
         },
         error: (err) => {
-          console.error('❌ Erro ao enviar receita:', err);
-          alert('Erro ao cadastrar receita.');
+          console.error(err);
+          alert('Erro de comunicação com o servidor.');
         },
       });
   }

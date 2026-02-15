@@ -25,6 +25,7 @@
         name="senha"
         placeholder="Nova senha"
         autocomplete="new-password"
+        (input)="validarSenhaFront()"
       ></bra-input-acesso>
 
       <!-- Confirmar senha -->
@@ -34,8 +35,18 @@
         name="confirmarSenha"
         placeholder="Confirmar senha"
         autocomplete="new-password"
+        (input)="validarSenhaFront()"
       ></bra-input-acesso>
     </div>
+
+    <ul id="rules">
+      Sua senha deve atender aos seguintes requisitos
+      <li id="r0">8 caracteres mínimo</li>
+      <li id="r1">1 dígito</li>
+      <li id="r2">1 minúscula</li>
+      <li id="r3">1 maiúscula</li>
+      <li id="r4">1 carácter especial (ex : ! &#64; # $)</li>
+    </ul>
 
     <p class="erro" *ngIf="mensagem && !sucesso">{{ mensagem }}</p>
     <p class="sucesso" *ngIf="sucesso">{{ mensagem }}</p>

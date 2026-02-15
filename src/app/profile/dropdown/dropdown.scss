@@ -121,3 +121,8 @@
   color: #e53935;
   border: 1px solid #e53935;
 }
+
+.dropdown-option.selected {
+  background: #eee;  /* Ou seu estilo de “selecionado” */
+  font-weight: 600;
+}

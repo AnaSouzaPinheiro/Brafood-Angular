@@ -96,8 +96,8 @@ button.filter {
   border: 1px solid #000;
 
   &:hover {
-    color: #002C99;
-    border-color: #002C99;
+    color: $primary-blue;
+    border-color: $primary-blue;
     background: transparent;
   }
 }

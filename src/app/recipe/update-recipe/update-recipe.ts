@@ -20,6 +20,7 @@ import { Option } from '../../profile/dropdown/dropdown';
 import { MyRecipesService } from '../../services/my-recipes';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { ModalService } from '../../services/modal-service';
 
 @Component({
   selector: 'bra-update-recipe',
@@ -90,7 +91,8 @@ export class UpdateRecipe implements OnInit {
     private categoriaService: CategoriaService,
     private myRecipesService: MyRecipesService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService,
   ) {
     this.form = this.fb.group({
       titulo: ['', Validators.required],
@@ -161,7 +163,7 @@ export class UpdateRecipe implements OnInit {
   // TRANSFORMA ID -> LABEL PARA UPDATE
   prepararCategoriaEsub(receita: Receita) {
     const categoriaEncontrada = this.categorias.find(
-      (c) => c.id === Number(receita.categoria)
+      (c) => c.id === Number(receita.categoria),
     );
 
     if (!categoriaEncontrada) return;
@@ -177,7 +179,7 @@ export class UpdateRecipe implements OnInit {
     // Prepara subcategorias
     const subs = this.subcategoriasPorCategoria[categoriaEncontrada.id] || [];
     const subEncontrada = subs.find(
-      (s) => s.value === (receita.subcategoria ?? '').toString()
+      (s) => s.value === (receita.subcategoria ?? '').toString(),
     );
 
     if (subEncontrada) {
@@ -211,7 +213,7 @@ export class UpdateRecipe implements OnInit {
               value: s.id.toString(),
             }));
         });
-      })
+      }),
     );
   }
 
@@ -290,8 +292,12 @@ export class UpdateRecipe implements OnInit {
     }));
   }
 
-  // SALVAR
+  cancelar() {
+    const idUsuario = Number(this.route.snapshot.queryParamMap.get('user'));
+    this.router.navigate(['/minhas-receitas', idUsuario]);
+  }
 
+  // SALVAR
   salvar() {
     const categoriaSelecionada = this.categoriasSelecionadas[0];
     const subSelecionada =
@@ -312,15 +318,35 @@ export class UpdateRecipe implements OnInit {
       etapas: this.receita.etapas,
     };
 
-    console.log(receitaPronta);
-
     this.myRecipesService
       .updateReceita(this.idReceita, receitaPronta, this.imagensSelecionadas)
       .subscribe({
-        next: () => {
-          alert('Receita atualizada!');
+        next: (res) => {
+          if (res?.sucesso) {
+            this.modalService.open({
+              type: 'success',
+              title: 'Receita atualizada!',
+              message: 'Informações da receita salvas com sucesso.',
+              confirmText: 'OK',
+              onConfirm: () => {
+                const idUsuario = Number(
+                  this.route.snapshot.queryParamMap.get('user'),
+                );
+                this.router.navigate(['/minhas-receitas', idUsuario]);
+              },
+            });
+          } else {
+            this.modalService.open({
+              type: 'error',
+              title: 'Erro',
+              message: res?.mensagem || 'Erro ao atualizar receita.',
+            });
+          }
         },
-        error: () => alert('Erro ao atualizar receita.'),
+        error: (err) => {
+          console.error(err);
+          alert('Erro de comunicação com o servidor.');
+        },
       });
   }
 }

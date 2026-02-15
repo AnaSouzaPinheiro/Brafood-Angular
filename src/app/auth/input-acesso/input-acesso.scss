@@ -24,3 +24,19 @@ input {
     font-size: 18px;
   }
 }
+
+@media (max-width: 480px) {
+  input {
+    width: 235px;
+  }
+
+  .description,
+  .cadastre {
+    text-align: center;
+  }
+
+  .modal {
+    gap: 25px;
+    padding: 35px 30px;
+  }
+}

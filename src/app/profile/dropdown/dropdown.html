@@ -9,12 +9,12 @@
   <ng-container *ngIf="multiSelect; else singleDropdown">
     <div
       class="custom-dropdown"
-      *ngFor="let selectedValue of selected(); let i = index; trackBy: trackByIndex"
+      *ngFor="let selectedValue of selected; let i = index; trackBy: trackByIndex"
       [class.dropdown--open]="isOpen()[i]"
     >
       <div class="dropdown-header" (click)="toggleDropdown(i)" tabindex="0">
         <span class="dropdown-header__selected">
-          {{ selected()[i] || 'Selecione' }}
+          {{ selectedValue.label || 'Selecione' }}
         </span>
         <div class="dropdown-header__arrow">
           <svg
@@ -36,6 +36,7 @@
         <li
           class="dropdown-option"
           *ngFor="let option of options"
+          [class.selected]="isSelected(option)"
           (click)="selectOption(i, option)"
           tabindex="0"
         >
@@ -45,7 +46,7 @@
 
       <button
         class="remover"
-        *ngIf="selected().length > 1 && i > 0"
+        *ngIf="selected.length > 1 && i > 0"
         (click)="removeDropdown(i)"
         type="button"
       >
@@ -56,7 +57,7 @@
         class="adicionar"
         *ngIf="i === 0"
         (click)="addDropdown()"
-        [disabled]="selected().length >= maxItems"
+        [disabled]="selected.length >= maxItems"
         type="button"
       >
         +
@@ -72,9 +73,9 @@
         (click)="toggleDropdown(0); $event.stopPropagation()"
         tabindex="0"
       >
-        <span class="dropdown-header__selected"
-          >{{ selected()[0] || 'Selecione' }}</span
-        >
+        <span class="dropdown-header__selected">
+          {{ selected[0]?.label || 'Selecione' }}
+        </span>
         <div class="dropdown-header__arrow">
           <svg
             width="24"
@@ -95,6 +96,7 @@
         <li
           class="dropdown-option"
           *ngFor="let option of options"
+          [class.selected]="isSelected(option)"
           (click)="selectOption(0, option); $event.stopPropagation()"
           tabindex="0"
         >
