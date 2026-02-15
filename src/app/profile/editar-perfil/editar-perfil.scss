@@ -1,0 +1,172 @@
+@use "variables" as *;
+
+/* =========================
+   TÍTULO
+========================= */
+.title {
+  margin: 0 145px 32px;
+  font-size: 48px;
+  font-weight: 600;
+  color: $primary-blue;
+}
+
+/* =========================
+   GRID PRINCIPAL
+========================= */
+.editAccount {
+  margin: 0 145px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-areas:
+    "foto dados"
+    "dadosExtra dadosExtra";
+  gap: 48px;
+}
+
+/* =========================
+   FOTO / AVATAR
+========================= */
+.container-foto {
+  grid-area: foto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.picture {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#picture_input {
+  display: none;
+}
+
+.infos {
+  display: flex;
+  justify-content: center;
+}
+
+.picture_image {
+  width: 200px;
+}
+
+.picture__img {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* =========================
+   FORMULÁRIO
+========================= */
+.inputs,
+.inputs-two {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.inputs {
+  grid-area: dados;
+}
+
+.inputs-two {
+  grid-area: dadosExtra;
+}
+
+/* =========================
+   LINHAS DE INPUT
+========================= */
+.input-child {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.input-box {
+  width: 100%;
+}
+
+bra-input {
+  display: block;
+  width: 100%;
+}
+
+/* =========================
+   GÊNERO
+========================= */
+.input-box.gender {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.genero {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* =========================
+   CHECKBOX CUSTOM
+========================= */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.custom-checkbox input {
+  display: none;
+}
+
+.custom-checkbox .checkmark {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #000;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.custom-checkbox input:checked + .checkmark {
+  background: $primary-blue;
+  border-color: $primary-blue;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.myAccount {
+  margin-bottom: 70px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+@media (max-width: 768px) {
+  .editAccount {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "foto"
+      "dados"
+      "dadosExtra";
+  }
+
+  .input-child {
+    grid-template-columns: 1fr;
+  }
+
+  .picture__img {
+    width: 160px;
+    height: 160px;
+  }
+}

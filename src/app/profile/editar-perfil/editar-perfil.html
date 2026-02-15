@@ -1,4 +1,154 @@
 <div class="myAccount">
   <bra-perfil></bra-perfil>
 
+  <h1 class="title">Meus Dados</h1>
+  <form [formGroup]="form" class="editAccount">
+    <div class="container-foto">
+      <div class="image">
+        <label class="picture" for="picture_input">
+          <input
+            type="file"
+            accept="image/png, image/jpg"
+            id="picture_input"
+            (change)="onFileChange($event)"
+          />
+          <div class="infos">
+            <ng-container *ngIf="!hasPreview(previewSrc); else showPreview">
+              <img
+                class="picture_image"
+                src="assets/imagens/icones/anexoPerfil.png"
+                alt=""
+              />
+            </ng-container>
+            <ng-template #showPreview>
+              <img
+                class="picture__img"
+                [src]="previewSrc"
+                alt="Imagem selecionada"
+              />
+            </ng-template>
+          </div>
+          <bra-custom-button [type]="'add'" [label]="'Editar imagem'">
+          </bra-custom-button>
+        </label>
+      </div>
+      <p>Formato: jpg ou png</p>
+      <p>Dimensões ideais em pixels: 920 x 600</p>
+      <p>Peso: até 3mb cada</p>
+    </div>
+
+    <div class="inputs">
+      <div class="input-child">
+        <div class="input-box">
+          <bra-input
+            [label]="'Apelido*'"
+            [inType]="'input'"
+            formControlName="apelido"
+            name="apelido"
+            autocomplete="apelido"
+          ></bra-input>
+        </div>
+
+        <div class="input-box gender">
+          <label class="genero">Gênero</label>
+
+          <label class="custom-checkbox">
+            <input type="radio" value="F" formControlName="genero" />
+            <span class="checkmark"></span>
+            Feminino
+          </label>
+
+          <label class="custom-checkbox">
+            <input type="radio" value="M" formControlName="genero" />
+            <span class="checkmark"></span>
+            Masculino
+          </label>
+        </div>
+      </div>
+
+      <div class="input-child">
+        <div class="input-box">
+          <bra-input
+            [label]="'Nome*'"
+            [inType]="'input'"
+            formControlName="nome"
+            name="nome"
+            autocomplete="nome"
+          ></bra-input>
+        </div>
+
+        <div class="input-box">
+          <bra-input
+            [label]="'Sobrenome*'"
+            [inType]="'input'"
+            formControlName="sobrenome"
+            name="sobrenome"
+            autocomplete="sobrenome"
+          ></bra-input>
+        </div>
+      </div>
+
+      <bra-input
+        [label]="'Resumo'"
+        [inType]="'textarea'"
+        formControlName="bio"
+        name="bio"
+        autocomplete="bio"
+      ></bra-input>
+    </div>
+
+    <div class="inputs-two">
+      <div class="input-child">
+        <div class="input-box">
+          <bra-input
+            [label]="'E-mail*'"
+            [inType]="'input'"
+            formControlName="email"
+            name="email"
+            autocomplete="email"
+          ></bra-input>
+        </div>
+
+        <div class="input-box">
+          <bra-input
+            [label]="'Novo e-mail'"
+            [inType]="'input'"
+            formControlName="novoEmail"
+            name="novoEmail"
+            autocomplete="novoEmail"
+          ></bra-input>
+        </div>
+      </div>
+
+      <div class="input-child">
+        <div class="input-box">
+          <bra-input
+            [label]="'Nova senha'"
+            [inType]="'input'"
+            formControlName="novaSenha"
+            name="novaSenha"
+            autocomplete="novaSenha"
+          ></bra-input>
+        </div>
+
+        <div class="input-box">
+          <bra-input
+            [label]="'Confirmar nova senha'"
+            [inType]="'input'"
+            formControlName="confirmarNovaSenha"
+            name="confirmarNovaSenha"
+            autocomplete="confirmarNovaSenha"
+          ></bra-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <bra-custom-button
+        [type]="'add'"
+        [label]="'Salvar alterações'"
+        (clicked)="editarPerfil()"
+      ></bra-custom-button>
+    </div>
+  </form>
 </div>
