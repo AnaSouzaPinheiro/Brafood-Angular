@@ -114,9 +114,9 @@ export class RecipeSection {
   }
 
   atualizaCor(qual: number) {
-    this.back1 = qual === 1 ? '$primary-blue' : '';
-    this.back2 = qual === 2 ? '$primary-blue' : '';
-    this.back3 = qual === 3 ? '$primary-blue' : '';
+    this.back1 = qual === 1 ? '#002C99' : '';
+    this.back2 = qual === 2 ? '#002C99' : '';
+    this.back3 = qual === 3 ? '#002C99' : '';
   }
 
   getClasses() {

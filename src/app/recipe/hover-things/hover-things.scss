@@ -26,6 +26,14 @@
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-right: 10px solid #fff; 
+    border-right: 10px solid #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .hover::before {
+    rotate: 90deg;
+    top: -14px;
+    left: 92px;
   }
 }

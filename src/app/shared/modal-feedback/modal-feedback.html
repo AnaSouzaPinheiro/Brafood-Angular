@@ -6,8 +6,8 @@
     <p>{{ modal.message }}</p>
 
     <div class="actions">
-      <button *ngIf="modal.type === 'confirm'" class="cancel" (click)="close()">
-        {{ modal.cancelText || 'Cancelar' }}
+      <button *ngIf="modal.cancelText" class="cancel" (click)="close()">
+        {{ modal.cancelText }}
       </button>
 
       <button class="confirm" (click)="confirm()">

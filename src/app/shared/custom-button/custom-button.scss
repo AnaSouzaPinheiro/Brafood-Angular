@@ -104,7 +104,23 @@ button.filter {
 
 @media (max-width: 768px) {
   button {
-    font-size: 90% !important;
+    font-size: 0.8rem !important;
     //padding: 10% 60% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    font-size: 0.8rem !important;
+    padding: 25px !important;
+
+    .other {
+      padding: 0;
+    }
+
+  }
+  
+  .filter {
+    padding: 8px 15px !important;
   }
 }

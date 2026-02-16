@@ -23,7 +23,7 @@ export class ResetarSenha {
   constructor(
     private route: ActivatedRoute,
     private service: MyRecipesService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -65,7 +65,31 @@ export class ResetarSenha {
         },
         () => {
           this.mensagem = 'Erro ao conectar com o servidor.';
-        }
+        },
       );
+  }
+
+  mudarCorErro(indice: number, cor: string) {
+    const li = document.getElementById('r' + indice);
+    if (li) {
+      li.style.color = cor;
+    }
+  }
+
+  validarSenhaFront() {
+    const regras = [
+      this.senha.length >= 8,
+      /[0-9]/.test(this.senha),
+      /[a-z]/.test(this.senha),
+      /[A-Z]/.test(this.senha),
+      /[!@#$.?&()+-]/.test(this.senha),
+    ];
+
+    regras.forEach((valido, i) => {
+      this.mudarCorErro(i, valido ? 'green' : 'red');
+    });
+
+    // Retorna true se todas regras estiverem ok
+    return regras.every((r) => r);
   }
 }

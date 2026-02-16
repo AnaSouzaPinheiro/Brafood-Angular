@@ -42,7 +42,7 @@
       }
 
       .name {
-        font-size: 48px;
+        font-size: 2rem;
         font-weight: 500;
         color: $primary-blue;
       }
@@ -54,13 +54,13 @@
       gap: 20px;
 
       .title {
-        font-size: 30px;
+        font-size: 1.5rem;
         font-weight: 300;
         color: $primary-gray;
       }
 
       .text {
-        font-size: 24px;
+        font-size: 1rem;
         font-weight: 300;
         color: $primary-blue;
         max-width: 500px;
@@ -72,7 +72,7 @@
 @media (max-width: 768px) {
   .menuPerfil {
     gap: 55px;
-    margin: 35px 0 35px 0;
+    margin: 35px;
   }
 
   .main {
@@ -95,4 +95,8 @@
   hr {
     margin: 0 50px 0 50px !important;
   }
+}
+
+@media (max-width: 480px) {
+
 }
