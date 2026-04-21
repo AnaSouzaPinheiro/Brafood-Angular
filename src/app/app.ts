@@ -9,6 +9,7 @@ import { Credit } from './core/credit/credit';
 import { Navbar } from './core/navbar/navbar';
 import { CategoryBar } from './core/category-bar/category-bar';
 import { Footer } from './core/footer/footer';
+import { ModalFeedback } from "./shared/modal-feedback/modal-feedback";
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ import { Footer } from './core/footer/footer';
     Footer,
     Credit,
     RouterModule,
-  ],
+    ModalFeedback
+],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
 })

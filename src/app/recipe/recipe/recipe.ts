@@ -30,6 +30,7 @@ export class Recipe {
   comentarios: Comentario[] = [];
 
   novoComentario = '';
+  urlWhatsApp = '';
   visibleCommentsCount = 3;
 
   constructor(
@@ -77,6 +78,8 @@ export class Recipe {
 
       // 👇 AGORA SIM
       this.recarregarComentarios();
+
+      this.getLinkWhatsApp();
     });
   }
 
@@ -95,6 +98,18 @@ export class Recipe {
       }
       return true;
     });
+  }
+
+  getLinkWhatsApp() {
+    if (!this.recipe?.ingredientes) {
+      return;
+    }
+
+    this.myRecipesServices
+      .getLinkWhatsApp(this.recipe.ingredientes)
+      .subscribe((url) => {
+        this.urlWhatsApp = url;
+      });
   }
 
   comentar() {

@@ -134,6 +134,8 @@ bra-input {
     padding: 11px 20px;
     font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
 
     img {
       width: 21px;
@@ -175,10 +177,23 @@ bra-input {
 
   .container {
     gap: 15px;
-    flex-direction: column;
   }
 
-  li,
+  .ingredientes .title {
+    text-align: left !important;
+  }
+
+  span.temaIng,
+  .topic-title {
+    font-size: 1.5rem !important;
+  }
+
+  li {
+    font-size: 1rem !important;
+    line-height: 2.5;
+    margin-left: 25px;
+  }
+
   .autor span {
     font-size: 90% !important;
   }
@@ -188,13 +203,49 @@ bra-input {
     text-align: center;
   }
 
-  .autor bra-user-icon {
-    width: 45px;
-    height: 45px;
+  .autor {
+    align-items: center;
+
+    bra-user-icon {
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  .list {
+    gap: 25px !important;
+    justify-content: center !important;
   }
 
   .whatsApp,
-  .whatsApp span {
-    font-size: 90%;
+  .whatsApp span,
+  .zap {
+    font-size: 0.8rem !important;
+  }
+
+  .whatsApp {
+    padding: 15px !important;
+  }
+}
+
+@media (max-width: 539px) {
+  .container {
+    flex-direction: column-reverse;
+  }
+
+  #comentarios .container {
+    flex-direction: column;
+  }
+
+  .list {
+    align-items: center !important;
+  }
+
+  .whatsApp {
+    padding: 35px !important;
+  }
+
+  .ingredientes {
+    margin-top: 50px;
   }
 }

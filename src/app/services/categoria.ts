@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Categoria } from '../model/categoria';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { Categoria } from '../model/categoria';
 export class CategoriaService {
   // URL base (igual ao MyRecipesService)
   private readonly API =
-    'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes';
+    `${environment.apiUrl}/BraFood-Angular-PHP/BraFood-PHP/routes`;
 
   private httpClient = inject(HttpClient);
 

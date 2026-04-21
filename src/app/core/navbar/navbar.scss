@@ -61,6 +61,11 @@ bra-modal-log.profile-container {
     }
   }
 
+  .search-area {
+    justify-content: flex-start !important;
+    margin-left: 25px !important;
+  }
+
   bra-modal-log.profile-container {
     top: 130px;
   }

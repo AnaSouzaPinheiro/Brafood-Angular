@@ -249,11 +249,13 @@ export class AddRecipe {
             this.imagensSelecionadas = [];
             this.modalService.open({
               type: 'success',
-              title: 'Perfil atualizado',
-              message: 'Suas informações foram salvas com sucesso!',
+              title: 'Receita adicionada',
+              message: 'Informações da receita foram salvas com sucesso!',
               confirmText: 'OK',
               onConfirm: () => {
-                const idUsuario = Number(this.route.snapshot.queryParamMap.get('user'));
+                const idUsuario = Number(
+                  this.route.snapshot.queryParamMap.get('user'),
+                );
                 this.router.navigate(['/minhas-receitas', idUsuario]);
               },
             });
@@ -261,13 +263,16 @@ export class AddRecipe {
             this.modalService.open({
               type: 'error',
               title: 'Erro',
-              message: res?.mensagem || 'Erro ao atualizar perfil.',
+              message: res?.mensagem || 'Erro ao cadastrar receita.',
             });
           }
         },
         error: (err) => {
-          console.error(err);
-          alert('Erro de comunicação com o servidor.');
+          this.modalService.open({
+            type: 'error',
+            title: 'Erro',
+            message: err?.mensagem || 'Erro ao cadastrar receita.',
+          });
         },
       });
   }

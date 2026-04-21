@@ -7,14 +7,14 @@ import { Slide } from '../model/slide';
 import { Receita } from '../model/receita';
 import { User } from '../model/user';
 import { Comentario, CriarComentarioPayload } from '../model/comentario';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MyRecipesService {
   // URL base da API
-  private readonly API =
-    'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes';
+  private readonly API = `${environment.apiUrl}/BraFood-Angular-PHP/BraFood-PHP/routes`;
 
   private httpClient = inject(HttpClient);
 
@@ -99,10 +99,7 @@ export class MyRecipesService {
       if (img) formData.append(`imagem${i + 1}`, img);
     });
 
-    return this.httpClient.post<any>(
-      'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/add.php',
-      formData,
-    );
+    return this.httpClient.post<any>(this.url('receitas/add.php'), formData);
   }
 
   updateReceita(id: number, formValue: any, imagens: File[]): Observable<any> {
@@ -115,18 +112,36 @@ export class MyRecipesService {
     });
 
     return this.httpClient.post<any>(
-      `http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/receitas/update.php?id=${id}`,
+      this.url(`receitas/update.php?id=${id}`),
       formData,
     );
   }
 
   // Busca receita específica pelo ID
-  buscarUserPorId(id: number): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.url(`user.php?id=${id}`));
+  buscarUserPorId(id: number): Observable<User> {
+    return this.httpClient.get<User>(this.url(`user.php?id=${id}`));
+  }
+
+  editarUsuario(id: number, formValue: any, imagem?: File): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('dados', JSON.stringify(formValue));
+
+    if (imagem) {
+      formData.append('foto_perfil', imagem);
+    }
+
+    return this.httpClient.post<any>(
+      this.url(`updateUser.php?id=${id}`),
+      formData,
+    );
   }
 
   login(email: string, senha: string): Observable<any> {
-    return this.httpClient.post<any>(this.url('login.php'), { email, senha });
+    return this.httpClient.post<any>(
+      'http://localhost/BraFood-Angular-PHP/BraFood-PHP/routes/login.php',
+      { email, senha },
+    );
   }
 
   cadastro(
@@ -210,5 +225,13 @@ export class MyRecipesService {
 
   criar(payload: CriarComentarioPayload) {
     return this.httpClient.post(this.url('comentarios.php'), payload);
+  }
+
+  getLinkWhatsApp(ingredientes: any[]) {
+    const link = window.location.href;
+
+    return this.httpClient.get<string>(
+      this.url(`compartilha_ingredientes.php?ingredientes=${encodeURIComponent(JSON.stringify(ingredientes))}&link=${encodeURIComponent(link)}`)
+    );
   }
 }

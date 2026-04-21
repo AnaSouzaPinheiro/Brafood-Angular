@@ -9,7 +9,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 145px;
+    margin: 0 145px 50px 145px;
 
     .details {
       display: flex;
@@ -69,7 +69,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .cabecalho {
     margin: 0 35px !important;
     flex-direction: column !important;
@@ -78,7 +78,6 @@
   .title {
     margin: 30px 0;
     text-align: center;
-    font-size: 2.5rem !important;
   }
 
   .details {
@@ -91,6 +90,33 @@
     font-size: 1rem !important;
   }
 
+  .cards:first-child {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 1185px) {
+  .title {
+    font-size: 2rem !important;
+  }
+  .cabecalho {
+    margin: 0 60px !important;
+  }
+
+  span.qtdReceitas {
+    font-size: 1rem !important;
+  }
+
+  .details {
+    gap: 15px !important;
+  }
+
+  .cards {
+    grid-template-columns: auto auto !important;
+  }
+}
+
+@media (max-width: 759px) {
   .cards {
     grid-template-columns: auto !important;
   }

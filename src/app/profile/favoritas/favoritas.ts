@@ -1,9 +1,7 @@
-import { Component, Input } from '@angular/core';
-import { CustomButton } from '../../shared/custom-button/custom-button';
+import { Component } from '@angular/core';
 import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { MyRecipesService } from '../../services/my-recipes';
 import { Recipes } from '../../model/myrecipes';
 import { Auth } from '../../services/auth';
@@ -12,7 +10,7 @@ import { User } from '../../model/user';
 @Component({
   selector: 'bra-favoritas',
   standalone: true,
-  imports: [Perfil, CustomButton, RecipeCard, RouterModule],
+  imports: [Perfil, RecipeCard, RouterModule],
   templateUrl: './favoritas.html',
   styleUrl: './favoritas.scss',
 })

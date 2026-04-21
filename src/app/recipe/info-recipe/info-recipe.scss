@@ -172,6 +172,12 @@
   }
 }
 
+@media (max-width: 539px) {
+  .main {
+    height: 305px !important;
+  }
+}
+
 #comentarios {
   scroll-margin-top: 160px;
 }

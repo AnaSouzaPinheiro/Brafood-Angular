@@ -10,17 +10,17 @@
   <ng-template #loggedIn>
     <div class="user">
       <ul>
-        <li class="name">Olá, {{ modalLogged?.personName }}!</li>
+        <li class="name">Olá, {{ modalLogged.personName }}!</li>
 
-        <a [routerLink]="modalLogged?.myAccount" class="click">
+        <a [routerLink]="modalLogged.myAccount" class="click">
           <li>Minha conta</li>
         </a>
 
-        <a [routerLink]="modalLogged?.myRecipes" class="click">
+        <a [routerLink]="modalLogged.myRecipes" class="click">
           <li>Minhas Receitas</li>
         </a>
 
-        <a [routerLink]="modalLogged?.favs" class="click">
+        <a [routerLink]="modalLogged.favs" class="click">
           <li>Favoritas</li>
         </a>
 

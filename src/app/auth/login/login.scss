@@ -66,5 +66,13 @@ span.error {
 }
 
 @media (max-width: 480px) {
-  /* ajustes para celulares maiores */
+  .description,
+  .cadastre {
+    text-align: center;
+  }
+
+  .modal {
+    gap: 25px !important;
+    padding: 35px 30px !important;
+  }
 }
