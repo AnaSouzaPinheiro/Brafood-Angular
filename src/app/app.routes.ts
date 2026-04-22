@@ -25,29 +25,27 @@ export const routes: Routes = [
     path: 'editar-perfil/:id',
     loadComponent: () =>
       import('./profile/editar-perfil/editar-perfil').then(
-        (m) => m.EditarPerfil
+        (m) => m.EditarPerfil,
       ),
   },
   {
     path: 'minhas-receitas/:id',
     loadComponent: () =>
       import('./profile/minhas-receitas/minhas-receitas').then(
-        (m) => m.MinhasReceitas
+        (m) => m.MinhasReceitas,
       ),
     canActivate: [AuthGuard], // <-- aqui você protege a rota
   },
   {
     path: 'favoritas/:id',
     loadComponent: () =>
-      import('./profile/favoritas/favoritas').then(
-        (m) => m.Favoritas
-      ),
+      import('./profile/favoritas/favoritas').then((m) => m.Favoritas),
   },
   {
     path: 'editar-receita/:id',
     loadComponent: () =>
       import('./recipe/update-recipe/update-recipe').then(
-        (m) => m.UpdateRecipe
+        (m) => m.UpdateRecipe,
       ),
   },
   {
@@ -68,13 +66,27 @@ export const routes: Routes = [
     path: 'recuperar-senha',
     loadComponent: () =>
       import('./auth/recuperar-senha/recuperar-senha').then(
-        (m) => m.RecuperarSenha
+        (m) => m.RecuperarSenha,
       ),
   },
   {
     path: 'resetar-senha/:token',
     loadComponent: () =>
       import('./auth/resetar-senha/resetar-senha').then((m) => m.ResetarSenha),
+  },
+  {
+    path: 'termos',
+    loadComponent: () => import('./pages/termos/termos').then((m) => m.Termos),
+  },
+  {
+    path: 'privacidade',
+    loadComponent: () =>
+      import('./pages/privacidade/privacidade').then((m) => m.Privacidade),
+  },
+  {
+    path: 'cookies',
+    loadComponent: () =>
+      import('./pages/cookies/cookies').then((m) => m.Cookies),
   },
   { path: '**', redirectTo: 'home' },
 ];

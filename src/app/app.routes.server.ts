@@ -56,6 +56,18 @@ export const serverRoutes: ServerRoute[] = [
     path: 'recuperar-senha',
     renderMode: RenderMode.Prerender,
   },
+  {
+    path: 'termos',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: 'privacidade',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: 'cookies',
+    renderMode: RenderMode.Prerender,
+  },
 
   // fallback
   {

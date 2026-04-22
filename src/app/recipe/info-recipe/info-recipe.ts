@@ -122,7 +122,21 @@ export class InfoRecipe implements OnChanges {
   scrollToComentarios() {
     const element = document.getElementById('comentarios');
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  shareRecipe() {
+    const url = window.location.href;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: this.recipe.titulo,
+          text: `${this.recipe.titulo} - Confira esta receita deliciosa!`,
+          url: url,
+        })
+        .catch(console.error);
     }
   }
 }

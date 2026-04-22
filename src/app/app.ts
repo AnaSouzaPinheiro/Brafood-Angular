@@ -10,6 +10,7 @@ import { Navbar } from './core/navbar/navbar';
 import { CategoryBar } from './core/category-bar/category-bar';
 import { Footer } from './core/footer/footer';
 import { ModalFeedback } from "./shared/modal-feedback/modal-feedback";
+import { CookieBanner } from "./core/cookie-banner/cookie-banner";
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ import { ModalFeedback } from "./shared/modal-feedback/modal-feedback";
     Footer,
     Credit,
     RouterModule,
-    ModalFeedback
+    ModalFeedback,
+    CookieBanner
 ],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
