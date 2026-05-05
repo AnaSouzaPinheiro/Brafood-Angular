@@ -1,0 +1,108 @@
+@use "variables" as *;
+
+// 🔥 placeholder (reuso elegante sem duplicar CSS)
+%base-text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+// 🔥 mixin pra títulos
+@mixin heading($size, $color) {
+  font-size: $size;
+  font-weight: 700;
+  color: $color;
+}
+
+// container externo
+.legal-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+  background: #f8f9fb;
+}
+
+// conteúdo
+.legal-content {
+  @extend %base-text;
+
+  max-width: 850px;
+  width: 100%;
+  border-radius: 16px;
+
+  h1 {
+    @include heading(2.6rem, $primary-blue);
+    margin-bottom: 12px;
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 32px;
+  }
+
+  h2 {
+    @include heading(1.35rem, #222);
+    margin-top: 40px;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: -12px;
+      top: 6px;
+      width: 4px;
+      height: 20px;
+      background: $primary-blue;
+      border-radius: 2px;
+    }
+  }
+
+  p {
+    margin-top: 10px;
+    line-height: 1.7;
+    font-size: 1.05rem;
+    color: #444;
+  }
+
+  section {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  a {
+    color: $primary-blue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #888;
+
+    a {
+      color: $primary-blue;
+    }
+
+    span {
+      margin: 0 6px;
+    }
+  }
+}
+
+// responsivo
+@media (max-width: 768px) {
+  .legal-content {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+}
