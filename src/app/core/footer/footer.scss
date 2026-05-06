@@ -135,7 +135,7 @@ hr {
 .redes-sociais {
   ul {
     display: flex;
-    gap: 15px !important;
+    gap: 15px;
   }
 
   li {
@@ -208,7 +208,7 @@ hr {
   }
   .terms ul,
   .redes-sociais ul {
-    flex-direction: column !important;
+    flex-direction: column;
   }
 }
 

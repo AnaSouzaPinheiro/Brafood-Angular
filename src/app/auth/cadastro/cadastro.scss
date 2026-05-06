@@ -1,79 +1,18 @@
 @use "variables" as *;
+@use "auth" as *;
 
-.container {
-  display: flex;
-  align-items: center; // Centraliza verticalmente
-  flex-direction: column;
-  justify-content: space-evenly;
-  min-height: 100vh; // Garante que o container ocupe a tela inteira
-  margin-bottom: 30px;
-  gap: 30px;
+.inputsCadastro {
+  display: grid;
+  gap: 35px;
+  grid-template-columns: auto auto;
+}
 
-  background-image: url("/assets/imagens/fundos/comida.png");
-  background-size: cover; // Faz a imagem cobrir todo o container
-  background-position: center; // Centraliza a imagem
-  background-repeat: no-repeat; // Evita repetição da imagem
+ul#rules {
+  width: 100%;
+  font-size: 12px;
 
-  img.logo {
-    width: 150px;
-  }
-
-  .modal {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    gap: 35px;
-
-    padding: 40px 80px;
-    border-radius: 25px;
-
-    background-color: #fff;
-    box-shadow: 0px 4px 15px 5px rgba(0, 0, 0, 0.25);
-
-    .infos {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .inputsCadastro {
-      display: grid;
-      gap: 35px;
-      grid-template-columns: auto auto;
-    }
-
-    ul#rules {
-      width: 100%;
-      font-size: 12px;
-
-      li {
-        margin-left: 25px;
-      }
-    }
-  }
-
-  .back,
-  .title,
-  .register {
-    color: $primary-blue;
-  }
-
-  .forgot,
-  .register,
-  .back {
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  .forgot {
-    font-size: 13px;
-  }
-
-  .register {
-    font-weight: 600;
+  li {
+    margin-left: 25px;
   }
 }
 
@@ -85,17 +24,7 @@
 }
 
 @media (max-width: 930px) {
-  .inputsCadastro {
-    grid-template-columns: auto !important;
-  }
-
-  .description,
-  .cadastre {
-    text-align: center;
-  }
-
-  .modal {
-    gap: 25px !important;
-    padding: 35px 30px !important;
+  #cadastro .inputsCadastro {
+    grid-template-columns: auto;
   }
 }

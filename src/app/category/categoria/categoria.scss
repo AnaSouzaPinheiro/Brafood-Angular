@@ -1,4 +1,6 @@
 @use "variables" as *;
+@use "pagination" as *;
+@use "grid" as *;
 
 .img-container {
   height: 300px;
@@ -45,35 +47,7 @@
   align-items: center;
 
   .cards {
-    width: 100%;
-    display: grid;
-    gap: 30px;
-    grid-template-columns: auto auto auto;
-    justify-items: center;
-    justify-content: center;
-  }
-
-  .pages {
-    display: flex;
-    gap: 15px;
-    font-size: 18px;
-    margin: 50px 0;
-
-    .setas {
-      cursor: pointer;
-    }
-
-    .numbers {
-      display: flex;
-      gap: 15px;
-      cursor: pointer;
-    }
-
-    span.active {
-      color: $primary-blue;
-      font-weight: bold;
-      text-decoration: underline;
-    }
+    @include recipe-grid(3, 2, 1);
   }
 }
 
@@ -96,17 +70,5 @@
       align-items: normal;
       width: 100%;
     }
-  }
-}
-
-@media (max-width: 1185px) {
-  .cards {
-    grid-template-columns: auto auto !important;
-  }
-}
-
-@media (max-width: 759px) {
-  .cards {
-    grid-template-columns: auto !important;
   }
 }

@@ -51,13 +51,13 @@ export class MyRecipesService {
 
   // Lista receitas por categoria (usando id e nome na URL)
   listCat(
-    categoria: { id: number; slug: string },
+    categoria: { id: number; nome: string },
     filtros?: any,
   ): Observable<Recipes[]> {
     let params = new HttpParams().set('id', categoria.id.toString());
 
-    if (categoria.slug) {
-      params = params.set('slug', categoria.slug);
+    if (categoria.nome) {
+      params = params.set('nome', categoria.nome);
     }
 
     if (filtros?.ordenar) {

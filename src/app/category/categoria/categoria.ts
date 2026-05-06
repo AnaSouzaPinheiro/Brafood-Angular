@@ -121,7 +121,7 @@ export class Categoria {
 
     this.myRecipesServices
       .listCat(
-        { id: this.categoria.id, slug: this.categoria.slug },
+        { id: this.categoria.id, nome: this.categoria.nome },
         filtrosRequest,
       )
       .subscribe((res) => {

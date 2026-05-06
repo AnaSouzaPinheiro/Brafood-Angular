@@ -1,0 +1,25 @@
+@mixin recipe-grid(
+  $desktop: 3,
+  $tablet: 2,
+  $mobile: 1
+) {
+  display: grid;
+  justify-items: center;
+  justify-content: center;
+  gap: 50px;
+
+  // desktop
+  grid-template-columns: repeat($desktop, 1fr);
+
+  // tablet
+  @media (max-width: 1185px) {
+    grid-template-columns: repeat($tablet, 1fr);
+    gap: 50px 0;
+  }
+
+  // mobile
+  @media (max-width: 768px) {
+    grid-template-columns: repeat($mobile, 1fr);
+    gap: 0;
+  }
+}
