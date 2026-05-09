@@ -1,0 +1,84 @@
+@mixin page-container {
+  margin: 0 145px;
+
+  @media (max-width: 1185px) {
+    margin: 0 60px;
+  }
+
+  @media (max-width: 768px) {
+    margin: 0 35px;
+  }
+}
+
+@mixin page-title(
+  $desktop: 48px,
+  $tablet: 2rem,
+  $mobile: 2.5rem
+) {
+  font-size: $desktop;
+  font-weight: 600;
+
+  @media (max-width: 1185px) {
+    font-size: $tablet;
+  }
+
+  @media (max-width: 768px) {
+    font-size: $mobile;
+    text-align: center;
+  }
+}
+
+@mixin section-title {
+  font-size: 40px;
+  font-weight: 600;
+
+  @media (max-width: 1185px) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
+}
+
+@mixin page-subtitle {
+  font-size: 1.3rem;
+  font-weight: 500;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin white-card(
+  $radius: 25px,
+  $shadow: 0px 4px 4px 0px #00000040
+) {
+  background-color: #fff;
+  border-radius: $radius;
+  box-shadow: $shadow;
+}

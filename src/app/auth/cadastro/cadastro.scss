@@ -1,4 +1,5 @@
 @use "variables" as *;
+@use "layout" as *;
 @use "auth" as *;
 
 .inputsCadastro {
@@ -18,9 +19,9 @@ ul#rules {
 
 #cadastro {
   gap: 15px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
+
+  @include flex-column;
 }
 
 @media (max-width: 930px) {

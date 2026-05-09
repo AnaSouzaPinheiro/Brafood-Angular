@@ -1,3 +1,5 @@
+@use "layout" as *;
+
 h2,
 .infos p {
   font-size: 16px;
@@ -7,12 +9,12 @@ h2,
 .resume {
   width: 400px;
   padding: 20px 43px;
-  display: flex;
-  flex-direction: column;
   border-radius: 15px;
   gap: 13px;
   background: rgba(255, 255, 255, 0.7);
   box-shadow: 0px 4px 50px 0px #00000040;
+
+  @include flex-column;
 }
 
 .infos {

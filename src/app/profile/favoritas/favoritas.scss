@@ -1,54 +1,48 @@
 @use "variables" as *;
+@use "layout" as *;
 @use "grid" as *;
 
 .myRecipes {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
 
   .cabecalho {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 145px;
     gap: 50px;
 
+    @include page-container;
+
     .title {
-      font-size: 48px;
-      font-weight: 600;
       color: $primary-blue;
+
+      @include page-title;
     }
 
     .qtdReceitas {
       color: $primary-gray;
       font-size: 24px;
     }
+  }
 
-    @media (max-width: 768px) {
-      margin: 0 35px 35px 35px;
+  .content {
+    margin: 50px 0;
+    
+    @include flex-column-center;
+
+    .cards {
+      @include recipe-grid(3, 2, 1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cabecalho {
       flex-direction: column;
       gap: 0;
-
-      .title {
-        margin: 30px 0;
-        font-size: 2.5rem;
-        text-align: center;
-      }
 
       .qtdReceitas {
         font-size: 1rem;
       }
-    }
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 50px 0;
-
-    .cards {
-      @include recipe-grid(3, 2, 1); 
     }
   }
 }

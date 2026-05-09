@@ -1,30 +1,39 @@
 @use "variables" as *;
+@use "layout" as *;
 
+/* BASE BUTTON */
 button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  font-size: 20px;
-  font-weight: 400;
+  border: none;
+  cursor: pointer;
+
   color: #fff;
   background-color: $primary-blue;
+
+  font-size: 20px;
+  font-weight: 400;
+
   padding: 10px 52px;
-  border: none;
   border-radius: 15px;
-  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  @include flex-center;
 
   &:hover {
     background: $seventh-gradient;
-    font-weight: 500;
   }
 }
 
+/* OTHER */
 button.other {
   font-size: 24px;
   font-weight: 300;
-  border-radius: 25px;
+
   padding: 17px 60px;
+  border-radius: 25px;
 
   &:hover {
     background: $hover-blue;
@@ -36,10 +45,12 @@ button.other {
   }
 }
 
+/* ANOTHER */
 button.another {
   font-weight: 300;
-  border-radius: 25px;
+
   padding: 11px 25px;
+  border-radius: 25px;
 
   &:hover {
     background: $hover-blue;
@@ -47,10 +58,12 @@ button.another {
   }
 }
 
+/* ADD */
 button.add {
   font-weight: 300;
-  border-radius: 25px;
+
   padding: 11px 32px;
+  border-radius: 25px;
 
   &:hover {
     background: $hover-blue;
@@ -58,12 +71,16 @@ button.add {
   }
 }
 
+/* COMMENT */
 button.comment {
   height: 40px;
+
   font-size: 16px;
   font-weight: 200;
-  border-radius: 25px;
+
   padding: 5px 38px;
+  border-radius: 25px;
+
   background-color: $category-one;
 
   &:hover {
@@ -72,27 +89,36 @@ button.comment {
   }
 }
 
+/* CATEGORY */
 button.category {
   height: 37px;
+
   font-size: 14px;
-  font-weight: bold;
-  border-radius: 25px;
+  font-weight: 700;
+
   padding: 8px 42px;
+  border-radius: 25px;
+
   background-color: rgba(0, 0, 0, 0.47);
 
   &:hover {
-    background: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
   }
 }
 
+/* FILTER */
 button.filter {
   height: 44px;
+
   font-size: 18px;
   font-weight: 200;
+
   padding: 8px 27px;
   border-radius: 0;
-  background-color: #fff;
+
   color: #000;
+  background-color: #fff;
+
   border: 1px solid #000;
 
   &:hover {
@@ -102,25 +128,33 @@ button.filter {
   }
 }
 
+/* TABLET */
 @media (max-width: 768px) {
   button {
-    font-size: 0.8rem !important;
-    //padding: 10% 60% !important;
+    font-size: 0.9rem;
+  }
+
+  button.other {
+    padding: 14px 40px;
   }
 }
 
+/* MOBILE */
 @media (max-width: 480px) {
   button {
-    font-size: 0.8rem !important;
-    padding: 25px !important;
-
-    .other {
-      padding: 0;
-    }
-
+    font-size: 0.8rem;
+    padding: 12px 20px;
   }
-  
-  .filter {
-    padding: 8px 15px !important;
+
+  button.other {
+    padding: 12px 18px;
+  }
+
+  button.filter {
+    padding: 8px 15px;
+  }
+
+  button.category {
+    padding: 8px 20px;
   }
 }

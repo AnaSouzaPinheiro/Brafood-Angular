@@ -1,4 +1,5 @@
 @use "variables" as *;
+@use "layout" as *;
 
 .custom-dropdown {
   position: relative;
@@ -100,9 +101,6 @@
 .remover {
   width: 50px;
   height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 10px;
   margin-left: 35px;
   cursor: pointer;
@@ -110,6 +108,8 @@
   font-size: 30px;
   background: transparent;
   border-radius: 50px;
+
+  @include flex-center;
 }
 
 .adicionar {

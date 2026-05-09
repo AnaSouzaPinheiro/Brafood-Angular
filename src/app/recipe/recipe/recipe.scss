@@ -1,8 +1,8 @@
 @use "variables" as *;
+@use "layout" as *;
 
 .infos-recipe {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
 
   .main-info {
     width: 100%;
@@ -24,14 +24,22 @@
 }
 
 .receita {
-  margin: 60px 145px 60px 145px;
-  display: flex;
-  flex-direction: column;
   gap: 80px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  
+  @include flex-column;
+  @include page-container;
 
   .title {
-    font-size: 50px;
     color: $primary-blue;
+
+    @include page-title;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
   }
 
   .ingredientes {
@@ -53,199 +61,202 @@
       font-weight: 400;
     }
   }
-}
-
-li {
-  line-height: 3;
-  font-size: 20px;
-  margin-left: 40px;
-}
-
-ul li::marker {
-  font-size: 10px;
-  color: #000;
-}
-
-.list {
-  display: flex;
-  gap: 35px;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-.autor {
-  display: flex;
-  gap: 10px;
-
-  .bra-user-icon {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-  }
-
-  .data {
-    display: flex;
-    flex-direction: column;
-
-    .person {
-      font-size: 25px;
-    }
-
-    .date {
-      font-size: 14px;
-      font-weight: 200;
-    }
-  }
-}
-
-bra-input {
-  width: 100%;
-}
-
-.container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.whatsApp {
-  font-size: 25px;
-  border-radius: 20px;
-  background-color: #0dc143;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 35px;
-  gap: 25px;
-  max-width: 350px;
-  text-align: center;
-
-  span {
-    font-size: 18px;
-  }
-
-  .zap {
-    border: none;
-    color: #0dc143;
-    border-radius: 35px;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    padding: 11px 20px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 16px;
-
-    img {
-      width: 21px;
-      height: 21px;
-      margin-right: 10px;
-    }
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-}
-
-.sec {
-  background: -webkit-linear-gradient(#8aabff, #0049ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.com {
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
-
-.c {
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  bra-info-recipe {
-    margin-top: -125px !important;
-  }
-
-  .receita {
-    margin: 50px;
-  }
-
-  .container {
-    gap: 15px;
-  }
-
-  .ingredientes .title {
-    text-align: left !important;
-  }
-
-  span.temaIng,
-  .topic-title {
-    font-size: 1.5rem !important;
-  }
 
   li {
-    font-size: 1rem !important;
-    line-height: 2.5;
-    margin-left: 25px;
+    line-height: 3;
+    font-size: 20px;
+    margin-left: 40px;
   }
 
-  .autor span {
-    font-size: 90% !important;
+  ul li::marker {
+    font-size: 10px;
+    color: #000;
   }
 
-  .title {
-    font-size: 2rem !important;
-    text-align: center;
+  .list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 35px;
   }
 
   .autor {
-    align-items: center;
+    display: flex;
+    gap: 10px;
 
-    bra-user-icon {
-      width: 45px;
-      height: 45px;
+    .bra-user-icon {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+    }
+
+    .data {
+      display: flex;
+      flex-direction: column;
+
+      .person {
+        font-size: 25px;
+      }
+
+      .date {
+        font-size: 14px;
+        font-weight: 200;
+      }
     }
   }
 
-  .list {
-    gap: 25px !important;
-    justify-content: center !important;
+  .whatsApp {    
+    font-size: 25px;
+    border-radius: 20px;
+    background-color: #0dc143;
+    padding: 35px;
+    gap: 25px;
+    max-width: 350px;
+    text-align: center;
+    
+    @include flex-column-center;
+
+    span {
+      font-size: 18px;
+    }
+
+    .zap {
+      display: flex;
+      align-items: center;
+      padding: 11px 20px;
+      border: none;
+      border-radius: 35px;
+      background-color: #fff;
+
+      color: #0dc143;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+
+      img {
+        width: 21px;
+        height: 21px;
+        margin-right: 10px;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
   }
 
-  .whatsApp,
-  .whatsApp span,
-  .zap {
-    font-size: 0.8rem !important;
+  .sec {
+    background: -webkit-linear-gradient(#8aabff, #0049ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  .whatsApp {
-    padding: 15px !important;
+  .com {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .c {
+    width: 100%;
+  }
+
+  bra-input {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    gap: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    .container {
+      gap: 15px;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    .ingredientes .title {
+      text-align: left;
+    }
+
+    .temaIng,
+    .topic-title {
+      font-size: 1.5rem;
+    }
+
+    li {
+      font-size: 1rem;
+      line-height: 2.5;
+      margin-left: 25px;
+    }
+
+    .autor {
+      align-items: center;
+
+      .bra-user-icon {
+        width: 45px;
+        height: 45px;
+      }
+
+      span {
+        font-size: 90%;
+      }
+    }
+
+    .list {
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .whatsApp {
+      padding: 15px;
+      font-size: 0.8rem;
+
+      span,
+      .zap {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  @media (max-width: 539px) {
+    .container {
+      flex-direction: column-reverse;
+    }
+
+    .list {
+      align-items: center;
+    }
+
+    .whatsApp {
+      padding: 35px;
+    }
+
+    .ingredientes {
+      margin-top: 50px;
+    }
   }
 }
 
-@media (max-width: 539px) {
-  .container {
-    flex-direction: column-reverse;
-  }
-
-  #comentarios .container {
+#comentarios .container {
+  @media (max-width: 539px) {
     flex-direction: column;
   }
+}
 
-  .list {
-    align-items: center !important;
-  }
-
-  .whatsApp {
-    padding: 35px !important;
-  }
-
-  .ingredientes {
-    margin-top: 50px;
+@media (max-width: 768px) {
+  .infos-recipe {
+    .main-info {
+      bra-info-recipe {
+        margin-top: -125px;
+      }
+    }
   }
 }

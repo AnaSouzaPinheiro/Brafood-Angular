@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'bra-cookie-banner',
@@ -8,14 +8,22 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cookie-banner.scss'
 })
 export class CookieBanner implements OnInit {
+
   accepted = false;
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
-    this.accepted = localStorage.getItem('cookiesAccepted') === 'true';
+    if (isPlatformBrowser(this.platformId)) {
+      this.accepted = localStorage.getItem('cookiesAccepted') === 'true';
+    }
   }
 
   accept() {
-    localStorage.setItem('cookiesAccepted', 'true');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('cookiesAccepted', 'true');
+    }
+
     this.accepted = true;
   }
 }

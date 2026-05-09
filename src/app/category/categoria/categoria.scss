@@ -1,5 +1,6 @@
 @use "variables" as *;
 @use "pagination" as *;
+@use "layout" as *;
 @use "grid" as *;
 
 .img-container {
@@ -42,9 +43,9 @@
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
   align-items: center;
+
+  @include flex-column;
 
   .cards {
     @include recipe-grid(3, 2, 1);

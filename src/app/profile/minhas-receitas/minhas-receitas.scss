@@ -1,29 +1,29 @@
 @use "variables" as *;
 @use "pagination" as *;
 @use "grid" as *;
+@use "layout" as *;
 
 .myRecipes {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
 
   .cabecalho {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 145px 50px 145px;
+    gap: 50px;
+
+    @include page-container;
 
     .details {
       display: flex;
-      flex-direction: row;
       align-items: center;
       gap: 50px;
     }
 
-    h1.title {
-      font-size: 48px;
-      font-weight: 600;
+    .title {
       color: $primary-blue;
+      
+      @include page-title;
     }
 
     .qtdReceitas {
@@ -33,55 +33,47 @@
   }
 
   .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include flex-column-center;
 
     .cards {
       @include recipe-grid(3, 2, 1);
     }
   }
-}
 
-@media (max-width: 768px) {
-  .cabecalho {
-    margin: 0 35px !important;
-    flex-direction: column !important;
+  @media (max-width: 1185px) {
+    .cabecalho {
+      .details {
+        gap: 15px;
+      }
+
+      .qtdReceitas {
+        font-size: 1rem;
+      }
+    }
   }
 
-  .title {
-    margin: 30px 0;
-    text-align: center;
-  }
+  @media (max-width: 768px) {
+    .cabecalho {
+      flex-direction: column;
+      gap: 0;
 
-  .details {
-    flex-direction: column-reverse !important;
-    width: 100%;
-    gap: 0 !important;
-  }
+      .details {
+        flex-direction: column-reverse;
+        width: 100%;
+        gap: 0;
+      }
 
-  .qtdReceitas {
-    font-size: 1rem !important;
-  }
+      .title {
+        margin: 30px 0;
+      }
 
-  .cards:first-child {
-    margin-top: 50px;
-  }
-}
+      .qtdReceitas {
+        font-size: 1rem;
+      }
+    }
 
-@media (max-width: 1185px) {
-  .title {
-    font-size: 2rem !important;
-  }
-  .cabecalho {
-    margin: 0 60px !important;
-  }
-
-  span.qtdReceitas {
-    font-size: 1rem !important;
-  }
-
-  .details {
-    gap: 15px !important;
+    .cards:first-child {
+      margin-top: 50px;
+    }
   }
 }

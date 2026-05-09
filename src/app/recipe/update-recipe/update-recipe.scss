@@ -1,34 +1,34 @@
 @use "variables" as *;
+@use "layout" as *;
 
 .container {
-  /*display: flex;
-  flex-direction: column;*/
-
   .adding {
-    display: flex;
     gap: 60px;
-    flex-direction: column;
+    
+    @include flex-column;
 
     .title {
-      font-size: 48px;
-    }
-
-    h2 {
-      font-size: 40px;
-    }
-
-    .title,
-    h2 {
-      font-weight: 600;
       color: $primary-blue;
+
+      @include page-title;
+    }
+
+    h2 {
+      color: $primary-blue;
+      
+      @include section-title;
+    }
+
+    h3 {
+      @include page-subtitle;
     }
 
     .title,
     h2,
     h3,
-    .inputs {
-      align-items: center;
-      margin: 0 145px;
+    .inputs,
+    .some {
+      @include page-container;
     }
 
     .input-box {
@@ -38,37 +38,36 @@
     .some {
       display: flex;
       justify-content: space-evenly;
+      gap: 40px;
     }
 
-    .time label,
-    .porcoes label {
-      font-size: 24px;
+    .time,
+    .porcoes {
+      label {
+        font-size: 24px;
+      }
+
+      .input-box {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+      }
     }
 
     .time .input-box {
-      display: flex;
-      gap: 10px;
-      align-items: center;
       max-width: 245px;
-      margin-top: 10px;
     }
+
     .porcoes .input-box {
-      display: flex;
-      gap: 10px;
       max-width: 250px;
-      margin-top: 10px;
     }
 
     .buttons {
       display: flex;
+      justify-content: center;
       gap: 25px;
-      justify-content: center;
-    }
-
-    bra-custom-button {
-      display: flex;
       margin-bottom: 50px;
-      justify-content: center;
     }
   }
 }
@@ -82,40 +81,29 @@
 }
 
 @media (max-width: 768px) {
-  .title,
-  h2,
-  h3,
-  .inputs,
-  .some {
-    margin: 0 75px !important;
-  }
-
-  .some {
-    justify-content: space-evenly;
-    flex-direction: column;
-    align-items: center;
-
-    .input-box {
-      width: 100%;
-    }
-  }
-
   .adding {
     gap: 35px !important;
+
+    .some {
+      flex-direction: column;
+      align-items: center;
+
+      .input-box {
+        width: 100%;
+      }
+    }
   }
 }
 
 @media (max-width: 480px) {
-  .title,
-  h2,
-  h3,
-  .inputs,
-  .some {
-    margin: 0 35px !important;
-  }
+  .adding {
+    .title {
+      text-align: center;
+    }
 
-  .title {
-    text-align: center;
-    font-size: 2.5rem !important;
+    .buttons {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
