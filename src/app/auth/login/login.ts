@@ -2,10 +2,9 @@ import { Component, Optional } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Router, RouterModule } from '@angular/router';
-import { MyRecipesService } from '../../services/my-recipes';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'bra-login',
@@ -19,19 +18,19 @@ export class Login {
   erro = '';
 
   constructor(
-    private service: MyRecipesService,
+    private authService: AuthService,
     private router: Router,
     @Optional() private location: Location,
-    private auth: Auth
+    private auth: AuthService
   ) {}
 
   entrar() {
     this.erro = '';
-    this.service.login(this.email, this.senha).subscribe(
+    this.authService.login(this.email, this.senha).subscribe(
       (res: any) => {
         if (res.success) {
-          // Salva no Auth e localStorage
-          this.auth.login({ id: res.id, email: this.email });
+          // Salva no AuthService e localStorage
+          this.auth.saveUserSession({ id: res.id, email: this.email });
 
           // Redireciona
           this.router.navigate(['/home']);

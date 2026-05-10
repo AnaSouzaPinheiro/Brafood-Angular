@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { Recipes } from '../../model/myrecipes';
-import { MyRecipesService } from '../../services/my-recipes';
+import { ReceitaService } from '../../services/receita/receita.service';
 import { ActivatedRoute } from '@angular/router';
 import { FilterDropdown } from '../../category/filter-dropdown/filter-dropdown';
 import { CustomButton } from "../custom-button/custom-button";
@@ -32,7 +32,7 @@ export class Search {
 
   constructor(
     private route: ActivatedRoute,
-    private myRecipesServices: MyRecipesService
+    private ReceitaServices: ReceitaService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class Search {
       if (nome) {
         this.nomePesquisado = nome;
 
-        this.myRecipesServices.listForSerach(nome).subscribe(
+        this.ReceitaServices.listForSerach(nome).subscribe(
           (res: any) => {
             if (Array.isArray(res)) {
               this.Recipes = res;

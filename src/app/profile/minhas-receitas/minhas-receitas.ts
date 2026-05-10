@@ -3,12 +3,11 @@ import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-import { RecipeSection } from '../../shared/recipe-section/recipe-section';
-import { MyRecipesService } from '../../services/my-recipes';
+import { ReceitaService } from '../../services/receita/receita.service';
 import { Recipes } from '../../model/myrecipes';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
-import { ModalService } from '../../services/modal-service';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'bra-minhas-receitas',
@@ -28,8 +27,8 @@ export class MinhasReceitas {
   user!: User;
 
   constructor(
-    private myRecipesServices: MyRecipesService,
-    private auth: Auth,
+    private ReceitaServices: ReceitaService,
+    private auth: AuthService,
     private router: Router,
     private modalService: ModalService,
   ) {
@@ -41,7 +40,7 @@ export class MinhasReceitas {
     }
 
     if (this.userId) {
-      this.myRecipesServices
+      this.ReceitaServices
         .listPorUser(Number(this.userId))
         .subscribe((data) => {
           this.Recipes = data;
@@ -108,7 +107,7 @@ export class MinhasReceitas {
   }
 
   private confirmarExclusao(id: number) {
-    this.myRecipesServices.excluir(id).subscribe({
+    this.ReceitaServices.excluir(id).subscribe({
       next: () => {
         // remove da lista sem reload
         this.Recipes = this.Recipes.filter((r) => r.id !== id);

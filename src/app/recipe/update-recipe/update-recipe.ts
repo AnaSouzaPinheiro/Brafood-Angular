@@ -15,12 +15,12 @@ import { InputList } from '../../profile/input-list/input-list';
 import { Receita } from '../../model/receita';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria';
+import { CategoriaService } from '../../services/categoria/categoria.service';
 import { Option } from '../../profile/dropdown/dropdown';
-import { MyRecipesService } from '../../services/my-recipes';
+import { ReceitaService } from '../../services/receita/receita.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { ModalService } from '../../services/modal-service';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'bra-update-recipe',
@@ -89,7 +89,7 @@ export class UpdateRecipe implements OnInit {
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private myRecipesService: MyRecipesService,
+    private ReceitaService: ReceitaService,
     private route: ActivatedRoute,
     private router: Router,
     private modalService: ModalService,
@@ -118,7 +118,7 @@ export class UpdateRecipe implements OnInit {
     this.idReceita = Number(this.route.snapshot.paramMap.get('id'));
 
     this.carregarCategorias().subscribe(() => {
-      this.myRecipesService.buscarPorId(this.idReceita).subscribe((receita) => {
+      this.ReceitaService.buscarPorId(this.idReceita).subscribe((receita) => {
         this.receita = {
           ...this.receita,
           ...receita,
@@ -318,7 +318,7 @@ export class UpdateRecipe implements OnInit {
       etapas: this.receita.etapas,
     };
 
-    this.myRecipesService
+    this.ReceitaService
       .updateReceita(this.idReceita, receitaPronta, this.imagensSelecionadas)
       .subscribe({
         next: (res) => {

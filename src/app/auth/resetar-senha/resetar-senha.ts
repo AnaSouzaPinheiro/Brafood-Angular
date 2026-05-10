@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { MyRecipesService } from '../../services/my-recipes';
+import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -22,7 +22,7 @@ export class ResetarSenha {
 
   constructor(
     private route: ActivatedRoute,
-    private service: MyRecipesService,
+    private auth: AuthService,
     private router: Router,
   ) {}
 
@@ -52,7 +52,7 @@ export class ResetarSenha {
       return;
     }
 
-    this.service
+    this.auth
       .resetarSenha(this.token, this.senha, this.confirmarSenha)
       .subscribe(
         (res: any) => {

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Perfil } from '../perfil/perfil';
 import {
   FormBuilder,
   FormGroup,
@@ -8,23 +7,24 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MyRecipesService } from '../../services/my-recipes';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { BraInput } from '../../shared/input/input';
 import { User } from '../../model/user';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from '../../services/modal-service';
+import { ModalService } from '../../services/modal/modal.service';
+import { UsuarioService } from '../../services/usuario/usuario.service';
+import { Perfil } from "../perfil/perfil";
 
 @Component({
   selector: 'bra-editar-perfil',
   imports: [
-    Perfil,
     BraInput,
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
     CustomButton,
-  ],
+    Perfil
+],
   templateUrl: './editar-perfil.html',
   styleUrl: './editar-perfil.scss',
 })
@@ -44,7 +44,7 @@ export class EditarPerfil implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private myRecipesService: MyRecipesService,
+    private usuarioService: UsuarioService,
     private route: ActivatedRoute,
     private router: Router,
     private modalService: ModalService,
@@ -127,23 +127,21 @@ export class EditarPerfil implements OnInit {
   ngOnInit() {
     this.idUser = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.myRecipesService
-      .buscarUserPorId(this.idUser)
-      .subscribe((user: User) => {
-        if (!user) return;
+    this.usuarioService.buscarUserPorId(this.idUser).subscribe((user: User) => {
+      if (!user) return;
 
-        this.user = user;
-        this.carregarUsuario(user);
+      this.user = user;
+      this.carregarUsuario(user);
 
-        this.form.patchValue({
-          email: user.email,
-          nome: user.nome,
-          sobrenome: user.sobrenome,
-          apelido: user.apelido,
-          genero: user.genero,
-          bio: user.bio,
-        });
+      this.form.patchValue({
+        email: user.email,
+        nome: user.nome,
+        sobrenome: user.sobrenome,
+        apelido: user.apelido,
+        genero: user.genero,
+        bio: user.bio,
       });
+    });
   }
 
   carregarUsuario(user?: User) {
@@ -170,7 +168,7 @@ export class EditarPerfil implements OnInit {
       ...this.form.value,
     };
 
-    this.myRecipesService
+    this.usuarioService
       .editarUsuario(this.idUser, payload, this.arquivoSelecionado!)
       .subscribe({
         next: (res) => {

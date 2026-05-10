@@ -8,7 +8,7 @@ import {
   //withHashLocation,
 } from '@angular/router';
 import { routes } from './app/app.routes';
-import { Auth } from './app/services/auth';
+import { AuthService } from './app/services/auth/auth.service';
 
 bootstrapApplication(App, {
   ...appConfig,
@@ -26,7 +26,7 @@ bootstrapApplication(App, {
   ],
 })
   .then((appRef) => {
-    const auth = appRef.injector.get(Auth);
+    const auth = appRef.injector.get(AuthService);
     auth.loadFromStorage();
   })
   .catch((err) => console.error(err));

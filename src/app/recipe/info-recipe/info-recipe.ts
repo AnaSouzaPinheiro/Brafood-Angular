@@ -3,10 +3,10 @@ import { NgFor } from '@angular/common';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
 import { User } from '../../model/user';
-import { MyRecipesService } from '../../services/my-recipes';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { Recipes } from '../../model/myrecipes';
+import { FavoritoService } from '../../services/favorito/favorito.service';
 
 @Component({
   selector: 'bra-info-recipe',
@@ -47,33 +47,10 @@ export class InfoRecipe implements OnChanges {
   Recipes: Recipes[] = [];
 
   constructor(
-    private service: MyRecipesService,
-    private auth: Auth,
+    private auth: AuthService,
+    private favoritoService: FavoritoService,
     private router: Router,
   ) {}
-
-  /*ngOnInit() {
-    // garante que só roda no navegador
-    if (typeof window === 'undefined') return;
-
-    this.logado = this.auth.isLoggedIn();
-
-    const userData = localStorage.getItem('user');
-    if (!userData) return;
-
-    const parsedUser = JSON.parse(userData);
-    this.userId = Number(parsedUser.id);
-
-    // 🔹 verifica se a receita já é favorita
-    this.service.isFavorita(this.userId, Number(this.recipe.id)).subscribe({
-      next: (res) => {
-        this.isFavorite = res.favorite;
-      },
-      error: (err) => {
-        console.error('ERRO AQUI NÃO PODE MAIS ACONTECER', err);
-      },
-    });
-  }*/
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes['recipe'] || !this.recipe?.id) return;
@@ -89,7 +66,7 @@ export class InfoRecipe implements OnChanges {
     const parsedUser = JSON.parse(userData);
     this.userId = Number(parsedUser.id);
 
-    this.service.isFavorita(this.userId, Number(this.recipe.id)).subscribe({
+    this.favoritoService.isFavorita(this.userId, Number(this.recipe.id)).subscribe({
       next: (res) => {
         this.isFavorite = res.favorite;
       },
@@ -109,11 +86,11 @@ export class InfoRecipe implements OnChanges {
     const userIdNum = this.userId;
 
     if (this.isFavorite) {
-      this.service.desfavoritar(userIdNum, receitaIdNum).subscribe(() => {
+      this.favoritoService.desfavoritar(userIdNum, receitaIdNum).subscribe(() => {
         this.isFavorite = false;
       });
     } else {
-      this.service.favoritar(userIdNum, receitaIdNum).subscribe(() => {
+      this.favoritoService.favoritar(userIdNum, receitaIdNum).subscribe(() => {
         this.isFavorite = true;
       });
     }

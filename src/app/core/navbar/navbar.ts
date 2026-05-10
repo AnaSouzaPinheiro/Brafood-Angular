@@ -3,9 +3,9 @@ import { ModalLog } from '../modal-log/modal-log';
 import { SearchBar } from '../search-bar/search-bar';
 import { UserIcon } from '../user-icon/user-icon';
 import { Router, RouterModule } from '@angular/router';
-import { MyRecipesService } from '../../services/my-recipes';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
+import { UsuarioService } from '../../services/usuario/usuario.service';
 
 @Component({
   selector: 'bra-navbar',
@@ -23,8 +23,8 @@ export class Navbar {
   modalData: any = null;
 
   constructor(
-    private myRecipesServices: MyRecipesService,
-    private auth: Auth,
+    private usuarioService: UsuarioService,
+    private auth: AuthService,
     private router: Router
   ) {
     this.auth.loadFromStorage();
@@ -42,7 +42,7 @@ export class Navbar {
     if (this.auth.isLoggedIn()) {
       const currentUser = this.auth.user();
       if (currentUser?.id) {
-        this.myRecipesServices
+        this.usuarioService
           .buscarUserPorId(currentUser.id)
           .subscribe((s: any) => {
             this.user.set({

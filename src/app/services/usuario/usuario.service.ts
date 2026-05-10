@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from '../../model/user';
+import { BaseService } from '../base/base.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UsuarioService extends BaseService {
+  // Busca receita específica pelo ID
+  buscarUserPorId(id: number): Observable<User> {
+    return this.httpClient.get<User>(this.url(`user.php?id=${id}`));
+  }
+
+  editarUsuario(id: number, formValue: any, imagem?: File): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('dados', JSON.stringify(formValue));
+
+    if (imagem) {
+      formData.append('foto_perfil', imagem);
+    }
+
+    return this.httpClient.post<any>(
+      this.url(`updateUser.php?id=${id}`),
+      formData,
+    );
+  }
+}

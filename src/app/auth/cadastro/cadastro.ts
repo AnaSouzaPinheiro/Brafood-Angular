@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Router, RouterModule } from '@angular/router';
-import { MyRecipesService } from '../../services/my-recipes';
+import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 
@@ -20,7 +20,7 @@ export class Cadastro {
   erros: string[] = [];
 
   constructor(
-    private service: MyRecipesService,
+    private authService: AuthService,
     private router: Router,
     private location: Location
   ) {}
@@ -36,7 +36,7 @@ export class Cadastro {
       return;
     }
 
-    this.service
+    this.authService
       .cadastro(this.nome, this.email, this.senha, this.confirmarSenha)
       .subscribe(
         (res: any) => {

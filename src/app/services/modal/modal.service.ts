@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ModalConfig } from '../model/modal-feedback';
+import { ModalConfig } from '../../model/modal-feedback';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria';
-import { Auth } from '../../services/auth';
+import { CategoriaService } from '../../services/categoria/categoria.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'bra-footer',
@@ -17,7 +17,7 @@ export class Footer {
   categorias: Categoria[] = [];
 
   constructor(
-    public auth: Auth,
+    public auth: AuthService,
     private categoriaServices: CategoriaService
   ) {}
 

@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-import { MyRecipesService } from '../../services/my-recipes';
 import { Recipes } from '../../model/myrecipes';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
+import { FavoritoService } from '../../services/favorito/favorito.service';
 
 @Component({
   selector: 'bra-favoritas',
@@ -25,8 +25,8 @@ export class Favoritas {
   user!: User;
 
   constructor(
-    private myRecipesServices: MyRecipesService,
-    private auth: Auth,
+    private favoritoService: FavoritoService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
@@ -44,7 +44,7 @@ export class Favoritas {
 
     this.userId = JSON.parse(userData).id;
 
-    this.myRecipesServices
+    this.favoritoService
       .listarFavoritos(Number(this.userId))
       .subscribe((data) => {
         this.Recipes = Array.isArray(data) ? data : [];

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
 
-import { CategoriaService } from '../../services/categoria';
+import { CategoriaService } from '../../services/categoria/categoria.service';
 
 @Component({
   selector: 'bra-category-bar',

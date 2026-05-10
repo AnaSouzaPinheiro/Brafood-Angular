@@ -15,9 +15,11 @@ export class RecipeCard {
   @Input() selectedSubcategories!: number[];
   @Input() recipe!: any;
   mappedRecipe: any;
+  imgBroken: boolean = false;
 
   ngOnChanges() {
     if (!this.recipe) return;
+    this.imgBroken = false;
 
     // Garantir que subs seja array de objetos
     let subs: any[] = [];
@@ -38,7 +40,7 @@ export class RecipeCard {
     if (this.selectedSubcategories && this.selectedSubcategories.length > 0) {
       chosenSub =
         subs.find((s: any) =>
-          this.selectedSubcategories.includes(Number(s.id))
+          this.selectedSubcategories.includes(Number(s.id)),
         ) || null;
     }
 

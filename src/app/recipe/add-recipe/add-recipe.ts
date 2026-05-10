@@ -15,10 +15,10 @@ import { InputList } from '../../profile/input-list/input-list';
 import { Receita } from '../../model/receita';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria';
+import { CategoriaService } from '../../services/categoria/categoria.service';
 import { Option } from '../../profile/dropdown/dropdown';
-import { MyRecipesService } from '../../services/my-recipes';
-import { ModalService } from '../../services/modal-service';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { ModalService } from '../../services/modal/modal.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -96,7 +96,7 @@ export class AddRecipe {
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private myRecipesService: MyRecipesService,
+    private ReceitaService: ReceitaService,
     private modalService: ModalService,
     private router: Router,
     private route: ActivatedRoute,
@@ -240,7 +240,7 @@ export class AddRecipe {
       formData.append('imagem' + (i + 1), file);
     });
 
-    this.myRecipesService
+    this.ReceitaService
       .addReceita(receitaPronta, this.imagensSelecionadas)
       .subscribe({
         next: (res) => {

@@ -3,8 +3,8 @@ import { SlideHome } from '../slide-home/slide-home';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { CommonModule } from '@angular/common';
 import { Section } from '../../model/section-home';
-import { MyRecipesService } from '../../services/my-recipes';
-import { SecaoCarrosselService } from '../../services/secao-carrossel';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { SecaoService } from '../../services/secao/secao.service';
 import { Recipes } from '../../model/myrecipes';
 
 @Component({
@@ -18,13 +18,13 @@ export class Home implements OnInit {
   slides: Recipes[] = []; // carrossel principal
 
   constructor(
-    private secaoService: SecaoCarrosselService,
-    private myRecipesServices: MyRecipesService
+    private secaoService: SecaoService,
+    private ReceitaServices: ReceitaService
   ) {}
 
   ngOnInit() {
     // Slide principal
-    this.myRecipesServices.listRandom(5).subscribe((slides) => {
+    this.ReceitaServices.listRandom(5).subscribe((slides) => {
       this.slides = slides.map((r: any) => ({
         id: r.id,
         category: '',

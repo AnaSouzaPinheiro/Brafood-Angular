@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { MyRecipesService } from '../../services/my-recipes';
+import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,7 +18,7 @@ export class RecuperarSenha {
   erro = '';
   sucesso = '';
 
-  constructor(private service: MyRecipesService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   voltar() {
     this.router.navigate(['/login']);
@@ -33,7 +33,7 @@ export class RecuperarSenha {
       return;
     }
 
-    this.service.solicitarRecuperacao(this.email).subscribe(
+    this.auth.solicitarRecuperacao(this.email).subscribe(
       (res: any) => {
         if (res.success) {
           this.sucesso = res.message || 'Enviamos um link para seu e-mail!';

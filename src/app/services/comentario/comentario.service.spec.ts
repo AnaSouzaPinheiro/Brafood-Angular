@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SecaoCarrossel } from './secao-carrossel';
+import { ComentarioService } from './comentario.service';
 
-describe('SecaoCarrossel', () => {
-  let service: SecaoCarrossel;
+describe('ComentarioService', () => {
+  let service: ComentarioService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SecaoCarrossel);
+    service = TestBed.inject(ComentarioService);
   });
 
   it('should be created', () => {

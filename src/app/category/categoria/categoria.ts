@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FilterDropdown } from '../filter-dropdown/filter-dropdown';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Recipes } from '../../model/myrecipes';
-import { MyRecipesService } from '../../services/my-recipes';
-import { CategoriaService } from '../../services/categoria';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { CategoriaService } from '../../services/categoria/categoria.service';
 import { Categoria as CategoriaModel } from '../../model/categoria';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
@@ -50,7 +50,7 @@ export class Categoria {
 
   constructor(
     private route: ActivatedRoute,
-    private myRecipesServices: MyRecipesService,
+    private ReceitaService: ReceitaService,
     private categoriaService: CategoriaService,
     private cdr: ChangeDetectorRef,
   ) {}
@@ -112,14 +112,7 @@ export class Categoria {
       filtrosRequest.subcategorias = this.filtros.subcategorias;
     }
 
-    // Log do request final para debug (opcional)
-    // console.log(
-    //   `Enviando request com filtros:`,
-    //   filtrosRequest,
-    //   `(length: ${this.filtros.subcategorias.length})`,
-    // );
-
-    this.myRecipesServices
+    this.ReceitaService
       .listCat(
         { id: this.categoria.id, nome: this.categoria.nome },
         filtrosRequest,

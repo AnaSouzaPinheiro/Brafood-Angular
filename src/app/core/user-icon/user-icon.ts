@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, Signal } from '@angular/core';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
 
 @Component({
@@ -15,8 +15,8 @@ export class UserIcon {
 
   defaultIcon = 'assets/imagens/icones/pessoas.png';
 
-  constructor(private auth: Auth) {
-    // Se quiser inicializar com o usuário do Auth, você pode:
+  constructor(private auth: AuthService) {
+    // Se quiser inicializar com o usuário do AuthService, você pode:
     this.auth.loadFromStorage();
     if (!this.userSignal) {
       this.userSignal = this.auth.user; // pega o usuário logado

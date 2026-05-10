@@ -3,13 +3,15 @@ import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
 import { ActivatedRoute } from '@angular/router';
 import { Receita } from '../../model/receita';
-import { MyRecipesService } from '../../services/my-recipes';
+import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
 import { Comment } from '../comment/comment';
 import { BraInput } from '../../shared/input/input';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Comentario } from '../../model/comentario';
 import { FormsModule } from '@angular/forms';
+import { ComentarioService } from '../../services/comentario/comentario.service';
+import { CompartilhamentoService } from '../../services/compartilhamento/compartilhamento.service';
 
 @Component({
   selector: 'bra-recipe',
@@ -35,13 +37,15 @@ export class Recipe {
 
   constructor(
     private route: ActivatedRoute,
-    private myRecipesServices: MyRecipesService,
+    private ReceitaServices: ReceitaService,
+    private comentarioService: ComentarioService,
+    private compartilhamentoService: CompartilhamentoService
   ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.myRecipesServices.buscarPorId(id).subscribe((r: any) => {
+    this.ReceitaServices.buscarPorId(id).subscribe((r: any) => {
       this.recipe = {
         id: Number(r.id),
         titulo: r.titulo,
@@ -105,7 +109,7 @@ export class Recipe {
       return;
     }
 
-    this.myRecipesServices
+    this.compartilhamentoService
       .getLinkWhatsApp(this.recipe.ingredientes)
       .subscribe((url) => {
         this.urlWhatsApp = url;
@@ -115,7 +119,7 @@ export class Recipe {
   comentar() {
     if (!this.recipe || !this.novoComentario.trim()) return;
 
-    this.myRecipesServices
+    this.comentarioService
       .criar({
         id_receita: this.recipe.id,
         texto: this.novoComentario,
@@ -129,7 +133,7 @@ export class Recipe {
   recarregarComentarios() {
     if (!this.recipe) return;
 
-    this.myRecipesServices
+    this.comentarioService
       .listarcommentsPorReceita(this.recipe.id)
       .subscribe((cs) => {
         this.comentarios = this.buildTree(cs);
@@ -139,7 +143,7 @@ export class Recipe {
   enviarComentario(payload: { texto: string; id_comentario_pai: number }) {
     if (!this.recipe) return;
 
-    this.myRecipesServices
+    this.comentarioService
       .criar({
         id_receita: this.recipe.id,
         texto: payload.texto,

@@ -2,9 +2,9 @@ import { Component, signal } from '@angular/core';
 import { UserIcon } from '../../core/user-icon/user-icon';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Router, RouterModule } from '@angular/router';
-import { MyRecipesService } from '../../services/my-recipes';
 import { User } from '../../model/user';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth/auth.service';
+import { UsuarioService } from '../../services/usuario/usuario.service';
 
 @Component({
   selector: 'bra-perfil',
@@ -18,8 +18,8 @@ export class Perfil {
   user = signal<User | undefined>(undefined);
 
   constructor(
-    private myRecipesServices: MyRecipesService,
-    private auth: Auth,
+    private usuarioService: UsuarioService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
@@ -34,7 +34,7 @@ export class Perfil {
     }
 
     if (this.userId) {
-      this.myRecipesServices
+      this.usuarioService
         .buscarUserPorId(Number(this.userId))
         .subscribe((s: any) => {
           this.user.set({

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalService } from '../../services/modal-service';
+import { ModalService } from '../../services/modal/modal.service';
 import { ModalConfig } from '../../model/modal-feedback';
 
 @Component({

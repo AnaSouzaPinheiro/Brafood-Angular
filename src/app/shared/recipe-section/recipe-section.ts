@@ -1,10 +1,13 @@
-import { Component, HostListener, Input, ElementRef, ViewChild } from '@angular/core';
-import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
+import {
+  Component,
+  Input,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { Section } from '../../model/section-home';
-import { Recipes } from '../../model/myrecipes';
-
-export type modo = 'carrossel' | 'grid';
 
 @Component({
   selector: 'bra-recipe-section',
@@ -13,115 +16,81 @@ export type modo = 'carrossel' | 'grid';
   templateUrl: './recipe-section.html',
   styleUrls: ['./recipe-section.scss'],
 })
-export class RecipeSection {
-  @ViewChild('contentRef') contentRef!: ElementRef<HTMLDivElement>;
-
-  indice = 0;
-  back1 = '';
-  back2 = '';
-  back3 = '';
-
-  @Input() modo: modo = 'carrossel';
-  @Input() type: string = '';
-
+export class RecipeSection implements AfterViewInit {
   @Input() section!: Section;
 
-  isMobile = false;
+  @ViewChild('slider')
+  slider!: ElementRef<HTMLDivElement>;
 
-  ngOnInit() {
-    if (typeof window !== 'undefined') {
-      this.isMobile = window.innerWidth <= 768;
-    }
-    this.atualizaCor(1);
+  isDragging = false;
+  startX = 0;
+  initalScrollLeft = 0;
+  showLeftArrow = false;
+  showRightArrow = true;
+
+  startDrag(event: MouseEvent) {
+    this.isDragging = true;
+
+    const slider = this.slider.nativeElement;
+
+    this.startX = event.pageX - slider.offsetLeft;
+    this.initalScrollLeft = slider.scrollLeft;
   }
 
-  @HostListener('window:resize')
-  onResize() {
-    if (typeof window !== 'undefined') {
-      this.isMobile = window.innerWidth <= 1545;
-    }
+  onDrag(event: MouseEvent) {
+    if (!this.isDragging) return;
+
+    event.preventDefault();
+
+    const slider = this.slider.nativeElement;
+    const x = event.pageX - slider.offsetLeft;
+    const walk = (x - this.startX) * 1.5;
+
+    slider.scrollLeft = this.initalScrollLeft - walk;
   }
 
-  get recipesPage(): Recipes[] {
-    if (!this.section) return [];
-    return this.isMobile
-      ? this.section.recipes
-      : this.section.recipes.slice(this.indice, this.indice + 3);
+  stopDrag() {
+    this.isDragging = false;
   }
 
-  async preloadImages(urls: string[]) {
-    await Promise.all(
-      urls.map(
-        (url) =>
-          new Promise<void>((resolve) => {
-            const img = new Image();
-            img.src = url;
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-          })
-      )
-    );
+  scrollRight() {
+    const slider = this.slider.nativeElement;
+
+    slider.scrollBy({
+      left: 350,
+      behavior: 'smooth',
+    });
+
+    setTimeout(() => {
+      this.checkArrows();
+    }, 400);
   }
 
-  animando = false;
-  direcao: 'left' | 'right' = 'right';
+  scrollLeft() {
+    const slider = this.slider.nativeElement;
 
-  async nextPage() {
-    if (this.animando || !this.section) return;
-    this.direcao = 'right';
-    await this.animateSlide();
+    slider.scrollBy({
+      left: -350,
+      behavior: 'smooth',
+    });
+
+    setTimeout(() => {
+      this.checkArrows();
+    }, 400);
   }
 
-  async prevPage() {
-    if (this.animando || !this.section) return;
-    this.direcao = 'left';
-    await this.animateSlide();
+  checkArrows() {
+    const slider = this.slider.nativeElement;
+
+    this.showLeftArrow = slider.scrollLeft > 10;
+
+    this.showRightArrow =
+      slider.scrollLeft + slider.clientWidth < slider.scrollWidth - 10;
   }
 
-  async animateSlide() {
-    this.animando = true;
-
-    const el = this.contentRef?.nativeElement;
-    if (!el) return;
-
-    // Etapa 1: anima a saída
-    el.classList.add(
-      this.direcao === 'right' ? 'slide-out-left' : 'slide-out-right'
-    );
-
-    await new Promise((r) => setTimeout(r, 400)); // tempo da animação
-
-    // Troca o conteúdo após a saída
-    let newIndex = this.indice + (this.direcao === 'right' ? 3 : -3);
-
-    if (newIndex < 0) newIndex = this.section.recipes.length - 3;
-    if (newIndex >= this.section.recipes.length) newIndex = 0;
-
-    this.indice = newIndex;
-    this.atualizaCor(Math.floor(this.indice / 3) + 1);
-
-    // Remove animação antiga e adiciona a de entrada
-    el.classList.remove('slide-out-left', 'slide-out-right');
-    el.classList.add(
-      this.direcao === 'right' ? 'slide-in-right' : 'slide-in-left'
-    );
-    
-    await new Promise((r) => setTimeout(r, 400));
-
-    // Limpa e libera nova animação
-    el.classList.remove('slide-in-right', 'slide-in-left');
-    this.animando = false;
-  }
-
-  atualizaCor(qual: number) {
-    this.back1 = qual === 1 ? '#002C99' : '';
-    this.back2 = qual === 2 ? '#002C99' : '';
-    this.back3 = qual === 3 ? '#002C99' : '';
-  }
-
-  getClasses() {
-    return {
-      [this.type]: true,
-    };
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.checkArrows();
+    });
   }
 }
