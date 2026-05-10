@@ -9,6 +9,7 @@
 
   <ng-template #loggedIn>
     <div class="user">
+      @if (modalLogged) {
       <ul>
         <li class="name">Olá, {{ modalLogged.personName }}!</li>
 
@@ -29,6 +30,7 @@
           Sair
         </li>
       </ul>
+      }
     </div>
   </ng-template>
 </div>

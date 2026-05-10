@@ -4,6 +4,10 @@
 .inputs {
   gap: 20px;
   display: flex;
+
+  @media (max-width: 1185px) {
+    flex-direction: column;
+  }
 }
 
 ul#rules {

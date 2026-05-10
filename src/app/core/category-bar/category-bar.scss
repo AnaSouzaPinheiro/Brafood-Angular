@@ -27,14 +27,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: bold;
-    height: 120px;
+    height: 90px;
     text-align: center;
 
     .icon {
-      width: 55px;
-      height: 55px;
+      width: 40px;
+      height: 40px;
     }
 
     &:hover {
@@ -117,14 +117,14 @@
 @media (max-width: 576px) {
   .category-bar {
     ul li {
-      flex: 0 0 200px;
-      gap: 10px;
-      height: 95px;
-      font-size: 12px;
+      flex: 0 0 160px;
+      gap: 8px;
+      height: 75px;
+      font-size: 11px;
 
       .icon {
-        width: 35px;
-        height: 35px;
+        width: 28px;
+        height: 28px;
       }
     }
   }

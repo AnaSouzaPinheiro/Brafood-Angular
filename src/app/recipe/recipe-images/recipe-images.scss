@@ -4,7 +4,7 @@
 .two-container,
 .one-container {
   width: 100%;
-  height: 600px;
+  height: 480px;
   display: flex;
 
   .oneHalf {
@@ -20,7 +20,7 @@
 
   .twoHalf {
     width: 30%;
-    height: 600px;
+    height: 480px;
     display: flex;
     flex-direction: column;
 
@@ -109,10 +109,10 @@ img {
   .all-container,
   .two-container,
   .one-container {
-    height: 500px;
+    height: 380px;
 
     .twoHalf {
-      height: 500px;
+      height: 380px;
     }
   }
 }
@@ -121,10 +121,10 @@ img {
   .all-container,
   .two-container,
   .one-container {
-    height: 400px;
+    height: 280px;
 
     .twoHalf {
-      height: 400px;
+      height: 280px;
     }
   }
 }

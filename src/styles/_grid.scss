@@ -6,7 +6,7 @@
   display: grid;
   justify-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 36px;
 
   // desktop
   grid-template-columns: repeat($desktop, 1fr);
@@ -14,7 +14,7 @@
   // tablet
   @media (max-width: 1185px) {
     grid-template-columns: repeat($tablet, 1fr);
-    gap: 50px 0;
+    gap: 36px 0;
   }
 
   // mobile

@@ -8,7 +8,7 @@
 }
 
 .dropdown-label {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .single-dropdown {
@@ -39,7 +39,7 @@
 .dropdown-header__selected {
   flex-grow: 1;
   padding-left: 0.4rem;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 200;
   color: $primary-gray;
   text-align: left;
@@ -81,10 +81,10 @@
 }
 
 .dropdown-option {
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.9rem;
   cursor: pointer;
   color: $primary-gray;
-  font-size: 18px;
+  font-size: 14px;
   border-bottom: 1px solid #eee;
 }
 
@@ -99,13 +99,13 @@
 
 .adicionar,
 .remover {
-  width: 50px;
-  height: 50px;
-  padding: 10px;
-  margin-left: 35px;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  margin-left: 20px;
   cursor: pointer;
   font-weight: 200;
-  font-size: 30px;
+  font-size: 22px;
   background: transparent;
   border-radius: 50px;
 

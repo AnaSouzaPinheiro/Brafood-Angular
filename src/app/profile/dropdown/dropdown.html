@@ -74,7 +74,7 @@
         tabindex="0"
       >
         <span class="dropdown-header__selected">
-          {{ selected[0]?.label || 'Selecione' }}
+          {{ selected.length ? selected[0].label : 'Selecione' }}
         </span>
         <div class="dropdown-header__arrow">
           <svg

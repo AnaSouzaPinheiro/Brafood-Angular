@@ -7,7 +7,19 @@
       <ng-template #categoriaPadrao> {{ mappedRecipe.category }} </ng-template>
     </h2>
 
-    <img [src]="mappedRecipe.img" alt="" class="img-receita" />
+    <ng-container *ngIf="mappedRecipe.img && !imgBroken; else imgFallback">
+      <img
+        [src]="mappedRecipe.img"
+        alt=""
+        class="img-receita"
+        (error)="imgBroken = true"
+      />
+    </ng-container>
+    <ng-template #imgFallback>
+      <div class="img-placeholder">
+        <img src="assets/imagens/icones/foto (1).png" alt="" />
+      </div>
+    </ng-template>
 
     <span
       [hidden]="myRecipe === false"

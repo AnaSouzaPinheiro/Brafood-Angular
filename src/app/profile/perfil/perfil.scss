@@ -2,8 +2,8 @@
 @use "layout" as *;
 
 .menuPerfil {
-  gap: 105px;
-  margin: 70px 0;
+  gap: 70px;
+  margin: 48px 0;
 
   @include flex-column-center;
 
@@ -11,21 +11,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 65px;
+    gap: 48px;
 
     .account {
-      gap: 20px;
+      gap: 16px;
 
       @include flex-column-center;
 
       bra-user-icon {
-        width: 190px;
-        height: 190px;
+        width: 140px;
+        height: 140px;
         display: inline-block;
       }
 
       .name {
-        font-size: 2rem;
+        font-size: 1.6rem;
         font-weight: 500;
         color: $primary-blue;
         text-align: center;
@@ -35,18 +35,18 @@
     .resume {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
 
       .title {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 300;
         color: $primary-gray;
       }
 
       .text {
-        max-width: 500px;
+        max-width: 460px;
 
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 300;
         color: $primary-blue;
       }
@@ -57,7 +57,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 50px;
+    gap: 36px;
   }
 
   hr {
@@ -70,12 +70,12 @@
   }
 
   @media (max-width: 768px) {
-    gap: 55px;
-    margin: 35px;
+    gap: 40px;
+    margin: 28px;
 
     .main {
       flex-direction: column;
-      gap: 35px;
+      gap: 28px;
 
       .resume {
         align-items: center;

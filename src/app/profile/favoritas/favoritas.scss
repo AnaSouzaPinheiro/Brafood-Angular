@@ -21,12 +21,12 @@
 
     .qtdReceitas {
       color: $primary-gray;
-      font-size: 24px;
+      font-size: 17px;
     }
   }
 
   .content {
-    margin: 50px 0;
+    margin: 36px 0;
     
     @include flex-column-center;
 

@@ -1,4 +1,4 @@
-<div class="cookie-banner" *ngIf="!accepted">
+<div class="cookie-banner" *ngIf="loaded && !accepted">
   <h3>Aviso de Cookies</h3>
 
   <p>
@@ -8,6 +8,7 @@
 
   <div class="actions">
     <button class="accept" (click)="accept()">Aceitar</button>
-    <button class="more">Saiba mais</button>
+
+    <button class="more" [routerLink]="'/cookies'">Saiba mais</button>
   </div>
 </div>

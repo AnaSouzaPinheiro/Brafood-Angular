@@ -4,17 +4,19 @@
 .cookie-banner {
   position: fixed;
   bottom: 20px;
-  left: 15%;
-  transform: translateX(-50%);
-  width: 25%;
-  max-width: 600px;
+  left: 30px;
+
+  width: 380px;
+  max-width: calc(100vw - 60px);
 
   background: #fff;
   border-radius: 12px;
   padding: 16px 20px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+
+  z-index: 999999;
+  pointer-events: auto;
 
   gap: 12px;
 
@@ -35,6 +37,8 @@
       padding: 8px 14px;
       border-radius: 8px;
       cursor: pointer;
+
+      pointer-events: auto;
     }
 
     .accept {
@@ -46,5 +50,13 @@
       background: transparent;
       color: $primary-blue;
     }
+  }
+
+  @media (max-width: 768px) {
+    left: 50%;
+    width: 50%;
+    bottom: 16px;
+
+    transform: translateX(-50%);
   }
 }

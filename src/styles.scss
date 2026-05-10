@@ -18,11 +18,11 @@ bra-navbar {
 }
 
 main.with-navbar {
-  padding-top: 130px; // altura do navbar
+  padding-top: 90px; // altura do navbar
 }
 
 @media (max-width: 575px) {
   main.with-navbar {
-    padding-top: 107px;
+    padding-top: 76px;
   }
 }
