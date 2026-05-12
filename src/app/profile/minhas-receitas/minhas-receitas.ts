@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
@@ -8,6 +8,8 @@ import { Recipes } from '../../model/myrecipes';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
 import { ModalService } from '../../services/modal/modal.service';
+import { toSlug } from '../../utils/slug';
+import { Receita } from '../../model/receita';
 
 @Component({
   selector: 'bra-minhas-receitas',
@@ -40,11 +42,11 @@ export class MinhasReceitas {
     }
 
     if (this.userId) {
-      this.ReceitaServices
-        .listPorUser(Number(this.userId))
-        .subscribe((data) => {
+      this.ReceitaServices.listPorUser(Number(this.userId)).subscribe(
+        (data) => {
           this.Recipes = data;
-        });
+        },
+      );
     }
   }
 
@@ -88,8 +90,8 @@ export class MinhasReceitas {
     this.currentPage = page;
   }
 
-  editarReceita(id: number) {
-    this.router.navigate(['/editar-receita', id]);
+  editarReceita(recipe: Receita) {
+    this.router.navigate(['/editar-receita', toSlug(recipe.titulo), recipe.id]);
   }
 
   excluirReceita(id: number) {

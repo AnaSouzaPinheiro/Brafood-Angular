@@ -20,7 +20,7 @@ export class Perfil {
   constructor(
     private usuarioService: UsuarioService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -36,16 +36,18 @@ export class Perfil {
     if (this.userId) {
       this.usuarioService
         .buscarUserPorId(Number(this.userId))
-        .subscribe((s: any) => {
+        .subscribe((response) => {
+          const usuario = response.usuario;
+
           this.user.set({
-            id: Number(s.id),
-            nome: s.nome,
-            sobrenome: s.sobrenome,
-            apelido: s.apelido,
-            email: s.email,
-            genero: s.genero,
-            bio: s.bio,
-            foto_perfil: s.foto_perfil,
+            id: Number(usuario.id),
+            nome: usuario.nome,
+            sobrenome: usuario.sobrenome,
+            apelido: usuario.apelido,
+            email: usuario.email,
+            genero: usuario.genero,
+            bio: usuario.bio,
+            foto_perfil: usuario.foto_perfil,
           });
         });
     }

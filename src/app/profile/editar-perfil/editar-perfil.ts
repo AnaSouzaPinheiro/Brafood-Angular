@@ -13,7 +13,7 @@ import { User } from '../../model/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from '../../services/modal/modal.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
-import { Perfil } from "../perfil/perfil";
+import { Perfil } from '../perfil/perfil';
 
 @Component({
   selector: 'bra-editar-perfil',
@@ -23,8 +23,8 @@ import { Perfil } from "../perfil/perfil";
     FormsModule,
     CommonModule,
     CustomButton,
-    Perfil
-],
+    Perfil,
+  ],
   templateUrl: './editar-perfil.html',
   styleUrl: './editar-perfil.scss',
 })
@@ -80,7 +80,11 @@ export class EditarPerfil implements OnInit {
     // tipo
     const validTypes = ['image/png', 'image/jpeg'];
     if (!validTypes.includes(file.type)) {
-      alert('Formato inválido! Apenas PNG e JPG são permitidos.');
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Formato inválido! Apenas PNG e JPG são permitidos.',
+      });
       input.value = '';
       this.clearPreview();
       this.emitFile();
@@ -90,7 +94,11 @@ export class EditarPerfil implements OnInit {
     // tamanho (3MB)
     const maxSize = 3 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert('Arquivo muito grande! Máx 3MB.');
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Arquivo muito grande! Máx 3MB.',
+      });
       input.value = '';
       this.clearPreview();
       this.emitFile();
@@ -127,7 +135,8 @@ export class EditarPerfil implements OnInit {
   ngOnInit() {
     this.idUser = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.usuarioService.buscarUserPorId(this.idUser).subscribe((user: User) => {
+    this.usuarioService.buscarUserPorId(this.idUser).subscribe((response) => {
+      const user = response.usuario;
       if (!user) return;
 
       this.user = user;
@@ -172,7 +181,7 @@ export class EditarPerfil implements OnInit {
       .editarUsuario(this.idUser, payload, this.arquivoSelecionado!)
       .subscribe({
         next: (res) => {
-          if (res?.sucesso) {
+          if (res?.success) {
             this.modalService.open({
               type: 'success',
               title: 'Perfil atualizado',
@@ -186,13 +195,17 @@ export class EditarPerfil implements OnInit {
             this.modalService.open({
               type: 'error',
               title: 'Erro',
-              message: res?.mensagem || 'Erro ao atualizar perfil.',
+              message: res?.message || 'Erro ao atualizar perfil.',
             });
           }
         },
         error: (err) => {
           console.error(err);
-          alert('Erro de comunicação com o servidor.');
+          this.modalService.open({
+            type: 'error',
+            title: 'Erro',
+            message: 'Erro de comunicação com o servidor.',
+          });
         },
       });
   }

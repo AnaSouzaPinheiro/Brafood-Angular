@@ -6,38 +6,45 @@
       </h1>
       <span>
         Encontrado:
-        <span class="qtd">{{ pagesArray.length }} </span> receitas</span
+        <span class="qtd">{{ Recipes.length }} </span> receitas</span
       >
     </div>
 
     <div class="filter-container">
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsDropwdown"
-      ></bra-filter-dropdown>
-      <bra-custom-button
-        [label]="'Limpar filtro'"
-        [type]="'filter'"
-      ></bra-custom-button>
+      <div class="filters">
+        <bra-filter-dropdown
+          [optionsDropwdown]="optionsDropwdown"
+          type="single"
+          (changeFilter)="filtrarPorOrdem($event)"
+        ></bra-filter-dropdown>
+
+        <bra-filter-dropdown
+          [optionsDropwdown]="optionsDropwdown2"
+          type="multi"
+          (changeMulti)="filtrarPorCategoria($event)"
+        ></bra-filter-dropdown>
+
+        <bra-custom-button
+          [label]="'Limpar filtros'"
+          [type]="'filter'"
+          (click)="limparFiltros()"
+        ></bra-custom-button>
+      </div>
     </div>
   </div>
   <div class="cards">
-    @for (recipe of myRecipesPage; track $index) {
-    <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
+    @for (recipe of RecipesPage; track $index) {
+    <bra-recipe-card
+      [recipe]="recipe"
+    ></bra-recipe-card>
     }
   </div>
   <div class="pages">
-    <span (click)="prevPage()" class="setas"><</span>
-
-    @for (page of pagesArray; track page) {
-    <span
-      (click)="goToPage(page)"
-      class="numbers"
-      [class.active]="page === currentPage"
-    >
-      {{ page }}
-    </span>
-    }
-
-    <span (click)="nextPage()" class="setas">></span>
+    <bra-custom-button
+      [hidden]="RecipesFiltradas.length  < end"
+      [label]="'Ver mais receitas'"
+      [type]="'comment'"
+      (click)="verMais()"
+    ></bra-custom-button>
   </div>
 </div>

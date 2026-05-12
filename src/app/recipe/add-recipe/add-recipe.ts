@@ -19,6 +19,7 @@ import { CategoriaService } from '../../services/categoria/categoria.service';
 import { Option } from '../../profile/dropdown/dropdown';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -47,28 +48,12 @@ export class AddRecipe {
   subcategoriasPorCategoria: { [nome: string]: Option[] } = {};
 
   porcoesDropdown: Option[] = [
-    {
-      label: 'Porções',
-      value: 'Porções',
-    },
-    {
-      label: 'Pedaços',
-      value: 'Pedaços',
-    },
-    {
-      label: 'Pratos',
-      value: 'Pratos',
-    },
-    {
-      label: 'Fatias',
-      value: 'Fatias',
-    },
-    {
-      label: 'Unidades',
-      value: 'Unidades',
-    },
+    { label: 'Porções',  value: 'Porções'  },
+    { label: 'Pedaços',  value: 'Pedaços'  },
+    { label: 'Pratos',   value: 'Pratos'   },
+    { label: 'Fatias',   value: 'Fatias'   },
+    { label: 'Unidades', value: 'Unidades' },
   ];
-  porcaoSelecionada: Option[] = [];
 
   receita: Receita = {
     id: 0,
@@ -96,23 +81,27 @@ export class AddRecipe {
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private ReceitaService: ReceitaService,
+    private receitaService: ReceitaService,
     private modalService: ModalService,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
   ) {
     this.form = this.fb.group({
-      titulo: ['', Validators.required],
-      resumo: ['', Validators.required],
-      categoriasSelecionadas: [[], Validators.required],
+      titulo:    ['', Validators.required],
+      resumo:    ['', Validators.required],
+      // Categoria e subcategoria ficam no form como fonte única de verdade
+      categoria:    [null, Validators.required],
+      subcategoria: [null, Validators.required],
       dificuldade: [
         null,
         [Validators.required, Validators.min(1), Validators.max(3)],
       ],
       tempo_hora: [null, Validators.required],
-      tempo_min: ['', Validators.required],
-      porcoes: [null, Validators.required],
-      tipo_porcao: ['', Validators.required],
+      tempo_min:  [null, Validators.required],
+      porcoes:    [null, Validators.required],
+      // tipo_porcao vive só aqui — o dropdown atualiza via patchValue
+      tipo_porcao: [null, Validators.required],
     });
   }
 
@@ -125,19 +114,17 @@ export class AddRecipe {
       next: (res: Categoria[]) => {
         this.categorias = res;
 
-        // Transformar Categoria[] em Option[]
         this.categoriasDropdown = res.map((cat) => ({
           label: cat.nome,
-          value: cat.id.toString(), // sempre string, porque Option.value é string
+          value: cat.id.toString(),
         }));
 
-        // Subcategorias também como Option[]
         res.forEach((cat) => {
           this.subcategoriasPorCategoria[cat.id] = (cat.subcategorias || [])
-            .filter((sub) => sub.nome !== 'Todas') // filtra exatamente "Todas"
+            .filter((sub) => sub.nome !== 'Todas')
             .map((sub) => ({
               label: sub.nome,
-              value: sub.id.toString(),
+              value: sub.id.toString(), // ID, não nome
             }));
         });
       },
@@ -148,19 +135,24 @@ export class AddRecipe {
   // ========== Categorias ==========
   onCategoriaSelecionada(event: Option[]) {
     this.categoriasSelecionadas = event;
-    this.receita.categoria = event.map((e) => e.value).join(','); // ou armazene como array
+    // Reseta subcategoria ao trocar categoria
+    this.subcategoriasSelecionadas = {};
+    this.form.patchValue({
+      categoria:    event[0]?.value ?? null,
+      subcategoria: null,
+    });
   }
 
   onSubcategoriaSelecionada(catId: string, selecionadas: Option[]) {
     this.subcategoriasSelecionadas[catId] = selecionadas;
+    // Atualiza o form control com o ID da subcategoria
+    this.form.patchValue({ subcategoria: selecionadas[0]?.value ?? null });
   }
 
   // ========== Porções ==========
   onPorcaoSelecionada(event: Option[]) {
-    if (event.length) {
-      this.receita.tipo_porcao = event[0].value;
-      this.form.patchValue({ tipo_porcao: event[0].value });
-    }
+    // Fonte única de verdade: só o form control
+    this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
   onImagensSelecionadas(files: File[]) {
@@ -169,14 +161,14 @@ export class AddRecipe {
 
   get ingredientesComoItems() {
     return this.receita.ingredientes.map((ing) => ({
-      title: ing.titulo ?? '',
+      title:    ing.titulo ?? '',
       subitems: ing.itens ?? [''],
     }));
   }
 
   get etapasComoItems() {
     return this.receita.etapas.map((et) => ({
-      title: et.titulo ?? '',
+      title:    et.titulo ?? '',
       subitems: et.descricoes?.map((d: any) => d.descricao) ?? [''],
     }));
   }
@@ -185,92 +177,95 @@ export class AddRecipe {
   atualizarIngredientes(lista: any[]) {
     this.receita.ingredientes = lista.map((ing: any) => ({
       titulo: ing.title,
-      itens: ing.subitems,
+      itens:  ing.subitems,
     }));
   }
 
   // ========== Etapas ==========
   atualizarEtapas(lista: any[]) {
     this.receita.etapas = lista.map((etapa: any, i: number) => ({
-      titulo: etapa.title,
-      ordem: i + 1,
+      titulo:    etapa.title,
+      ordem:     i + 1,
       descricoes: etapa.subitems.map((desc: string, j: number) => ({
         descricao: desc,
-        ordem: j + 1,
+        ordem:     j + 1,
       })),
     }));
   }
 
   // ========== Salvar ==========
   salvar() {
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = userData?.id;
+    // Bloqueia envio se o formulário estiver inválido
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.modalService.open({
+        type:    'error',
+        title:   'Campos obrigatórios',
+        message: 'Preencha todos os campos antes de enviar a receita.',
+      });
+      return;
+    }
 
-    const categoriaSelecionada = this.categoriasSelecionadas[0]; // pega a primeira categoria selecionada
-    const subcategoriaSelecionada =
-      this.subcategoriasSelecionadas[categoriaSelecionada?.value]?.[0]; // primeira subcategoria
+    // Obtém o usuário pelo serviço — sem tocar em localStorage aqui
+    const userId = this.authService.getUserId();
+
+    if (!userId) {
+      this.modalService.open({
+        type:    'error',
+        title:   'Sessão expirada',
+        message: 'Faça login novamente para cadastrar uma receita.',
+      });
+      return;
+    }
+
+    const fv = this.form.value;
 
     const receitaPronta = {
       ...this.receita,
-      titulo: this.form.value.titulo,
-      resumo: this.form.value.resumo,
-      categoria: this.categoriasSelecionadas[0]?.label ?? '',
-      subcategoria:
-        this.subcategoriasSelecionadas[
-          this.categoriasSelecionadas[0]?.value
-        ]?.[0]?.label ?? '',
-      dificuldade: this.form.value.dificuldade,
-      tempo_hora: this.form.value.tempo_hora,
-      tempo_min: this.form.value.tempo_min,
-      porcoes: this.form.value.porcoes,
-      tipo_porcao: this.form.value.tipo_porcao,
+      titulo:       fv.titulo,
+      resumo:       fv.resumo,
+      // Envia o ID da categoria e o ID da subcategoria (não os nomes)
+      categoria:    fv.categoria,
+      subcategoria: fv.subcategoria,
+      dificuldade:  fv.dificuldade,
+      tempo_hora:   fv.tempo_hora,
+      tempo_min:    fv.tempo_min,
+      porcoes:      fv.porcoes,
+      tipo_porcao:  fv.tipo_porcao,
       ingredientes: this.receita.ingredientes,
-      etapas: this.receita.etapas,
+      etapas:       this.receita.etapas,
       data_criacao: new Date().toISOString(),
-      autor: userId,
+      autor:        userId,
     };
 
-    const formData = new FormData();
-    formData.append(
-      'dados',
-      new Blob([JSON.stringify(receitaPronta)], { type: 'application/json' }),
-    );
-
-    this.imagensSelecionadas.forEach((file, i) => {
-      formData.append('imagem' + (i + 1), file);
-    });
-
-    this.ReceitaService
+    this.receitaService
       .addReceita(receitaPronta, this.imagensSelecionadas)
       .subscribe({
         next: (res) => {
-          if (res?.sucesso) {
+          if (res?.success) {
             this.form.reset();
             this.imagensSelecionadas = [];
             this.modalService.open({
-              type: 'success',
-              title: 'Receita adicionada',
-              message: 'Informações da receita foram salvas com sucesso!',
+              type:        'success',
+              title:       'Receita adicionada',
+              message:     'Informações da receita foram salvas com sucesso!',
               confirmText: 'OK',
               onConfirm: () => {
-                const idUsuario = Number(
-                  this.route.snapshot.queryParamMap.get('user'),
-                );
-                this.router.navigate(['/minhas-receitas', idUsuario]);
+                this.router.navigate(['/minhas-receitas', userId]);
               },
             });
           } else {
             this.modalService.open({
-              type: 'error',
-              title: 'Erro',
-              message: res?.mensagem || 'Erro ao cadastrar receita.',
+              type:    'error',
+              title:   'Erro',
+              message: res?.message || 'Erro ao cadastrar receita.',
             });
           }
         },
         error: (err) => {
           this.modalService.open({
-            type: 'error',
-            title: 'Erro',
+            type:    'error',
+            title:   'Erro',
             message: err?.mensagem || 'Erro ao cadastrar receita.',
           });
         },

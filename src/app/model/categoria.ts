@@ -1,9 +1,9 @@
 export interface Categoria {
   id: number;
   nome: string;
-  icon: string;
+  icone: string;
   fundo: string;
-  cssClass: string;
+  css_class: string;
   url: string;
   subcategorias: Subcategoria[];
 }

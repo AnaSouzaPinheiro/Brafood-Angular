@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
 import { CategoriaService } from '../../services/categoria/categoria.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { toSlug } from '../../utils/slug';
 
 @Component({
   selector: 'bra-footer',
@@ -28,13 +29,13 @@ export class Footer {
     this.userId = user?.id ?? null;
 
     this.categoriaServices.listCats().subscribe((categorias) => {
-      this.categorias = categorias.map((c: any) => ({
+      this.categorias = categorias.map((c: Categoria) => ({
         id: c.id,
         nome: c.nome,
-        icon: c.icone,
+        icone: c.icone,
         fundo: '',
-        cssClass: c.css_class,
-        url: `/categoria/${c.id}/${c.nome}`,
+        css_class: c.css_class,
+        url: `/categoria/${toSlug(c.nome)}/${c.id}`,
         subcategorias: c.subcategorias ?? [],
       }));
     });

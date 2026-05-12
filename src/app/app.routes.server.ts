@@ -3,7 +3,7 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   // ROTAS DINÂMICAS
   {
-    path: 'receita/:id',
+    path: 'receita/:nome/:id',
     renderMode: RenderMode.Client,
   },
   {
@@ -19,11 +19,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
-    path: 'editar-receita/:id',
+    path: 'editar-receita/:nome/:id',
     renderMode: RenderMode.Client,
   },
   {
-    path: 'categoria/:id/:nome',
+    path: 'categoria/:nome/:id',
     renderMode: RenderMode.Client,
   },
   {

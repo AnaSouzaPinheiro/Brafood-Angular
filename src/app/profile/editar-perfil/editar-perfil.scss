@@ -6,6 +6,7 @@
   color: $primary-blue;
 
   @include page-title;
+  @include page-container;
 }
 
 /* GRID PRINCIPAL */

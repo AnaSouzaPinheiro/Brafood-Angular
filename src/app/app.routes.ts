@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { AuthGuard } from './services/auth/auth-guard';
 
 export const routes: Routes = [
@@ -18,7 +17,7 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/login/login').then((m) => m.Login),
   },
   {
-    path: 'receita/:id',
+    path: 'receita/:nome/:id',
     loadComponent: () => import('./recipe/recipe/recipe').then((m) => m.Recipe),
   },
   {
@@ -27,6 +26,7 @@ export const routes: Routes = [
       import('./profile/editar-perfil/editar-perfil').then(
         (m) => m.EditarPerfil,
       ),
+      canActivate: [AuthGuard],
   },
   {
     path: 'minhas-receitas/:id',
@@ -34,27 +34,30 @@ export const routes: Routes = [
       import('./profile/minhas-receitas/minhas-receitas').then(
         (m) => m.MinhasReceitas,
       ),
-    canActivate: [AuthGuard], // <-- aqui você protege a rota
+    canActivate: [AuthGuard],
   },
   {
     path: 'favoritas/:id',
     loadComponent: () =>
       import('./profile/favoritas/favoritas').then((m) => m.Favoritas),
+    canActivate: [AuthGuard],
   },
   {
-    path: 'editar-receita/:id',
+    path: 'editar-receita/:nome/:id',
     loadComponent: () =>
       import('./recipe/update-recipe/update-recipe').then(
         (m) => m.UpdateRecipe,
       ),
+    canActivate: [AuthGuard],
   },
   {
     path: 'adicionar-receita',
     loadComponent: () =>
       import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
+    canActivate: [AuthGuard],
   },
   {
-    path: 'categoria/:id/:nome',
+    path: 'categoria/:nome/:id',
     loadComponent: () =>
       import('./category/categoria/categoria').then((m) => m.Categoria),
   },

@@ -70,7 +70,15 @@ export class AuthService extends BaseService {
 
   // Retorna os dados do usuário logado
   getUser(): any {
-    const data = localStorage.getItem('user');
-    return data ? JSON.parse(data) : null;
+    // Prioriza o signal (já carregado em memória); cai no storage como fallback
+    return this.user() ?? (() => {
+      const data = localStorage.getItem('user');
+      return data ? JSON.parse(data) : null;
+    })();
+  }
+
+  // Atalho para obter só o ID — evita que os componentes acessem localStorage diretamente
+  getUserId(): number | null {
+    return this.getUser()?.id ?? null;
   }
 }

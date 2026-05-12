@@ -8,3 +8,8 @@ export interface User {
   bio?: string;
   foto_perfil?: string;
 }
+
+export interface UserResponse {
+  success: boolean;
+  usuario: User;
+}

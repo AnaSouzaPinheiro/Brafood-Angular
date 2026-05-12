@@ -6,6 +6,7 @@ import { Section } from '../../model/section-home';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { SecaoService } from '../../services/secao/secao.service';
 import { Recipes } from '../../model/myrecipes';
+import { toSlug } from '../../utils/slug';
 
 @Component({
   selector: 'bra-home',
@@ -44,7 +45,7 @@ export class Home implements OnInit {
         const recipes = (secao.receitas || []).map((r: any) => ({
           id: r.id,
           categoria: r.categoria,
-          url: `/receita/${r.id}`,
+          url: `/receita/${toSlug(r.titulo)}/${r.id}`,
           imagem1: r.imagem1,
           titulo: r.titulo,
           qtd_fav: r.qtd_fav,

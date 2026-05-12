@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../../model/user';
+import { UserResponse } from '../../model/user';
 import { BaseService } from '../base/base.service';
 
 @Injectable({
@@ -8,8 +8,8 @@ import { BaseService } from '../base/base.service';
 })
 export class UsuarioService extends BaseService {
   // Busca receita específica pelo ID
-  buscarUserPorId(id: number): Observable<User> {
-    return this.httpClient.get<User>(this.url(`user.php?id=${id}`));
+  buscarUserPorId(id: number): Observable<UserResponse> {
+    return this.httpClient.get<UserResponse>(this.url(`user.php?id=${id}`));
   }
 
   editarUsuario(id: number, formValue: any, imagem?: File): Observable<any> {

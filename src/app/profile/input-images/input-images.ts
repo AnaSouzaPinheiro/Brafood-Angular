@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'bra-input-images',
@@ -21,6 +22,8 @@ export class InputImages {
 
   private arquivosSelecionados: File[] = [];
 
+  constructor(private modalService: ModalService) {}
+
   onFileChange(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
@@ -33,7 +36,11 @@ export class InputImages {
     const file = input.files[0];
     const validTypes = ['image/png', 'image/jpeg'];
     if (!validTypes.includes(file.type)) {
-      alert('Formato inválido! Apenas PNG e JPG são permitidos.');
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Formato inválido! Apenas PNG e JPG são permitidos.',
+      });
       input.value = ''; // limpa o input
       this.clearPreview(index);
       this.emitFiles();
@@ -43,7 +50,11 @@ export class InputImages {
     // Validação do tamanho (3MB)
     const maxSize = 3 * 1024 * 1024; // bytes
     if (file.size > maxSize) {
-      alert('Arquivo muito grande! Máx 3MB.');
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Arquivo muito grande! Máx 3MB.',
+      });
       input.value = '';
       this.clearPreview(index);
       this.emitFiles();

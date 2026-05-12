@@ -1,8 +1,8 @@
 <div class="category-bar">
   <ul>
-    <li *ngFor="let categoria of categorias" [ngClass]="categoria.cssClass" [routerLink]="categoria.url">
+    <li *ngFor="let categoria of categorias" [ngClass]="categoria.css_class" [routerLink]="categoria.url">
       <img class="icon"
-        [src]="categoria.icon"
+        [src]="categoria.icone"
         alt="{{ categoria.nome }} ícone"
       />
       {{ categoria.nome }}

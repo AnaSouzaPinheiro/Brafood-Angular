@@ -16,8 +16,10 @@
   @include flex-column;
 
   &:hover {
-    transform: translateY(-10px);
+    z-index: 3;
     cursor: pointer;
+    position: relative;
+    transform: translateY(-10px);
   }
 }
 

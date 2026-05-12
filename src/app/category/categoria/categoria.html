@@ -39,20 +39,11 @@
     }
   </div>
   <div class="pages">
-    <!-- <span (click)="prevPage()" class="setas"><</span>
-
-    @for (page of pagesArray; track page) {
-    <span
-      (click)="goToPage(page)"
-      class="numbers"
-      [class.active]="page === currentPage"
-    >
-      {{ page }}
-    </span>
-    }
-
-    <span (click)="nextPage()" class="setas">></span>
-  </div> -->
-
-  <bra-custom-button [hidden]="RecipesFiltradas.length  < end" [label]="'Ver mais receitas'" [type]="'comment'" (click)="verMais()"></bra-custom-button>
+    <bra-custom-button
+      [hidden]="RecipesFiltradas.length  < end"
+      [label]="'Ver mais receitas'"
+      [type]="'comment'"
+      (click)="verMais()"
+    ></bra-custom-button>
+  </div>
 </div>

@@ -114,7 +114,7 @@
             [label]="''"
             [multiSelect]="false"
             [options]="porcoesDropdown"
-            [selected]="[ { label: receita.tipo_porcao, value: receita.tipo_porcao } ]"
+            [selected]="porcaoSelecionada"
             (optionSelected)="onPorcaoSelecionada($event)"
           ></bra-dropdown>
         </div>

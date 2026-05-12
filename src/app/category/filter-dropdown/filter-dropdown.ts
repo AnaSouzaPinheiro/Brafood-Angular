@@ -29,9 +29,6 @@ export class FilterDropdown {
   @Output() changeMulti = new EventEmitter<number[]>();
   @Output() itemClickedMulti = new EventEmitter<DropdownItem>();
 
-  // Injetar ChangeDetectorRef para garantir que as atualizações visuais ocorram
-  constructor() {}
-
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
@@ -98,6 +95,7 @@ export class FilterDropdown {
       });
 
       this.changeMulti.emit([]);
+      this.dropdownOpen = false;
       return;
     }
 
@@ -122,9 +120,11 @@ export class FilterDropdown {
       });
 
       this.changeMulti.emit([]);
+      this.dropdownOpen = false;
       return;
     }
 
     this.changeMulti.emit(selecionados);
+    this.dropdownOpen = false;
   }
 }

@@ -1,8 +1,8 @@
 @mixin page-container {
-  margin: 0 110px;
+  margin: 0 110px 35px 110px;
 
   @media (max-width: 1185px) {
-    margin: 0 50px;
+    margin: 0 50px 35px 50px;
   }
 
   @media (max-width: 768px) {

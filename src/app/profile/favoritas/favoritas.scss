@@ -26,12 +26,12 @@
   }
 
   .content {
-    margin: 36px 0;
-    
+    margin-bottom: 36px;
+
     @include flex-column-center;
 
     .cards {
-      @include recipe-grid(3, 2, 1);
+      @include recipe-grid;
     }
   }
 

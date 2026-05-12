@@ -21,6 +21,7 @@ import { ReceitaService } from '../../services/receita/receita.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { ModalService } from '../../services/modal/modal.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'bra-update-recipe',
@@ -43,9 +44,16 @@ export class UpdateRecipe implements OnInit {
 
   categorias: Categoria[] = [];
   categoriasDropdown: Option[] = [];
+
+  // Estes dois são passados diretamente como [selected] para os dropdowns.
+  // Só são populados DEPOIS que categorias e receita chegam — sem valor inicial
+  // vazio que confunda o ngOnChanges do Dropdown.
   categoriasSelecionadas: Option[] = [];
   subcategoriasSelecionadas: { [catId: string]: Option[] } = {};
   subcategoriasPorCategoria: { [catId: string]: Option[] } = {};
+
+  // Pré-seleção do dropdown de porções: também só populado após carregar a receita
+  porcaoSelecionada: Option[] = [];
 
   imagemPreview1: string | null = null;
   imagemPreview2: string | null = null;
@@ -55,20 +63,20 @@ export class UpdateRecipe implements OnInit {
   etapasComoItems: any[] = [];
 
   porcoesDropdown: Option[] = [
-    { label: 'Porções', value: 'Porções' },
-    { label: 'Pedaços', value: 'Pedaços' },
-    { label: 'Pratos', value: 'Pratos' },
-    { label: 'Fatias', value: 'Fatias' },
+    { label: 'Porções',  value: 'Porções'  },
+    { label: 'Pedaços',  value: 'Pedaços'  },
+    { label: 'Pratos',   value: 'Pratos'   },
+    { label: 'Fatias',   value: 'Fatias'   },
     { label: 'Unidades', value: 'Unidades' },
   ];
-  porcaoSelecionada: Option[] = [];
 
   receita: Receita = {
     id: 0,
     titulo: '',
     resumo: '',
     categoria: '',
-    subcategoria: '',
+    idCategoria: undefined,
+    idSubcategoria: undefined,
     dificuldade: 0,
     tempo_hora: 0,
     tempo_min: 0,
@@ -85,73 +93,81 @@ export class UpdateRecipe implements OnInit {
   };
 
   imagensSelecionadas: File[] = [];
+  idReceita: number = 0;
 
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private ReceitaService: ReceitaService,
+    private receitaService: ReceitaService,
     private route: ActivatedRoute,
     private router: Router,
     private modalService: ModalService,
+    private authService: AuthService,
   ) {
     this.form = this.fb.group({
-      titulo: ['', Validators.required],
-      resumo: ['', Validators.required],
-      categoriasSelecionadas: [[], Validators.required],
-      subcategoria: [null, Validators.required], // adicionamos o controle de subcategoria
+      titulo:       ['', Validators.required],
+      resumo:       ['', Validators.required],
+      categoria:    [null, Validators.required],
+      subcategoria: [null, Validators.required],
       dificuldade: [
         null,
         [Validators.required, Validators.min(1), Validators.max(3)],
       ],
-      tempo_hora: [null, Validators.required],
-      tempo_min: ['', Validators.required],
-      porcoes: [null, Validators.required],
-      tipo_porcao: ['', Validators.required],
+      tempo_hora:  [null, Validators.required],
+      tempo_min:   [null, Validators.required],
+      porcoes:     [null, Validators.required],
+      tipo_porcao: [null, Validators.required],
     });
   }
-
-  idReceita: number = 0;
 
   // INIT
 
   ngOnInit() {
     this.idReceita = Number(this.route.snapshot.paramMap.get('id'));
 
+    // Carrega categorias primeiro; só então carrega a receita.
+    // Assim quando prepararCategoriaESub() rodar, subcategoriasPorCategoria já está pronto.
     this.carregarCategorias().subscribe(() => {
-      this.ReceitaService.buscarPorId(this.idReceita).subscribe((receita) => {
+      this.receitaService.buscarPorId(this.idReceita).subscribe((receita) => {
         this.receita = {
           ...this.receita,
           ...receita,
-          resumo: receita.resumo ?? '',
+          resumo:    receita.resumo    ?? '',
           categoria: receita.categoria ?? '',
-          subcategoria: receita.subcategoria ?? '',
         };
 
         this.carregarReceita(receita);
+
+        // Preenche os campos de texto via form
         this.form.patchValue({
-          titulo: receita.titulo,
-          resumo: receita.resumo,
+          titulo:      receita.titulo,
+          resumo:      receita.resumo,
           dificuldade: receita.dificuldade,
-          tempo_hora: receita.tempo_hora,
-          tempo_min: receita.tempo_min,
-          porcoes: receita.porcoes,
+          tempo_hora:  receita.tempo_hora,
+          tempo_min:   receita.tempo_min,
+          porcoes:     receita.porcoes,
           tipo_porcao: receita.tipo_porcao,
         });
 
-        // agora as categorias já existem
-        this.prepararCategoriaEsub(receita);
+        // Pré-seleciona porções — monta o Option a partir do valor salvo
+        if (receita.tipo_porcao) {
+          this.porcaoSelecionada = [{ label: receita.tipo_porcao, value: receita.tipo_porcao }];
+        }
+
+        // Pré-seleciona categoria e subcategoria pelos IDs
+        this.prepararCategoriaESub(receita);
       });
     });
   }
 
   carregarReceita(receita: Receita) {
     this.ingredientesComoItems = receita.ingredientes.map((i) => ({
-      title: i.titulo,
+      title:    i.titulo,
       subitems: i.itens,
     }));
 
     this.etapasComoItems = receita.etapas.map((e) => ({
-      title: e.titulo,
+      title:    e.titulo,
       subitems: e.descricoes.map((d) => d.descricao),
     }));
 
@@ -160,35 +176,38 @@ export class UpdateRecipe implements OnInit {
     this.imagemPreview3 = receita.imagem3 ?? null;
   }
 
-  // TRANSFORMA ID -> LABEL PARA UPDATE
-  prepararCategoriaEsub(receita: Receita) {
+  // Pré-seleciona categoria e subcategoria a partir dos IDs retornados pela API.
+  // Só roda depois que carregarCategorias() completou, então os mapas já existem.
+  prepararCategoriaESub(receita: Receita) {
     const categoriaEncontrada = this.categorias.find(
-      (c) => c.id === Number(receita.categoria),
+      (c) => c.id === receita.idCategoria,
     );
 
     if (!categoriaEncontrada) return;
 
-    // Prepara a opção da categoria
     const optionCat: Option = {
       label: categoriaEncontrada.nome,
       value: categoriaEncontrada.id.toString(),
     };
 
+    // Atribui uma nova referência de array — dispara ngOnChanges no Dropdown
     this.categoriasSelecionadas = [optionCat];
 
-    // Prepara subcategorias
+    // Busca subcategoria pelo idSubcategoria retornado pela API
     const subs = this.subcategoriasPorCategoria[categoriaEncontrada.id] || [];
     const subEncontrada = subs.find(
-      (s) => s.value === (receita.subcategoria ?? '').toString(),
+      (s) => s.value === (receita.idSubcategoria ?? '').toString(),
     );
 
     if (subEncontrada) {
-      this.subcategoriasSelecionadas[categoriaEncontrada.id] = [subEncontrada];
+      // Nova referência de objeto — garante que ngOnChanges detecta a mudança
+      this.subcategoriasSelecionadas = {
+        [categoriaEncontrada.id]: [subEncontrada],
+      };
     }
 
-    // Atualiza o formulário
     this.form.patchValue({
-      categoriasSelecionadas: [optionCat],
+      categoria:    optionCat.value,
       subcategoria: subEncontrada?.value ?? null,
     });
   }
@@ -210,7 +229,7 @@ export class UpdateRecipe implements OnInit {
             .filter((s) => s.nome !== 'Todas')
             .map((s) => ({
               label: s.nome,
-              value: s.id.toString(),
+              value: s.id.toString(), // ID, não nome
             }));
         });
       }),
@@ -221,31 +240,26 @@ export class UpdateRecipe implements OnInit {
 
   onCategoriaSelecionada(event: Option[]) {
     this.categoriasSelecionadas = [...event];
+    // Nova referência para subcategoriasSelecionadas — reseta subcategoria
+    this.subcategoriasSelecionadas = {};
     this.form.patchValue({
-      categoriasSelecionadas: this.categoriasSelecionadas,
-      subcategoria: null, // reseta a subcategoria ao mudar a categoria
+      categoria:    event[0]?.value ?? null,
+      subcategoria: null,
     });
-
-    const catValue = event[0]?.value;
-    if (catValue) {
-      this.subcategoriasSelecionadas = {};
-      this.receita.categoria = catValue;
-    }
   }
 
   onSubcategoriaSelecionada(catId: string, selecionadas: Option[]) {
-    this.subcategoriasSelecionadas[catId] = [...selecionadas];
-    this.receita.subcategoria = selecionadas[0]?.value ?? '';
-
-    // Atualiza o form control
+    // Nova referência de objeto para disparar ngOnChanges se necessário
+    this.subcategoriasSelecionadas = {
+      ...this.subcategoriasSelecionadas,
+      [catId]: [...selecionadas],
+    };
     this.form.patchValue({ subcategoria: selecionadas[0]?.value ?? null });
   }
 
   onPorcaoSelecionada(event: Option[]) {
-    if (event.length) {
-      this.receita.tipo_porcao = event[0].value;
-      this.form.patchValue({ tipo_porcao: event[0].value });
-    }
+    this.porcaoSelecionada = event;
+    this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
   // IMAGENS / PREVIEW
@@ -258,13 +272,11 @@ export class UpdateRecipe implements OnInit {
       r.onload = () => (this.imagemPreview1 = r.result as string);
       r.readAsDataURL(files[0]);
     }
-
     if (files[1]) {
       const r = new FileReader();
       r.onload = () => (this.imagemPreview2 = r.result as string);
       r.readAsDataURL(files[1]);
     }
-
     if (files[2]) {
       const r = new FileReader();
       r.onload = () => (this.imagemPreview3 = r.result as string);
@@ -277,75 +289,88 @@ export class UpdateRecipe implements OnInit {
   atualizarIngredientes(lista: any[]) {
     this.receita.ingredientes = lista.map((i) => ({
       titulo: i.title,
-      itens: i.subitems,
+      itens:  i.subitems,
     }));
   }
 
   atualizarEtapas(lista: any[]) {
     this.receita.etapas = lista.map((et, i) => ({
-      titulo: et.title,
-      ordem: i + 1,
+      titulo:    et.title,
+      ordem:     i + 1,
       descricoes: et.subitems.map((d: string, j: number) => ({
         descricao: d,
-        ordem: j + 1,
+        ordem:     j + 1,
       })),
     }));
   }
 
   cancelar() {
-    const idUsuario = Number(this.route.snapshot.queryParamMap.get('user'));
+    const idUsuario = this.authService.getUserId()
+      ?? Number(this.route.snapshot.queryParamMap.get('user'));
     this.router.navigate(['/minhas-receitas', idUsuario]);
   }
 
   // SALVAR
+
   salvar() {
-    const categoriaSelecionada = this.categoriasSelecionadas[0];
-    const subSelecionada =
-      this.subcategoriasSelecionadas[categoriaSelecionada?.value]?.[0];
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.modalService.open({
+        type:    'error',
+        title:   'Campos obrigatórios',
+        message: 'Preencha todos os campos antes de salvar a receita.',
+      });
+      return;
+    }
+
+    const fv = this.form.value;
 
     const receitaPronta = {
       ...this.receita,
-      titulo: this.form.value.titulo,
-      resumo: this.form.value.resumo,
-      categoria: this.form.value.categoriasSelecionadas[0]?.value ?? '',
-      subcategoria: this.form.value.subcategoria ?? '',
-      dificuldade: this.form.value.dificuldade,
-      tempo_hora: this.form.value.tempo_hora,
-      tempo_min: this.form.value.tempo_min,
-      porcoes: this.form.value.porcoes,
-      tipo_porcao: this.form.value.tipo_porcao,
-      ingredientes: this.receita.ingredientes,
-      etapas: this.receita.etapas,
+      titulo:         fv.titulo,
+      resumo:         fv.resumo,
+      idCategoria:    Number(fv.categoria),
+      idSubcategoria: Number(fv.subcategoria),
+      dificuldade:    fv.dificuldade,
+      tempo_hora:     fv.tempo_hora,
+      tempo_min:      fv.tempo_min,
+      porcoes:        fv.porcoes,
+      tipo_porcao:    fv.tipo_porcao,
+      ingredientes:   this.receita.ingredientes,
+      etapas:         this.receita.etapas,
     };
 
-    this.ReceitaService
+    this.receitaService
       .updateReceita(this.idReceita, receitaPronta, this.imagensSelecionadas)
       .subscribe({
         next: (res) => {
-          if (res?.sucesso) {
+          if (res?.success) {
+            const idUsuario = this.authService.getUserId()
+              ?? Number(this.route.snapshot.queryParamMap.get('user'));
             this.modalService.open({
-              type: 'success',
-              title: 'Receita atualizada!',
-              message: 'Informações da receita salvas com sucesso.',
+              type:        'success',
+              title:       'Receita atualizada!',
+              message:     'Informações da receita salvas com sucesso.',
               confirmText: 'OK',
               onConfirm: () => {
-                const idUsuario = Number(
-                  this.route.snapshot.queryParamMap.get('user'),
-                );
                 this.router.navigate(['/minhas-receitas', idUsuario]);
               },
             });
           } else {
             this.modalService.open({
-              type: 'error',
-              title: 'Erro',
-              message: res?.mensagem || 'Erro ao atualizar receita.',
+              type:    'error',
+              title:   'Erro',
+              message: res?.message || 'Erro ao atualizar receita.',
             });
           }
         },
         error: (err) => {
           console.error(err);
-          alert('Erro de comunicação com o servidor.');
+          this.modalService.open({
+            type:    'error',
+            title:   'Erro de comunicação',
+            message: 'Não foi possível conectar ao servidor.',
+          });
         },
       });
   }

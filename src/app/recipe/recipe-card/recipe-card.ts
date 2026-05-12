@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecipeResume } from '../recipe-resume/recipe-resume';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { toSlug } from '../../utils/slug';
 
 @Component({
   selector: 'bra-recipe-card',
@@ -11,6 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './recipe-card.scss',
 })
 export class RecipeCard {
+  @Output() editar = new EventEmitter<any>();
+
   @Input() myRecipe: boolean = false;
   @Input() selectedSubcategories!: number[];
   @Input() recipe!: any;
@@ -36,7 +39,7 @@ export class RecipeCard {
 
     let chosenSub: any = null;
 
-    // 1️⃣ Se houver filtro de subcategoria, pega a primeira que a receita possui
+    // Se houver filtro de subcategoria, pega a primeira que a receita possui
     if (this.selectedSubcategories && this.selectedSubcategories.length > 0) {
       chosenSub =
         subs.find((s: any) =>
@@ -44,17 +47,17 @@ export class RecipeCard {
         ) || null;
     }
 
-    // 2️⃣ Se não houver filtro ou não encontrou nenhuma do filtro, pega a primeira subcategoria da receita
+    // Se não houver filtro ou não encontrou nenhuma do filtro, pega a primeira subcategoria da receita
     if (!chosenSub && subs.length > 0) {
       chosenSub = subs[0];
     }
 
-    // 3️⃣ Fallback: se ainda não encontrou, null
+    // Fallback: se ainda não encontrou, null
     this.mappedRecipe = {
       category: this.recipe.categoria, // categoria principal
       subcategory: chosenSub ? chosenSub.nome : null, // pega apenas o nome da subcategoria
       img: this.recipe.imagem1,
-      url: `/receita/${this.recipe.id}`,
+      url: `/receita/${toSlug(this.recipe.titulo)}/${this.recipe.id}`,
       resume: {
         title: this.recipe.titulo,
         qtdFav: Number(this.recipe.qtd_fav),
@@ -63,12 +66,11 @@ export class RecipeCard {
     };
   }
 
-  @Output() editar = new EventEmitter<number>();
   @Output() excluir = new EventEmitter<number>();
 
   onEditar(event: Event) {
     event.stopPropagation();
-    this.editar.emit(this.recipe.id);
+    this.editar.emit(this.recipe);
   }
 
   onExcluir(event: Event) {

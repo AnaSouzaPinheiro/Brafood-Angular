@@ -18,7 +18,7 @@ export class Navbar {
   openModal = signal(false);
   logado = false;
   userId: string | null = null;
-  user: WritableSignal<User | undefined>; // 🔹 corrigido para WritableSignal
+  user: WritableSignal<User | undefined>;
 
   modalData: any = null;
 
@@ -44,17 +44,17 @@ export class Navbar {
       if (currentUser?.id) {
         this.usuarioService
           .buscarUserPorId(currentUser.id)
-          .subscribe((s: any) => {
+          .subscribe((response) => {
+            const user = response.usuario;
             this.user.set({
-              // agora funciona
-              id: s.id,
-              nome: s.nome,
-              sobrenome: s.sobrenome,
-              apelido: s.apelido,
-              email: s.email,
-              genero: s.genero,
-              bio: s.bio,
-              foto_perfil: s.foto_perfil,
+              id: user.id,
+              nome: user.nome,
+              sobrenome: user.sobrenome,
+              apelido: user.apelido,
+              email: user.email,
+              genero: user.genero,
+              bio: user.bio,
+              foto_perfil: user.foto_perfil,
             });
 
             const u = this.user();
@@ -86,7 +86,7 @@ export class Navbar {
     if (
       this.openModal() &&
       !target.closest('.profile-container') &&
-      !target.closest('.icon-modal')
+      !target.closest('.icon-area')
     ) {
       this.openModal.set(false);
     }
@@ -95,11 +95,11 @@ export class Navbar {
   logout() {
     this.auth.logout();
     this.logado = false;
-    this.user.set(undefined); // 🔹 agora funciona
+    this.user.set(undefined);
     this.router.navigate(['/login']);
   }
 
   atualizarUser(novoUser: User) {
-    this.user.set(novoUser); // funciona porque é WritableSignal
+    this.user.set(novoUser);
   }
 }

@@ -48,7 +48,7 @@
   @include flex-column;
 
   .cards {
-    @include recipe-grid(3, 2, 1);
+    @include recipe-grid;
   }
 }
 

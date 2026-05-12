@@ -15,11 +15,12 @@
     (clickIcon)="togglePopup($event)"
   ></bra-user-icon>
 
+  @if (openModal()) {
   <bra-modal-log
     [modalLogged]="modalData"
-    [hidden]="!openModal()"
     [loggedOut]="!logado"
     [logout]="logout.bind(this)"
     class="profile-container"
   ></bra-modal-log>
+  }
 </header>

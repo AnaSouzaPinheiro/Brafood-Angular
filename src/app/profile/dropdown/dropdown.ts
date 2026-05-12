@@ -27,30 +27,36 @@ export class Dropdown implements OnChanges {
   @Input() multiSelect: boolean = false;
   @Input() maxItems: number = 5;
 
-  // Novo input que substitui o antigo initialSelected
   @Input() selected: Option[] = [];
 
-  @Output() optionSelected = new EventEmitter<Option[]>();
+  @Output() optionSelected  = new EventEmitter<Option[]>();
   @Output() selectionChange = new EventEmitter<Option[]>();
 
   isOpen = signal<boolean[]>([false]);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selected']) {
-      // Garante que sempre há ao menos 1 posição no header, mas sem estragar valores vindos do pai
-      if (!this.selected || this.selected.length === 0) {
-        this.selected = [{ label: '', value: '' }];
-      }
+      const incoming = this.selected;
 
-      // Garante que o array de "open states" acompanha o número de selecionados
-      const opens = [...this.isOpen()];
-      while (opens.length < this.selected.length) {
-        opens.push(false);
+      if (this.multiSelect) {
+        // Modo multi: precisa ter ao menos 1 slot para o *ngFor renderizar
+        // MAS só insere o slot vazio se não há nenhuma seleção real vinda do pai.
+        // Se veio [] vazio, coloca placeholder; se veio com itens, usa os itens.
+        if (!incoming || incoming.length === 0) {
+          this.selected = [{ label: '', value: '' }];
+        }
+        // Se veio com valores reais (ex: pré-seleção do edit), não mexe — usa como está.
       }
-      this.isOpen.set(opens);
+      // Modo single: não altera o array — o template já trata [] exibindo 'Selecione'.
+
+      // Sincroniza o array de estados de abertura
+      const opens = [...this.isOpen()];
+      const needed = Math.max(1, this.selected.length);
+      while (opens.length < needed) opens.push(false);
+      this.isOpen.set(opens.slice(0, needed));
     }
   }
-  
+
   toggleDropdown(index: number) {
     const openStates = [...this.isOpen()];
     openStates[index] = !openStates[index];

@@ -9,8 +9,6 @@ import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { ChangeDetectorRef } from '@angular/core';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'bra-categoria',
@@ -46,21 +44,20 @@ export class Categoria {
   RecipesFiltradas: Recipes[] = [];
 
   begin = 0;
-  end = 6;
+  end = 8;
 
   constructor(
     private route: ActivatedRoute,
     private ReceitaService: ReceitaService,
     private categoriaService: CategoriaService,
-    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
         switchMap((params) => {
-          const id = params.get('id');
           const nome = params.get('nome');
+          const id = params.get('id');
 
           if (!id || !nome) throw new Error('Categoria inválida');
 
@@ -112,25 +109,15 @@ export class Categoria {
       filtrosRequest.subcategorias = this.filtros.subcategorias;
     }
 
-    this.ReceitaService
-      .listCat(
-        { id: this.categoria.id, nome: this.categoria.nome },
-        filtrosRequest,
-      )
-      .subscribe((res) => {
-        this.Recipes = res;
-        this.RecipesFiltradas = [...res];
-        this.begin = 0;
-        this.end = 6;
-      });
-  }
-
-  get RecipesPage() {
-    return this.RecipesFiltradas.slice(this.begin, this.end);
-  }
-
-  verMais() {
-    this.end += 6;
+    this.ReceitaService.listCat(
+      { id: this.categoria.id, nome: this.categoria.nome },
+      filtrosRequest,
+    ).subscribe((res) => {
+      this.Recipes = res;
+      this.RecipesFiltradas = [...res];
+      this.begin = 0;
+      this.end = 8;
+    });
   }
 
   limparFiltros() {
@@ -148,5 +135,13 @@ export class Categoria {
     });
 
     this.buscarReceitas();
+  }
+
+  get RecipesPage() {
+    return this.RecipesFiltradas.slice(this.begin, this.end);
+  }
+
+  verMais() {
+    this.end += 8;
   }
 }
