@@ -17,7 +17,7 @@
     </ng-container>
     <ng-template #imgFallback>
       <div class="img-placeholder">
-        <img src="assets/imagens/icones/foto (1).png" alt="" />
+        <img src="assets/imagens/icones/foto.png" alt="" />
       </div>
     </ng-template>
 
@@ -27,7 +27,7 @@
       id="edit"
       (click)="onEditar($event)"
     >
-      <img src="assets/imagens/icones/arquivo.png" alt="" />
+      <i class="fa-regular fa-pen-to-square"></i>
     </span>
     <span
       [hidden]="myRecipe === false"
@@ -35,7 +35,7 @@
       id="trash"
       (click)="onExcluir($event)"
     >
-      <img src="assets/imagens/icones/lixo.png" alt="" />
+      <i class="fa-regular fa-trash-can"></i>
     </span>
   </div>
 

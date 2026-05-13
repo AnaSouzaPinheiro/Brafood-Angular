@@ -2,7 +2,6 @@
 @use "layout" as *;
 
 * {
-  font-family: $font-footer;
   color: $secondary-gray;
 }
 
@@ -100,9 +99,8 @@ hr {
     height: 52px;
     width: 50px;
     border-radius: 0 6px 6px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    
+    @include flex-center;
   }
 }
 
@@ -147,11 +145,6 @@ hr {
     align-items: center;
     justify-content: center;
     border-radius: 50px;
-  }
-
-  img {
-    width: 15px;
-    height: 15px;
   }
 }
 

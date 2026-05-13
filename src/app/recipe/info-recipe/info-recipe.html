@@ -16,7 +16,7 @@
         <p>Dificuldade</p>
       </div>
       <div class="time">
-        <img src="assets/imagens/icones/relogio (4).png" alt="" />
+        <i class="fa-regular fa-clock"></i>
         @if (mappedInfoRecipe.tempo_hora > 0 && mappedInfoRecipe.tempo_min > 0)
         {
         <p>
@@ -29,18 +29,19 @@
         }
       </div>
       <div class="unid">
-        <img src="assets/imagens/icones/bandeja-de-comida (2).png" />
+        <i class="fa-solid fa-utensils"></i>
         <p>{{ mappedInfoRecipe.porcoes }} {{ mappedInfoRecipe.tipo_porcao }}</p>
       </div>
     </div>
   </div>
   <div class="things">
     <div class="item" (click)="toggleFavorito()">
-      <img
-        [src]="isFavorite 
-    ? 'assets/imagens/icones/favorito.png' 
-    : 'assets/imagens/icones/favorito (1).png'"
-      />
+      <i
+        class="fa-star"
+        [class.fa-solid]="isFavorite"
+        [class.fa-regular]="!isFavorite"
+        [class.fav]="isFavorite"
+      ></i>
 
       <bra-hover-things
         class="hover"
@@ -49,14 +50,14 @@
     </div>
 
     <div class="item" (click)="scrollToComentarios()">
-      <img class="comments" src="assets/imagens/icones/mensagem.png" />
+      <i class="fa-regular fa-comments"></i>
       <bra-hover-things
         class="hover"
         hoverText="Comentários"
       ></bra-hover-things>
     </div>
     <div class="item" (click)="shareRecipe()">
-      <img class="share" src="assets/imagens/icones/compartilhar.png" />
+      <i class="fa-solid fa-share-nodes"></i>
       <bra-hover-things
         class="hover"
         hoverText="Compartilhe"

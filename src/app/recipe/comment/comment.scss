@@ -2,92 +2,88 @@
 
 .comment {
   display: flex;
-  gap: 35px;
+  flex-direction: column;
+  gap: 15px;
   padding: 15px;
-  background-color: #fff;
+  background: white;
+}
 
-  .person {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-  }
+.comment-body,
+.replying {
+  gap: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 
   bra-user-icon {
     display: inline-block;
     width: 45px;
     height: 45px;
   }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   .name {
     font-size: 16px;
     font-weight: 500;
   }
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 500px;
+  .data {
+    font-weight: 400;
+    color: $primary-gray;
+  }
 
-    .data {
-      font-weight: 400;
-      color: $primary-gray;
-    }
+  .response,
+  .seeReplies {
+    cursor: pointer;
+    font-weight: 300;
+    color: $primary-gray;
+    text-decoration: underline;
 
-    .text {
-      font-size: 16px;
-      font-weight: 300;
-    }
-
-    .response,
-    .seeReplies {
-      font-weight: 300;
-      color: $primary-gray;
-      text-decoration: underline;
-
-      &:hover {
-        color: $primary-blue;
-        cursor: pointer;
-      }
-    }
-
-    .replies {
-      display: flex;
-      gap: 15px;
+    &:hover {
+      color: $primary-blue;
     }
   }
 
-  .reply,
-  .replying {
+  .replies {
     display: flex;
-    flex-direction: row;
-    gap: 35px;
-    margin-left: 50px;
+    gap: 15px;
   }
 
-  .replying {
-    ::ng-deep bra-input textarea {
-      width: 800px;
-      height: 100px;
-    }
-
-    .writing {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .send {
-      display: flex;
-      justify-content: flex-end;
-    }
+  .text {
+    font-size: 16px;
+    font-weight: 300;
   }
 }
 
-.reply-box {
+.writing {
+  display: flex;
+  flex-direction: column;
   gap: 15px;
-  display: grid;
-  justify-items: end;
+  width: 100%;
+}
+
+.replying {
+  margin-left: 50px;
+}
+
+.replies-list {
+  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+i {
+  color: $primary-gray;
 }

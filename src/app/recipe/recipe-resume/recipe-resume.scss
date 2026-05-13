@@ -29,9 +29,12 @@ h2,
   gap: 8px;
 }
 
-.star {
-  width: 30px;
-  height: 30px;
+.fav {
+  font-size: 18px;
+  background: linear-gradient(45deg, #ffbb29, #ff9100);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .text {

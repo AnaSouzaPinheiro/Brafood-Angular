@@ -12,6 +12,7 @@ import { Comentario } from '../../model/comentario';
 import { FormsModule } from '@angular/forms';
 import { ComentarioService } from '../../services/comentario/comentario.service';
 import { CompartilhamentoService } from '../../services/compartilhamento/compartilhamento.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'bra-recipe',
@@ -35,14 +36,18 @@ export class Recipe {
   urlWhatsApp = '';
   visibleCommentsCount = 3;
 
+  usuarioId: number | null = null;
+
   constructor(
     private route: ActivatedRoute,
+    private authService: AuthService,
     private ReceitaServices: ReceitaService,
     private comentarioService: ComentarioService,
-    private compartilhamentoService: CompartilhamentoService
+    private compartilhamentoService: CompartilhamentoService,
   ) {}
 
   ngOnInit() {
+    this.usuarioId = this.authService.getUserId();
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     this.ReceitaServices.buscarPorId(id).subscribe((r: any) => {
@@ -80,9 +85,7 @@ export class Recipe {
         })),
       };
 
-      // 👇 AGORA SIM
       this.recarregarComentarios();
-
       this.getLinkWhatsApp();
     });
   }
@@ -117,10 +120,17 @@ export class Recipe {
   }
 
   comentar() {
-    if (!this.recipe || !this.novoComentario.trim()) return;
+    if (
+      !this.recipe ||
+      !this.novoComentario.trim() ||
+      this.usuarioId === null
+    ) {
+      return;
+    }
 
     this.comentarioService
       .criar({
+        id_usuario: this.usuarioId,
         id_receita: this.recipe.id,
         texto: this.novoComentario,
       })
@@ -141,10 +151,13 @@ export class Recipe {
   }
 
   enviarComentario(payload: { texto: string; id_comentario_pai: number }) {
-    if (!this.recipe) return;
+    if (!this.recipe || this.usuarioId === null) {
+      return;
+    }
 
     this.comentarioService
       .criar({
+        id_usuario: this.usuarioId,
         id_receita: this.recipe.id,
         texto: payload.texto,
         id_comentario_pai: payload.id_comentario_pai,

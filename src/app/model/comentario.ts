@@ -14,6 +14,7 @@ export interface Comentario {
 }
 
 export interface CriarComentarioPayload {
+  id_usuario: number;
   id_receita: number;
   texto: string;
   id_comentario_pai?: number;

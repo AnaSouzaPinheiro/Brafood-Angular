@@ -21,7 +21,9 @@ export class InfoRecipe implements OnChanges {
   get mappedInfoRecipe() {
     return {
       titulo: this.recipe?.titulo,
-      categoria: [this.recipe?.categoria],
+      categoria: this.recipe?.categoria
+        ? this.recipe.categoria.split(',').map((c: string) => c.trim())
+        : [],
       dificuldade: this.recipe?.dificuldade,
       tempo_hora: this.recipe?.tempo_hora,
       tempo_min: this.recipe?.tempo_min,
@@ -66,14 +68,16 @@ export class InfoRecipe implements OnChanges {
     const parsedUser = JSON.parse(userData);
     this.userId = Number(parsedUser.id);
 
-    this.favoritoService.isFavorita(this.userId, Number(this.recipe.id)).subscribe({
-      next: (res) => {
-        this.isFavorite = res.favorite;
-      },
-      error: (err) => {
-        console.error('Erro ao verificar favorito', err);
-      },
-    });
+    this.favoritoService
+      .isFavorita(this.userId, Number(this.recipe.id))
+      .subscribe({
+        next: (res) => {
+          this.isFavorite = res.favorite;
+        },
+        error: (err) => {
+          console.error('Erro ao verificar favorito', err);
+        },
+      });
   }
 
   toggleFavorito() {
@@ -86,9 +90,11 @@ export class InfoRecipe implements OnChanges {
     const userIdNum = this.userId;
 
     if (this.isFavorite) {
-      this.favoritoService.desfavoritar(userIdNum, receitaIdNum).subscribe(() => {
-        this.isFavorite = false;
-      });
+      this.favoritoService
+        .desfavoritar(userIdNum, receitaIdNum)
+        .subscribe(() => {
+          this.isFavorite = false;
+        });
     } else {
       this.favoritoService.favoritar(userIdNum, receitaIdNum).subscribe(() => {
         this.isFavorite = true;

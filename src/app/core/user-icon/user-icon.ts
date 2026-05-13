@@ -28,7 +28,7 @@ export class UserIcon {
   }
 
   get mappedUser() {
-    const u = this.userSignal?.() || this.user;
+    const u = this.user || this.userSignal?.();
 
     return {
       id: u?.id ?? 0,

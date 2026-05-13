@@ -54,7 +54,9 @@ export class RecipeCard {
 
     // Fallback: se ainda não encontrou, null
     this.mappedRecipe = {
-      category: this.recipe.categoria, // categoria principal
+      category: this.recipe.categoria
+        ? this.recipe.categoria.split(',')[0].trim()
+        : null, // categoria principal
       subcategory: chosenSub ? chosenSub.nome : null, // pega apenas o nome da subcategoria
       img: this.recipe.imagem1,
       url: `/receita/${toSlug(this.recipe.titulo)}/${this.recipe.id}`,

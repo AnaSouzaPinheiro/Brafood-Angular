@@ -1,3 +1,4 @@
+@use "variables" as *;
 @use "layout" as *;
 
 /* CARD */
@@ -105,9 +106,12 @@
   border-radius: 0 0 12px 12px;
   padding: 10px 6px;
 
-  img {
-    width: 20px;
-    image-rendering: optimizeSpeed;
+  i {
+    font-size: 18px;
+    background: $eighth-gradient;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   &:hover {

@@ -5,9 +5,11 @@
 }
 
 .inputIcon {
-  position: absolute;
   top: 50%;
   left: 15px;
+  color: $primary-gray;
+  font-size: 20px;
+  position: absolute;
   transform: translateY(-50%);
 }
 

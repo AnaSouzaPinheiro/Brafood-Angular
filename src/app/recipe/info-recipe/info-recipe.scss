@@ -13,10 +13,9 @@
     @include white-card;
 
     .title {
-      font-weight: 700;
       padding: 25px;
       text-align: center;
-      
+
       @include page-title(50px, 2.3rem, 1.8rem);
     }
 
@@ -32,7 +31,6 @@
 }
 
 /* INFO DESCRIPTION */
-
 .description {
   width: 100%;
   display: flex;
@@ -58,37 +56,35 @@
 }
 
 /* DIFICULDADE */
-
 .difficult {
   img {
-    width: 150px;
+    width: 140px;
     margin-bottom: 10px;
   }
 }
 
 /* TEMPO */
-
 .time {
   border-left: 2px solid #fff;
   border-right: 2px solid #fff;
 
-  img {
-    width: 40px;
+  i {
+    font-size: 25px;
+    color: #fff;
     cursor: pointer;
   }
 }
 
 /* PORÇÕES */
-
 .unid {
-  img {
-    width: 40px;
+  i {
+    font-size: 25px;
+    color: #fff;
     cursor: pointer;
   }
 }
 
 /* AÇÕES LATERAIS */
-
 .things {
   @include flex-center;
   @include white-card(0 25px 25px 0);
@@ -97,7 +93,7 @@
   gap: 10px;
   padding: 15px;
 
-  img {
+  i {
     width: 25px;
     height: 25px;
 
@@ -107,6 +103,15 @@
     border: 2px solid $primary-blue;
 
     cursor: pointer;
+
+    @include flex-center;
+  }
+
+  .fav {
+    background: linear-gradient(45deg, #ffbb29, #ff9100);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 
@@ -132,7 +137,6 @@
 }
 
 /* RESPONSIVO */
-
 @media (max-width: 768px) {
   .info-recipe {
     flex-direction: column;

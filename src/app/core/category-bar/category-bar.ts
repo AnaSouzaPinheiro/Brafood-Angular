@@ -20,52 +20,6 @@ export class CategoryBar {
     private categoriaServices: CategoriaService
   ) {}
 
-  /* categories = [
-    {
-      name: 'Comemorativas',
-      icon: 'assets/imagens/icones/prato.png',
-      cssClass: 'bg-especiais',
-      url: ,
-    },
-    {
-      name: 'Café da Manhã & Lanches',
-      icon: 'assets/imagens/icones/croissant.png',
-      cssClass: 'bg-cafe',
-      url: ,
-    },
-    {
-      name: 'Pratos Principais',
-      icon: 'assets/imagens/icones/plate.png',
-      cssClass: 'bg-principais',
-      url: ,
-    },
-    {
-      name: 'Vegetarianas & Veganas',
-      icon: 'assets/imagens/icones/eco-amigavel.png',
-      cssClass: 'bg-vegan',
-      url: ,
-    },
-    {
-      name: 'Sopas & Caldos',
-      icon: 'assets/imagens/icones/sopa-quente.png',
-      cssClass: 'bg-sopas',
-      url: ,
-    },
-    {
-      name: 'Sobremesas',
-      icon: 'assets/imagens/icones/bolo.png',
-      cssClass: 'bg-sobremesas',
-      url: ,
-    },
-    {
-      name: 'Bebidas',
-      icon: 'assets/imagens/icones/coquetel (1).png',
-      cssClass: 'bg-bebidas',
-      url: ,
-    },
-  ];
-  */
-
   ngOnInit() {
     this.categoriaServices.listCats().subscribe((categorias) => {
       this.categorias = categorias.map((c: Categoria) => ({

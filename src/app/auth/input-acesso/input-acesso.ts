@@ -44,25 +44,25 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
     switch (this.type) {
       case 'email':
         this.placeholder = 'E-mail';
-        this.icon = 'assets/imagens/icones/o-email.png';
+        this.icon = 'fa-regular fa-envelope';
         this.autocomplete = 'email';
         this.htmlType = 'email';
         break;
       case 'senha':
         this.placeholder = 'Senha';
-        this.icon = 'assets/imagens/icones/trancar.png';
+        this.icon = 'fa-solid fa-lock';
         this.autocomplete = 'current-password';
         this.htmlType = 'password';
         break;
       case 'nome':
         this.placeholder = 'Nome';
-        this.icon = 'assets/imagens/icones/do-utilizador.png';
+        this.icon = 'fa-regular fa-user';
         this.autocomplete = 'name';
         this.htmlType = 'text';
         break;
       case 'confirmarSenha':
         this.placeholder = 'Confirme sua senha';
-        this.icon = 'assets/imagens/icones/trancar.png';
+        this.icon = 'fa-solid fa-lock';
         this.autocomplete = 'new-password';
         this.htmlType = 'password';
         break;
