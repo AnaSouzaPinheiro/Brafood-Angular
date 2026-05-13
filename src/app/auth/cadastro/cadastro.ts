@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -20,39 +20,43 @@ export class Cadastro {
   erros: string[] = [];
 
   constructor(
-    private authService: AuthService,
     private router: Router,
-    private location: Location
+    private auth: AuthService,
+    private location: Location,
+    private route: ActivatedRoute,
+    private authService: AuthService,
   ) {}
 
   cadastrar() {
     this.erros = [];
 
-    // Validação front antes de enviar
     const senhaOk = this.validarSenhaFront();
 
-    if (!senhaOk) {
-      // Não envia se a senha estiver errada
-      return;
-    }
+    if (!senhaOk) return;
+
+    const returnUrl =
+      this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
 
     this.authService
       .cadastro(this.nome, this.email, this.senha, this.confirmarSenha)
       .subscribe(
         (res: any) => {
           if (res.success) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], {
+              queryParams: {
+                returnUrl,
+              },
+            });
           } else {
-            // Atualiza cores novamente caso o back encontre algo
             res.errors?.forEach((erro: string, indice: number) => {
               const cor = erro ? 'red' : 'green';
               this.mudarCorErro(indice, cor);
             });
           }
         },
-        (err) => {
+        () => {
           this.erros = ['Erro ao conectar com o servidor.'];
-        }
+        },
       );
   }
 

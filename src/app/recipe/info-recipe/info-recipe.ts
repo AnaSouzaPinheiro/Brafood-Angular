@@ -115,11 +115,32 @@ export class InfoRecipe implements OnChanges {
     if (navigator.share) {
       navigator
         .share({
-          title: this.recipe.titulo,
-          text: `${this.recipe.titulo} - Confira esta receita deliciosa!`,
-          url: url,
+          title: this.recipe?.titulo,
+          text: `${this.recipe?.titulo} - Confira essa receita!`,
+          url,
         })
-        .catch(console.error);
+        .catch(() => this.fallbackShare(url));
+
+      return;
     }
+
+    this.fallbackShare(url);
+  }
+
+  fallbackShare(url: string) {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(url);
+      alert('Link copiado!');
+      return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = url;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    alert('Link copiado!');
   }
 }

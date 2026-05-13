@@ -1,7 +1,7 @@
 import { Component, Optional } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
@@ -18,29 +18,32 @@ export class Login {
   erro = '';
 
   constructor(
-    private authService: AuthService,
     private router: Router,
+    private auth: AuthService,
+    private route: ActivatedRoute,
+    private authService: AuthService,
     @Optional() private location: Location,
-    private auth: AuthService
   ) {}
 
   entrar() {
     this.erro = '';
+
+    const returnUrl =
+      this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
+
     this.authService.login(this.email, this.senha).subscribe(
       (res: any) => {
         if (res.success) {
-          // Salva no AuthService e localStorage
           this.auth.saveUserSession({ id: res.id, email: this.email });
 
-          // Redireciona
-          this.router.navigate(['/home']);
+          this.router.navigateByUrl(returnUrl); // 🔥 volta pra receita
         } else {
           this.erro = res.message || 'Erro no login.';
         }
       },
       (err) => {
         this.erro = err.error?.message || 'Erro ao conectar com o servidor.';
-      }
+      },
     );
   }
 

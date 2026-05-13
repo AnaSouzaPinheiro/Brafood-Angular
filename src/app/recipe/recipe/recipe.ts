@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Receita } from '../../model/receita';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { ComentarioService } from '../../services/comentario/comentario.service';
 import { CompartilhamentoService } from '../../services/compartilhamento/compartilhamento.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'bra-recipe',
@@ -39,8 +40,10 @@ export class Recipe {
   usuarioId: number | null = null;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private modalService: ModalService,
     private ReceitaServices: ReceitaService,
     private comentarioService: ComentarioService,
     private compartilhamentoService: CompartilhamentoService,
@@ -120,13 +123,28 @@ export class Recipe {
   }
 
   comentar() {
-    if (
-      !this.recipe ||
-      !this.novoComentario.trim() ||
-      this.usuarioId === null
-    ) {
+    if (!this.recipe) return;
+
+    if (!this.usuarioId) {
+      this.modalService.open({
+        type: 'confirm',
+        title: 'Login necessário',
+        message: 'Para comentar nesta receita, você precisa estar logado.',
+        confirmText: 'Ir para login',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+          this.router.navigate(['/login'], {
+            queryParams: {
+              returnUrl: this.router.url,
+            },
+          });
+        },
+      });
+
       return;
     }
+
+    if (!this.novoComentario.trim()) return;
 
     this.comentarioService
       .criar({
