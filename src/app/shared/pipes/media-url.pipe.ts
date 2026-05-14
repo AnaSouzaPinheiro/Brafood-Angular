@@ -36,6 +36,6 @@ export class MediaUrlPipe implements PipeTransform {
 
     // Caminho relativo do banco → prefixar com apiUrl + caminho do projeto PHP
     // ex: "uploads/receitas/foto.jpg"
-    return `${this.base}/BraFood/BraFood-PHP/${value}`;
+    return `${this.base}/${value}`;
   }
 }

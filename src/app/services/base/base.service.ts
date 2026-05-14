@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 
 export abstract class BaseService {
   protected readonly API =
-    `${environment.apiUrl}/BraFood/BraFood-PHP/routes`;
+    `${environment.apiUrl}/routes`;
 
   protected httpClient = inject(HttpClient);
 
