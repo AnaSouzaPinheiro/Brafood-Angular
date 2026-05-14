@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://192.168.0.203'
+  apiUrl: 'https://brafood.page.gd/api'
 };
