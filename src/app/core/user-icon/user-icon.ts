@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, Output, Signal } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-user-icon',
   standalone: true,
+  imports: [MediaUrlPipe],
   templateUrl: './user-icon.html',
   styleUrl: './user-icon.scss',
 })

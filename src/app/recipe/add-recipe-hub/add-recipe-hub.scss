@@ -1,0 +1,139 @@
+@use "variables" as *;
+@use "layout" as *;
+
+.container {
+  gap: 50px;
+
+  @include page-container;
+  @include flex-column-center;
+}
+
+.hero {
+  max-width: 780px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  color: $primary-blue;
+  
+  @include page-title;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: $tertiary-gray;
+}
+
+.cards {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.option-card {
+  @include white-card(28px);
+
+  width: 100%;
+  max-width: 420px;
+
+  padding: 40px 32px;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-6px);
+  }
+
+  h2 {
+    font-size: 1.7rem;
+    color: $primary-blue;
+  }
+
+  p {
+    color: $tertiary-gray;
+    line-height: 1.7;
+  }
+
+  .icon {
+    width: 85px;
+    height: 85px;
+
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2.5rem;
+  }
+
+  .action {
+    margin-top: auto;
+
+    font-weight: 600;
+    color: $primary-blue;
+  }
+}
+
+.manual {
+  .icon {
+    background: $seventh-gradient;
+  }
+
+  &:hover {
+    border-color: $secondary-blue;
+  }
+}
+
+.ai {
+  background: $eighth-gradient;
+
+  h2,
+  p,
+  .action {
+    color: white;
+  }
+
+  .icon {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+  }
+
+  &:hover {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+
+i {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 40px 0;
+  }
+
+  .option-card {
+    padding: 28px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+}

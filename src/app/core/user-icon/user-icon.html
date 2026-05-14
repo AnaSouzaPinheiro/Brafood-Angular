@@ -1,7 +1,7 @@
 <button (click)="iconClicked($event)" class="icon-modal">
   <img
     class="icon"
-    [src]="mappedUser.foto_perfil"
+    [src]="mappedUser.foto_perfil | mediaUrl"
     [alt]="mappedUser.nome || 'Ícone do perfil'"
     (click)="iconClicked($event)"
   />

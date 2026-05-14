@@ -3,11 +3,12 @@ import { RecipeResume } from '../recipe-resume/recipe-resume';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toSlug } from '../../utils/slug';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-recipe-card',
   standalone: true,
-  imports: [RecipeResume, RouterModule, CommonModule],
+  imports: [RecipeResume, RouterModule, CommonModule, MediaUrlPipe],
   templateUrl: './recipe-card.html',
   styleUrl: './recipe-card.scss',
 })

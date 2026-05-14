@@ -24,13 +24,12 @@ export type inType = 'input' | 'textarea';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => BraInput), // mudar aqui também
+      useExisting: forwardRef(() => BraInput),
       multi: true,
     },
   ],
 })
 export class BraInput implements OnInit, ControlValueAccessor {
-  // <--- aqui
   @Input() label: string = '';
   @Input() type: string = 'text';
   @Input() placeholder: string = '';
@@ -53,7 +52,7 @@ export class BraInput implements OnInit, ControlValueAccessor {
     }
 
     if (!this.name) {
-      this.name = this.inputId; // default name = inputId
+      this.name = this.inputId;
     }
   }
 

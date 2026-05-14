@@ -19,7 +19,7 @@
 
       <div class="list">
         <div class="autor">
-          <img class="bra-user-icon" [src]="recipe?.foto_perfil" />
+          <img class="bra-user-icon" [src]="recipe?.foto_perfil | mediaUrl" />
           <div class="data">
             <span class="person"> Por {{ recipe?.autor }} </span>
             <span class="date">Publicado em: {{ recipe?.data_criacao }} </span>

@@ -8,11 +8,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { Section } from '../../model/section-home';
+import { MediaUrlPipe } from '../pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-recipe-section',
   standalone: true,
-  imports: [RecipeCard, CommonModule],
+  imports: [RecipeCard, CommonModule, MediaUrlPipe],
   templateUrl: './recipe-section.html',
   styleUrls: ['./recipe-section.scss'],
 })

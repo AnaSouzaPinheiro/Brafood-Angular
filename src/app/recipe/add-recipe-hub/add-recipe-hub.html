@@ -1,0 +1,47 @@
+<bra-perfil></bra-perfil>
+<div class="container">
+  <div class="hero">
+    <h1 class="title">Como deseja criar sua receita?</h1>
+
+    <p class="subtitle">
+      Compartilhe suas receitas do seu jeito. Você pode preencher tudo
+      manualmente ou simplesmente contar como preparou o prato e deixar a IA
+      organizar tudo para você.
+    </p>
+  </div>
+
+  <div class="cards">
+    <!-- MANUAL -->
+    <div class="option-card manual" (click)="goManual()">
+      <div class="icon">
+        <i class="fa-solid fa-bowl-food"></i>
+      </div>
+
+      <h2>Criar manualmente</h2>
+
+      <p>
+        Preencha cada etapa da receita com calma, adicionando ingredientes, modo
+        de preparo, categorias, tempo de preparo e imagens.
+      </p>
+
+      <span class="action"> Preencher receita </span>
+    </div>
+
+    <!-- IA -->
+    <div class="option-card ai" (click)="goAI()">
+      <div class="icon">
+        <i class="fa-solid fa-robot"></i>
+      </div>
+
+      <h2>Usar IA</h2>
+
+      <p>
+        Escreva sua receita de forma natural, como se estivesse conversando.
+        Você também pode usar o microfone para transcrever sua fala e deixar a
+        IA organizar tudo automaticamente.
+      </p>
+
+      <span class="action"> Criar com IA </span>
+    </div>
+  </div>
+</div>

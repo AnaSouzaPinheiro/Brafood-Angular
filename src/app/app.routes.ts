@@ -26,7 +26,7 @@ export const routes: Routes = [
       import('./profile/editar-perfil/editar-perfil').then(
         (m) => m.EditarPerfil,
       ),
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'minhas-receitas/:id',
@@ -54,6 +54,20 @@ export const routes: Routes = [
     path: 'adicionar-receita',
     loadComponent: () =>
       import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'adicionar-receita/hub',
+    loadComponent: () =>
+      import('./recipe/add-recipe-hub/add-recipe-hub').then(
+        (m) => m.AddRecipeHub,
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'adicionar-receita/ai',
+    loadComponent: () =>
+      import('./recipe/add-recipe-ai/add-recipe-ai').then((m) => m.AddRecipeAi),
     canActivate: [AuthGuard],
   },
   {

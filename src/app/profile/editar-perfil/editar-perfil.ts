@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from '../../services/modal/modal.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { Perfil } from '../perfil/perfil';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-editar-perfil',
@@ -24,6 +25,7 @@ import { Perfil } from '../perfil/perfil';
     CommonModule,
     CustomButton,
     Perfil,
+    MediaUrlPipe,
   ],
   templateUrl: './editar-perfil.html',
   styleUrl: './editar-perfil.scss',

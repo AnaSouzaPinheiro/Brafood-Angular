@@ -9,7 +9,7 @@
 
     <ng-container *ngIf="mappedRecipe.img && !imgBroken; else imgFallback">
       <img
-        [src]="mappedRecipe.img"
+        [src]="mappedRecipe.img | mediaUrl"
         alt=""
         class="img-receita"
         (error)="imgBroken = true"

@@ -1,0 +1,52 @@
+<bra-perfil></bra-perfil>
+<div class="container">
+  <div class="header">
+    <div class="badge"><i class="fa-solid fa-robot"></i> Receita com IA</div>
+
+    <h1>Conte como você preparou sua receita</h1>
+
+    <p>
+      Não precisa escrever bonito. Pode digitar de forma natural ou usar o
+      microfone para contar sua receita como se estivesse falando com alguém. A
+      IA vai organizar ingredientes, etapas, categorias e porções para você.
+    </p>
+  </div>
+
+  <form [formGroup]="form">
+    <div class="textarea-wrapper">
+      <bra-input
+        [label]="'Descreva sua receita*'"
+        [inType]="'textarea'"
+        [placeholder]="'Ex: Fiz um pavê de leite ninho com morango usando leite condensado, creme de leite...'"
+        formControlName="textoReceita"
+        name="textoReceita"
+      ></bra-input>
+    </div>
+
+    <div class="actions">
+      <button
+        type="button"
+        class="mic-button"
+        [class.listening]="isListening"
+        (click)="toggleMic()"
+      >
+        <i
+          [class.fa-microphone-lines]="!isListening"
+          [class.fa-stop]="isListening"
+          class="fa-solid"
+        ></i>
+      </button>
+
+      <bra-custom-button
+        [type]="'add'"
+        [label]="'Gerar receita com IA'"
+        (clicked)="gerar()"
+      ></bra-custom-button>
+    </div>
+
+    <span class="hint">
+      <i class="fa-regular fa-lightbulb"></i> Dica: você pode simplesmente
+      contar a receita do seu jeito, sem se preocupar com organização.
+    </span>
+  </form>
+</div>

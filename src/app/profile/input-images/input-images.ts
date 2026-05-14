@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalService } from '../../services/modal/modal.service';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-input-images',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MediaUrlPipe],
   templateUrl: './input-images.html',
   styleUrls: ['./input-images.scss'],
 })

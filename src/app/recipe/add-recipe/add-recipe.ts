@@ -48,12 +48,14 @@ export class AddRecipe {
   subcategoriasPorCategoria: { [nome: string]: Option[] } = {};
 
   porcoesDropdown: Option[] = [
-    { label: 'Porções',  value: 'Porções'  },
-    { label: 'Pedaços',  value: 'Pedaços'  },
-    { label: 'Pratos',   value: 'Pratos'   },
-    { label: 'Fatias',   value: 'Fatias'   },
+    { label: 'Porções', value: 'Porções' },
+    { label: 'Pedaços', value: 'Pedaços' },
+    { label: 'Pratos', value: 'Pratos' },
+    { label: 'Fatias', value: 'Fatias' },
     { label: 'Unidades', value: 'Unidades' },
   ];
+
+  porcaoSelecionada: Option[] = [];
 
   receita: Receita = {
     id: 0,
@@ -88,25 +90,56 @@ export class AddRecipe {
     private route: ActivatedRoute,
   ) {
     this.form = this.fb.group({
-      titulo:    ['', Validators.required],
-      resumo:    ['', Validators.required],
+      titulo: ['', Validators.required],
+      resumo: ['', Validators.required],
       // Categoria e subcategoria ficam no form como fonte única de verdade
-      categoria:    [null, Validators.required],
+      categoria: [null, Validators.required],
       subcategoria: [null, Validators.required],
       dificuldade: [
         null,
         [Validators.required, Validators.min(1), Validators.max(3)],
       ],
       tempo_hora: [null, Validators.required],
-      tempo_min:  [null, Validators.required],
-      porcoes:    [null, Validators.required],
+      tempo_min: [null, Validators.required],
+      porcoes: [null, Validators.required],
       // tipo_porcao vive só aqui — o dropdown atualiza via patchValue
       tipo_porcao: [null, Validators.required],
     });
   }
 
   ngOnInit() {
-    this.carregarCategorias();
+    this.categoriaService.listCats().subscribe({
+      next: (res: Categoria[]) => {
+        this.categorias = res;
+
+        this.categoriasDropdown = res.map((cat) => ({
+          label: cat.nome,
+          value: cat.id.toString(),
+        }));
+
+        res.forEach((cat) => {
+          this.subcategoriasPorCategoria[cat.id] = (cat.subcategorias || [])
+            .filter((sub) => sub.nome !== 'Todas')
+            .map((sub) => ({
+              label: sub.nome,
+              value: sub.id.toString(),
+            }));
+        });
+
+        // preenche IA
+        const aiData = localStorage.getItem('ai_recipe');
+
+        if (aiData) {
+          const receita = JSON.parse(aiData);
+
+          this.preencherFormularioComIA(receita);
+
+          localStorage.removeItem('ai_recipe');
+        }
+      },
+
+      error: (err: any) => console.error(err),
+    });
   }
 
   carregarCategorias() {
@@ -138,7 +171,7 @@ export class AddRecipe {
     // Reseta subcategoria ao trocar categoria
     this.subcategoriasSelecionadas = {};
     this.form.patchValue({
-      categoria:    event[0]?.value ?? null,
+      categoria: event[0]?.value ?? null,
       subcategoria: null,
     });
   }
@@ -161,14 +194,14 @@ export class AddRecipe {
 
   get ingredientesComoItems() {
     return this.receita.ingredientes.map((ing) => ({
-      title:    ing.titulo ?? '',
+      title: ing.titulo ?? '',
       subitems: ing.itens ?? [''],
     }));
   }
 
   get etapasComoItems() {
     return this.receita.etapas.map((et) => ({
-      title:    et.titulo ?? '',
+      title: et.titulo ?? '',
       subitems: et.descricoes?.map((d: any) => d.descricao) ?? [''],
     }));
   }
@@ -177,20 +210,81 @@ export class AddRecipe {
   atualizarIngredientes(lista: any[]) {
     this.receita.ingredientes = lista.map((ing: any) => ({
       titulo: ing.title,
-      itens:  ing.subitems,
+      itens: ing.subitems,
     }));
   }
 
   // ========== Etapas ==========
   atualizarEtapas(lista: any[]) {
     this.receita.etapas = lista.map((etapa: any, i: number) => ({
-      titulo:    etapa.title,
-      ordem:     i + 1,
+      titulo: etapa.title,
+      ordem: i + 1,
       descricoes: etapa.subitems.map((desc: string, j: number) => ({
         descricao: desc,
-        ordem:     j + 1,
+        ordem: j + 1,
       })),
     }));
+  }
+
+  preencherFormularioComIA(data: any) {
+    this.form.patchValue({
+      titulo: data.titulo,
+      resumo: data.resumo,
+      dificuldade: data.dificuldade,
+      tempo_hora: data.tempo_hora,
+      tempo_min: data.tempo_min,
+      porcoes: data.porcoes,
+      tipo_porcao: data.tipo_porcao,
+    });
+
+    // PORÇÃO
+    this.porcaoSelecionada = [
+      {
+        label: data.tipo_porcao,
+        value: data.tipo_porcao,
+      },
+    ];
+
+    // CATEGORIAS
+    const idsCategorias =
+      data.idCategoria?.split(',').map((id: string) => id.trim()) || [];
+
+    const idsSubcategorias =
+      data.idSubcategoria?.split(',').map((id: string) => id.trim()) || [];
+
+    this.categoriasSelecionadas = this.categorias
+      .filter((cat) => idsCategorias.includes(cat.id.toString()))
+      .map((cat) => ({
+        label: cat.nome,
+        value: cat.id.toString(),
+      }));
+
+    // SUBCATEGORIAS
+    const novasSubs: { [catId: string]: Option[] } = {};
+
+    this.categorias.forEach((cat) => {
+      const subs = this.subcategoriasPorCategoria[cat.id] || [];
+
+      const subsSelecionadas = subs.filter((sub) =>
+        idsSubcategorias.includes(sub.value),
+      );
+
+      if (subsSelecionadas.length > 0) {
+        novasSubs[cat.id] = subsSelecionadas;
+      }
+    });
+
+    this.subcategoriasSelecionadas = novasSubs;
+
+    // PATCH IDS NO FORM
+    this.form.patchValue({
+      categoria: idsCategorias,
+      subcategoria: idsSubcategorias,
+    });
+
+    // INGREDIENTES / ETAPAS
+    this.receita.ingredientes = data.ingredientes;
+    this.receita.etapas = data.etapas;
   }
 
   // ========== Salvar ==========
@@ -199,20 +293,29 @@ export class AddRecipe {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.modalService.open({
-        type:    'error',
-        title:   'Campos obrigatórios',
+        type: 'error',
+        title: 'Campos obrigatórios',
         message: 'Preencha todos os campos antes de enviar a receita.',
       });
       return;
     }
 
+    if (this.imagensSelecionadas.length === 0) {
+      this.modalService.open({
+        type: 'error',
+        title: 'Imagem obrigatória',
+        message: 'Adicione pelo menos uma imagem da receita.',
+      });
+
+      return;
+    }
     // Obtém o usuário pelo serviço — sem tocar em localStorage aqui
     const userId = this.authService.getUserId();
 
     if (!userId) {
       this.modalService.open({
-        type:    'error',
-        title:   'Sessão expirada',
+        type: 'error',
+        title: 'Sessão expirada',
         message: 'Faça login novamente para cadastrar uma receita.',
       });
       return;
@@ -222,20 +325,20 @@ export class AddRecipe {
 
     const receitaPronta = {
       ...this.receita,
-      titulo:       fv.titulo,
-      resumo:       fv.resumo,
+      titulo: fv.titulo,
+      resumo: fv.resumo,
       // Envia o ID da categoria e o ID da subcategoria (não os nomes)
-      categoria:    fv.categoria,
+      categoria: fv.categoria,
       subcategoria: fv.subcategoria,
-      dificuldade:  fv.dificuldade,
-      tempo_hora:   fv.tempo_hora,
-      tempo_min:    fv.tempo_min,
-      porcoes:      fv.porcoes,
-      tipo_porcao:  fv.tipo_porcao,
+      dificuldade: fv.dificuldade,
+      tempo_hora: fv.tempo_hora,
+      tempo_min: fv.tempo_min,
+      porcoes: fv.porcoes,
+      tipo_porcao: fv.tipo_porcao,
       ingredientes: this.receita.ingredientes,
-      etapas:       this.receita.etapas,
+      etapas: this.receita.etapas,
       data_criacao: new Date().toISOString(),
-      autor:        userId,
+      autor: userId,
     };
 
     this.receitaService
@@ -246,9 +349,9 @@ export class AddRecipe {
             this.form.reset();
             this.imagensSelecionadas = [];
             this.modalService.open({
-              type:        'success',
-              title:       'Receita adicionada',
-              message:     'Informações da receita foram salvas com sucesso!',
+              type: 'success',
+              title: 'Receita adicionada',
+              message: 'Informações da receita foram salvas com sucesso!',
               confirmText: 'OK',
               onConfirm: () => {
                 this.router.navigate(['/minhas-receitas', userId]);
@@ -256,16 +359,16 @@ export class AddRecipe {
             });
           } else {
             this.modalService.open({
-              type:    'error',
-              title:   'Erro',
+              type: 'error',
+              title: 'Erro',
               message: res?.message || 'Erro ao cadastrar receita.',
             });
           }
         },
         error: (err) => {
           this.modalService.open({
-            type:    'error',
-            title:   'Erro',
+            type: 'error',
+            title: 'Erro',
             message: err?.mensagem || 'Erro ao cadastrar receita.',
           });
         },

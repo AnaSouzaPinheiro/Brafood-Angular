@@ -23,7 +23,7 @@
             <ng-template #showPreview>
               <img
                 class="picture__img"
-                [src]="previewSrc"
+                [src]="previewSrc | mediaUrl"
                 alt="Imagem selecionada"
               />
             </ng-template>

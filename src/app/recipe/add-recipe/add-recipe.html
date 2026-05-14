@@ -110,6 +110,7 @@
           <bra-dropdown
             [label]="''"
             [multiSelect]="false"
+            [selected]="porcaoSelecionada"
             [options]="porcoesDropdown"
             (optionSelected)="onPorcaoSelecionada($event)"
           ></bra-dropdown>
@@ -155,7 +156,8 @@
       </div>
     </div>
 
-    <bra-custom-button class="salvar"
+    <bra-custom-button
+      class="salvar"
       [type]="'add'"
       [label]="'Enviar receita'"
       (clicked)="salvar()"

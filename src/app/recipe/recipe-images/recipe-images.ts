@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 @Component({
   selector: 'bra-recipe-images',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MediaUrlPipe],
   templateUrl: './recipe-images.html',
   styleUrls: ['./recipe-images.scss'],
 })
