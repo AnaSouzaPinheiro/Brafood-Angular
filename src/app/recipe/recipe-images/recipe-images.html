@@ -1,28 +1,28 @@
 @if (imageList.length > 2) {
   <div class="all-container">
     <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" />
+      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="lazy" />
     </div>
     
     <div class="twoHalf">
-      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" />
-      <img class="three" (click)="openLightbox(2)" [src]="imageList[2] | mediaUrl" alt="" />
+      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" loading="lazy" />
+      <img class="three" (click)="openLightbox(2)" [src]="imageList[2] | mediaUrl" alt="" loading="lazy" />
     </div>
   </div>
 } @else if (imageList.length == 2) {
   <div class="two-container">
     <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" />
+      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="lazy" />
     </div>
     
     <div class="twoHalf">
-      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" />
+      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" loading="lazy" />
     </div>
   </div>
 } @else {
   <div class="one-container">
     <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" />
+      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="lazy" />
     </div>
   </div>
 }
@@ -36,7 +36,7 @@
 
         <button class="prev" (click)="prevImage()"><</button>
         
-        <img [src]="imageList[currentIndex()] | mediaUrl" class="lightbox-image" />
+        <img [src]="imageList[currentIndex()] | mediaUrl" class="lightbox-image" loading="lazy" />
         
         <button class="next" (click)="nextImage()">></button>
     </div>
