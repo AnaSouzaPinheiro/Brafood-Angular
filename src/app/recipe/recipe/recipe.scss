@@ -39,9 +39,16 @@
     @include page-title;
   }
 
+  // ─── Container: clearfix para o float dos cards ──────────────────────────────
   .container {
-    display: flex;
-    justify-content: space-between;
+    display: block;
+    position: relative;
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
 
     .hint {
       width: 100%;
@@ -49,53 +56,30 @@
     }
   }
 
-  .ingredientes {
-    .temaIng {
-      font-size: 20px;
-      font-weight: 600;
-      color: $primary-blue;
-    }
-  }
-
-  .preparo {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-
-    .topic-title {
-      font-size: 20px;
-      color: $primary-blue;
-      font-weight: 400;
-    }
-  }
-
-  li {
-    line-height: 2.5;
-    font-size: 16px;
-    margin-left: 30px;
-  }
-
-  ul li::marker {
-    font-size: 10px;
-    color: #000;
-  }
-
+  // ─── Cards flutuam à direita — dentro do .container junto com o texto ────────
   .list {
+    float: right;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-end;
     gap: 35px;
+    margin-left: 40px;
+    margin-bottom: 30px;
+    max-width: 325px;
   }
 
   .autor {
     display: flex;
     gap: 10px;
+    padding: 16px;
+    border: 1px solid $primary-blue;
+    border-radius: 16px;
+    background-color: #fff !important;
 
     .bra-user-icon {
       width: 50px;
       height: 50px;
       border-radius: 50%;
+      flex-shrink: 0;
     }
 
     .data {
@@ -119,7 +103,6 @@
     background-color: #0dc143;
     padding: 24px;
     gap: 18px;
-    max-width: 300px;
     text-align: center;
 
     @include flex-column-center;
@@ -135,7 +118,6 @@
       border: none;
       border-radius: 35px;
       background-color: #fff;
-
       color: #0dc143;
       font-size: 16px;
       font-weight: 600;
@@ -151,6 +133,51 @@
         opacity: 0.8;
       }
     }
+  }
+
+  // ─── Ingredientes ────────────────────────────────────────────────────────────
+  .ingredientes {
+    .temaIng {
+      font-size: 20px;
+      font-weight: 600;
+      color: $primary-blue;
+    }
+  }
+
+  // ─── Modo de preparo ─────────────────────────────────────────────────────────
+  .preparo {
+    display: block; // não cria BFC — o float do pai flui normalmente
+
+    .title {
+      margin-top: 50px;
+    }
+
+    .topic-title {
+      font-size: 20px;
+      color: $primary-blue;
+      font-weight: 400;
+      margin-bottom: 0;
+    }
+
+    // gap entre os blocos de etapa via margin no filho
+    & > div {
+      margin-bottom: 22px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  li {
+    line-height: 2.5;
+    font-size: 16px;
+    margin-left: 30px;
+  }
+
+  ul li::marker {
+    font-size: 10px;
+    color: #000;
   }
 
   .sec {
@@ -175,21 +202,13 @@
     width: 100%;
   }
 
+  // ─── Tablet (≤768px): mesmo comportamento do desktop ────────────────────────
   @media (max-width: 768px) {
     gap: 50px;
-    //margin-top: 50px;
     margin-bottom: 50px;
-
-    .container {
-      gap: 15px;
-    }
 
     .title {
       text-align: center;
-    }
-
-    .ingredientes .title {
-      text-align: left;
     }
 
     .temaIng,
@@ -201,6 +220,12 @@
       font-size: 1rem;
       line-height: 2.5;
       margin-left: 25px;
+    }
+
+    .list {
+      width: 210px;
+      margin-left: 24px;
+      gap: 25px;
     }
 
     .autor {
@@ -216,11 +241,6 @@
       }
     }
 
-    .list {
-      justify-content: center;
-      gap: 25px;
-    }
-
     .whatsApp {
       padding: 15px;
       font-size: 0.8rem;
@@ -230,23 +250,45 @@
         font-size: 0.8rem;
       }
     }
+
+    .preparo .title {
+      margin-top: 0;
+    }
   }
 
+  // ─── Mobile (≤539px): empilhado com ordem personalizada ─────────────────────
   @media (max-width: 539px) {
     .container {
-      flex-direction: column-reverse;
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+
+      // anula o clearfix (não faz sentido em flex)
+      &::after {
+        display: none;
+      }
     }
 
+    // dissolve o wrapper .list — filhos entram direto no flex do .container
     .list {
-      align-items: center;
+      float: none;
+      width: 100%;
+      margin: 0;
+      display: contents;
     }
 
-    .whatsApp {
-      padding: 35px;
+    // Ordem: autor → ingredientes → whatsapp → preparo
+    .autor {
+      order: 1;
     }
-
     .ingredientes {
-      margin-top: 50px;
+      order: 2;
+    }
+    .whatsApp-card {
+      order: 3;
+    }
+    .preparo {
+      order: 4;
     }
   }
 }
@@ -279,6 +321,7 @@
 .comment-textarea {
   width: 100%;
   min-height: 90px;
+  max-height: 300px;
   padding: 10px 12px;
   border: 1px solid #a8a8a8;
   border-radius: 5px;
@@ -292,7 +335,7 @@
 
   &:focus {
     outline: none;
-    border-color: #002c99;
+    border-color: $primary-blue;
     box-shadow: 0 0 0 3px rgba(0, 44, 153, 0.15);
   }
 

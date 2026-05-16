@@ -37,7 +37,7 @@
 
   .logOut {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 10px;
     border-top: 2px solid $quaternary-gray;
   }
@@ -48,8 +48,7 @@
   }
 
   i {
-    width: 20px;
-    height: 20px;
+    display: flex;
     color: $primary-blue;
   }
 

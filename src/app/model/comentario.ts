@@ -3,6 +3,7 @@ export interface Comentario {
   id_receita: number;
   id_usuario: number;
   id_comentario_pai: number | null;
+  nome_pai?: string;
   texto: string;
   data_criacao: string;
 

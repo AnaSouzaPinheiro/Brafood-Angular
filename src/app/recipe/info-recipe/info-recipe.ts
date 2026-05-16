@@ -21,6 +21,7 @@ export class InfoRecipe implements OnChanges {
   get mappedInfoRecipe() {
     return {
       titulo: this.recipe?.titulo,
+      resumo: this.recipe?.resumo,
       categoria: this.recipe?.categoria
         ? this.recipe.categoria.split(',').map((c: string) => c.trim())
         : [],

@@ -63,7 +63,7 @@ export class Recipe {
       this.recipe = {
         id: Number(r.id),
         titulo: r.titulo,
-        resumo: '',
+        resumo: r.resumo,
         categoria: r.categoria ?? '',
         subcategoria: r.subcategoria ?? '',
         dificuldade: Number(r.dificuldade),
@@ -80,6 +80,7 @@ export class Recipe {
           : '',
         autor: r.autor,
         foto_perfil: r.foto_perfil || '',
+        bio: r.bio,
         ingredientes: (r.ingredientes || []).map((i: any) => ({
           titulo: i.titulo,
           itens: i.itens || [],
@@ -134,7 +135,11 @@ export class Recipe {
 
     return comments.filter((c) => {
       if (c.id_comentario_pai) {
-        map.get(c.id_comentario_pai)?.replies?.push(c);
+        const pai = map.get(c.id_comentario_pai);
+        if (pai) {
+          c.nome_pai = pai.nome_usuario;
+          pai.replies?.push(c);
+        }
         return false;
       }
       return true;

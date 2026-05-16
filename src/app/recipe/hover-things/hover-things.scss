@@ -30,10 +30,20 @@
   }
 }
 
+@media (max-width: 1245px) {
+  .hover {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
-  .hover::before {
-    rotate: 90deg;
-    top: -14px;
-    left: 92px;
+  .hover {
+    display: flex;
+
+    &::before {
+      rotate: 90deg;
+      top: -14px;
+      left: 92px;
+    }
   }
 }

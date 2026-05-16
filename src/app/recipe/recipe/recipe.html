@@ -6,9 +6,32 @@
 
   <div class="receita">
     <div class="container">
+      <div class="list">
+        <div class="autor whatsApp">
+          <img
+            class="bra-user-icon"
+            [src]="recipe?.foto_perfil | mediaUrl"
+            loading="lazy"
+          />
+          <div class="data">
+            <span class="person">Por {{ recipe?.autor }}</span>
+            <span class="date">Publicado em: {{ recipe?.data_criacao }}</span>
+            <p class="resumUser">{{ recipe?.bio }}</p>
+          </div>
+        </div>
+
+        <div class="whatsApp whatsApp-card">
+          Ainda precisa comprar os ingredientes?
+          <span>Mande a lista por WhatsApp:</span>
+          <a class="zap" [href]="urlWhatsApp" target="_blank">
+            <i class="fa-brands fa-whatsapp"></i>
+            Enviar lista
+          </a>
+        </div>
+      </div>
+
       <div class="ingredientes">
         <h1 class="title">Ingredientes</h1>
-
         <div *ngFor="let ing of recipe?.ingredientes">
           <ul>
             <span class="temaIng">{{ ing.titulo }}</span>
@@ -17,40 +40,18 @@
         </div>
       </div>
 
-      <div class="list">
-        <div class="autor">
-          <img
-            class="bra-user-icon"
-            [src]="recipe?.foto_perfil | mediaUrl"
-            loading="lazy"
-          />
-          <div class="data">
-            <span class="person"> Por {{ recipe?.autor }} </span>
-            <span class="date">Publicado em: {{ recipe?.data_criacao }} </span>
-          </div>
+      <section class="preparo">
+        <h1 class="title">Modo de Preparo</h1>
+        <div *ngFor="let etapa of recipe?.etapas">
+          <h2 class="topic-title" *ngIf="etapa.titulo?.trim()">
+            {{ etapa.ordem }}. {{ etapa.titulo }}
+          </h2>
+          <ul class="ul-preparo">
+            <li *ngFor="let desc of etapa.descricoes">{{ desc.descricao }}</li>
+          </ul>
         </div>
-        <div class="whatsApp">
-          Ainda precisa comprar os ingredientes?
-
-          <span>Mande a lista por WhatsApp:</span>
-          <a class="zap" [href]="urlWhatsApp" target="_blank">
-            <i class="fa-brands fa-whatsapp"></i>Enviar lista
-          </a>
-        </div>
-      </div>
+      </section>
     </div>
-    <section class="preparo">
-      <h1 class="title">Modo de Preparo</h1>
-
-      <div *ngFor="let etapa of recipe?.etapas">
-        <h2 class="topic-title" *ngIf="etapa.titulo?.trim()">
-          {{ etapa.ordem }}. {{ etapa.titulo }}
-        </h2>
-        <ul class="ul-preparo">
-          <li *ngFor="let desc of etapa.descricoes">{{ desc.descricao }}</li>
-        </ul>
-      </div>
-    </section>
 
     <section class="commmets" id="comentarios">
       <div class="container com">
@@ -68,7 +69,6 @@
             maxlength="1000"
           ></textarea>
 
-          <!-- Contador de caracteres -->
           <span
             class="char-counter"
             [class.near-limit]="novoComentario.length >= 850"
@@ -78,7 +78,6 @@
             {{ novoComentario.length }}/1000
           </span>
 
-          <!-- Erro inline -->
           <span class="field-error" *ngIf="comentarioInvalido" role="alert">
             <i class="fa-solid fa-circle-exclamation"></i>
             {{ erroComentario }}

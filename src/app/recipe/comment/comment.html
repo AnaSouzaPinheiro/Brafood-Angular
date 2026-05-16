@@ -1,18 +1,13 @@
 <div class="comment">
-  <!-- COMENTÁRIO -->
-  <div class="comment-body">
-    <div class="seta" *ngIf="isReply()">
-      <i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i>
-    </div>
 
+  <div class="reply-to" *ngIf="isReply() && comment.nome_pai">
+    <i class="fa-solid fa-reply"></i>
+    em resposta a <span class="reply-to-name">{{ '@' + comment.nome_pai }}</span>
+  </div>
+
+  <div class="comment-body">
     <div class="person">
-      <bra-user-icon
-        [user]="{
-          id: comment.id_usuario,
-          nome: comment.nome_usuario,
-          foto_perfil: comment.foto_perfil
-        }"
-      ></bra-user-icon>
+      <bra-user-icon [user]="{ id: comment.id_usuario, nome: comment.nome_usuario, foto_perfil: comment.foto_perfil }"></bra-user-icon>
 
       <span class="name">{{ comment.nome_usuario }}</span>
     </div>
@@ -38,9 +33,7 @@
     </div>
   </div>
 
-  <!-- RESPONDENDO -->
-  @if (replying) {
-  <div class="replying">
+  <div class="replying" *ngIf="replying">
     <div class="seta">
       <i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i>
     </div>
@@ -72,7 +65,7 @@
       </div>
     </div>
   </div>
-  }
+
 </div>
 
 <!-- REPLIES -->

@@ -4,6 +4,9 @@ import { CustomButton } from '../../shared/custom-button/custom-button';
 import { CommonModule } from '@angular/common';
 import { Comentario } from '../../model/comentario';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
+import { ModalService } from '../../services/modal/modal.service';
 
 export type CommentState = 'normal' | 'reply' | 'replying';
 
@@ -31,11 +34,36 @@ export class Comment {
   showReplies = false;
   visibleRepliesCount = 3;
 
+  constructor(
+    private authService: AuthService,
+    private modalService: ModalService,
+    private router: Router,
+  ) {}
+
   isReply() {
     return !!this.comment.id_comentario_pai;
   }
 
   responder() {
+    const usuarioId = this.authService.getUserId();
+
+    if (!usuarioId) {
+      this.modalService.open({
+        type: 'confirm',
+        title: 'Login necessário',
+        message: 'Para responder comentários, você precisa estar logado.',
+        confirmText: 'Ir para login',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
+        },
+      });
+
+      return;
+    }
+
     this.replying = true;
     this.tentouEnviarResposta = false;
   }

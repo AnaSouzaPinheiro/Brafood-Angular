@@ -26,6 +26,7 @@ export interface Receita {
 
   autor: string;
   foto_perfil?: string;
+  bio?: string;
 
   ingredientes: Ingrediente[];
   etapas: Etapa[];

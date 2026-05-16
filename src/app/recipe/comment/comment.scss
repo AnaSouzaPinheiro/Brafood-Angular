@@ -1,5 +1,12 @@
 @use "variables" as *;
 
+// ─── Profundidade máxima de indentação ──────────────────────────────────────
+// Replies de qualquer nível ficam com no máximo 65px de recuo.
+// A linha vertical conecta visualmente a thread sem crescer infinitamente.
+
+$reply-indent: 65px;
+$thread-line-color: #e0e0e0;
+
 .comment {
   display: flex;
   flex-direction: column;
@@ -20,6 +27,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0; // evita que o avatar encolha
 
   bra-user-icon {
     display: inline-block;
@@ -63,6 +71,8 @@
   .text {
     font-size: 16px;
     font-weight: 300;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 
@@ -74,20 +84,59 @@
 }
 
 .replying {
-  margin-left: 50px;
+  margin-left: $reply-indent;
+}
+
+// ─── Lista de replies: indenta UMA vez e para por aí ────────────────────────
+
+.reply-to {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: $primary-gray;
+  margin-bottom: -5px; // aproxima visualmente do comentário
+
+  i {
+    font-size: 11px;
+    color: $primary-gray;
+  }
+
+  .reply-to-name {
+    color: $primary-blue;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
 }
 
 .replies-list {
-  margin-left: 50px;
+  margin-left: $reply-indent;
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  // Linha vertical de thread (estilo YouTube/Reddit)
+  border-left: 2px solid $thread-line-color;
+  padding-left: 16px;
+
+  // Qualquer .replies-list aninhada dentro desta NÃO recua mais —
+  // ela herda o mesmo nível visual, apenas a linha vertical continua.
+  .replies-list {
+    margin-left: 0;
+    border-left: none;
+    padding-left: 0;
+  }
 }
 
 i {
   color: $primary-gray;
 }
 
+// ─── Textarea de resposta ─────────────────────────────────────────────────────
 .reply-textarea {
   width: 100%;
   padding: 8px 12px;
@@ -102,8 +151,8 @@ i {
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color, #c0392b);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 3px rgba(0, 44, 153, 0.15);
   }
 }
 
@@ -138,6 +187,7 @@ i {
   }
 }
 
+// ─── Erros ───────────────────────────────────────────────────────────────────
 .field-error {
   display: flex;
   align-items: center;
@@ -150,6 +200,7 @@ i {
   i {
     font-size: 12px;
     flex-shrink: 0;
+    color: $alert-red; // sobrescreve o `i { color: $primary-gray }` global
   }
 }
 
@@ -162,8 +213,4 @@ i {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.field-error.imagem-error {
-  margin-top: 6px;
 }
