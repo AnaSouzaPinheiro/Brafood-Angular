@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserResponse } from '../../model/user';
 import { BaseService } from '../base/base.service';
+import { ApiResponse } from '../../model/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,11 @@ export class UsuarioService extends BaseService {
     return this.httpClient.get<UserResponse>(this.url(`user.php?id=${id}`));
   }
 
-  editarUsuario(id: number, formValue: any, imagem?: File): Observable<any> {
+  editarUsuario(
+    id: number,
+    formValue: any,
+    imagem?: File,
+  ): Observable<ApiResponse> {
     const formData = new FormData();
 
     formData.append('dados', JSON.stringify(formValue));
@@ -21,7 +26,7 @@ export class UsuarioService extends BaseService {
       formData.append('foto_perfil', imagem);
     }
 
-    return this.httpClient.post<any>(
+    return this.httpClient.post<ApiResponse>(
       this.url(`updateUser.php?id=${id}`),
       formData,
     );

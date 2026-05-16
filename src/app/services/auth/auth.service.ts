@@ -2,16 +2,22 @@ import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../../model/user';
 import { BaseService } from '../base/base.service';
+import { ApiResponse } from '../../model/api-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends BaseService {
-
   user = signal<any>(null);
-  
-  login(email: string, senha: string): Observable<any> {
-    return this.httpClient.post<any>(this.url('login.php'), { email, senha });
+
+  login(
+    email: string,
+    senha: string,
+  ): Observable<ApiResponse & { user?: User }> {
+    return this.httpClient.post<ApiResponse & { user?: User }>(
+      this.url('login.php'),
+      { email, senha },
+    );
   }
 
   cadastro(
@@ -19,8 +25,8 @@ export class AuthService extends BaseService {
     email: string,
     senha: string,
     confirmarSenha: string,
-  ): Observable<any> {
-    return this.httpClient.post<any>(this.url('cadastro.php'), {
+  ): Observable<ApiResponse> {
+    return this.httpClient.post<ApiResponse>(this.url('cadastro.php'), {
       nome,
       email,
       senha,
@@ -54,14 +60,21 @@ export class AuthService extends BaseService {
     }
   }
 
-  solicitarRecuperacao(email: string) {
-    return this.httpClient.post(this.url('solicitar_recuperacao.php'), {
-      email,
-    });
+  solicitarRecuperacao(email: string): Observable<ApiResponse> {
+    return this.httpClient.post<ApiResponse>(
+      this.url('solicitar_recuperacao.php'),
+      {
+        email,
+      },
+    );
   }
 
-  resetarSenha(token: string, senha: string, confirmarSenha: string) {
-    return this.httpClient.post(this.url('resetar_senha.php'), {
+  resetarSenha(
+    token: string,
+    senha: string,
+    confirmarSenha: string,
+  ): Observable<ApiResponse> {
+    return this.httpClient.post<ApiResponse>(this.url('resetar_senha.php'), {
       token,
       senha,
       confirmarSenha,
@@ -71,10 +84,13 @@ export class AuthService extends BaseService {
   // Retorna os dados do usuário logado
   getUser(): any {
     // Prioriza o signal (já carregado em memória); cai no storage como fallback
-    return this.user() ?? (() => {
-      const data = localStorage.getItem('user');
-      return data ? JSON.parse(data) : null;
-    })();
+    return (
+      this.user() ??
+      (() => {
+        const data = localStorage.getItem('user');
+        return data ? JSON.parse(data) : null;
+      })()
+    );
   }
 
   // Atalho para obter só o ID — evita que os componentes acessem localStorage diretamente

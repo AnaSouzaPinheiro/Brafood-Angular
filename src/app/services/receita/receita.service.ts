@@ -5,6 +5,7 @@ import { Recipes } from '../../model/myrecipes';
 import { Slide } from '../../model/slide';
 import { Receita } from '../../model/receita';
 import { BaseService } from '../base/base.service';
+import { ApiResponse } from '../../model/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -30,8 +31,8 @@ export class ReceitaService extends BaseService {
   }
 
   // excluir uma receita
-  excluir(id: number): Observable<Recipes[]> {
-    return this.httpClient.get<Recipes[]>(
+  excluir(id: number): Observable<ApiResponse> {
+    return this.httpClient.get<ApiResponse>(
       this.url(`receitas/excluir.php?id=${id}`),
     );
   }
@@ -77,7 +78,7 @@ export class ReceitaService extends BaseService {
   }
 
   // Envia uma nova receita (dados + imagens)
-  addReceita(formValue: any, imagens: File[]): Observable<any> {
+  addReceita(formValue: any, imagens: File[]): Observable<ApiResponse> {
     const formData = new FormData();
     formData.append('dados', JSON.stringify(formValue));
 
@@ -86,10 +87,17 @@ export class ReceitaService extends BaseService {
       if (img) formData.append(`imagem${i + 1}`, img);
     });
 
-    return this.httpClient.post<any>(this.url('receitas/add.php'), formData);
+    return this.httpClient.post<ApiResponse>(
+      this.url('receitas/add.php'),
+      formData,
+    );
   }
 
-  updateReceita(id: number, formValue: any, imagens: File[]): Observable<any> {
+  updateReceita(
+    id: number,
+    formValue: any,
+    imagens: File[],
+  ): Observable<ApiResponse> {
     const formData = new FormData();
     formData.append('dados', JSON.stringify(formValue));
 
@@ -98,7 +106,7 @@ export class ReceitaService extends BaseService {
       if (img) formData.append(`imagem${i + 1}`, img);
     });
 
-    return this.httpClient.post<any>(
+    return this.httpClient.post<ApiResponse>(
       this.url(`receitas/update.php?id=${id}`),
       formData,
     );
