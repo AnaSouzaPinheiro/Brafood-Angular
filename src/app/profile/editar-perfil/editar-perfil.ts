@@ -219,7 +219,7 @@ export class EditarPerfil implements OnInit {
             this.modalService.open({
               type: 'error',
               title: 'Erro',
-              message: res?.message || 'Erro ao atualizar perfil.',
+              message: res?.mensagem || 'Erro ao atualizar perfil.',
             });
           }
         },

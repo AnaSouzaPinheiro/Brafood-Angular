@@ -396,7 +396,7 @@ export class UpdateRecipe implements OnInit {
             this.modalService.open({
               type: 'error',
               title: 'Erro',
-              message: res?.message || 'Erro ao atualizar receita.',
+              message: res?.mensagem || 'Erro ao atualizar receita.',
             });
           }
         },

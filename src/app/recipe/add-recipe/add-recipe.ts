@@ -321,7 +321,7 @@ export class AddRecipe {
             this.modalService.open({
               type: 'error',
               title: 'Erro',
-              message: res?.message || 'Erro ao cadastrar receita.',
+              message: res?.mensagem || 'Erro ao cadastrar receita.',
             });
           }
         },
