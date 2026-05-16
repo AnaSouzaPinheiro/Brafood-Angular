@@ -5,7 +5,7 @@
 }
 
 .inputIcon {
-  top: 50%;
+  top: 25px;
   left: 15px;
   color: $primary-gray;
   font-size: 20px;
@@ -13,22 +13,61 @@
   transform: translateY(-50%);
 }
 
-input {
+.input-text {
   width: 300px;
   height: 50px;
   font-size: 18px;
   padding-left: 50px;
   border-radius: 10px;
   border: 2px solid $primary-gray;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 
   &::placeholder {
     color: $primary-gray;
     font-size: 18px;
   }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 3px rgba($primary-blue, 0.15);
+  }
+}
+
+.input-error {
+  border-color: $alert-red !important;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15) !important;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: $alert-red;
+  animation: slideDown 0.18s ease;
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 480px) {
-  input {
+  .input-text {
     width: 235px;
   }
 }

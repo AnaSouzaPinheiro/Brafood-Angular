@@ -118,11 +118,25 @@
 }
 
 .remover {
-  color: #e53935;
-  border: 1px solid #e53935;
+  color: $alert-red;
+  border: 1px solid $alert-red;
 }
 
 .dropdown-option.selected {
-  background: #eee;  /* Ou seu estilo de “selecionado” */
+  background: #eee;
   font-weight: 600;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: $alert-red;
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
 }

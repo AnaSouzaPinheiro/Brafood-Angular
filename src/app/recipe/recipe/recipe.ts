@@ -6,7 +6,6 @@ import { Receita } from '../../model/receita';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
 import { Comment } from '../comment/comment';
-import { BraInput } from '../../shared/input/input';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Comentario } from '../../model/comentario';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +15,9 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
+const MIN_COMENTARIO = 3;
+const MAX_COMENTARIO = 1000;
+
 @Component({
   selector: 'bra-recipe',
   imports: [
@@ -23,7 +25,6 @@ import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
     InfoRecipe,
     CommonModule,
     Comment,
-    BraInput,
     CustomButton,
     FormsModule,
     MediaUrlPipe,
@@ -40,6 +41,9 @@ export class Recipe {
   visibleCommentsCount = 3;
 
   usuarioId: number | null = null;
+
+  tentouComentar = false;
+  comentarioTocado = false;
 
   constructor(
     private router: Router,
@@ -95,6 +99,31 @@ export class Recipe {
     });
   }
 
+  onComentarioChange() {
+    if (this.tentouComentar) {
+      this.comentarioTocado = true;
+    }
+  }
+
+  onComentarioBlur() {
+    this.comentarioTocado = true;
+  }
+
+  get comentarioInvalido(): boolean {
+    if (!this.comentarioTocado && !this.tentouComentar) return false;
+    return this.erroComentario.length > 0;
+  }
+
+  get erroComentario(): string {
+    const texto = this.novoComentario.trim();
+    if (!texto) return 'Escreva algo antes de comentar.';
+    if (texto.length < MIN_COMENTARIO)
+      return `Escreva pelo menos ${MIN_COMENTARIO} caracteres.`;
+    if (texto.length > MAX_COMENTARIO)
+      return `O comentário não pode ultrapassar ${MAX_COMENTARIO} caracteres.`;
+    return '';
+  }
+
   buildTree(comments: Comentario[]) {
     const map = new Map<number, Comentario>();
 
@@ -125,7 +154,8 @@ export class Recipe {
   }
 
   comentar() {
-    if (!this.recipe) return;
+    this.tentouComentar = true;
+    this.comentarioTocado = true;
 
     if (!this.usuarioId) {
       this.modalService.open({
@@ -136,26 +166,25 @@ export class Recipe {
         cancelText: 'Cancelar',
         onConfirm: () => {
           this.router.navigate(['/login'], {
-            queryParams: {
-              returnUrl: this.router.url,
-            },
+            queryParams: { returnUrl: this.router.url },
           });
         },
       });
-
       return;
     }
 
-    if (!this.novoComentario.trim()) return;
+    if (this.erroComentario) return;
 
     this.comentarioService
       .criar({
         id_usuario: this.usuarioId,
-        id_receita: this.recipe.id,
-        texto: this.novoComentario,
+        id_receita: this.recipe!.id,
+        texto: this.novoComentario.trim(),
       })
       .subscribe(() => {
         this.novoComentario = '';
+        this.tentouComentar = false;
+        this.comentarioTocado = false;
         this.recarregarComentarios();
       });
   }

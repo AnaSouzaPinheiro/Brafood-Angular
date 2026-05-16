@@ -1,11 +1,13 @@
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 export type InputType = 'email' | 'senha' | 'nome' | 'confirmarSenha';
 
 @Component({
   selector: 'bra-input-acesso',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './input-acesso.html',
   styleUrls: ['./input-acesso.scss'],
   providers: [
@@ -27,6 +29,8 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
   icon: string = '';
 
   value: string = '';
+  touched = false;
+
   onChange = (value: string) => {};
   onTouched = () => {};
 
@@ -85,6 +89,46 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
     this.onChange(this.value);
+  }
+
+  onBlur() {
+    this.touched = true;
     this.onTouched();
+  }
+
+  markAsTouched() {
+    this.touched = true;
+  }
+
+  get errorMessage(): string {
+    if (!this.touched) return '';
+
+    switch (this.type) {
+      case 'email':
+        if (!this.value.trim()) return 'Informe seu e-mail.';
+        if (!this.isValidEmail(this.value)) return 'E-mail inválido.';
+        break;
+      case 'nome':
+        if (!this.value.trim()) return 'Informe seu nome.';
+        if (this.value.trim().length < 2) return 'Nome muito curto.';
+        break;
+      case 'senha':
+        if (!this.value) return 'Informe sua senha.';
+        if (this.value.length < 8) return 'A senha deve ter pelo menos 8 caracteres.';
+        break;
+      case 'confirmarSenha':
+        if (!this.value) return 'Confirme sua senha.';
+        break;
+    }
+
+    return '';
+  }
+
+  get isInvalid(): boolean {
+    return this.touched && this.errorMessage.length > 0;
+  }
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 }

@@ -5,7 +5,7 @@
   >
     <label class="input-list-label">{{ label }}</label>
 
-    <!-- Input do título -->
+    <!-- Input do título (opcional) -->
     <bra-input
       inType="input"
       [label]="''"
@@ -24,7 +24,7 @@
         [inType]="inType"
         [label]="''"
         [placeholder]="subitemPlaceholder"
-        [value]="subitemControls[i][j].value" 
+        [value]="subitemControls[i][j].value"
         (valueChange)="updateSubitem(i, j, $event)"
         [autocomplete]="'item-sub-'+i+'-'+j"
       ></bra-input>
@@ -63,4 +63,9 @@
     class="adicionar-item"
     (clicked)="addItem()"
   ></bra-custom-button>
+
+  <span class="field-error" *ngIf="isInvalid" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    {{ errorMessage }}
+  </span>
 </div>

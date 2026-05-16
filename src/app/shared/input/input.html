@@ -8,9 +8,12 @@
       [type]="type"
       [placeholder]="placeholder"
       class="input-text"
+      [class.input-error]="isInvalid"
       [value]="value"
       (input)="onInput($event)"
+      (blur)="onBlur()"
       [attr.autocomplete]="autocomplete"
+      [attr.maxlength]="maxChars ?? null"
     />
   </ng-container>
 
@@ -19,10 +22,28 @@
       [id]="inputId"
       [name]="name"
       class="input-text textarea"
+      [class.input-error]="isInvalid"
       [placeholder]="placeholder"
       [value]="value"
       (input)="onInput($event)"
+      (blur)="onBlur()"
       [attr.autocomplete]="autocomplete"
+      [attr.maxlength]="maxChars ?? null"
     ></textarea>
   </ng-template>
+
+  <span
+    *ngIf="maxChars"
+    class="char-counter"
+    [class.near-limit]="nearLimit"
+    [class.over-limit]="overLimit"
+    aria-live="polite"
+  >
+    {{ charCount }}/{{ maxChars }}
+  </span>
+
+  <span class="field-error" *ngIf="isInvalid" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    {{ errorMessage }}
+  </span>
 </div>

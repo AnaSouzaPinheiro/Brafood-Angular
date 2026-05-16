@@ -45,7 +45,12 @@
             [inType]="'input'"
             formControlName="apelido"
             name="apelido"
-            autocomplete="apelido"
+            autocomplete="username"
+            [maxChars]="30"
+            [errorMessages]="{
+              required: 'Informe um apelido.',
+              maxlength: 'O apelido pode ter no máximo 30 caracteres.'
+            }"
           ></bra-input>
         </div>
 
@@ -73,7 +78,8 @@
             [inType]="'input'"
             formControlName="nome"
             name="nome"
-            autocomplete="nome"
+            autocomplete="given-name"
+            [errorMessages]="{ required: 'Informe seu nome.' }"
           ></bra-input>
         </div>
 
@@ -83,7 +89,8 @@
             [inType]="'input'"
             formControlName="sobrenome"
             name="sobrenome"
-            autocomplete="sobrenome"
+            autocomplete="family-name"
+            [errorMessages]="{ required: 'Informe seu sobrenome.' }"
           ></bra-input>
         </div>
       </div>
@@ -93,7 +100,9 @@
         [inType]="'textarea'"
         formControlName="bio"
         name="bio"
-        autocomplete="bio"
+        autocomplete="off"
+        [maxChars]="300"
+        [errorMessages]="{ maxlength: 'O resumo pode ter no máximo 300 caracteres.' }"
       ></bra-input>
     </div>
 
@@ -106,6 +115,10 @@
             formControlName="email"
             name="email"
             autocomplete="email"
+            [errorMessages]="{
+              required: 'Informe seu e-mail.',
+              email: 'Digite um e-mail válido.'
+            }"
           ></bra-input>
         </div>
 
@@ -115,7 +128,8 @@
             [inType]="'input'"
             formControlName="novoEmail"
             name="novoEmail"
-            autocomplete="novoEmail"
+            autocomplete="email"
+            [errorMessages]="{ email: 'Digite um e-mail válido.' }"
           ></bra-input>
         </div>
       </div>
@@ -125,9 +139,13 @@
           <bra-input
             [label]="'Nova senha'"
             [inType]="'input'"
+            type="password"
             formControlName="novaSenha"
             name="novaSenha"
-            autocomplete="novaSenha"
+            autocomplete="new-password"
+            [errorMessages]="{
+              minlength: 'A senha deve ter pelo menos 8 caracteres.'
+            }"
           ></bra-input>
         </div>
 
@@ -135,9 +153,11 @@
           <bra-input
             [label]="'Confirmar nova senha'"
             [inType]="'input'"
+            type="password"
             formControlName="confirmarNovaSenha"
             name="confirmarNovaSenha"
-            autocomplete="confirmarNovaSenha"
+            autocomplete="new-password"
+            [errorMessages]="{ mismatch: 'As senhas não coincidem.' }"
           ></bra-input>
         </div>
       </div>

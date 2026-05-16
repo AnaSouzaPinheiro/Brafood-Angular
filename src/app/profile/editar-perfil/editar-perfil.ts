@@ -5,6 +5,8 @@ import {
   Validators,
   ReactiveFormsModule,
   FormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CustomButton } from '../../shared/custom-button/custom-button';
@@ -15,6 +17,23 @@ import { ModalService } from '../../services/modal/modal.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { Perfil } from '../perfil/perfil';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+
+function senhasIguais(group: AbstractControl): ValidationErrors | null {
+  const nova = group.get('novaSenha')?.value;
+  const confirmar = group.get('confirmarNovaSenha')?.value;
+
+  if (nova && confirmar && nova !== confirmar) {
+    group.get('confirmarNovaSenha')?.setErrors({ mismatch: true });
+    return { mismatch: true };
+  }
+
+  const confirmarCtrl = group.get('confirmarNovaSenha');
+  if (confirmarCtrl?.hasError('mismatch')) {
+    confirmarCtrl.setErrors(null);
+  }
+
+  return null;
+}
 
 @Component({
   selector: 'bra-editar-perfil',
@@ -51,17 +70,20 @@ export class EditarPerfil implements OnInit {
     private router: Router,
     private modalService: ModalService,
   ) {
-    this.form = this.fb.group({
-      apelido: ['', Validators.required],
-      nome: ['', Validators.required],
-      sobrenome: ['', Validators.required],
-      genero: ['', Validators.required],
-      bio: [''],
-      email: ['', [Validators.required, Validators.email]],
-      novoEmail: ['', [Validators.email]],
-      novaSenha: [''],
-      confirmarNovaSenha: [''],
-    });
+    this.form = this.fb.group(
+      {
+        apelido: ['', [Validators.required, Validators.maxLength(30)]],
+        nome: ['', Validators.required],
+        sobrenome: ['', Validators.required],
+        genero: ['', Validators.required],
+        bio: ['', [Validators.maxLength(300)]],
+        email: ['', [Validators.required, Validators.email]],
+        novoEmail: ['', [Validators.email]],
+        novaSenha: ['', [Validators.minLength(8)]],
+        confirmarNovaSenha: [''],
+      },
+      { validators: senhasIguais },
+    );
   }
 
   previewSrc: string | null = null;
@@ -79,7 +101,6 @@ export class EditarPerfil implements OnInit {
 
     const file = input.files[0];
 
-    // tipo
     const validTypes = ['image/png', 'image/jpeg'];
     if (!validTypes.includes(file.type)) {
       this.modalService.open({
@@ -93,7 +114,6 @@ export class EditarPerfil implements OnInit {
       return;
     }
 
-    // tamanho (3MB)
     const maxSize = 3 * 1024 * 1024;
     if (file.size > maxSize) {
       this.modalService.open({
@@ -107,7 +127,6 @@ export class EditarPerfil implements OnInit {
       return;
     }
 
-    // passou nas validações
     this.arquivoSelecionado = file;
 
     const reader = new FileReader();
@@ -162,13 +181,16 @@ export class EditarPerfil implements OnInit {
   }
 
   editarPerfil() {
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
+      const primeiroErro = document.querySelector('.input-error');
+      primeiroErro?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       this.modalService.open({
         type: 'warning',
         title: 'Atenção',
-        message: 'Existem campos obrigatórios não preenchidos.',
+        message: 'Corrija os campos em vermelho antes de salvar.',
       });
 
       return;

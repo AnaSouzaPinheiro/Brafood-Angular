@@ -10,7 +10,9 @@ import { AiService } from '../../services/ai/ai.service';
 import { BraInput } from '../../shared/input/input';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { CommonModule } from '@angular/common';
-import { Perfil } from "../../profile/perfil/perfil";
+import { Perfil } from '../../profile/perfil/perfil';
+
+const MIN_CHARS_AI = 200;
 
 @Component({
   selector: 'bra-add-recipe-ai',
@@ -24,8 +26,17 @@ export class AddRecipeAi {
 
   recognition: any;
   isListening = false;
-
   finalTranscript = '';
+
+  loading = false;
+
+  get charCount(): number {
+    return (this.form.get('textoReceita')?.value ?? '').length;
+  }
+
+  get charFaltando(): number {
+    return Math.max(0, MIN_CHARS_AI - this.charCount);
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +44,10 @@ export class AddRecipeAi {
     private router: Router,
   ) {
     this.form = this.fb.group({
-      textoReceita: ['', Validators.required],
+      textoReceita: [
+        '',
+        [Validators.required, Validators.minLength(MIN_CHARS_AI)],
+      ],
     });
 
     this.initSpeechRecognition();
@@ -50,29 +64,21 @@ export class AddRecipeAi {
     }
 
     this.recognition = new SpeechRecognition();
-
     this.recognition.lang = 'pt-BR';
     this.recognition.continuous = true;
-
     this.recognition.interimResults = true;
 
     this.recognition.onresult = (event: any) => {
-      let interimTranscript = '';
-
+      let interim = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
-
         if (event.results[i].isFinal) {
           this.finalTranscript += transcript + ' ';
         } else {
-          interimTranscript += transcript;
+          interim += transcript;
         }
       }
-
-      this.form.patchValue({
-        textoReceita:
-          this.finalTranscript + interimTranscript,
-      });
+      this.form.patchValue({ textoReceita: this.finalTranscript + interim });
     };
 
     this.recognition.onend = () => {
@@ -81,25 +87,34 @@ export class AddRecipeAi {
   }
 
   toggleMic() {
-    if (!this.recognition) return;
-
     if (this.isListening) {
-      this.recognition.stop();
-      this.isListening = false;
+      this.recognition?.stop();
     } else {
-      this.recognition.start();
+      this.finalTranscript = this.form.get('textoReceita')?.value ?? '';
+      this.recognition?.start();
       this.isListening = true;
     }
   }
 
-  gerar() {
+  gerarReceita() {
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) return;
 
-    const texto = this.form.value.textoReceita;
+    this.loading = true;
 
-    this.aiService.generate(texto).subscribe((res: any) => {
-      localStorage.setItem('ai_recipe', JSON.stringify(res));
-      this.router.navigate(['/adicionar-receita']);
+    this.aiService.generate(this.form.value.textoReceita).subscribe({
+      next: (receita) => {
+        localStorage.setItem('ai_recipe', JSON.stringify(receita));
+        this.router.navigate(['/adicionar-receita']);
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 }

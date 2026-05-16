@@ -1,5 +1,4 @@
 <div class="inputs">
-  <!--<img [src]="icon" width="25" class="inputIcon" />-->
   <i [class]="icon" class="inputIcon"></i>
 
   <input
@@ -8,8 +7,15 @@
     [type]="htmlType"
     [placeholder]="placeholder"
     class="input-text"
+    [class.input-error]="isInvalid"
     [value]="value"
     (input)="inputChanged($event)"
+    (blur)="onBlur()"
     [attr.autocomplete]="autocomplete"
   />
+
+  <span class="field-error" *ngIf="isInvalid" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    {{ errorMessage }}
+  </span>
 </div>

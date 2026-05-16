@@ -19,7 +19,11 @@
 
       <div class="list">
         <div class="autor">
-          <img class="bra-user-icon" [src]="recipe?.foto_perfil | mediaUrl" loading="lazy" />
+          <img
+            class="bra-user-icon"
+            [src]="recipe?.foto_perfil | mediaUrl"
+            loading="lazy"
+          />
           <div class="data">
             <span class="person"> Por {{ recipe?.autor }} </span>
             <span class="date">Publicado em: {{ recipe?.data_criacao }} </span>
@@ -30,8 +34,7 @@
 
           <span>Mande a lista por WhatsApp:</span>
           <a class="zap" [href]="urlWhatsApp" target="_blank">
-            <i class="fa-brands fa-whatsapp"></i>Enviar
-            lista
+            <i class="fa-brands fa-whatsapp"></i>Enviar lista
           </a>
         </div>
       </div>
@@ -40,7 +43,9 @@
       <h1 class="title">Modo de Preparo</h1>
 
       <div *ngFor="let etapa of recipe?.etapas">
-        <h2 class="topic-title">{{ etapa.ordem }}. {{ etapa.titulo }}</h2>
+        <h2 class="topic-title" *ngIf="etapa.titulo?.trim()">
+          {{ etapa.ordem }}. {{ etapa.titulo }}
+        </h2>
         <ul class="ul-preparo">
           <li *ngFor="let desc of etapa.descricoes">{{ desc.descricao }}</li>
         </ul>
@@ -51,11 +56,34 @@
       <div class="container com">
         <h1 class="title sec">Comentários</h1>
 
-        <bra-input
-          inType="textarea"
-          placeholder="Nos conte o que achou dessa receita..."
-          [(ngModel)]="novoComentario"
-        ></bra-input>
+        <div class="comment-input-wrapper">
+          <textarea
+            class="comment-textarea"
+            [class.comment-error]="comentarioInvalido"
+            placeholder="Nos conte o que achou dessa receita..."
+            [(ngModel)]="novoComentario"
+            (ngModelChange)="onComentarioChange()"
+            (blur)="onComentarioBlur()"
+            rows="3"
+            maxlength="1000"
+          ></textarea>
+
+          <!-- Contador de caracteres -->
+          <span
+            class="char-counter"
+            [class.near-limit]="novoComentario.length >= 850"
+            [class.over-limit]="novoComentario.length > 1000"
+            aria-live="polite"
+          >
+            {{ novoComentario.length }}/1000
+          </span>
+
+          <!-- Erro inline -->
+          <span class="field-error" *ngIf="comentarioInvalido" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            {{ erroComentario }}
+          </span>
+        </div>
 
         <bra-custom-button
           label="Comentar"

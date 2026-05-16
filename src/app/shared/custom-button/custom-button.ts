@@ -21,13 +21,14 @@ export type ButtonType =
 export class CustomButton {
   label = input('');
   type = input<ButtonType>('normal');
-  @Input() route?: string; // rota que o botão representa
   clicked = output();
+
+  @Input() route?: string;
   @Input() active = false;
+  @Input() disabled = false;
 
   constructor(@Optional() private router: Router) {}
 
-  // retorna true se a rota atual for a mesma do botão
   isActive(): boolean {
     if (!this.router || !this.route) return false;
     return this.router.url === this.route;
@@ -37,10 +38,11 @@ export class CustomButton {
     return {
       [this.type()]: true,
       active: this.isActive(),
+      disabled: this.disabled,
     };
   }
 
   onClick() {
-    this.clicked.emit();
+    if (!this.disabled) this.clicked.emit();
   }
 }

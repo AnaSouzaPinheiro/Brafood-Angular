@@ -1,15 +1,5 @@
 @use "variables" as *;
 
-.input-text {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid $primary-gray;
-  border-radius: 5px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  height: 100%;
-}
-
 .textbox {
   display: flex;
   justify-content: center;
@@ -22,19 +12,90 @@ label {
   font-size: 17px;
 }
 
-.textarea {
-  height: 125px;
-  resize: none;
-}
-
-.input-text::placeholder {
-  color: $primary-gray;
-  font-size: 16px;
-}
-
 .textbox label:empty {
   display: none;
   margin: 0;
   padding: 0;
   height: 0;
+}
+
+.input-text {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid $primary-gray;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  height: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 3px rgba($primary-blue, 0.15);
+  }
+
+  &::placeholder {
+    color: $primary-gray;
+    font-size: 16px;
+  }
+}
+
+.textarea {
+  height: 125px;
+  resize: none;
+}
+
+.input-error {
+  border-color: $alert-red !important;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15) !important;
+
+  &:focus {
+    border-color: $alert-red;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.2);
+  }
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 13px;
+  color: $alert-red;
+  animation: slideDown 0.18s ease;
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+}
+
+.char-counter {
+  align-self: flex-end;
+  margin-top: 4px;
+  font-size: 12px;
+  color: $primary-gray;
+  transition: color 0.2s ease;
+
+  &.near-limit {
+    color: #e67e00;
+    font-weight: 500;
+  }
+
+  &.over-limit {
+    color: $alert-red;
+    font-weight: 600;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -17,10 +17,27 @@
       <bra-input
         [label]="'Descreva sua receita*'"
         [inType]="'textarea'"
-        [placeholder]="'Ex: Fiz um pavê de leite ninho com morango usando leite condensado, creme de leite...'"
+        [placeholder]="'Ex: Fiz um pavê de leite ninho com morango usando leite condensado, creme de leite, biscoito... Leve ao forno por 30 min...'"
         formControlName="textoReceita"
         name="textoReceita"
+        [errorMessages]="{
+          required:   'Descreva sua receita para que a IA possa gerá-la.',
+          minlength:  'Escreva um pouco mais — quanto mais detalhes, melhor será o resultado.'
+        }"
       ></bra-input>
+
+      <!-- Contador / progresso de caracteres -->
+      <div class="char-counter" [class.char-ok]="charFaltando === 0">
+        <ng-container *ngIf="charFaltando > 0; else suficiente">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Escreva mais {{ charFaltando }} caractere{{ charFaltando === 1 ? '' :
+          's' }} para a IA ter contexto suficiente.
+        </ng-container>
+        <ng-template #suficiente>
+          <i class="fa-solid fa-circle-check"></i>
+          Ótimo! A IA tem informações suficientes para gerar sua receita.
+        </ng-template>
+      </div>
     </div>
 
     <div class="actions">
@@ -29,6 +46,7 @@
         class="mic-button"
         [class.listening]="isListening"
         (click)="toggleMic()"
+        [title]="isListening ? 'Parar gravação' : 'Falar a receita'"
       >
         <i
           [class.fa-microphone-lines]="!isListening"
@@ -39,14 +57,16 @@
 
       <bra-custom-button
         [type]="'add'"
-        [label]="'Gerar receita com IA'"
-        (clicked)="gerar()"
+        [label]="loading ? 'Gerando...' : 'Gerar receita com IA'"
+        [disabled]="loading"
+        (clicked)="gerarReceita()"
       ></bra-custom-button>
     </div>
 
     <span class="hint">
-      <i class="fa-regular fa-lightbulb"></i> Dica: você pode simplesmente
-      contar a receita do seu jeito, sem se preocupar com organização.
+      <i class="fa-regular fa-lightbulb"></i> Dica: mencione ingredientes,
+      quantidades, tempo de preparo e dificuldade — mais detalhes, melhor
+      resultado.
     </span>
   </form>
 </div>

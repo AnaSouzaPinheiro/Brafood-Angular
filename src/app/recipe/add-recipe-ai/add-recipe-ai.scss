@@ -2,15 +2,16 @@
 @use "layout" as *;
 
 .container {
-  @include page-container;
-  @include flex-column;
-
+  
   justify-content: center;
-
+  
   max-width: 900px;
   margin-inline: auto;
-
+  
   gap: 40px;
+
+  @include flex-column;
+  @include page-container;
 }
 
 .header {
@@ -19,9 +20,9 @@
   gap: 18px;
 
   h1 {
-    @include page-title;
-
     color: $primary-blue;
+
+    @include page-title;
   }
 
   p {
@@ -29,6 +30,10 @@
     line-height: 1.8;
     font-size: 1.05rem;
   }
+}
+
+.char-counter {
+    margin-top: 15px;
 }
 
 .badge {
@@ -46,13 +51,13 @@
 }
 
 form {
-  @include white-card(28px);
-
   padding: 36px;
-
+  
   display: flex;
   flex-direction: column;
   gap: 28px;
+
+  @include white-card(28px);
 }
 
 .actions {

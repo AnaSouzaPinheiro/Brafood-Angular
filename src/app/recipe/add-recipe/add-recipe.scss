@@ -4,7 +4,7 @@
 .container {
   .adding {
     gap: 15px;
-    
+
     @include flex-column;
 
     .title {
@@ -15,7 +15,7 @@
 
     h2 {
       color: $primary-blue;
-      
+
       @include section-title;
     }
 
@@ -77,6 +77,22 @@
 
 .input-box ::ng-deep bra-dropdown .custom-dropdown {
   margin-top: 0;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 13px;
+  color: $alert-red;
+  animation: slideDown 0.18s ease;
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
 }
 
 @media (max-width: 768px) {

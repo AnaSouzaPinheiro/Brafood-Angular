@@ -46,17 +46,30 @@
     </div>
 
     <div class="writing">
-      <bra-input
-        inType="textarea"
-        placeholder="Escreva sua resposta..."
-        [(ngModel)]="textoResposta"
-      ></bra-input>
+      <div class="reply-input-wrapper">
+        <textarea
+          class="reply-textarea"
+          [class.reply-error]="respostaInvalida"
+          placeholder="Escreva sua resposta..."
+          [(ngModel)]="textoResposta"
+          (ngModelChange)="tentouEnviarResposta = false"
+          rows="3"
+        ></textarea>
 
-      <bra-custom-button
-        class="send"
-        label="Responder"
-        (click)="enviar()"
-      ></bra-custom-button>
+        <span class="field-error" *ngIf="respostaInvalida" role="alert">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          {{ erroResposta }}
+        </span>
+      </div>
+
+      <div class="reply-actions">
+        <button class="cancelar" (click)="cancelar()">Cancelar</button>
+        <bra-custom-button
+          class="send"
+          label="Responder"
+          (clicked)="enviar()"
+        ></bra-custom-button>
+      </div>
     </div>
   </div>
   }
@@ -75,7 +88,6 @@
     class="seeReplies"
     type="comment"
     label="Ver mais respostas"
-    (click)="verMaisRespostas()"
-  >
-  </bra-custom-button>
+    (clicked)="verMaisRespostas()"
+  ></bra-custom-button>
 </div>

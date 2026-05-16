@@ -46,8 +46,22 @@
   }
 
   .remover {
-    color: #e53935;
-    border: 1px solid #e53935;
+    color: $alert-red;
+    border: 1px solid $alert-red;
+  }
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: $alert-red;
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
   }
 }
 

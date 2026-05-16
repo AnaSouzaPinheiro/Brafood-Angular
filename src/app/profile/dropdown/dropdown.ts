@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CommonModule, NgFor, NgIf, NgClass } from '@angular/common';
+import { FormControl } from '@angular/forms';
 
 export interface Option {
   label: string;
@@ -26,10 +27,13 @@ export class Dropdown implements OnChanges {
   @Input() options: Option[] = [];
   @Input() multiSelect: boolean = false;
   @Input() maxItems: number = 5;
-
   @Input() selected: Option[] = [];
+  @Input() control?: FormControl;
+  @Input() errorMessages?: Record<string, string>;
+  @Input() forceValidate: boolean = false;
+  @Input() requiredMessage: string = 'Selecione uma opção.';
 
-  @Output() optionSelected  = new EventEmitter<Option[]>();
+  @Output() optionSelected = new EventEmitter<Option[]>();
   @Output() selectionChange = new EventEmitter<Option[]>();
 
   isOpen = signal<boolean[]>([false]);
@@ -114,5 +118,26 @@ export class Dropdown implements OnChanges {
 
   isSelected(option: Option): boolean {
     return this.selected.some((o) => o.value === option.value);
+  }
+
+  get hasSelection(): boolean {
+    return this.selected.some((o) => !!o.value);
+  }
+
+  get isInvalid(): boolean {
+    if (this.control) {
+      return !!(this.control.invalid && (this.control.touched || this.control.dirty));
+    }
+    return this.forceValidate && !this.hasSelection;
+  }
+
+  get errorMessage(): string {
+    if (this.control) {
+      const errors = this.control.errors;
+      if (!errors) return '';
+      const key = Object.keys(errors)[0];
+      return this.errorMessages?.[key] ?? 'Campo inválido.';
+    }
+    return this.requiredMessage;
   }
 }

@@ -105,4 +105,9 @@
       </ul>
     </div>
   </ng-template>
+  
+  <span class="field-error" *ngIf="isInvalid" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    {{ errorMessage }}
+  </span>
 </div>

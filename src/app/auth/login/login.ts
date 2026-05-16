@@ -1,4 +1,4 @@
-import { Component, Optional } from '@angular/core';
+import { Component, Optional, QueryList, ViewChildren } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -17,6 +17,8 @@ export class Login {
   senha = '';
   erro = '';
 
+  @ViewChildren(InputAcesso) inputsAcesso!: QueryList<InputAcesso>;
+
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -28,6 +30,13 @@ export class Login {
   entrar() {
     this.erro = '';
 
+    this.inputsAcesso.forEach((input) => input.markAsTouched());
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+    if (!this.email.trim() || !emailValido || !this.senha) {
+      return;
+    }
+
     const returnUrl =
       this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
 
@@ -35,8 +44,7 @@ export class Login {
       (res: any) => {
         if (res.success) {
           this.auth.saveUserSession({ id: res.id, email: this.email });
-
-          this.router.navigateByUrl(returnUrl); // 🔥 volta pra receita
+          this.router.navigateByUrl(returnUrl);
         } else {
           this.erro = res.message || 'Erro no login.';
         }
@@ -52,11 +60,9 @@ export class Login {
   }
 
   voltar() {
-    // Se houver histórico real no navegador
     if (this.location && window.history.length > 1) {
       this.location.back();
     } else {
-      // Se o usuário entrou direto na URL
       this.router.navigate(['/home']);
     }
   }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { InputAcesso } from '../input-acesso/input-acesso';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,6 +19,8 @@ export class Cadastro {
   confirmarSenha = '';
   erros: string[] = [];
 
+  @ViewChildren(InputAcesso) inputsAcesso!: QueryList<InputAcesso>;
+
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -30,9 +32,13 @@ export class Cadastro {
   cadastrar() {
     this.erros = [];
 
+    this.inputsAcesso.forEach((input) => input.markAsTouched());
+
     const senhaOk = this.validarSenhaFront();
 
     if (!senhaOk) return;
+
+    if (!this.nome.trim() || !this.email.trim() || !this.senha) return;
 
     const returnUrl =
       this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
@@ -43,9 +49,7 @@ export class Cadastro {
         (res: any) => {
           if (res.success) {
             this.router.navigate(['/login'], {
-              queryParams: {
-                returnUrl,
-              },
+              queryParams: { returnUrl },
             });
           } else {
             res.errors?.forEach((erro: string, indice: number) => {
@@ -61,11 +65,9 @@ export class Cadastro {
   }
 
   voltar() {
-    // Se houver histórico real no navegador
     if (window.history.length > 1) {
       this.location.back();
     } else {
-      // Se o usuário entrou direto na URL
       this.router.navigate(['/home']);
     }
   }
@@ -90,7 +92,6 @@ export class Cadastro {
       this.mudarCorErro(i, valido ? 'green' : 'red');
     });
 
-    // Retorna true se todas regras estiverem ok
     return regras.every((r) => r);
   }
 }

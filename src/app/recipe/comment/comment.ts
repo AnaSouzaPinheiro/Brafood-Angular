@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserIcon } from '../../core/user-icon/user-icon';
-import { BraInput } from '../../shared/input/input';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { CommonModule } from '@angular/common';
 import { Comentario } from '../../model/comentario';
@@ -8,10 +7,12 @@ import { FormsModule } from '@angular/forms';
 
 export type CommentState = 'normal' | 'reply' | 'replying';
 
+const MIN_CHARS = 3;
+
 @Component({
   selector: 'bra-comment',
   standalone: true,
-  imports: [CommonModule, FormsModule, UserIcon, BraInput, CustomButton],
+  imports: [CommonModule, FormsModule, UserIcon, CustomButton],
   templateUrl: './comment.html',
   styleUrl: './comment.scss',
 })
@@ -24,31 +25,45 @@ export class Comment {
     foto_perfil: string;
   }>();
 
-  // estado de interação
   replying = false;
-
   textoResposta = '';
-
-  // controle de replies
+  tentouEnviarResposta = false;
   showReplies = false;
   visibleRepliesCount = 3;
 
-  // 👉 isso define o layout (normal ou reply)
   isReply() {
     return !!this.comment.id_comentario_pai;
   }
 
   responder() {
     this.replying = true;
+    this.tentouEnviarResposta = false;
   }
 
   cancelar() {
     this.replying = false;
     this.textoResposta = '';
+    this.tentouEnviarResposta = false;
+  }
+
+  get respostaInvalida(): boolean {
+    return (
+      this.tentouEnviarResposta && this.textoResposta.trim().length < MIN_CHARS
+    );
+  }
+
+  get erroResposta(): string {
+    if (!this.tentouEnviarResposta) return '';
+    if (!this.textoResposta.trim()) return 'Escreva algo antes de responder.';
+    if (this.textoResposta.trim().length < MIN_CHARS)
+      return `Escreva pelo menos ${MIN_CHARS} caracteres.`;
+    return '';
   }
 
   enviar() {
-    if (!this.textoResposta.trim()) return;
+    this.tentouEnviarResposta = true;
+
+    if (this.textoResposta.trim().length < MIN_CHARS) return;
 
     this.sendReply.emit({
       texto: this.textoResposta,
@@ -56,7 +71,7 @@ export class Comment {
       foto_perfil: this.comment.foto_perfil ?? '',
     });
 
-    this.showReplies = true; // 👈 força abrir
+    this.showReplies = true;
     this.cancelar();
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgFor } from '@angular/common';
 import { BraInput } from '../../shared/input/input';
@@ -16,7 +16,7 @@ interface Item {
   templateUrl: './input-list.html',
   styleUrl: './input-list.scss',
 })
-export class InputList {
+export class InputList implements OnInit, OnChanges {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() inType: 'input' | 'textarea' = 'input';
@@ -26,6 +26,8 @@ export class InputList {
   @Input() removeLabel: string = '';
   @Input() addLabel: string = '';
   @Input() items: Item[] = [];
+  @Input() forceValidate: boolean = false;
+  @Input() errorMessage: string = 'Adicione pelo menos um item preenchido.';
 
   @Output() listChange = new EventEmitter<Item[]>();
 
@@ -43,7 +45,6 @@ export class InputList {
   }
 
   private ensureStructure() {
-    // Garante que sempre exista pelo menos 1 item e 1 subitem
     if (!this.items || this.items.length === 0) {
       this.items = [{ title: '', subitems: [''] }];
     } else {
@@ -111,5 +112,15 @@ export class InputList {
 
   trackByIndex(index: number) {
     return index;
+  }
+
+  get hasNoContent(): boolean {
+    return !this.items.some((item) =>
+      item.subitems.some((s) => s.trim().length > 0)
+    );
+  }
+
+  get isInvalid(): boolean {
+    return this.forceValidate && this.hasNoContent;
   }
 }
