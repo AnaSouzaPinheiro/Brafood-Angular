@@ -17,20 +17,22 @@ export class CategoryBar {
 
   constructor(
     private route: ActivatedRoute,
-    private categoriaServices: CategoriaService
+    private categoriaServices: CategoriaService,
   ) {}
 
   ngOnInit() {
     this.categoriaServices.listCats().subscribe((categorias) => {
-      this.categorias = categorias.map((c: Categoria) => ({
-        id: c.id,
-        nome: c.nome,
-        icone: c.icone,
-        fundo: '',
-        css_class: c.css_class,
-        url: `/categoria/${toSlug(c.nome)}/${c.id}`,
-        subcategorias: c.subcategorias ?? [],
-      }));
+      this.categorias = categorias
+        .filter((c: Categoria) => c.subcategorias?.length > 0)
+        .map((c: Categoria) => ({
+          id: c.id,
+          nome: c.nome,
+          icone: c.icone,
+          fundo: '',
+          css_class: c.css_class,
+          url: `/categoria/${toSlug(c.nome)}/${c.id}`,
+          subcategorias: c.subcategorias ?? [],
+        }));
     });
   }
 }

@@ -4,7 +4,8 @@
 </div>
 
 <div class="filter-container">
-  <bra-filter-panel
+  <bra-filter-panel 
+   *ngIf="RecipesFiltradas.length > 1"
     mode="subcategoria"
     [dropdownDinamico]="subcategoriaItems"
     [labelDinamico]="'Subcategorias:'"
@@ -18,9 +19,9 @@
   </span>
 </div>
 
-<div class="content" *ngIf="categoria">
+<div class="content" *ngIf="categoria && RecipesFiltradas.length > 0">
   <div class="cards">
-    @for (recipe of RecipesPage; track $index) {
+    @for (recipe of RecipesPage; track recipe.id) {
     <bra-recipe-card
       [recipe]="recipe"
       [selectedSubcategories]="filtros.subcategorias"
@@ -35,4 +36,24 @@
       (click)="verMais()"
     ></bra-custom-button>
   </div>
+</div>
+
+<div class="empty-state" *ngIf="categoria && RecipesFiltradas.length === 0">
+  <img [src]="categoria.icone" [alt]="categoria.nome" class="empty-icon" />
+
+  <h2>
+    Ainda não temos receitas nessa categoria
+    <i class="fa-solid fa-heart-crack"></i>
+  </h2>
+
+  <p>
+    Seja a primeira pessoa a compartilhar uma receita de {{
+    categoria.nome.toLowerCase() }}!
+  </p>
+
+  <bra-custom-button
+    [label]="'Adicionar receita'"
+    [type]="'add'"
+    (click)="adicionarReceita()"
+  ></bra-custom-button>
 </div>

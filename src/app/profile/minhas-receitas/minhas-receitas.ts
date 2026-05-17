@@ -162,10 +162,13 @@ export class MinhasReceitas {
     this.modalService.open({
       type: 'warning',
       title: 'Excluir receita',
-      message: 'Tem certeza que deseja excluir esta receita? Essa ação não pode ser desfeita.',
+      message:
+        'Tem certeza que deseja excluir esta receita? Essa ação não pode ser desfeita.',
       confirmText: 'Excluir',
       cancelText: 'Cancelar',
-      onConfirm: () => this.confirmarExclusao(id),
+      onConfirm: () => {
+        this.confirmarExclusao(id);
+      },
     });
   }
 
@@ -173,13 +176,21 @@ export class MinhasReceitas {
     this.receitaServices.excluir(id).subscribe({
       next: () => {
         this.Recipes = this.Recipes.filter((r) => r.id !== id);
+        this.montarCategorias();
         this.aplicarFiltros();
 
         this.modalService.open({
           type: 'success',
-          title: 'Excluído',
-          message: 'Receita removida',
+          title: 'Receita excluída',
+          message: 'A receita foi excluída com sucesso!',
           confirmText: 'OK',
+        });
+      },
+      error: () => {
+        this.modalService.open({
+          type: 'error',
+          title: 'Erro',
+          message: 'Não foi possível excluir a receita. Tente novamente.',
         });
       },
     });

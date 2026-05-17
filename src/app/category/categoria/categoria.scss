@@ -49,6 +49,33 @@
   }
 }
 
+.empty-state {
+  margin: 40px 0;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    margin: 16px 0 8px;
+    color: $primary-blue;
+    font-size: 28px;
+  }
+
+  p {
+    color: $tertiary-gray;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .empty-icon {
+    width: 50px;
+    height: 50px;
+    opacity: 0.8;
+  }
+}
+
 @media (max-width: 780px) {
   .filter-container {
     width: 90%;

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
 import {
@@ -19,6 +19,8 @@ import {
 
 import { Recipes } from '../../model/myrecipes';
 import { Categoria as CategoriaModel } from '../../model/categoria';
+import { AuthService } from '../../services/auth/auth.service';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'bra-categoria',
@@ -29,6 +31,7 @@ import { Categoria as CategoriaModel } from '../../model/categoria';
 })
 export class Categoria {
   categoria?: CategoriaModel;
+  usuarioId: number | null = null;
 
   Recipes: Recipes[] = [];
   RecipesFiltradas: Recipes[] = [];
@@ -42,7 +45,10 @@ export class Categoria {
   subcategoriaItems: DropdownDinamicoItem[] = [];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
+    private authService: AuthService,
+    private modalService: ModalService,
     private receitaService: ReceitaService,
     private categoriaService: CategoriaService,
     private filterService: FilterStateService,
@@ -51,6 +57,8 @@ export class Categoria {
   }
 
   ngOnInit(): void {
+    this.usuarioId = this.authService.getUserId();
+
     this.route.paramMap
       .pipe(
         switchMap((params) => {
@@ -120,5 +128,26 @@ export class Categoria {
 
   verMais() {
     this.end += 8;
+  }
+
+  adicionarReceita() {
+    console.log("oi");
+    if (!this.usuarioId) {
+      this.modalService.open({
+        type: 'confirm',
+        title: 'Login necessário',
+        message: 'Para comentar nesta receita, você precisa estar logado.',
+        confirmText: 'Ir para login',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
+        },
+      });
+      return;
+    } 
+    
+    this.router.navigate(['/adicionar-receita/hub']);
   }
 }

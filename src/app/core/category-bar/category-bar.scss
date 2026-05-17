@@ -13,16 +13,41 @@
 .category-bar {
   ul {
     display: flex;
-    justify-content: space-between;
     align-items: stretch;
     padding: 0;
     margin: 0;
     list-style: none;
     width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    justify-content: flex-start;
+
+    // Firefox
+    scrollbar-width: thin;
+    scrollbar-color: #b7c7ff transparent;
+
+    // Chrome/Edge/Safari
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #b7c7ff;
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #8ea8ff;
+    }
   }
 
   ul li {
-    flex: 1;
+    flex: 0 0 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -106,7 +131,47 @@
   }
 }
 
-@media (max-width: 992px) {
+.bg-saudaveis {
+  background-color: $category-nine;
+
+  &:hover {
+    background: $ninth-gradient;
+  }
+}
+
+.bg-saladas {
+  background-color: $category-ten;
+
+  &:hover {
+    background: $tenth-gradient;
+  }
+}
+
+.bg-petiscos {
+  background-color: $category-eleven;
+
+  &:hover {
+    background: $eleventh-gradient;
+  }
+}
+
+.bg-panificacao {
+  background-color: $category-twelve;
+
+  &:hover {
+    background: $twelfth-gradient;
+  }
+}
+
+.bg-internacionais {
+  background-color: $category-thirteen;
+
+  &:hover {
+    background: $thirteenth-gradient;
+  }
+}
+
+/*@media (max-width: 992px) {
   .category-bar {
     ul {
       overflow-x: auto;
@@ -119,7 +184,7 @@
       flex: 0 0 250px;
     }
   }
-}
+}*/
 
 @media (max-width: 576px) {
   .category-bar {

@@ -22,6 +22,12 @@ $category-five: #2F6AFF;
 $category-six: #195AFF; 
 $category-seven: #0049FF; 
 $category-eight: #0041E5;
+$category-nine: #2D3FFF;
+$category-ten: #4B45FF;
+$category-eleven: #6650FF;
+$category-twelve: #7B63FF;
+$category-thirteen: #927DFF;
+
 
 $first-gradient: linear-gradient(180deg, $category-one 0%, #536799 100%);
 $second-gradient: linear-gradient(180deg, $category-two 0%, #455D99 100%);
@@ -31,7 +37,12 @@ $fifth-gradient: linear-gradient(180deg, $category-five 0%, #1C4099 100%);
 $sixth-gradient: linear-gradient(180deg, $category-six 0%, #0F3699 100%);
 $seventh-gradient: linear-gradient(180deg, $category-seven 0%, #002C99 100%);
 $eighth-gradient: linear-gradient(90deg, $category-two 0%, #083AB8 100%);
-$ninth-gradient: linear-gradient(90deg, $category-eight 0%, #002071 100%);
+// $ninth-gradient: linear-gradient(90deg, $category-eight 0%, #002071 100%);
+$ninth-gradient: linear-gradient(180deg, $category-nine 0%, #1A237A 100%);
+$tenth-gradient: linear-gradient(180deg, $category-ten 0%, #2A2F80 100%);
+$eleventh-gradient: linear-gradient(180deg, $category-eleven 0%, #3A3180 100%);
+$twelfth-gradient: linear-gradient(180deg, $category-twelve 0%, #4B3B80 100%);
+$thirteenth-gradient: linear-gradient(180deg, $category-thirteen 0%, #5A4A80 100%);
 
 $photos-height-desktop: 480px;
 $photos-height-mobile: 320px;
