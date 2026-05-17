@@ -24,6 +24,7 @@
   }
 }
 
+// Envolve o filter-panel + contador desktop
 .filter-container {
   width: 100%;
   display: flex;
@@ -31,15 +32,6 @@
   align-items: center;
   justify-content: space-around;
   flex-direction: column-reverse;
-
-  .filters {
-    gap: 30px;
-    width: 80%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: center;
-  }
 }
 
 .qtdReceitas {
@@ -57,31 +49,7 @@
   }
 }
 
-// Mobile filter bar (hidden on desktop)
-.mobile-filter-bar {
-  display: none;
-}
-
-// Mobile panel header (hidden on desktop)
-.mobile-panel-header {
-  display: none;
-}
-
-// Overlay (hidden on desktop)
-.mobile-overlay {
-  display: none;
-}
-
-// Apply bar (hidden on desktop)
-.mobile-apply-bar {
-  display: none;
-}
-
 @media (max-width: 780px) {
-  bra-custom-button.custom-desktop {
-    display: none;
-  }
-
   .filter-container {
     width: 90%;
     margin: 16px auto;
@@ -91,154 +59,8 @@
     justify-content: flex-start;
   }
 
-  // Mostra o botão mobile
-  .mobile-filter-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100% !important;
-    margin-bottom: 8px;
-
-    .mobile-filter-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background-color: $primary-blue;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      position: relative;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background-color: $hover-blue;
-      }
-
-      .filter-badge {
-        background-color: #fff;
-        color: $primary-blue;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 2px;
-      }
-    }
-
-    .qtdReceitas-mobile {
-      color: $primary-blue;
-      font-size: 14px;
-    }
-  }
-
-  // Esconde a contagem desktop
+  // O contador de receitas fica no mobile-filter-bar do FilterPanel
   .qtdReceitas {
     display: none;
-  }
-
-  // Overlay escuro
-  .mobile-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 200;
-    opacity: 0;
-    transition: opacity 0.25s;
-
-    &.active {
-      display: block;
-      opacity: 1;
-    }
-  }
-
-  // Painel de filtros - escondido por padrão no mobile
-  .filters {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    z-index: 300;
-    padding: 0 20px 32px;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
-    max-height: 80vh;
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: normal;
-    width: auto !important;
-
-    // Animação: começa fora da tela (baixo)
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &.mobile-open {
-      transform: translateY(0);
-    }
-
-    // Header do painel mobile
-    .mobile-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 0 8px;
-      border-bottom: 1px solid $quaternary-gray;
-      margin-bottom: 4px;
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 1;
-
-      .mobile-panel-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: $primary-blue;
-      }
-
-      .mobile-panel-close {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px;
-        color: $tertiary-gray;
-        display: flex;
-        align-items: center;
-
-        &:hover {
-          color: $primary-blue;
-        }
-      }
-    }
-
-    bra-filter-dropdown {
-      width: 100%;
-    }
-  }
-
-  // O header do painel aparece DENTRO do .filters no mobile
-  .mobile-panel-header {
-    display: flex;
-  }
-
-  // Barra de aplicar filtros (fixa no rodapé do painel)
-  .mobile-apply-bar {
-    gap: 10px;
-    width: 100%;
-    display: flex;
-    padding: 12px 0 0;
-    justify-content: center;
-    border-top: 1px solid $quaternary-gray;
   }
 }

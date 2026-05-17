@@ -1,0 +1,89 @@
+<!-- Botão mobile de filtro -->
+<div class="mobile-filter-bar">
+  <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
+    <i class="fa-solid fa-filter"></i>
+    <span>Filtrar</span>
+    <span class="filter-badge" *ngIf="totalFiltrosAtivos > 0">
+      {{ totalFiltrosAtivos }}
+    </span>
+  </button>
+
+  <span class="qtdReceitas-mobile" *ngIf="showContadorMobile">
+    {{ totalReceitas }} receitas
+  </span>
+</div>
+
+<!-- Overlay mobile -->
+<div
+  class="mobile-overlay"
+  [class.active]="mobileFiltersOpen"
+  (click)="fecharMobileFilters()"
+></div>
+
+<!-- Painel de filtros -->
+<div class="filters" [class.mobile-open]="mobileFiltersOpen">
+  <div class="mobile-panel-header">
+    <span class="mobile-panel-title">Filtros</span>
+    <button class="mobile-panel-close" (click)="fecharMobileFilters()">
+      <i class="fa-solid fa-x"></i>
+    </button>
+  </div>
+
+  <!-- Ordenação -->
+  <bra-filter-dropdown
+    [optionsDropwdown]="optionsOrdenar"
+    type="single"
+    (changeFilter)="filtrarPorOrdem($event)"
+  ></bra-filter-dropdown>
+
+  <!-- Dropdown dinâmico: subcategorias (Categoria) ou categorias (Search/MinhasReceitas) -->
+  <bra-filter-dropdown
+    [optionsDropwdown]="optionsDinamico"
+    type="multi"
+    (changeMulti)="filtrarPorDinamico($event)"
+  ></bra-filter-dropdown>
+
+  <!-- Dificuldade -->
+  <bra-filter-dropdown
+    [optionsDropwdown]="optionsDificuldade"
+    type="multi"
+    (changeMulti)="filtrarPorDificuldade($event)"
+  ></bra-filter-dropdown>
+
+  <!-- Tempo de preparo -->
+  <bra-filter-dropdown
+    [optionsDropwdown]="optionsTempo"
+    type="single"
+    (changeFilter)="filtrarPorTempo($event)"
+  ></bra-filter-dropdown>
+
+  <!-- Tipo de porção -->
+  <bra-filter-dropdown
+    [optionsDropwdown]="optionsTipoPorcao"
+    type="multi"
+    (changeMulti)="filtrarPorTipoPorcao($event)"
+  ></bra-filter-dropdown>
+
+  <!-- Botão limpar — desktop -->
+  <bra-custom-button
+    class="custom-desktop"
+    [label]="'Limpar filtros'"
+    [type]="'filter'"
+    (click)="limparFiltros()"
+  ></bra-custom-button>
+
+  <!-- Ações mobile -->
+  <div class="mobile-apply-bar">
+    <bra-custom-button
+      [label]="'Limpar filtros'"
+      [type]="'filter'"
+      (click)="limparFiltros()"
+    ></bra-custom-button>
+
+    <bra-custom-button
+      [label]="'Aplicar filtros'"
+      [type]="'filter'"
+      (click)="aplicarFiltrosMobile()"
+    ></bra-custom-button>
+  </div>
+</div>

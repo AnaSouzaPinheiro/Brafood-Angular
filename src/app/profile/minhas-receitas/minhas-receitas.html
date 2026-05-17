@@ -5,11 +5,9 @@
   <div class="cabecalho">
     <div class="details">
       <h1 class="title">Minhas receitas</h1>
-
-      <!-- usa lista FILTRADA (melhor UX) -->
-      <span class="qtdReceitas">
-        {{ RecipesFiltradas.length }} receitas enviadas
-      </span>
+      <span class="qtdReceitas"
+        >{{ RecipesFiltradas.length }} receitas enviadas</span
+      >
     </div>
 
     <div class="buttons">
@@ -21,107 +19,28 @@
     </div>
   </div>
 
-  <!-- FILTERS -->
+  <!-- FILTROS — só aparece quando há mais de 1 receita -->
   <div class="filter-container" *ngIf="podeFiltrar">
-    <!-- MOBILE FILTER BUTTON -->
-    <div class="mobile-filter-bar">
-      <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
-        <i class="fa-solid fa-filter"></i>
-        <span>Filtrar</span>
-        <span class="filter-badge" *ngIf="totalFiltrosAtivos > 0">
-          {{ totalFiltrosAtivos }}
-        </span>
-      </button>
-    </div>
-
-    <!-- overlay mobile -->
-    <div
-      class="mobile-overlay"
-      [class.active]="mobileFiltersOpen"
-      (click)="fecharMobileFilters()"
-    ></div>
-
-    <div class="filters" [class.mobile-open]="mobileFiltersOpen">
-      <div class="mobile-panel-header">
-        <span class="mobile-panel-title">Filtros</span>
-
-        <button class="mobile-panel-close" (click)="fecharMobileFilters()">
-          <i class="fa-solid fa-x"></i>
-        </button>
-      </div>
-
-      <!-- ORDENAR -->
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsDropwdown"
-        type="single"
-        (changeFilter)="filtrarPorOrdem($event)"
-      ></bra-filter-dropdown>
-
-      <!-- CATEGORIAS -->
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsDropwdown2"
-        type="multi"
-        (changeMulti)="filtrarPorCategoria($event)"
-      ></bra-filter-dropdown>
-
-      <!-- DIFICULDADE -->
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsDificuldade"
-        type="multi"
-        (changeMulti)="filtrarPorDificuldade($event)"
-      ></bra-filter-dropdown>
-
-      <!-- TEMPO -->
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsTempo"
-        type="single"
-        (changeFilter)="filtrarPorTempo($event)"
-      ></bra-filter-dropdown>
-
-      <!-- PORÇÃO -->
-      <bra-filter-dropdown
-        [optionsDropwdown]="optionsTipoPorcao"
-        type="multi"
-        (changeMulti)="filtrarPorTipoPorcao($event)"
-      ></bra-filter-dropdown>
-
-      <!-- BOTÃO DESKTOP -->
-      <bra-custom-button
-        class="custom-desktop"
-        [label]="'Limpar filtros'"
-        [type]="'filter'"
-        (click)="limparFiltros()"
-      ></bra-custom-button>
-
-      <!-- MOBILE ACTIONS -->
-      <div class="mobile-apply-bar">
-        <bra-custom-button
-          [label]="'Limpar filtros'"
-          [type]="'filter'"
-          (click)="limparFiltros()"
-        ></bra-custom-button>
-
-        <bra-custom-button
-          [label]="'Aplicar filtros'"
-          [type]="'filter'"
-          (click)="aplicarFiltrosMobile()"
-        ></bra-custom-button>
-      </div>
-    </div>
+    <bra-filter-panel
+      mode="categoria"
+      [dropdownDinamico]="categoriaItems"
+      [labelDinamico]="'Categorias:'"
+      [totalReceitas]="RecipesFiltradas.length"
+      [showContadorMobile]="false"
+      (filtrosChange)="onFiltrosChange($event)"
+    ></bra-filter-panel>
   </div>
 
   <!-- CONTENT -->
   <div class="content">
     <div class="cards">
       @for (recipe of myRecipesPage; track recipe.id) {
-
       <bra-recipe-card
         [myRecipe]="true"
         [recipe]="recipe"
         (editar)="editarReceita($event)"
         (excluir)="excluirReceita($event)"
       ></bra-recipe-card>
-
       }
     </div>
 
@@ -130,15 +49,12 @@
       <span (click)="prevPage()" class="setas">&lt;</span>
 
       @for (page of pagesArray; track page) {
-
       <span
         (click)="goToPage(page)"
         class="numbers"
         [class.active]="page === currentPage"
+        >{{ page }}</span
       >
-        {{ page }}
-      </span>
-
       }
 
       <span (click)="nextPage()" class="setas">&gt;</span>
