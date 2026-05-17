@@ -4,7 +4,36 @@
 </div>
 
 <div class="filter-container">
-  <div class="filters">
+  <!-- Botão mobile de filtro -->
+  <div class="mobile-filter-bar">
+    <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
+      <i class="fa-solid fa-filter"></i>
+      <span>Filtrar</span>
+      <span class="filter-badge" *ngIf="totalFiltrosAtivos > 0"
+        >{{ totalFiltrosAtivos }}</span
+      >
+    </button>
+    <span class="qtdReceitas-mobile"
+      >{{ RecipesFiltradas.length || 0 }} receitas</span
+    >
+  </div>
+
+  <!-- Overlay mobile -->
+  <div
+    class="mobile-overlay"
+    [class.active]="mobileFiltersOpen"
+    (click)="fecharMobileFilters()"
+  ></div>
+
+  <!-- Painel de filtros -->
+  <div class="filters" [class.mobile-open]="mobileFiltersOpen">
+    <div class="mobile-panel-header">
+      <span class="mobile-panel-title">Filtros</span>
+      <button class="mobile-panel-close" (click)="fecharMobileFilters()">
+        <i class="fa-solid fa-x"></i>
+      </button>
+    </div>
+
     <bra-filter-dropdown
       [optionsDropwdown]="optionsDropwdown"
       type="single"
@@ -17,15 +46,51 @@
       (changeMulti)="filtrarPorSubcategoria($event)"
     ></bra-filter-dropdown>
 
+    <bra-filter-dropdown
+      [optionsDropwdown]="optionsDificuldade"
+      type="multi"
+      (changeMulti)="filtrarPorDificuldade($event)"
+    ></bra-filter-dropdown>
+
+    <bra-filter-dropdown
+      [optionsDropwdown]="optionsTempo"
+      type="single"
+      (changeFilter)="filtrarPorTempo($event)"
+    ></bra-filter-dropdown>
+
+    <bra-filter-dropdown
+      [optionsDropwdown]="optionsTipoPorcao"
+      type="multi"
+      (changeMulti)="filtrarPorTipoPorcao($event)"
+    ></bra-filter-dropdown>
+
     <bra-custom-button
+      class="custom-desktop"
       [label]="'Limpar filtros'"
       [type]="'filter'"
       (click)="limparFiltros()"
     ></bra-custom-button>
+
+    <!-- Botão aplicar: só aparece no mobile via CSS -->
+    <div class="mobile-apply-bar">
+      <bra-custom-button
+        [label]="'Limpar filtros'"
+        [type]="'filter'"
+        (click)="limparFiltros()"
+      ></bra-custom-button>
+
+      <!-- Botão aplicar: só aparece no mobile via CSS -->
+      <bra-custom-button
+        [label]="'Aplicar filtros'"
+        [type]="'filter'"
+        (click)="aplicarFiltrosMobile()"
+      >
+      </bra-custom-button>
+    </div>
   </div>
 
   <span class="qtdReceitas">
-    {{ Recipes.length || 0 }} receitas encontradas
+    {{ RecipesFiltradas.length || 0 }} receitas encontradas
   </span>
 </div>
 

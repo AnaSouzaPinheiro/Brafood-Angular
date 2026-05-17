@@ -58,6 +58,22 @@ export class ReceitaService extends BaseService {
       });
     }
 
+    if (filtros?.dificuldades?.length) {
+      filtros.dificuldades.forEach((d: number) => {
+        params = params.append('dificuldades[]', d.toString());
+      });
+    }
+
+    if (filtros?.tiposPorcao?.length) {
+      filtros.tiposPorcao.forEach((t: string) => {
+        params = params.append('tipos_porcao[]', t);
+      });
+    }
+
+    if (filtros?.tempoMax != null) {
+      params = params.set('tempo_max', filtros.tempoMax.toString());
+    }
+
     return this.httpClient.get<Recipes[]>(this.url('receitas_categoria.php'), {
       params,
     });

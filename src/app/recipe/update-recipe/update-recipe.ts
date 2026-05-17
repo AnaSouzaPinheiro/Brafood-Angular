@@ -121,11 +121,19 @@ export class UpdateRecipe implements OnInit {
       subcategoria: [null, Validators.required],
       dificuldade: [
         null,
-        [Validators.required, Validators.min(1), Validators.max(3)],
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(3),
+          Validators.pattern(/^\d+$/),
+        ],
       ],
-      tempo_hora: [null, Validators.required],
-      tempo_min: [null, Validators.required],
-      porcoes: [null, Validators.required],
+      tempo_hora: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
+      tempo_min: [
+        null,
+        [Validators.required, Validators.max(59), Validators.pattern(/^\d+$/)],
+      ],
+      porcoes: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
       tipo_porcao: [null, Validators.required],
     });
   }
@@ -330,11 +338,9 @@ export class UpdateRecipe implements OnInit {
     this.tentouEnviar = true;
     this.form.markAllAsTouched();
 
-    const temCategoria = this.categoriasSelecionadas.some((c) => !!c.value);
-    const temSubcategoria = this.categoriasSelecionadas.every((cat) =>
-      (this.subcategoriasSelecionadas[cat.value] ?? []).some((s) => !!s.value),
-    );
-    const temPorcao = this.porcaoSelecionada.some((p) => !!p.value);
+    const temCategoria = !!this.form.value.categoria?.length;
+    const temSubcategoria = !!this.form.value.subcategoria?.length;
+    const temPorcao = !!this.form.value.tipo_porcao;
     const temIngrediente = this.receita.ingredientes.some((ing: any) =>
       ing.itens.some((item: string) => item.trim().length > 0),
     );

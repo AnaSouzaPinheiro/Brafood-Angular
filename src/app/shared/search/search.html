@@ -6,12 +6,37 @@
       </h1>
       <span>
         Encontrado:
-        <span class="qtd">{{ Recipes.length }} </span> receitas</span
+        <span class="qtd">{{ RecipesFiltradas.length }} </span> receitas</span
       >
     </div>
 
     <div class="filter-container">
-      <div class="filters">
+      <!-- Botão mobile de filtro -->
+      <div class="mobile-filter-bar">
+        <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
+          <i class="fa-solid fa-filter"></i>
+          <span>Filtrar</span>
+          <span class="filter-badge" *ngIf="totalFiltrosAtivos > 0"
+            >{{ totalFiltrosAtivos }}</span
+          >
+        </button>
+      </div>
+
+      <!-- Overlay mobile -->
+      <div
+        class="mobile-overlay"
+        [class.active]="mobileFiltersOpen"
+        (click)="fecharMobileFilters()"
+      ></div>
+
+      <div class="filters" [class.mobile-open]="mobileFiltersOpen">
+        <div class="mobile-panel-header">
+          <span class="mobile-panel-title">Filtros</span>
+          <button class="mobile-panel-close" (click)="fecharMobileFilters()">
+            <i class="fa-solid fa-x"></i>
+          </button>
+        </div>
+
         <bra-filter-dropdown
           [optionsDropwdown]="optionsDropwdown"
           type="single"
@@ -24,19 +49,52 @@
           (changeMulti)="filtrarPorCategoria($event)"
         ></bra-filter-dropdown>
 
+        <bra-filter-dropdown
+          [optionsDropwdown]="optionsDificuldade"
+          type="multi"
+          (changeMulti)="filtrarPorDificuldade($event)"
+        ></bra-filter-dropdown>
+
+        <bra-filter-dropdown
+          [optionsDropwdown]="optionsTempo"
+          type="single"
+          (changeFilter)="filtrarPorTempo($event)"
+        ></bra-filter-dropdown>
+
+        <bra-filter-dropdown
+          [optionsDropwdown]="optionsTipoPorcao"
+          type="multi"
+          (changeMulti)="filtrarPorTipoPorcao($event)"
+        ></bra-filter-dropdown>
+
         <bra-custom-button
+          class="custom-desktop"
           [label]="'Limpar filtros'"
           [type]="'filter'"
           (click)="limparFiltros()"
         ></bra-custom-button>
+
+        <div class="mobile-apply-bar">
+          <bra-custom-button
+            [label]="'Limpar filtros'"
+            [type]="'filter'"
+            (click)="limparFiltros()"
+          ></bra-custom-button>
+
+          <!-- Botão aplicar: só aparece no mobile via CSS -->
+          <bra-custom-button
+            [label]="'Aplicar filtros'"
+            [type]="'filter'"
+            (click)="aplicarFiltrosMobile()"
+          >
+          </bra-custom-button>
+        </div>
       </div>
     </div>
   </div>
   <div class="cards">
     @for (recipe of RecipesPage; track $index) {
-    <bra-recipe-card
-      [recipe]="recipe"
-    ></bra-recipe-card>
+    <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
     }
   </div>
   <div class="pages">

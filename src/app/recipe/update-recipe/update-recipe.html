@@ -53,6 +53,7 @@
           [label]="'Categorias*'"
           [options]="categoriasDropdown"
           [multiSelect]="true"
+          [maxItems]="2"
           [selected]="categoriasSelecionadas"
           (optionSelected)="onCategoriaSelecionada($event)"
           [forceValidate]="tentouEnviar"
@@ -83,6 +84,7 @@
         <bra-input
           [label]="'Dificuldade*'"
           [inType]="'input'"
+          [type]="'number'"
           [placeholder]="'1, 2 ou 3'"
           formControlName="dificuldade"
           name="dificuldadeReceita"
@@ -90,7 +92,8 @@
           [errorMessages]="{
             required: 'Informe a dificuldade.',
             min: 'O valor mínimo é 1.',
-            max: 'O valor máximo é 3.'
+            max: 'O valor máximo é 3.',
+            pattern: 'Apenas números.'
           }"
         ></bra-input>
       </div>
@@ -102,21 +105,23 @@
           <bra-input
             [label]="''"
             [inType]="'input'"
+            [type]="'number'"
             [placeholder]="'hora(s)'"
             formControlName="tempo_hora"
             name="hrTempoReceita"
             autocomplete="off"
-            [errorMessages]="{ required: 'Informe as horas.' }"
+            [errorMessages]="{ required: 'Informe as horas.', pattern: 'Apenas números.' }"
           ></bra-input>
           :
           <bra-input
             [label]="''"
             [inType]="'input'"
+            [type]="'number'"
             [placeholder]="'minuto(s)'"
             formControlName="tempo_min"
             name="minTempoReceita"
             autocomplete="off"
-            [errorMessages]="{ required: 'Informe os minutos.' }"
+            [errorMessages]="{ required: 'Informe os minutos.', max: 'Máximo 59 minutos.', pattern: 'Apenas números.' }"
           ></bra-input>
         </div>
       </div>
@@ -128,11 +133,12 @@
           <bra-input
             [label]="''"
             [inType]="'input'"
+            [type]="'number'"
             [placeholder]="''"
             formControlName="porcoes"
             name="qtdPorcoesReceita"
             autocomplete="off"
-            [errorMessages]="{ required: 'Informe a quantidade de porções.' }"
+            [errorMessages]="{ required: 'Informe a quantidade de porções.', pattern: 'Apenas números.' }"
           ></bra-input>
           <bra-dropdown
             [label]="''"

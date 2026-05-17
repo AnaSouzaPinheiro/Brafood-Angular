@@ -64,35 +64,67 @@ export class AddRecipeAi {
     }
 
     this.recognition = new SpeechRecognition();
+
     this.recognition.lang = 'pt-BR';
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
 
+    // Quando começar a ouvir
+    this.recognition.onstart = () => {
+      this.isListening = true;
+    };
+
+    // Resultado da fala
     this.recognition.onresult = (event: any) => {
       let interim = '';
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+
         if (event.results[i].isFinal) {
           this.finalTranscript += transcript + ' ';
         } else {
           interim += transcript;
         }
       }
-      this.form.patchValue({ textoReceita: this.finalTranscript + interim });
+
+      this.form.patchValue({
+        textoReceita: this.finalTranscript + interim,
+      });
     };
 
+    // Quando parar por QUALQUER motivo
     this.recognition.onend = () => {
+      this.isListening = false;
+    };
+
+    // Se der erro/permissão negada/etc
+    this.recognition.onerror = (event: any) => {
+      console.error('Erro SpeechRecognition:', event);
+      this.isListening = false;
+    };
+
+    // Se o usuário parar de falar
+    this.recognition.onspeechend = () => {
+      this.isListening = false;
+    };
+
+    // Se o áudio acabar
+    this.recognition.onaudioend = () => {
       this.isListening = false;
     };
   }
 
   toggleMic() {
+    if (!this.recognition) return;
+
     if (this.isListening) {
-      this.recognition?.stop();
+      this.recognition.stop();
+      this.isListening = false;
     } else {
       this.finalTranscript = this.form.get('textoReceita')?.value ?? '';
-      this.recognition?.start();
-      this.isListening = true;
+
+      this.recognition.start();
     }
   }
 

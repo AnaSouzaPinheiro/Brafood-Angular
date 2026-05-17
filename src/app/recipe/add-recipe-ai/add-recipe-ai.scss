@@ -2,13 +2,9 @@
 @use "layout" as *;
 
 .container {
-  
-  justify-content: center;
-  
-  max-width: 900px;
-  margin-inline: auto;
-  
   gap: 40px;
+  justify-content: center;
+  margin-inline: auto;
 
   @include flex-column;
   @include page-container;
@@ -33,7 +29,7 @@
 }
 
 .char-counter {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .badge {
@@ -51,13 +47,9 @@
 }
 
 form {
-  padding: 36px;
-  
+  gap: 28px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-
-  @include white-card(28px);
 }
 
 .actions {
@@ -98,6 +90,11 @@ form {
   &.listening {
     animation: pulse 1.2s infinite;
   }
+}
+
+::ng-deep bra-input .input-text.textarea {
+  min-height: 300px;
+  resize: vertical;
 }
 
 @keyframes pulse {
