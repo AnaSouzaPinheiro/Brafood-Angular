@@ -41,27 +41,34 @@ export class Home implements OnInit {
 
     // Seções de receitas 
     this.secaoService.getSecoes().subscribe((data) => {
-      this.sections = data.map((secao: any) => {
-        const recipes = (secao.receitas || []).map((r: any) => ({
-          id: r.id,
-          categoria: r.categoria,
-          url: `/receita/${toSlug(r.titulo)}/${r.id}`,
-          imagem1: r.imagem1,
-          titulo: r.titulo,
-          qtd_fav: r.qtd_fav,
-          resumo: r.resumo,
-        }));
+      this.sections = data
+        .map((secao: any) => {
+          const recipes = (secao.receitas || []).map((r: any) => ({
+            id: r.id,
+            categoria: r.categoria,
+            url: `/receita/${toSlug(r.titulo)}/${r.id}`,
+            imagem1: r.imagem1,
+            titulo: r.titulo,
+            qtd_fav: r.qtd_fav,
+            resumo: r.resumo,
+          }));
 
-        return {
-          id: secao.id,
-          title: secao.titulo,
-          urlSection: secao.url_fundo ?? null,
-          corFundo: secao.cor_fundo ?? null,
-          fundoTitle: secao.fundo_titulo ?? null,
-          ordem: secao.ordem ?? 0,
-          recipes,
-        } as Section;
-      });
+          return {
+            id: secao.id,
+            title: secao.titulo,
+            urlSection: secao.url_fundo ?? null,
+            corFundo: secao.cor_fundo ?? null,
+            fundoTitle: secao.fundo_titulo ?? null,
+            ordem: secao.ordem ?? 0,
+            recipes,
+            tituloCorTipo: secao.titulo_cor_tipo ?? 'gradiente',
+            tituloCorSolid: secao.titulo_cor_solid ?? null,
+            tituloGradiente1: secao.titulo_gradiente_1 ?? null,
+            tituloGradiente2: secao.titulo_gradiente_2 ?? null,
+          } as Section;
+        })
+        // Não exibe seções sem receitas
+        .filter((s) => s.recipes.length > 0);
     });
   }
 

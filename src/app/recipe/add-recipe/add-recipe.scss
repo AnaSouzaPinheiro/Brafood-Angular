@@ -35,6 +35,13 @@
       margin-bottom: 40px;
     }
 
+    .subs.campo {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      gap: 30px;
+    }
+
     .some {
       display: flex;
       justify-content: space-evenly;
@@ -105,6 +112,26 @@
 
       .input-box {
         width: 100%;
+      }
+    }
+
+    .subs.campo {
+      flex-direction: column;
+
+      .input-box {
+        width: 100%;
+      }
+
+      bra-dropdown {
+        width: 100%;
+        display: block;
+      }
+
+      ::ng-deep .dropdown-wrapper,
+      ::ng-deep .custom-dropdown,
+      ::ng-deep .dropdown-header {
+        width: 100%;
+        max-width: none;
       }
     }
   }

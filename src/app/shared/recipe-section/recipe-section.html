@@ -13,7 +13,7 @@
           <
         </button>
 
-        <h1 class="title">{{ section.title }}</h1>
+        <h1 class="title" [ngStyle]="getTituloStyle()">{{ section.title }}</h1>
 
         <button class="arrow" *ngIf="showRightArrow" (click)="scrollRight()">
           >

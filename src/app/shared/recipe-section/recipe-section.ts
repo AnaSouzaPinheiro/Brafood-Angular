@@ -29,6 +29,25 @@ export class RecipeSection implements AfterViewInit {
   showLeftArrow = false;
   showRightArrow = true;
 
+  getTituloStyle(): Record<string, string> {
+    const tipo = this.section?.tituloCorTipo ?? 'gradiente';
+
+    if (tipo === 'solido') {
+      const cor = this.section.tituloCorSolid || '#0049ff';
+      return { color: cor, webkitTextFillColor: cor };
+    }
+
+    const c1 = this.section.tituloGradiente1 || '#8aabff';
+    const c2 = this.section.tituloGradiente2 || '#0049ff';
+    return {
+      backgroundImage: `linear-gradient(180deg, ${c1} 0%, ${c2} 100%)`,
+      backgroundClip: 'text',
+      webkitBackgroundClip: 'text',
+      color: 'transparent',
+      webkitTextFillColor: 'transparent',
+    };
+  }
+
   startDrag(event: MouseEvent) {
     this.isDragging = true;
 

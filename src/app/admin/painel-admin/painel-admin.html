@@ -31,7 +31,7 @@
     </button>
   </div>
 
-  <!-- ══════════════════ CATEGORIAS ══════════════════ -->
+  <!-- CATEGORIAS -->
   @if (tab === 'categorias') {
   <section class="section">
     <div class="section-header">
@@ -39,9 +39,7 @@
       <button class="btn-add" (click)="abrirNovaCat()">+ Nova Categoria</button>
     </div>
 
-    @if (catMsg) {
-    <div class="msg" [class.erro]="catMsgErro">{{ catMsg }}</div>
-    } @if (showCatForm) {
+    @if (showCatForm) {
     <div class="form-card">
       <h3>{{ catEditId ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
       <div class="form-grid">
@@ -89,7 +87,6 @@
           >
         </div>
 
-        <!-- Upload: ícone da categoria -->
         <div class="field">
           <label>Ícone da categoria</label>
           @if (previewIconeCat || catForm.icone) {
@@ -108,7 +105,6 @@
           <span class="hint">Ícone exibido no menu de categorias</span>
         </div>
 
-        <!-- Upload: fundo da categoria -->
         <div class="field">
           <label>Imagem de fundo</label>
           @if (previewFundoCat || catForm.fundo) {
@@ -208,7 +204,7 @@
   </section>
   }
 
-  <!-- ══════════════════ SUBCATEGORIAS ══════════════════ -->
+  <!-- SUBCATEGORIAS -->
   @if (tab === 'subcategorias') {
   <section class="section">
     <div class="section-header">
@@ -219,7 +215,8 @@
         + Nova Subcategoria
       </button>
     </div>
-    <div class="filtro-row">
+
+    <div class="filtro-row field">
       <label>Filtrar por categoria:</label>
       <select [(ngModel)]="filtroCategoria" (change)="filtrarPorCategoria()">
         <option [ngValue]="null">Todas</option>
@@ -228,15 +225,14 @@
         }
       </select>
     </div>
-    @if (subMsg) {
-    <div class="msg" [class.erro]="subMsgErro">{{ subMsg }}</div>
-    } @if (showSubForm) {
+
+    @if (showSubForm) {
     <div class="form-card">
       <h3>{{ subEditId ? 'Editar Subcategoria' : 'Nova Subcategoria' }}</h3>
       <div class="form-grid">
         <div class="field">
-          <label>Nome *</label
-          ><input [(ngModel)]="subForm.nome" placeholder="Ex: Bolos & Tortas" />
+          <label>Nome *</label>
+          <input [(ngModel)]="subForm.nome" placeholder="Ex: Bolos & Tortas" />
         </div>
         <div class="field">
           <label>Categoria *</label>
@@ -258,6 +254,7 @@
       </div>
     </div>
     }
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -288,7 +285,7 @@
   </section>
   }
 
-  <!-- ══════════════════ SEÇÕES DA HOME ══════════════════ -->
+  <!-- SEÇÕES DA HOME -->
   @if (tab === 'secoes') {
   <section class="section">
     <div class="section-header">
@@ -296,9 +293,7 @@
       <button class="btn-add" (click)="abrirNovaSecao()">+ Nova Seção</button>
     </div>
 
-    @if (secMsg) {
-    <div class="msg" [class.erro]="secMsgErro">{{ secMsg }}</div>
-    } @if (showSecForm) {
+    @if (showSecForm) {
     <div class="form-card">
       <h3>{{ secEditId ? 'Editar Seção' : 'Nova Seção' }}</h3>
       <div class="form-grid">
@@ -317,7 +312,6 @@
           />
         </div>
 
-        <!-- Modo da seção (novo campo) -->
         <div class="field full">
           <label>Modo de exibição de receitas</label>
           <div class="radio-group">
@@ -349,7 +343,6 @@
           </span>
         </div>
 
-        <!-- Filtros de categoria/subcategoria (apenas modo aleatório) -->
         @if (secForm.modo === 'aleatorio') {
         <div class="field">
           <label>Filtrar por categoria (opcional)</label>
@@ -358,28 +351,25 @@
             (ngModelChange)="onCategoriaSecaoChange()"
           >
             <option [ngValue]="null">Qualquer categoria</option>
-            @for (cat of categorias; track cat.id) {
+            @for (cat of categoriasComReceitas; track cat.id) {
             <option [ngValue]="cat.id">{{ cat.nome }}</option>
             }
           </select>
           <span class="hint"
-            >Restringe as receitas aleatórias a esta categoria</span
+            >Apenas categorias com receitas cadastradas são exibidas.</span
           >
         </div>
 
         @if (secForm.id_categoria) {
         <div class="field">
           <label>Filtrar por subcategoria (opcional)</label>
-
           <select [(ngModel)]="secForm.id_subcategoria">
             <option [ngValue]="null">Qualquer subcategoria</option>
-
             @for (sub of subcategoriasDaCategoria; track sub.id) {
             <option [ngValue]="sub.id">{{ sub.nome }}</option>
             }
           </select>
-
-          <span class="hint"> Restringe ainda mais as receitas da seção </span>
+          <span class="hint">Restringe ainda mais as receitas da seção</span>
         </div>
         } }
 
@@ -409,7 +399,6 @@
           </div>
         </div>
 
-        <!-- Upload: fundo da seção (imagem) -->
         @if (secTipoFundo === 'imagem') {
         <div class="field full">
           <label>Imagem de fundo</label>
@@ -446,7 +435,76 @@
         </div>
         }
 
-        <!-- Upload: fundo do título -->
+        <div class="field full">
+          <label>Cor do título</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="tipoTitulo"
+                value="solido"
+                [(ngModel)]="secForm.titulo_cor_tipo"
+              />
+              Cor sólida
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="tipoTitulo"
+                value="gradiente"
+                [(ngModel)]="secForm.titulo_cor_tipo"
+              />
+              Gradiente
+            </label>
+          </div>
+        </div>
+
+        @if (secForm.titulo_cor_tipo === 'solido') {
+        <div class="field">
+          <label>Cor sólida</label>
+          <div class="color-row">
+            <input
+              type="color"
+              [value]="secForm.titulo_cor_solid || '#0049ff'"
+              (input)="secForm.titulo_cor_solid = $any($event.target).value"
+            />
+            <input
+              [(ngModel)]="secForm.titulo_cor_solid"
+              placeholder="#0049ff"
+            />
+          </div>
+        </div>
+        } @if (secForm.titulo_cor_tipo === 'gradiente') {
+        <div class="field">
+          <label>Cor inicial</label>
+          <div class="color-row">
+            <input
+              type="color"
+              [value]="secForm.titulo_gradiente_1 || '#8aabff'"
+              (input)="secForm.titulo_gradiente_1 = $any($event.target).value"
+            />
+            <input
+              [(ngModel)]="secForm.titulo_gradiente_1"
+              placeholder="#8aabff"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label>Cor final</label>
+          <div class="color-row">
+            <input
+              type="color"
+              [value]="secForm.titulo_gradiente_2 || '#0049ff'"
+              (input)="secForm.titulo_gradiente_2 = $any($event.target).value"
+            />
+            <input
+              [(ngModel)]="secForm.titulo_gradiente_2"
+              placeholder="#0049ff"
+            />
+          </div>
+        </div>
+        }
+
         <div class="field full">
           <label>Imagem do fundo do título</label>
           @if (previewFundoTituloSecao || secForm.fundo_titulo) {
@@ -469,7 +527,6 @@
         </div>
       </div>
 
-      <!-- Preview do fundo da seção -->
       <div class="preview-label">Preview do fundo:</div>
       <div
         class="sec-preview"
@@ -479,12 +536,11 @@
             ? { 'background-color': secForm.cor_fundo }
             : { 'background-color': '#eee' }"
       >
-        <span class="sec-preview-title"
-          >{{ secForm.titulo || 'Título da seção' }}</span
-        >
+        <span class="sec-preview-title" [ngStyle]="getTituloPreviewStyle()">
+          {{ secForm.titulo || 'Título da seção' }}
+        </span>
       </div>
 
-      <!-- Gestão de receitas manuais -->
       @if (secForm.modo === 'manual') {
       <div class="receitas-panel">
         <h4>Receitas desta seção</h4>
@@ -494,7 +550,6 @@
           Salve a seção primeiro para depois vincular receitas.
         </p>
         } @else {
-        <!-- Campo de busca -->
         <div class="busca-receita">
           <input
             [(ngModel)]="termoBusca"
@@ -511,7 +566,6 @@
           }
         </div>
 
-        <!-- Lista de receitas vinculadas -->
         @if (receitasCarregando) {
         <p class="loading">Carregando receitas...</p>
         } @else if (receitasDaSecao.length === 0) {

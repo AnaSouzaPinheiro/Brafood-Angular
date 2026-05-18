@@ -39,6 +39,13 @@ export class AdminCategoriaService extends BaseService {
     );
   }
 
+  /** Apenas categorias que têm ao menos uma receita — para os selects de filtro de seção */
+  listarCategoriasComReceitas(): Observable<CategoriaAdmin[]> {
+    return this.httpClient.get<CategoriaAdmin[]>(
+      this.url('admin/categorias.php?com_receitas=1')
+    );
+  }
+
   criarCategoria(data: Partial<CategoriaAdmin>, userId: number): Observable<any> {
     return this.httpClient.post(
       this.url('admin/categorias.php'),
@@ -69,6 +76,13 @@ export class AdminCategoriaService extends BaseService {
     return this.httpClient.get<SubcategoriaAdmin[]>(
       this.url(`admin/subcategorias.php${qs}`)
     );
+  }
+
+  /** Apenas subcategorias com receitas — para o select de filtro de seção */
+  listarSubcategoriasComReceitas(idCategoria?: number): Observable<SubcategoriaAdmin[]> {
+    const base = `admin/subcategorias.php?com_receitas=1`;
+    const qs   = idCategoria ? `&id_categoria=${idCategoria}` : '';
+    return this.httpClient.get<SubcategoriaAdmin[]>(this.url(base + qs));
   }
 
   criarSubcategoria(nome: string, idCategoria: number, userId: number): Observable<any> {

@@ -53,16 +53,18 @@
       </div>
 
       <!-- Subcategorias dinâmicas -->
-      <div class="input-box" *ngFor="let cat of categoriasSelecionadas">
-        <bra-dropdown
-          [label]="'Subcategoria de ' + cat.label + '*'"
-          [options]="subcategoriasPorCategoria[cat.value] || []"
-          [multiSelect]="false"
-          [selected]="subcategoriasSelecionadas[cat.value] || []"
-          (optionSelected)="onSubcategoriaSelecionada(cat.value, $event)"
-          [forceValidate]="tentouEnviar"
-          requiredMessage="Selecione a subcategoria."
-        ></bra-dropdown>
+      <div class="subs campo">
+        <div class="input-box" *ngFor="let cat of categoriasSelecionadas">
+          <bra-dropdown
+            [label]="'Subcategoria de ' + cat.label + '*'"
+            [options]="subcategoriasPorCategoria[cat.value] || []"
+            [multiSelect]="false"
+            [selected]="subcategoriasSelecionadas[cat.value] || []"
+            (optionSelected)="onSubcategoriaSelecionada(cat.value, $event)"
+            [forceValidate]="tentouEnviar"
+            requiredMessage="Selecione a subcategoria."
+          ></bra-dropdown>
+        </div>
       </div>
     </div>
 

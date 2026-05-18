@@ -96,10 +96,7 @@
 
         font-size: 26px;
 
-        background: -webkit-linear-gradient(#8aabff, #0049ff);
-
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        /* cor dinâmica via [ngStyle] no template */
       }
     }
 

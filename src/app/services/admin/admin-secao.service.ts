@@ -6,6 +6,10 @@ import { HttpHeaders } from '@angular/common/http';
 export interface SecaoAdmin {
   id: number;
   titulo: string;
+  titulo_cor_tipo?: 'solido' | 'gradiente';
+  titulo_cor_solid?: string | null;
+  titulo_gradiente_1?: string | null;
+  titulo_gradiente_2?: string | null;
   url_fundo: string | null;
   cor_fundo: string | null;
   fundo_titulo: string | null;

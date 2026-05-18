@@ -10,4 +10,9 @@ export interface Section {
   fundoTitle: string | null;
   ordem: number;
   recipes: Recipes[];
+  /** Cor do título: 'solido' ou 'gradiente' */
+  tituloCorTipo: 'solido' | 'gradiente';
+  tituloCorSolid: string | null;
+  tituloGradiente1: string | null;
+  tituloGradiente2: string | null;
 }
