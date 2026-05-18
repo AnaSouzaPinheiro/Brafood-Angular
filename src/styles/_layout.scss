@@ -10,11 +10,7 @@
   }
 }
 
-@mixin page-title(
-  $desktop: 38px,
-  $tablet: 1.8rem,
-  $mobile: 2rem
-) {
+@mixin page-title($desktop: 38px, $tablet: 1.8rem, $mobile: 2rem) {
   font-size: $desktop;
   font-weight: 600;
 
@@ -74,11 +70,41 @@
   justify-content: center;
 }
 
-@mixin white-card(
-  $radius: 25px,
-  $shadow: 0px 4px 4px 0px #00000040
-) {
+@mixin white-card($radius: 25px, $shadow: 0px 4px 4px 0px #00000040) {
   background-color: #fff;
   border-radius: $radius;
   box-shadow: $shadow;
+}
+
+@mixin card-base($radius: 16px) {
+  background-color: #fff;
+  border-radius: $radius;
+}
+
+@mixin gradient-text($start: #8aabff, $end: #0049ff) {
+  background: -webkit-linear-gradient($start, $end);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin textarea-base($border: #a8a8a8, $radius: 5px) {
+  width: 100%;
+  min-height: 90px;
+  max-height: 300px;
+  padding: 10px 12px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@mixin textarea-focus($color, $shadow) {
+  outline: none;
+  border-color: $color;
+  box-shadow: 0 0 0 3px $shadow;
 }
