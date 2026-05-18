@@ -18,7 +18,7 @@
   @if (openModal()) {
   <bra-modal-log
     [modalLogged]="modalData"
-    [loggedOut]="!logado"
+    [loggedOut]="!logado()"
     [logout]="logout.bind(this)"
     class="profile-container"
   ></bra-modal-log>

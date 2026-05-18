@@ -55,6 +55,16 @@
   .click {
     text-decoration: none;
   }
+
+  .admin-link li {
+    color: $primary-blue;
+    font-weight: 600;
+    border-top: 2px solid $quaternary-gray;
+
+    &:hover {
+      background: #f0f4ff;
+    }
+  }
 }
 
 @media (max-width: 576px) {

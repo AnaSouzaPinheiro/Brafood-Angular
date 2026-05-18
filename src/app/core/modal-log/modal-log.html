@@ -25,6 +25,12 @@
           <li>Favoritas</li>
         </a>
 
+        @if (modalLogged.adminLink) {
+        <a [routerLink]="modalLogged.adminLink" class="click admin-link">
+          <li>⚙ Painel Admin</li>
+        </a>
+        }
+
         <li class="logOut" (click)="logout()">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
           Sair

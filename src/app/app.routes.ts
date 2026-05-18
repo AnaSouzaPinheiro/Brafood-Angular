@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth/auth-guard';
+import { AdminGuard } from './services/admin/admin-guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -104,6 +105,12 @@ export const routes: Routes = [
     path: 'cookies',
     loadComponent: () =>
       import('./pages/cookies/cookies').then((m) => m.Cookies),
+  },
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./admin/painel-admin/painel-admin').then((m) => m.PainelAdmin),
+    canActivate: [AuthGuard, AdminGuard],
   },
   { path: '**', redirectTo: 'home' },
 ];

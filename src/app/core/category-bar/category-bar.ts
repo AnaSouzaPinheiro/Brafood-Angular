@@ -30,9 +30,26 @@ export class CategoryBar {
           icone: c.icone,
           fundo: '',
           css_class: c.css_class,
+          ordem: c.ordem,
+          cor_primaria: c.cor_primaria,
+          gradiente_hover: c.gradiente_hover,
           url: `/categoria/${toSlug(c.nome)}/${c.id}`,
           subcategorias: c.subcategorias ?? [],
         }));
     });
+  }
+
+  onHover(event: MouseEvent, categoria: Categoria) {
+    if (categoria.gradiente_hover) {
+      (event.currentTarget as HTMLElement).style.background = categoria.gradiente_hover;
+    }
+  }
+
+  onLeave(event: MouseEvent, categoria: Categoria) {
+    const el = event.currentTarget as HTMLElement;
+    el.style.background = '';
+    if (categoria.cor_primaria) {
+      el.style.backgroundColor = categoria.cor_primaria;
+    }
   }
 }

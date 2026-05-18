@@ -43,7 +43,9 @@ export class Login {
     this.authService.login(this.email, this.senha).subscribe(
       (res: any) => {
         if (res.success) {
-          this.auth.saveUserSession({ id: res.id, email: this.email });
+          // Salva o objeto completo retornado pelo backend (inclui is_admin)
+          const userData = res.user ?? { id: res.id, email: this.email };
+          this.auth.saveUserSession(userData);
           this.router.navigateByUrl(returnUrl);
         } else {
           this.erro = res.message || 'Erro no login.';

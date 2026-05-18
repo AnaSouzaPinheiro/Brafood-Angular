@@ -1,0 +1,597 @@
+@use "variables" as *;
+
+.admin-painel {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px 60px;
+
+  .admin-header {
+    margin-bottom: 32px;
+
+    h1 {
+      color: $primary-blue;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: $primary-gray;
+      margin-top: 4px;
+    }
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid $secondary-gray;
+    margin-bottom: 32px;
+
+    .tab-btn {
+      padding: 10px 28px;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 600;
+      color: $primary-gray;
+      cursor: pointer;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+
+      &.active {
+        color: $primary-blue;
+        border-bottom-color: $primary-blue;
+      }
+
+      &:hover:not(.active) {
+        color: $secondary-blue;
+      }
+    }
+  }
+
+  // ── Section ──────────────────────────────────────────────
+
+  .section {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      h2 {
+        color: $primary-blue;
+        font-size: 1.3rem;
+
+        .count {
+          background: $secondary-gray;
+          color: $secondary-blue;
+          border-radius: 20px;
+          padding: 2px 10px;
+          font-size: 0.85rem;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+
+  // ── Botões de ação de seção ──────────────────────────────
+
+  .btn-add {
+    background: $primary-blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $secondary-blue;
+    }
+  }
+
+  // ── Filtro ──────────────────────────────────────────────
+
+  .filtro-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    label {
+      color: $tertiary-gray;
+      font-size: 14px;
+    }
+
+    select {
+      padding: 8px 12px;
+      border: 1px solid $quaternary-gray;
+      border-radius: 6px;
+      font-size: 14px;
+      color: $tertiary-gray;
+    }
+  }
+
+  // ── Mensagens ────────────────────────────────────────────
+
+  .msg {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+
+    &.erro {
+      background: #ffebee;
+      color: #c62828;
+      border-color: #ef9a9a;
+    }
+  }
+
+  // ── Formulário ──────────────────────────────────────────
+
+  .form-card {
+    background: #f8faff;
+    border: 1px solid $secondary-gray;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 28px;
+
+    h3 {
+      color: $primary-blue;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      &.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 600;
+        color: $tertiary-gray;
+      }
+
+      input,
+      select {
+        padding: 10px 12px;
+        border: 1px solid $quaternary-gray;
+        border-radius: 8px;
+        font-size: 14px;
+        color: $tertiary-gray;
+        transition: border 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-blue;
+        }
+      }
+
+      .hint {
+        font-size: 11px;
+        color: $primary-gray;
+        margin-top: -2px;
+      }
+
+      .color-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        input[type='color'] {
+          width: 42px;
+          height: 42px;
+          padding: 2px;
+          cursor: pointer;
+          border-radius: 6px;
+        }
+
+        input[type='text'] {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  // Preview
+  .preview-label {
+    font-size: 13px;
+    color: $primary-gray;
+    margin-bottom: 8px;
+  }
+
+  .cat-preview {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 130px;
+    height: 80px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+
+    img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+
+    .btn-save {
+      background: $primary-blue;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+
+      &:hover:not([disabled]) {
+        background: $secondary-blue;
+      }
+
+      &[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: $primary-gray;
+      border: 1px solid $quaternary-gray;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+
+      &:hover {
+        background: $secondary-gray;
+      }
+    }
+  }
+
+  // ── Tabela ──────────────────────────────────────────────
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid $secondary-gray;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th {
+        background: $secondary-gray;
+        color: $secondary-blue;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 12px 16px;
+        text-align: left;
+      }
+
+      td {
+        padding: 12px 16px;
+        border-top: 1px solid $secondary-gray;
+        font-size: 14px;
+        color: $tertiary-gray;
+        vertical-align: middle;
+
+        &.center {
+          text-align: center;
+        }
+
+        code {
+          background: #eef1ff;
+          color: $secondary-blue;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 12px;
+        }
+
+        .color-chip {
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          display: inline-block;
+        }
+
+        .sem-cor {
+          color: $primary-gray;
+        }
+
+        .icon-thumb {
+          width: 28px;
+          height: 28px;
+          object-fit: contain;
+        }
+
+        &.actions {
+          display: flex;
+          gap: 8px;
+          white-space: nowrap;
+        }
+      }
+
+      tbody tr:hover {
+        background: #f8faff;
+      }
+    }
+  }
+
+  .btn-edit,
+  .btn-del {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .btn-edit {
+    background: $secondary-gray;
+    color: $primary-blue;
+  }
+
+  .btn-del {
+    background: #ffebee;
+    color: #c62828;
+  }
+
+  // ── Seções ─────────────────────────────────────────────
+  .radio-group {
+    display: flex;
+    gap: 24px;
+    padding: 8px 0;
+  }
+
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+
+    input[type='radio'] {
+      accent-color: $primary-blue;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .sec-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    border: 2px dashed #ccc;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgb(255 255 255 / 70%);
+    }
+
+    .sec-preview-title {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(#8aabff, #0049ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &.badge-img {
+      background: #e8f0fe;
+      color: #1a56db;
+    }
+
+    &.badge-manual {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &.badge-aleatorio {
+      background: #d1fae5;
+      color: #065f46;
+    }
+  }
+
+  // ── Upload de imagens ──────────────────────────────────
+  .img-preview {
+    display: block;
+    max-width: 120px;
+    max-height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 6px;
+
+    &--wide {
+      max-width: 100%;
+      max-height: 140px;
+    }
+  }
+
+  .loading {
+    display: inline-block;
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  input[type="file"] {
+    display: block;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    margin-top: 4px;
+
+    &::file-selector-button {
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      cursor: pointer;
+      font-size: 13px;
+      margin-right: 8px;
+
+      &:hover { background: #f3f4f6; }
+    }
+  }
+
+  // ── Gestão de receitas ─────────────────────────────────
+  .receitas-panel {
+    margin-top: 20px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+
+    h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+  }
+
+  .busca-receita {
+    position: relative;
+    margin-bottom: 12px;
+
+    .busca-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+
+      &:focus { outline: none; border-color: #2563eb; }
+    }
+  }
+
+  .sugestoes-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+    z-index: 100;
+    max-height: 220px;
+    overflow-y: auto;
+
+    li {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #111827;
+
+      &:hover { background: #f3f4f6; }
+    }
+  }
+
+  .receitas-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .receita-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    .receita-thumb {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .receita-titulo {
+      flex: 1;
+      font-size: 14px;
+      color: #111827;
+    }
+  }
+
+  .btn-del--sm {
+    padding: 2px 8px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+}

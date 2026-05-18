@@ -7,6 +7,7 @@ export interface User {
   genero?: string;
   bio?: string;
   foto_perfil?: string;
+  is_admin?: number; // 0 ou 1
 }
 
 export interface UserResponse {

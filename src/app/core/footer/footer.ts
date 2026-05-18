@@ -35,6 +35,7 @@ export class Footer {
         icone: c.icone,
         fundo: '',
         css_class: c.css_class,
+        ordem: c.ordem,
         url: `/categoria/${toSlug(c.nome)}/${c.id}`,
         subcategorias: c.subcategorias ?? [],
       }));

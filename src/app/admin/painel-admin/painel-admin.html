@@ -1,0 +1,629 @@
+<div class="admin-painel">
+  <div class="admin-header">
+    <h1>Painel Administrativo</h1>
+    <p class="subtitle">
+      Gerencie categorias, subcategorias e seções da home do BraFood
+    </p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button
+      class="tab-btn"
+      [class.active]="tab === 'categorias'"
+      (click)="trocarTab('categorias')"
+    >
+      Categorias
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="tab === 'subcategorias'"
+      (click)="trocarTab('subcategorias')"
+    >
+      Subcategorias
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="tab === 'secoes'"
+      (click)="trocarTab('secoes')"
+    >
+      Seções da Home
+    </button>
+  </div>
+
+  <!-- ══════════════════ CATEGORIAS ══════════════════ -->
+  @if (tab === 'categorias') {
+  <section class="section">
+    <div class="section-header">
+      <h2>Categorias <span class="count">{{ categorias.length }}</span></h2>
+      <button class="btn-add" (click)="abrirNovaCat()">+ Nova Categoria</button>
+    </div>
+
+    @if (catMsg) {
+    <div class="msg" [class.erro]="catMsgErro">{{ catMsg }}</div>
+    } @if (showCatForm) {
+    <div class="form-card">
+      <h3>{{ catEditId ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Nome *</label>
+          <input [(ngModel)]="catForm.nome" placeholder="Ex: Sobremesas" />
+        </div>
+        <div class="field">
+          <label>Classe CSS</label>
+          <input
+            [(ngModel)]="catForm.css_class"
+            placeholder="Ex: bg-sobremesas"
+          />
+          <span class="hint">Usada no category-bar para aplicar a cor</span>
+        </div>
+        <div class="field">
+          <label>Ordem no menu</label>
+          <input
+            type="number"
+            [(ngModel)]="catForm.ordem"
+            placeholder="Ex: 1"
+            min="1"
+          />
+        </div>
+        <div class="field">
+          <label>Cor principal</label>
+          <div class="color-row">
+            <input
+              type="color"
+              [value]="catForm.cor_primaria || '#8BACFF'"
+              (input)="catForm.cor_primaria = $any($event.target).value"
+            />
+            <input [(ngModel)]="catForm.cor_primaria" placeholder="#8BACFF" />
+          </div>
+          <span class="hint">Cor de fundo do item no menu</span>
+        </div>
+        <div class="field full">
+          <label>Gradiente hover</label>
+          <input
+            [(ngModel)]="catForm.gradiente_hover"
+            placeholder="linear-gradient(180deg, #8BACFF 0%, #536799 100%)"
+          />
+          <span class="hint"
+            >CSS completo do gradiente exibido ao passar o mouse</span
+          >
+        </div>
+
+        <!-- Upload: ícone da categoria -->
+        <div class="field">
+          <label>Ícone da categoria</label>
+          @if (previewIconeCat || catForm.icone) {
+          <img
+            [src]="previewIconeCat || catForm.icone"
+            alt="preview ícone"
+            class="img-preview"
+          />
+          }
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onIconeCatChange($event)"
+          />
+          @if (uploadandoIconeCat) { <span class="loading">Enviando...</span> }
+          <span class="hint">Ícone exibido no menu de categorias</span>
+        </div>
+
+        <!-- Upload: fundo da categoria -->
+        <div class="field">
+          <label>Imagem de fundo</label>
+          @if (previewFundoCat || catForm.fundo) {
+          <img
+            [src]="previewFundoCat || catForm.fundo"
+            alt="preview fundo"
+            class="img-preview"
+          />
+          }
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFundoCatChange($event)"
+          />
+          @if (uploadandoFundoCat) { <span class="loading">Enviando...</span> }
+          <span class="hint">Imagem de fundo da página da categoria</span>
+        </div>
+      </div>
+
+      @if (catForm.cor_primaria) {
+      <div class="preview-label">Preview do item no menu:</div>
+      <div class="cat-preview" [style.background-color]="catForm.cor_primaria">
+        @if (previewIconeCat || catForm.icone) {
+        <img
+          [src]="previewIconeCat || catForm.icone"
+          alt="ícone"
+          onerror="this.style.display = 'none'"
+        />
+        }
+        <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+      </div>
+      }
+
+      <div class="form-actions">
+        <button
+          class="btn-save"
+          (click)="salvarCat()"
+          [disabled]="catLoading || uploadandoIconeCat || uploadandoFundoCat"
+        >
+          {{ catLoading ? 'Salvando...' : (catEditId ? 'Atualizar' : 'Criar') }}
+        </button>
+        <button class="btn-cancel" (click)="showCatForm = false">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    }
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ordem</th>
+            <th>Nome</th>
+            <th>CSS Class</th>
+            <th>Cor</th>
+            <th>Ícone</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of categorias; track cat.id) {
+          <tr>
+            <td class="center">{{ cat.ordem }}</td>
+            <td><strong>{{ cat.nome }}</strong></td>
+            <td><code>{{ cat.css_class }}</code></td>
+            <td>
+              @if (cat.cor_primaria) {
+              <div
+                class="color-chip"
+                [style.background]="cat.cor_primaria"
+                [title]="cat.cor_primaria"
+              ></div>
+              } @else { <span class="sem-cor">—</span> }
+            </td>
+            <td>
+              @if (cat.icone) {
+              <img
+                class="icon-thumb"
+                [src]="cat.icone"
+                alt="ícone"
+                onerror="this.style.display = 'none'"
+              />
+              } @else { — }
+            </td>
+            <td class="actions">
+              <button class="btn-edit" (click)="editarCat(cat)">Editar</button>
+              <button class="btn-del" (click)="excluirCat(cat.id, cat.nome)">
+                Excluir
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+
+  <!-- ══════════════════ SUBCATEGORIAS ══════════════════ -->
+  @if (tab === 'subcategorias') {
+  <section class="section">
+    <div class="section-header">
+      <h2>
+        Subcategorias <span class="count">{{ subcategorias.length }}</span>
+      </h2>
+      <button class="btn-add" (click)="abrirNovaSub()">
+        + Nova Subcategoria
+      </button>
+    </div>
+    <div class="filtro-row">
+      <label>Filtrar por categoria:</label>
+      <select [(ngModel)]="filtroCategoria" (change)="filtrarPorCategoria()">
+        <option [ngValue]="null">Todas</option>
+        @for (cat of categorias; track cat.id) {
+        <option [ngValue]="cat.id">{{ cat.nome }}</option>
+        }
+      </select>
+    </div>
+    @if (subMsg) {
+    <div class="msg" [class.erro]="subMsgErro">{{ subMsg }}</div>
+    } @if (showSubForm) {
+    <div class="form-card">
+      <h3>{{ subEditId ? 'Editar Subcategoria' : 'Nova Subcategoria' }}</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Nome *</label
+          ><input [(ngModel)]="subForm.nome" placeholder="Ex: Bolos & Tortas" />
+        </div>
+        <div class="field">
+          <label>Categoria *</label>
+          <select [(ngModel)]="subForm.id_categoria">
+            <option [ngValue]="null">Selecione...</option>
+            @for (cat of categorias; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nome }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" (click)="salvarSub()" [disabled]="subLoading">
+          {{ subLoading ? 'Salvando...' : (subEditId ? 'Atualizar' : 'Criar') }}
+        </button>
+        <button class="btn-cancel" (click)="showSubForm = false">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    }
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sub of subcatsFiltradas; track sub.id) {
+          <tr>
+            <td class="center">{{ sub.id }}</td>
+            <td>{{ sub.nome }}</td>
+            <td>{{ sub.nome_categoria }}</td>
+            <td class="actions">
+              <button class="btn-edit" (click)="editarSub(sub)">Editar</button>
+              <button class="btn-del" (click)="excluirSub(sub.id, sub.nome)">
+                Excluir
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+
+  <!-- ══════════════════ SEÇÕES DA HOME ══════════════════ -->
+  @if (tab === 'secoes') {
+  <section class="section">
+    <div class="section-header">
+      <h2>Seções da Home <span class="count">{{ secoes.length }}</span></h2>
+      <button class="btn-add" (click)="abrirNovaSecao()">+ Nova Seção</button>
+    </div>
+
+    @if (secMsg) {
+    <div class="msg" [class.erro]="secMsgErro">{{ secMsg }}</div>
+    } @if (showSecForm) {
+    <div class="form-card">
+      <h3>{{ secEditId ? 'Editar Seção' : 'Nova Seção' }}</h3>
+      <div class="form-grid">
+        <div class="field full">
+          <label>Título *</label>
+          <input [(ngModel)]="secForm.titulo" placeholder="Ex: Festa Junina" />
+        </div>
+
+        <div class="field">
+          <label>Ordem de exibição</label>
+          <input
+            type="number"
+            [(ngModel)]="secForm.ordem"
+            placeholder="Ex: 1"
+            min="0"
+          />
+        </div>
+
+        <!-- Modo da seção (novo campo) -->
+        <div class="field full">
+          <label>Modo de exibição de receitas</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="modoSec"
+                value="aleatorio"
+                [(ngModel)]="secForm.modo"
+                (ngModelChange)="onModoChange()"
+              />
+              Aleatório
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="modoSec"
+                value="manual"
+                [(ngModel)]="secForm.modo"
+                (ngModelChange)="onModoChange()"
+              />
+              Manual (curado)
+            </label>
+          </div>
+          <span class="hint">
+            Aleatório: mostra receitas automaticamente (filtradas por
+            categoria/subcategoria se definidas). Manual: você escolhe cada
+            receita exibida.
+          </span>
+        </div>
+
+        <!-- Filtros de categoria/subcategoria (apenas modo aleatório) -->
+        @if (secForm.modo === 'aleatorio') {
+        <div class="field">
+          <label>Filtrar por categoria (opcional)</label>
+          <select
+            [(ngModel)]="secForm.id_categoria"
+            (ngModelChange)="onCategoriaSecaoChange()"
+          >
+            <option [ngValue]="null">Qualquer categoria</option>
+            @for (cat of categorias; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nome }}</option>
+            }
+          </select>
+          <span class="hint"
+            >Restringe as receitas aleatórias a esta categoria</span
+          >
+        </div>
+
+        @if (secForm.id_categoria) {
+        <div class="field">
+          <label>Filtrar por subcategoria (opcional)</label>
+
+          <select [(ngModel)]="secForm.id_subcategoria">
+            <option [ngValue]="null">Qualquer subcategoria</option>
+
+            @for (sub of subcategoriasDaCategoria; track sub.id) {
+            <option [ngValue]="sub.id">{{ sub.nome }}</option>
+            }
+          </select>
+
+          <span class="hint"> Restringe ainda mais as receitas da seção </span>
+        </div>
+        } }
+
+        <div class="field full">
+          <label>Tipo de fundo da seção</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="tipoFundo"
+                value="imagem"
+                [(ngModel)]="secTipoFundo"
+                (ngModelChange)="onTipoFundoChange()"
+              />
+              Imagem de fundo
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="tipoFundo"
+                value="cor"
+                [(ngModel)]="secTipoFundo"
+                (ngModelChange)="onTipoFundoChange()"
+              />
+              Cor de fundo
+            </label>
+          </div>
+        </div>
+
+        <!-- Upload: fundo da seção (imagem) -->
+        @if (secTipoFundo === 'imagem') {
+        <div class="field full">
+          <label>Imagem de fundo</label>
+          @if (previewFundoSecao || secForm.url_fundo) {
+          <img
+            [src]="previewFundoSecao || secForm.url_fundo"
+            alt="preview fundo"
+            class="img-preview img-preview--wide"
+          />
+          }
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFundoSecaoChange($event)"
+          />
+          @if (uploadandoFundoSecao) {
+          <span class="loading">Enviando...</span> }
+          <span class="hint"
+            >Imagem exibida atrás das receitas (com sobreposição branca)</span
+          >
+        </div>
+        } @if (secTipoFundo === 'cor') {
+        <div class="field">
+          <label>Cor de fundo</label>
+          <div class="color-row">
+            <input
+              type="color"
+              [value]="secForm.cor_fundo || '#f5f5f5'"
+              (input)="secForm.cor_fundo = $any($event.target).value"
+            />
+            <input [(ngModel)]="secForm.cor_fundo" placeholder="#f5f5f5" />
+          </div>
+          <span class="hint">Cor sólida usada como fundo da seção</span>
+        </div>
+        }
+
+        <!-- Upload: fundo do título -->
+        <div class="field full">
+          <label>Imagem do fundo do título</label>
+          @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+          <img
+            [src]="previewFundoTituloSecao || secForm.fundo_titulo"
+            alt="preview fundo título"
+            class="img-preview"
+          />
+          }
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFundoTituloSecaoChange($event)"
+          />
+          @if (uploadandoFundoTituloSecao) {
+          <span class="loading">Enviando...</span> }
+          <span class="hint"
+            >Decoração que aparece atrás do título da seção (opcional)</span
+          >
+        </div>
+      </div>
+
+      <!-- Preview do fundo da seção -->
+      <div class="preview-label">Preview do fundo:</div>
+      <div
+        class="sec-preview"
+        [ngStyle]="secTipoFundo === 'imagem' && (previewFundoSecao || secForm.url_fundo)
+          ? { 'background-image': 'url(' + (previewFundoSecao || secForm.url_fundo) + ')', 'background-size': 'cover', 'background-position': 'center' }
+          : secTipoFundo === 'cor' && secForm.cor_fundo
+            ? { 'background-color': secForm.cor_fundo }
+            : { 'background-color': '#eee' }"
+      >
+        <span class="sec-preview-title"
+          >{{ secForm.titulo || 'Título da seção' }}</span
+        >
+      </div>
+
+      <!-- Gestão de receitas manuais -->
+      @if (secForm.modo === 'manual') {
+      <div class="receitas-panel">
+        <h4>Receitas desta seção</h4>
+
+        @if (!secEditId) {
+        <p class="hint">
+          Salve a seção primeiro para depois vincular receitas.
+        </p>
+        } @else {
+        <!-- Campo de busca -->
+        <div class="busca-receita">
+          <input
+            [(ngModel)]="termoBusca"
+            (ngModelChange)="onTermoBuscaChange()"
+            placeholder="Buscar receita por título..."
+            class="busca-input"
+          />
+          @if (sugestoesReceitas.length > 0) {
+          <ul class="sugestoes-list">
+            @for (s of sugestoesReceitas; track s.id) {
+            <li (click)="vincularReceita(s)">{{ s.titulo }}</li>
+            }
+          </ul>
+          }
+        </div>
+
+        <!-- Lista de receitas vinculadas -->
+        @if (receitasCarregando) {
+        <p class="loading">Carregando receitas...</p>
+        } @else if (receitasDaSecao.length === 0) {
+        <p class="hint">
+          Nenhuma receita vinculada. Use a busca acima para adicionar.
+        </p>
+        } @else {
+        <ul class="receitas-list">
+          @for (r of receitasDaSecao; track r.id) {
+          <li class="receita-item">
+            @if (r.imagem1) {
+            <img
+              [src]="r.imagem1"
+              alt="{{ r.titulo }}"
+              class="receita-thumb"
+              onerror="this.style.display = 'none'"
+            />
+            }
+            <span class="receita-titulo">{{ r.titulo }}</span>
+            <button
+              class="btn-del btn-del--sm"
+              (click)="desvincularReceita(r.id)"
+              title="Remover"
+            >
+              ✕
+            </button>
+          </li>
+          }
+        </ul>
+        } }
+      </div>
+      }
+
+      <div class="form-actions">
+        <button
+          class="btn-save"
+          (click)="salvarSecao()"
+          [disabled]="secLoading || uploadandoFundoSecao || uploadandoFundoTituloSecao"
+        >
+          {{ secLoading ? 'Salvando...' : (secEditId ? 'Atualizar' : 'Criar') }}
+        </button>
+        <button class="btn-cancel" (click)="showSecForm = false">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    }
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ordem</th>
+            <th>Título</th>
+            <th>Modo</th>
+            <th>Fundo</th>
+            <th>Fundo Título</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sec of secoes; track sec.id) {
+          <tr>
+            <td class="center">{{ sec.ordem }}</td>
+            <td><strong>{{ sec.titulo }}</strong></td>
+            <td>
+              <span
+                class="badge"
+                [class.badge-manual]="sec.modo === 'manual'"
+                [class.badge-aleatorio]="sec.modo !== 'manual'"
+              >
+                {{ sec.modo === 'manual' ? '✎ Manual' : '🔀 Aleatório' }}
+              </span>
+            </td>
+            <td>
+              @if (sec.url_fundo) {
+              <span class="badge badge-img" title="{{ sec.url_fundo }}"
+                >🖼 Imagem</span
+              >
+              } @else if (sec.cor_fundo) {
+              <div
+                class="color-chip"
+                [style.background]="sec.cor_fundo"
+                [title]="sec.cor_fundo"
+              ></div>
+              } @else {
+              <span class="sem-cor">Nenhum</span>
+              }
+            </td>
+            <td>
+              @if (sec.fundo_titulo) {
+              <span class="badge badge-img" title="{{ sec.fundo_titulo }}"
+                >🖼 Sim</span
+              >
+              } @else { <span class="sem-cor">—</span> }
+            </td>
+            <td class="actions">
+              <button class="btn-edit" (click)="editarSecao(sec)">
+                Editar
+              </button>
+              <button
+                class="btn-del"
+                (click)="excluirSecao(sec.id, sec.titulo)"
+              >
+                Excluir
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+</div>

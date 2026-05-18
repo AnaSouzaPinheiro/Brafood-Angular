@@ -1,7 +1,11 @@
 <div class="cont">
   <section
     class="container"
-    [ngStyle]="{ 'background-image': 'url(' + section.urlSection + ')' }"
+    [ngStyle]="section.urlSection
+      ? { 'background-image': 'url(' + section.urlSection + ')' }
+      : section.corFundo
+        ? { 'background-color': section.corFundo, 'background-image': 'none' }
+        : { 'background-image': 'none' }"
   >
     <div class="titulo">
       <div class="header">

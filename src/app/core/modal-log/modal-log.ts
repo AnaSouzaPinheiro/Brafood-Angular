@@ -16,6 +16,7 @@ export class ModalLog {
     myAccount: string;
     myRecipes: string;
     favs: string;
+    adminLink?: string;
   };
 
   @Input() logout!: () => void; // recebe função de logout do Navbar

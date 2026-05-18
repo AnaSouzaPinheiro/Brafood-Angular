@@ -1,4 +1,4 @@
-import { Component, HostListener, signal, WritableSignal } from '@angular/core';
+import { Component, computed, HostListener, signal, WritableSignal } from '@angular/core';
 import { ModalLog } from '../modal-log/modal-log';
 import { SearchBar } from '../search-bar/search-bar';
 import { UserIcon } from '../user-icon/user-icon';
@@ -16,11 +16,11 @@ import { UsuarioService } from '../../services/usuario/usuario.service';
 })
 export class Navbar {
   openModal = signal(false);
-  logado = false;
-  userId: string | null = null;
   user: WritableSignal<User | undefined>;
-
   modalData: any = null;
+
+  // computed garante reatividade automática — atualiza quando o signal muda
+  logado = computed(() => this.auth.isLoggedIn());
 
   constructor(
     private usuarioService: UsuarioService,
@@ -28,51 +28,40 @@ export class Navbar {
     private router: Router
   ) {
     this.auth.loadFromStorage();
-    this.user = signal<User | undefined>(this.auth.user());
+    // Monta o signal com o que já existe no storage
+    const storedUser = this.auth.getUser();
+    this.user = signal<User | undefined>(storedUser ?? undefined);
+    // Monta modalData imediatamente com dados do storage (sem HTTP)
+    if (storedUser) {
+      this.buildModalData(storedUser);
+    }
   }
 
   ngOnInit() {
-    this.logado = this.auth.isLoggedIn();
-
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      this.userId = JSON.parse(userData).id;
-    }
-
     if (this.auth.isLoggedIn()) {
       const currentUser = this.auth.user();
       if (currentUser?.id) {
+        // Atualiza com dados frescos do servidor em background
         this.usuarioService
           .buscarUserPorId(currentUser.id)
           .subscribe((response) => {
             const user = response.usuario;
-            this.user.set({
-              id: user.id,
-              nome: user.nome,
-              sobrenome: user.sobrenome,
-              apelido: user.apelido,
-              email: user.email,
-              genero: user.genero,
-              bio: user.bio,
-              foto_perfil: user.foto_perfil,
-            });
-
-            const u = this.user();
-            this.modalData = {
-              personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
-              myAccount: u?.id
-                ? `/editar-perfil/${u.id}`
-                : '/editar-perfil',
-              myRecipes: u?.id
-                ? `/minhas-receitas/${u.id}`
-                : '/minhas-receitas',
-              favs: u?.id
-                ? `/favoritas/${u.id}`
-                : '/favoritas',
-            };
+            this.user.set(user);
+            this.buildModalData(user);
           });
       }
     }
+  }
+
+  private buildModalData(u: any) {
+    this.modalData = {
+      personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
+      myAccount:  u?.id ? `/editar-perfil/${u.id}` : '/editar-perfil',
+      myRecipes:  u?.id ? `/minhas-receitas/${u.id}` : '/minhas-receitas',
+      favs:       u?.id ? `/favoritas/${u.id}` : '/favoritas',
+      // adminLink só aparece se is_admin === 1 (campo vindo do banco)
+      adminLink:  u?.is_admin === 1 ? '/admin' : undefined,
+    };
   }
 
   togglePopup(event: Event) {
@@ -94,7 +83,6 @@ export class Navbar {
 
   logout() {
     this.auth.logout();
-    this.logado = false;
     this.user.set(undefined);
     this.router.navigate(['/login']);
   }
@@ -103,3 +91,4 @@ export class Navbar {
     this.user.set(novoUser);
   }
 }
+

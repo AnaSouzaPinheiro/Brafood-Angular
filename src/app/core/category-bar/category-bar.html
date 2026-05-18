@@ -1,6 +1,13 @@
 <div class="category-bar">
   <ul>
-    <li *ngFor="let categoria of categorias" [ngClass]="categoria.css_class" [routerLink]="categoria.url">
+    <li
+      *ngFor="let categoria of categorias"
+      [ngClass]="categoria.css_class"
+      [style.background-color]="categoria.cor_primaria || null"
+      [routerLink]="categoria.url"
+      (mouseenter)="onHover($event, categoria)"
+      (mouseleave)="onLeave($event, categoria)"
+    >
       <img class="icon"
         [src]="categoria.icone"
         alt="{{ categoria.nome }} ícone"

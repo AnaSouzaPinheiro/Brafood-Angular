@@ -55,8 +55,10 @@ export class Home implements OnInit {
         return {
           id: secao.id,
           title: secao.titulo,
-          urlSection: secao.url_fundo,
-          fundoTitle: secao.fundo_titulo,
+          urlSection: secao.url_fundo ?? null,
+          corFundo: secao.cor_fundo ?? null,
+          fundoTitle: secao.fundo_titulo ?? null,
+          ordem: secao.ordem ?? 0,
           recipes,
         } as Section;
       });
