@@ -53,10 +53,16 @@
   }
 
   @media (max-width: 768px) {
-    left: 50%;
-    width: 50%;
-    bottom: 16px;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    transform: none;
+    max-width: none;
+    padding: 15px 0;
+    border-radius: 0;
 
-    transform: translateX(-50%);
+    h3, p {
+      padding: 0 15px;
+    }
   }
 }

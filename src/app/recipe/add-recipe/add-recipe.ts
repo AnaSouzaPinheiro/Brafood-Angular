@@ -104,7 +104,7 @@ export class AddRecipe {
         [
           Validators.required,
           Validators.minLength(20),
-          Validators.maxLength(155),
+          Validators.maxLength(255),
         ],
       ],
       categoria: [null, Validators.required],

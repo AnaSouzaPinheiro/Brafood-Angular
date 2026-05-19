@@ -391,6 +391,7 @@ export class PainelAdmin implements OnInit {
       url_fundo: null,
       cor_fundo: null,
       modo: 'aleatorio',
+      card_exibir: 'categoria',
       titulo_cor_tipo: 'gradiente',
       titulo_gradiente_1: '#8aabff',
       titulo_gradiente_2: '#0049ff',

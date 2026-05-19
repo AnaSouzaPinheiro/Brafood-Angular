@@ -124,17 +124,44 @@
         </div>
       </div>
 
-      @if (catForm.cor_primaria) {
+      @if (catForm.cor_primaria || catForm.gradiente_hover) {
       <div class="preview-label">Preview do item no menu:</div>
-      <div class="cat-preview" [style.background-color]="catForm.cor_primaria">
-        @if (previewIconeCat || catForm.icone) {
-        <img
-          [src]="previewIconeCat || catForm.icone"
-          alt="ícone"
-          onerror="this.style.display = 'none'"
-        />
+      <div class="preview-row">
+        @if (catForm.cor_primaria) {
+        <div class="preview-item">
+          <div
+            class="cat-preview"
+            [style.background-color]="catForm.cor_primaria"
+          >
+            @if (previewIconeCat || catForm.icone) {
+            <img
+              [src]="previewIconeCat || catForm.icone"
+              alt="ícone"
+              onerror="this.style.display = 'none'"
+            />
+            }
+            <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+          </div>
+          <small>Normal</small>
+        </div>
+        } @if (catForm.gradiente_hover) {
+        <div class="preview-item">
+          <div
+            class="cat-preview-hover"
+            [style.background]="catForm.gradiente_hover"
+          >
+            @if (previewIconeCat || catForm.icone) {
+            <img
+              [src]="previewIconeCat || catForm.icone"
+              alt="ícone"
+              onerror="this.style.display = 'none'"
+            />
+            }
+            <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+          </div>
+          <small>Hover</small>
+        </div>
         }
-        <span>{{ catForm.nome || 'Nome da categoria' }}</span>
       </div>
       }
 
@@ -340,6 +367,34 @@
             Aleatório: mostra receitas automaticamente (filtradas por
             categoria/subcategoria se definidas). Manual: você escolhe cada
             receita exibida.
+          </span>
+        </div>
+
+        <div class="field full">
+          <label>O que exibir nos cards</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="cardExibir"
+                value="categoria"
+                [(ngModel)]="secForm.card_exibir"
+              />
+              Categoria
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="cardExibir"
+                value="subcategoria"
+                [(ngModel)]="secForm.card_exibir"
+              />
+              Subcategoria
+            </label>
+          </div>
+          <span class="hint">
+            "Subcategoria" é ideal quando a seção já representa uma categoria
+            (ex: seção "Sobremesas" → exibe "Bolos", "Tortas" em cada card).
           </span>
         </div>
 

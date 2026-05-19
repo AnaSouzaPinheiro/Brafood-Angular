@@ -9,15 +9,15 @@
   >
     <div class="titulo">
       <div class="header">
-        <button class="arrow" *ngIf="showLeftArrow" (click)="scrollLeft()">
-          <
-        </button>
+        <span class="arrow" *ngIf="showLeftArrow" (click)="scrollLeft()">
+          <i class="fa-solid fa-circle-chevron-left"></i>
+        </span>
 
         <h1 class="title" [ngStyle]="getTituloStyle()">{{ section.title }}</h1>
 
-        <button class="arrow" *ngIf="showRightArrow" (click)="scrollRight()">
-          >
-        </button>
+        <span class="arrow" *ngIf="showRightArrow" (click)="scrollRight()">
+          <i class="fa-solid fa-circle-chevron-right"></i>
+        </span>
       </div>
 
       <img [src]="section.fundoTitle | mediaUrl" class="fundoTitle" />
@@ -34,7 +34,11 @@
     >
       <div class="content">
         @for (recipe of section.recipes; track recipe.id ?? $index) {
-        <bra-recipe-card [myRecipe]="false" [recipe]="recipe"></bra-recipe-card>
+        <bra-recipe-card
+          [myRecipe]="false"
+          [recipe]="recipe"
+          [cardExibir]="section.cardExibir ?? 'categoria'"
+        ></bra-recipe-card>
         }
       </div>
     </div>

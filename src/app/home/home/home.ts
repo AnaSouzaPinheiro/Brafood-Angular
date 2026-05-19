@@ -20,7 +20,7 @@ export class Home implements OnInit {
 
   constructor(
     private secaoService: SecaoService,
-    private ReceitaServices: ReceitaService
+    private ReceitaServices: ReceitaService,
   ) {}
 
   ngOnInit() {
@@ -39,13 +39,14 @@ export class Home implements OnInit {
       }));
     });
 
-    // Seções de receitas 
+    // Seções de receitas
     this.secaoService.getSecoes().subscribe((data) => {
       this.sections = data
         .map((secao: any) => {
           const recipes = (secao.receitas || []).map((r: any) => ({
             id: r.id,
             categoria: r.categoria,
+            subcategoria: r.subcategoria ?? null,
             url: `/receita/${toSlug(r.titulo)}/${r.id}`,
             imagem1: r.imagem1,
             titulo: r.titulo,
@@ -65,6 +66,7 @@ export class Home implements OnInit {
             tituloCorSolid: secao.titulo_cor_solid ?? null,
             tituloGradiente1: secao.titulo_gradiente_1 ?? null,
             tituloGradiente2: secao.titulo_gradiente_2 ?? null,
+            cardExibir: secao.card_exibir ?? 'categoria',
           } as Section;
         })
         // Não exibe seções sem receitas

@@ -14,6 +14,9 @@ import { CompartilhamentoService } from '../../services/compartilhamento/compart
 import { AuthService } from '../../services/auth/auth.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+import { RecipeSection } from '../../shared/recipe-section/recipe-section';
+import { Section } from '../../model/section-home';
+import { toSlug } from '../../utils/slug';
 
 const MIN_COMENTARIO = 3;
 const MAX_COMENTARIO = 1000;
@@ -28,6 +31,7 @@ const MAX_COMENTARIO = 1000;
     CustomButton,
     FormsModule,
     MediaUrlPipe,
+    RecipeSection,
   ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
@@ -35,6 +39,7 @@ const MAX_COMENTARIO = 1000;
 export class Recipe {
   recipe?: Receita;
   comentarios: Comentario[] = [];
+  secaoRelacionadas: Section | null = null;
 
   novoComentario = '';
   urlWhatsApp = '';
@@ -65,6 +70,7 @@ export class Recipe {
         titulo: r.titulo,
         resumo: r.resumo,
         categoria: r.categoria ?? '',
+        idCategoria: r.idCategoria ?? null,
         subcategoria: r.subcategoria ?? '',
         dificuldade: Number(r.dificuldade),
         tempo_hora: Number(r.tempo_hora),
@@ -97,6 +103,70 @@ export class Recipe {
 
       this.recarregarComentarios();
       this.getLinkWhatsApp();
+      this.carregarRelacionadas();
+    });
+  }
+
+  carregarRelacionadas() {
+    if (!this.recipe) return;
+
+    // Pega a categoria da receita atual pelo nome (campo categoria)
+    // e busca até 6 receitas da mesma categoria, excluindo a atual
+    this.ReceitaServices.listCat(
+      {
+        // idCategoria vem como string do GROUP_CONCAT (ex: "3" ou "3, 5") — pega o primeiro
+        id: Number(
+          String(this.recipe.idCategoria ?? '0')
+            .split(',')[0]
+            .trim(),
+        ),
+        nome: String(this.recipe.categoria ?? '')
+          .split(',')[0]
+          .trim(),
+      },
+      { ordenar: 'aleatorio' },
+    ).subscribe((receitas) => {
+      const relacionadas = receitas
+        .filter((r: any) => r.id !== this.recipe!.id)
+        .slice(0, 6);
+
+      if (relacionadas.length === 0) {
+        this.secaoRelacionadas = null;
+        return;
+      }
+
+      this.secaoRelacionadas = {
+        id: 0,
+        title: `Mais receitas de ${this.recipe!.categoria ?? 'culinária'}`,
+        urlSection: null,
+        corFundo: null,
+        fundoTitle: null,
+        ordem: 0,
+        tituloCorTipo: 'gradiente',
+        tituloCorSolid: null,
+        tituloGradiente1: '#8aabff',
+        tituloGradiente2: '#0049ff',
+        cardExibir: 'subcategoria',
+        recipes: relacionadas.map((r: any) => ({
+          id: r.id,
+          category: r.categoria ?? '',
+          img: r.imagem1 ?? '',
+          url: `/receita/${toSlug(r.titulo)}/${r.id}`,
+          subcategorias: r.subcategorias ?? [],
+          // campos extras que o recipe-card lê diretamente de 'recipe'
+          categoria: r.categoria,
+          subcategoria: r.subcategoria ?? null,
+          imagem1: r.imagem1,
+          titulo: r.titulo,
+          qtd_fav: r.qtd_fav,
+          resumo: r.resumo,
+          resume: {
+            title: r.titulo,
+            qtdFav: Number(r.qtd_fav ?? 0),
+            text: r.resumo ?? '',
+          },
+        })),
+      };
     });
   }
 

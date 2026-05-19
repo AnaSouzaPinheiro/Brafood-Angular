@@ -15,4 +15,6 @@ export interface Section {
   tituloCorSolid: string | null;
   tituloGradiente1: string | null;
   tituloGradiente2: string | null;
+  /** O que exibir no topo de cada card: categoria ou subcategoria */
+  cardExibir?: 'categoria' | 'subcategoria';
 }

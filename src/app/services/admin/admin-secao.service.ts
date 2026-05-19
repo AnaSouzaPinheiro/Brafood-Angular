@@ -15,7 +15,8 @@ export interface SecaoAdmin {
   fundo_titulo: string | null;
   id_categoria: number | null;
   id_subcategoria: number | null;
-  modo: 'aleatorio' | 'manual'; // novo campo
+  modo: 'aleatorio' | 'manual';
+  card_exibir?: 'categoria' | 'subcategoria';
   ordem: number;
 }
 
@@ -92,4 +93,3 @@ export class AdminSecaoService extends BaseService {
     );
   }
 }
-

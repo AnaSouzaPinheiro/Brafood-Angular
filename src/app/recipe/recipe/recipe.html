@@ -53,6 +53,11 @@
       </section>
     </div>
 
+    <bra-recipe-section
+      *ngIf="secaoRelacionadas"
+      [section]="secaoRelacionadas"
+    ></bra-recipe-section>
+
     <section class="commmets" id="comentarios">
       <div class="container com">
         <h1 class="title sec">Comentários</h1>

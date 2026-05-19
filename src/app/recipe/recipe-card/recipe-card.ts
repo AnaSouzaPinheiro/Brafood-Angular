@@ -18,6 +18,8 @@ export class RecipeCard {
   @Input() myRecipe: boolean = false;
   @Input() selectedSubcategories!: number[];
   @Input() recipe!: any;
+  @Input() cardExibir: 'categoria' | 'subcategoria' = 'categoria';
+
   mappedRecipe: any;
   imgBroken: boolean = false;
 
@@ -53,12 +55,13 @@ export class RecipeCard {
       chosenSub = subs[0];
     }
 
-    // Fallback: se ainda não encontrou, null
     this.mappedRecipe = {
       category: this.recipe.categoria
         ? this.recipe.categoria.split(',')[0].trim()
-        : null, // categoria principal
-      subcategory: chosenSub ? chosenSub.nome : null, // pega apenas o nome da subcategoria
+        : null,
+      subcategory: chosenSub
+        ? chosenSub.nome
+        : (this.recipe.subcategoria ?? null), // fallback para campo direto (modo aleatório)
       img: this.recipe.imagem1,
       url: `/receita/${toSlug(this.recipe.titulo)}/${this.recipe.id}`,
       resume: {
@@ -67,6 +70,17 @@ export class RecipeCard {
         text: this.recipe.resumo,
       },
     };
+  }
+
+  /** Label exibido no topo do card conforme configuração da seção */
+  get labelDoCard(): string | null {
+    if (!this.mappedRecipe) return null;
+
+    if (this.cardExibir === 'subcategoria') {
+      return this.mappedRecipe.subcategory ?? this.mappedRecipe.category ?? null;
+    }
+
+    return this.mappedRecipe.category ?? null;
   }
 
   @Output() excluir = new EventEmitter<number>();

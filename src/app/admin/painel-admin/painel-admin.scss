@@ -30,6 +30,10 @@
   gap: 8px;
   margin-bottom: 32px;
   border-bottom: 2px solid $secondary-gray;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .tab-btn {
@@ -178,6 +182,15 @@
   }
 }
 
+// Color chip na tabela
+.color-chip {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  display: inline-block;
+}
+
 // TABLE
 .table-wrap {
   @include admin-table;
@@ -256,14 +269,13 @@ table {
   border-radius: 10px;
   overflow: hidden;
   min-height: 80px;
-  display: flex;
-  align-items: center;
   padding: 20px 24px;
   margin-bottom: 20px;
 
-  // A sobreposição branca fica ABAIXO do título via pseudo-elemento posicionado
+  @include flex-center;
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-color: rgb(255 255 255 / 70%);
@@ -272,14 +284,12 @@ table {
   }
 
   .sec-preview-title {
-    // Fica acima do ::before
     position: relative;
     z-index: 1;
     display: inline-block;
     font-size: 22px;
     font-weight: 700;
     line-height: 1.2;
-    // Garante que o background-clip do ngStyle não vaze para fora
     padding: 2px 0;
   }
 }
@@ -309,12 +319,81 @@ table {
 }
 
 .receita-item {
-  display: flex;
   gap: 10px;
-  align-items: center;
-
   padding: 8px 10px;
-  border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #fff;
+  border: 1px solid #e5e7eb;
+
+  @include flex-between;
+}
+
+// Labels de preview
+.preview-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: $primary-gray;
+}
+
+.preview-row {
+  gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.preview-item {
+  gap: 6px;
+
+  @include flex-column-center ;
+
+  small {
+    font-size: 11px;
+    color: $primary-gray;
+  }
+}
+
+// Preview de hover da categoria
+.cat-preview-hover,
+.cat-preview {
+  gap: 6px;
+  min-width: 110px;
+  min-height: 80px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  transition: background 0.2s;
+
+  @include flex-column-center;
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+.cat-preview span {
+  color: #000;
+}
+
+.cat-preview-hover {
+  img {
+    filter: brightness(0) invert(1); // ícone branco sobre gradiente
+  }
+  span {
+    color: #fff;
+  }
+}
+
+.sem-cor {
+  color: $primary-gray;
+  font-size: 14px;
 }

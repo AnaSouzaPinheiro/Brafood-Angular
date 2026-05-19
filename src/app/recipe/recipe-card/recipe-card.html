@@ -1,11 +1,6 @@
 <div class="receita-card" *ngIf="mappedRecipe" [routerLink]="mappedRecipe.url">
   <div class="infos">
-    <h2 class="categoria">
-      <ng-container *ngIf="mappedRecipe.subcategory; else categoriaPadrao">
-        {{ mappedRecipe.subcategory }}
-      </ng-container>
-      <ng-template #categoriaPadrao> {{ mappedRecipe.category }} </ng-template>
-    </h2>
+    <h2 class="categoria">{{ labelDoCard }}</h2>
 
     <ng-container *ngIf="mappedRecipe.img && !imgBroken; else imgFallback">
       <img
