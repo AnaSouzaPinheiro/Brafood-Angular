@@ -1,0 +1,73 @@
+<!-- Loading -->
+<div class="perfil-loading" *ngIf="carregando">
+  <i class="fa-solid fa-spinner fa-spin"></i>
+</div>
+
+<!-- Erro -->
+<div class="perfil-erro" *ngIf="erro && !carregando">
+  <p>Usuário não encontrado.</p>
+</div>
+
+<!-- Conteúdo -->
+<div class="perfil-publico" *ngIf="perfil() && !carregando">
+  <!-- Header do perfil -->
+  <section class="perfil-header">
+    <div class="perfil-avatar">
+      <img
+        *ngIf="perfil()!.usuario.foto_perfil"
+        [src]="perfil()!.usuario.foto_perfil | mediaUrl"
+        [alt]="nomeCompleto"
+        class="avatar-img"
+      />
+      <div class="avatar-placeholder" *ngIf="!perfil()!.usuario.foto_perfil">
+        <i class="fa-solid fa-user"></i>
+      </div>
+    </div>
+
+    <div class="perfil-info">
+      <h1 class="perfil-nome">{{ nomeCompleto }}</h1>
+      <p class="perfil-apelido" *ngIf="perfil()!.usuario.apelido">
+        {{ perfil()!.usuario.apelido }}
+      </p>
+      <p class="perfil-bio" *ngIf="perfil()!.usuario.bio">
+        {{ perfil()!.usuario.bio }}
+      </p>
+
+      <div class="perfil-stats">
+        <div class="stat">
+          <span class="stat-valor">{{ perfil()!.total_receitas }}</span>
+          <span class="stat-label"
+            >{{ perfil()!.total_receitas === 1 ? 'receita' : 'receitas' }}</span
+          >
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-valor">{{ perfil()!.total_favoritos }}</span>
+          <span class="stat-label"
+            >{{ perfil()!.total_favoritos === 1 ? 'favorito recebido' :
+            'favoritos recebidos' }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Receitas do autor -->
+  <section class="perfil-receitas">
+    <h2 class="receitas-titulo">
+      Receitas de {{ perfil()!.usuario.apelido ?? perfil()!.usuario.nome }}
+    </h2>
+
+    <div class="receitas-grid" *ngIf="perfil()!.receitas.length > 0">
+      <bra-recipe-card
+        *ngFor="let r of perfil()!.receitas"
+        [recipe]="mapReceita(r)"
+        [myRecipe]="false"
+      ></bra-recipe-card>
+    </div>
+
+    <p class="receitas-vazio" *ngIf="perfil()!.receitas.length === 0">
+      Este usuário ainda não publicou receitas.
+    </p>
+  </section>
+</div>

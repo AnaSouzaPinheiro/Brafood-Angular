@@ -151,12 +151,7 @@ export class AddRecipe {
       error: (err: any) => console.error(err),
     });
   }
-
-  campoInvalido(campo: string): boolean {
-    const ctrl = this.form.get(campo);
-    return !!(ctrl && ctrl.invalid && (ctrl.touched || this.tentouEnviar));
-  }
-
+  
   onCategoriaSelecionada(event: Option[]) {
     this.categoriasSelecionadas = event;
     this.subcategoriasSelecionadas = {};

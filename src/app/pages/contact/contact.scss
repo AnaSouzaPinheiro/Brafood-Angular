@@ -1,0 +1,27 @@
+@use "variables" as *;
+
+.contato {
+  gap: 15px;
+  left: 30%;
+  width: 70%;
+  display: flex;
+  padding: 50px 0;
+  position: relative;
+  flex-direction: column;
+  transform: translate(-20%);
+
+  .title {
+    color: $primary-blue;
+  }
+
+  .input-area {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .enviar {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

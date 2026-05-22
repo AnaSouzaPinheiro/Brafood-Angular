@@ -77,7 +77,9 @@ export class RecipeCard {
     if (!this.mappedRecipe) return null;
 
     if (this.cardExibir === 'subcategoria') {
-      return this.mappedRecipe.subcategory ?? this.mappedRecipe.category ?? null;
+      return (
+        this.mappedRecipe.subcategory ?? this.mappedRecipe.category ?? null
+      );
     }
 
     return this.mappedRecipe.category ?? null;

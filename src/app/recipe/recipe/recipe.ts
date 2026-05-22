@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Receita } from '../../model/receita';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
+import { Meta, Title } from '@angular/platform-browser';
 import { Section } from '../../model/section-home';
 import { toSlug } from '../../utils/slug';
 
@@ -32,6 +33,7 @@ const MAX_COMENTARIO = 1000;
     FormsModule,
     MediaUrlPipe,
     RecipeSection,
+    RouterModule,
   ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
@@ -58,6 +60,8 @@ export class Recipe {
     private ReceitaServices: ReceitaService,
     private comentarioService: ComentarioService,
     private compartilhamentoService: CompartilhamentoService,
+    private meta: Meta,
+    private titleService: Title,
   ) {}
 
   ngOnInit() {
@@ -84,6 +88,7 @@ export class Recipe {
         data_criacao: r.data_criacao
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
           : '',
+        usuarioId: r.id_usuario ? Number(r.id_usuario) : null,
         autor: r.autor,
         foto_perfil: r.foto_perfil || '',
         bio: r.bio,
@@ -104,7 +109,39 @@ export class Recipe {
       this.recarregarComentarios();
       this.getLinkWhatsApp();
       this.carregarRelacionadas();
+      this.atualizarOG();
     });
+  }
+
+  atualizarOG() {
+    if (!this.recipe) return;
+
+    const titulo = this.recipe.titulo;
+    const resumo = this.recipe.resumo ?? '';
+    const imagem = this.recipe.imagem1 ?? '';
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+
+    // Título da aba
+    this.titleService.setTitle(`${titulo} | BraFood`);
+
+    // Open Graph
+    this.meta.updateTag({ property: 'og:title', content: titulo });
+    this.meta.updateTag({ property: 'og:description', content: resumo });
+    this.meta.updateTag({ property: 'og:image', content: imagem });
+    this.meta.updateTag({ property: 'og:url', content: url });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+
+    // Twitter Card
+    this.meta.updateTag({
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    });
+    this.meta.updateTag({ name: 'twitter:title', content: titulo });
+    this.meta.updateTag({ name: 'twitter:description', content: resumo });
+    this.meta.updateTag({ name: 'twitter:image', content: imagem });
+
+    // Meta description padrão
+    this.meta.updateTag({ name: 'description', content: resumo });
   }
 
   carregarRelacionadas() {

@@ -1,15 +1,54 @@
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-12">
-      <div class="search-container">
-        <input
-          type="text"
-          class="form-control search-input"
-          placeholder="Procure receitas..."
-          [(ngModel)]="termo"
-          (keyup.enter)="buscar()"
-        />
-        <i class="fas fa-search search-icon" (click)="buscar()"></i>
+  <div class="search-container" [class.mobile-open]="isOpenMobile">
+    <input
+      type="text"
+      class="form-control search-input"
+      placeholder="Procure receitas..."
+      [(ngModel)]="termo"
+      (ngModelChange)="onInput()"
+      (keyup.enter)="buscar()"
+      autocomplete="off"
+    />
+    <i class="fas fa-search search-icon" (click)="buscar()"></i>
+
+    <button class="mobile-search-btn" (click)="toggleMobileSearch()">
+      <i class="fas fa-search"></i>
+    </button>
+
+    <!-- Dropdown de sugestões -->
+    <div class="autocomplete-dropdown" *ngIf="mostrarDropdown || carregando">
+      <div class="autocomplete-loading" *ngIf="carregando">
+        <i class="fa-solid fa-spinner fa-spin"></i> Buscando...
+      </div>
+
+      <ul *ngIf="!carregando && sugestoes.length > 0">
+        <li
+          *ngFor="let s of sugestoes"
+          (click)="irParaReceita(s)"
+          class="sugestao-item"
+        >
+          <img
+            *ngIf="s.imagem1"
+            [src]="s.imagem1"
+            class="sugestao-img"
+            alt=""
+            onerror="this.style.display = 'none'"
+          />
+          <div class="sugestao-info">
+            <span class="sugestao-titulo">{{ s.titulo }}</span>
+            <span class="sugestao-cat" *ngIf="s.categoria"
+              >{{ s.categoria }}</span
+            >
+          </div>
+        </li>
+      </ul>
+
+      <div
+        class="autocomplete-ver-todos"
+        *ngIf="!carregando && sugestoes.length > 0"
+        (click)="buscar()"
+      >
+        Ver todos os resultados para "{{ termo }}"
       </div>
     </div>
   </div>

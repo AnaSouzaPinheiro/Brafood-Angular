@@ -4,14 +4,16 @@ import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
 import { User } from '../../model/user';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Recipes } from '../../model/myrecipes';
 import { FavoritoService } from '../../services/favorito/favorito.service';
+import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
+import { StarRating } from '../../shared/star-rating/star-rating';
 
 @Component({
   selector: 'bra-info-recipe',
   standalone: true,
-  imports: [NgFor, CustomButton, HoverThings],
+  imports: [NgFor, CustomButton, HoverThings, StarRating, RouterModule],
   templateUrl: './info-recipe.html',
   styleUrl: './info-recipe.scss',
 })
@@ -44,6 +46,9 @@ export class InfoRecipe implements OnChanges {
   }
 
   isFavorite = false;
+  notaUsuario: number | null = null;
+  mediaAvaliacao: number | null = null;
+  totalAvaliacoes: number = 0;
   logado = false;
   userId: number | null = null;
   user!: User;
@@ -52,6 +57,7 @@ export class InfoRecipe implements OnChanges {
   constructor(
     private auth: AuthService,
     private favoritoService: FavoritoService,
+    private avaliacaoService: AvaliacaoService,
     private router: Router,
   ) {}
 
@@ -79,6 +85,56 @@ export class InfoRecipe implements OnChanges {
           console.error('Erro ao verificar favorito', err);
         },
       });
+
+    this.carregarAvaliacao();
+  }
+
+  carregarAvaliacao() {
+    if (!this.recipe?.id) return;
+    const idReceita = Number(this.recipe.id);
+    if (this.userId) {
+      this.avaliacaoService.buscar(this.userId, idReceita).subscribe({
+        next: (res) => {
+          this.notaUsuario = res.nota;
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+        },
+        error: () => {},
+      });
+    } else {
+      // Usuário não logado: busca só a média
+      this.avaliacaoService.buscar(0, idReceita).subscribe({
+        next: (res) => {
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+        },
+        error: () => {},
+      });
+    }
+  }
+
+  onAvaliar(nota: number | null) {
+    if (!this.userId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    const idReceita = Number(this.recipe.id);
+
+    if (nota === null) {
+      this.avaliacaoService.remover(this.userId, idReceita).subscribe((res) => {
+        this.notaUsuario = null;
+        this.mediaAvaliacao = res.media ?? null;
+        this.totalAvaliacoes = res.total;
+      });
+    } else {
+      this.avaliacaoService
+        .avaliar(this.userId, idReceita, nota)
+        .subscribe((res) => {
+          this.notaUsuario = nota;
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+        });
+    }
   }
 
   toggleFavorito() {

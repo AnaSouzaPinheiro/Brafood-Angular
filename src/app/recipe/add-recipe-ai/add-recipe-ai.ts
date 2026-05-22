@@ -11,6 +11,7 @@ import { BraInput } from '../../shared/input/input';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { CommonModule } from '@angular/common';
 import { Perfil } from '../../profile/perfil/perfil';
+import { ModalService } from '../../services/modal/modal.service';
 
 const MIN_CHARS_AI = 200;
 
@@ -39,9 +40,10 @@ export class AddRecipeAi {
   }
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private aiService: AiService,
-    private router: Router,
+    private modalService: ModalService,
   ) {
     this.form = this.fb.group({
       textoReceita: [
@@ -141,7 +143,11 @@ export class AddRecipeAi {
         this.router.navigate(['/adicionar-receita']);
       },
       error: (err) => {
-        console.error(err);
+        this.modalService.open({
+          type: 'error',
+          title: 'Erro',
+          message: err?.mensagem || 'Erro gerar receita.',
+        });
         this.loading = false;
       },
       complete: () => {

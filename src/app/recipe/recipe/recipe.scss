@@ -68,8 +68,10 @@
     gap: 10px;
     padding: 16px;
     display: flex;
-    background-color: #fff !important;
+    color: #000;
+    text-decoration: none;
     border: 1px solid $primary-blue;
+    background-color: #fff !important;
 
     @include card-base;
 
@@ -256,10 +258,18 @@
       display: contents;
     }
 
-    .autor { order: 1; }
-    .ingredientes { order: 2; }
-    .whatsApp-card { order: 3; }
-    .preparo { order: 4; }
+    .autor {
+      order: 1;
+    }
+    .ingredientes {
+      order: 2;
+    }
+    .whatsApp-card {
+      order: 3;
+    }
+    .preparo {
+      order: 4;
+    }
   }
 }
 
@@ -286,10 +296,7 @@
   @include textarea-base;
 
   &:focus {
-    @include textarea-focus(
-      $primary-blue,
-      rgba(0, 44, 153, 0.15)
-    );
+    @include textarea-focus($primary-blue, rgba(0, 44, 153, 0.15));
   }
 
   &::placeholder {

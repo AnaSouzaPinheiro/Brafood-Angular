@@ -1,0 +1,29 @@
+<div class="star-rating">
+  <!-- Estrelas interativas (usuário avalia) -->
+  <div
+    class="stars"
+    [class.readonly]="!interativo"
+    (mouseleave)="onLeave()"
+    (click)="$event.stopPropagation()"
+  >
+    <i
+      *ngFor="let n of estrelas"
+      [class.fa-solid]="n <= notaAtiva"
+      [class.fa-regular]="n > notaAtiva + 0.5"
+      [class.fa-star-half-stroke]="n > notaAtiva && n <= notaAtiva + 0.5"
+      [class.fa-star]="n <= notaAtiva || n > notaAtiva + 0.5"
+      [class.active]="n <= notaAtiva + 0.5"
+      (mouseenter)="onHover(n)"
+      (click)="onClick(n)"
+    ></i>
+  </div>
+
+  <!-- Média + total -->
+  <div class="media-info" *ngIf="total > 0">
+    <span class="media-valor">{{ media | number: '1.1-1' }}</span>
+    <span class="total">({{ total }})</span>
+  </div>
+  <div class="media-info sem-avaliacao" *ngIf="total === 0 && !interativo">
+    <span>Sem avaliações</span>
+  </div>
+</div>

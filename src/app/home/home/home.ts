@@ -47,11 +47,14 @@ export class Home implements OnInit {
             id: r.id,
             categoria: r.categoria,
             subcategoria: r.subcategoria ?? null,
+            subcategorias: r.subcategorias ?? [],
             url: `/receita/${toSlug(r.titulo)}/${r.id}`,
             imagem1: r.imagem1,
             titulo: r.titulo,
             qtd_fav: r.qtd_fav,
             resumo: r.resumo,
+            media_avaliacao: r.media_avaliacao ?? null,
+            qtd_avaliacoes: Number(r.qtd_avaliacoes ?? 0),
           }));
 
           return {

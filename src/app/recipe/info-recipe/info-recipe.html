@@ -1,5 +1,19 @@
 <div class="info-recipe">
   <div class="main">
+    <div class="avaliacao-block">
+      <p class="avaliacao-label">
+        {{ userId ? (notaUsuario ? 'Sua avaliação:' : 'Avalie esta receita:') :
+        'Avaliação:' }}
+        <bra-star-rating
+          [notaUsuario]="notaUsuario"
+          [media]="mediaAvaliacao"
+          [total]="totalAvaliacoes"
+          [interativo]="!!userId"
+          (avaliar)="onAvaliar($event)"
+        ></bra-star-rating>
+      </p>
+    </div>
+
     <h1 class="title">{{ mappedInfoRecipe.titulo }}</h1>
 
     <div class="categories">
@@ -10,9 +24,7 @@
       ></bra-custom-button>
     </div>
 
-    <p class="resumo">
-      {{ mappedInfoRecipe.resumo }}
-    </p>
+    <p class="resumo">{{ mappedInfoRecipe.resumo }}</p>
 
     <div class="description">
       <div class="difficult">
@@ -41,7 +53,7 @@
   <div class="things">
     <div class="item" (click)="toggleFavorito()">
       <i
-        class="fa-star"
+        class="fa-heart"
         [class.fa-solid]="isFavorite"
         [class.fa-regular]="!isFavorite"
         [class.fav]="isFavorite"

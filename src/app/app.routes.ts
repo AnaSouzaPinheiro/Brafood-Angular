@@ -30,6 +30,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'chef/:id',
+    loadComponent: () =>
+      import('./profile/perfil-publico/perfil-publico').then(
+        (m) => m.PerfilPublicoPage,
+      ),
+  },
+  {
     path: 'minhas-receitas/:id',
     loadComponent: () =>
       import('./profile/minhas-receitas/minhas-receitas').then(
@@ -94,7 +101,8 @@ export const routes: Routes = [
   },
   {
     path: 'termos',
-    loadComponent: () => import('./pages/termos/termos').then((m) => m.Termos),
+    loadComponent: () => 
+      import('./pages/termos/termos').then((m) => m.Termos),
   },
   {
     path: 'privacidade',
@@ -105,6 +113,11 @@ export const routes: Routes = [
     path: 'cookies',
     loadComponent: () =>
       import('./pages/cookies/cookies').then((m) => m.Cookies),
+  },
+  {
+    path: 'contato',
+    loadComponent: () =>
+      import('./pages/contact/contact').then((m) => m.Contact),
   },
   {
     path: 'admin',

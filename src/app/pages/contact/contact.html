@@ -1,0 +1,62 @@
+<form [formGroup]="form" class="contato">
+  <h1 class="title">Fale Conosco</h1>
+
+  <div class="text">
+    <p>Tem alguma dúvida, sugestão ou precisa de ajuda? A gente adoraria te ouvir!</p>
+    <p>
+      Preencha o formulário abaixo ou entre em contato pelos nossos canais.
+      Estamos sempre prontos para responder o mais rápido possível e te ajudar
+      no que for preciso.
+    </p>
+    <p>
+      Seu feedback é muito importante pra gente e ajuda a melhorar cada vez mais
+      a sua experiência por aqui <i class="fa-solid fa-heart"></i>
+    </p>
+  </div>
+
+  <div class="input-area">
+    <div class="input-box">
+      <bra-input
+        [inType]="'input'"
+        [label]="'Nome*'"
+        name="nome"
+        formControlName="nome"
+        autocomplete="nome"
+      ></bra-input>
+    </div>
+    <div class="input-box">
+      <bra-input
+        [inType]="'input'"
+        [label]="'E-mail*'"
+        name="email"
+        formControlName="email"
+        autocomplete="email"
+      ></bra-input>
+    </div>
+    <div class="input-box">
+      <bra-input
+        [inType]="'input'"
+        [label]="'Assunto*'"
+        name="assunto"
+        formControlName="assunto"
+        autocomplete="assunto"
+      ></bra-input>
+    </div>
+    <div class="input-box">
+      <bra-input
+        [label]="'Mensagem*'"
+        [inType]="'textarea'"
+        formControlName="mensagem"
+        name="mensagem"
+        autocomplete="mensagem"
+      ></bra-input>
+    </div>
+  </div>
+
+  <bra-custom-button
+    [type]="'add'"
+    class="enviar"
+    [label]="'Enviar'"
+    (clicked)="enviar()"
+  ></bra-custom-button>
+</form>
