@@ -1,0 +1,10 @@
+<div
+  class="bra-toast"
+  [class.bra-toast--visible]="visible"
+  [class]="'bra-toast--' + (toast?.type || 'success')"
+  role="status"
+  aria-live="polite"
+>
+  <i class="fa-solid" [ngClass]="icon"></i>
+  <span>{{ toast?.text }}</span>
+</div>

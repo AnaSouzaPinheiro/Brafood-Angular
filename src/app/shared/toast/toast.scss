@@ -1,0 +1,50 @@
+.bra-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+
+  &--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  &--success {
+    background: #1b3a2b;
+    color: #4cdb8a;
+    border: 1px solid rgba(76, 219, 138, 0.25);
+  }
+
+  &--error {
+    background: #3a1b1b;
+    color: #e05252;
+    border: 1px solid rgba(224, 82, 82, 0.25);
+  }
+
+  &--info {
+    background: #1b2c3a;
+    color: #8aabff;
+    border: 1px solid rgba(138, 171, 255, 0.25);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}

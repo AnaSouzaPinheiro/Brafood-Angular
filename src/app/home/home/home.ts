@@ -1,29 +1,55 @@
 import { Component, OnInit } from '@angular/core';
 import { SlideHome } from '../slide-home/slide-home';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
-import { CommonModule } from '@angular/common';
+import { CommonModule, SlicePipe } from '@angular/common';
 import { Section } from '../../model/section-home';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { SecaoService } from '../../services/secao/secao.service';
 import { Recipes } from '../../model/myrecipes';
 import { toSlug } from '../../utils/slug';
+import {
+  DestaqueService,
+  ReceitaDestaque,
+} from '../../services/destaque/destaque.service';
+import { DestaqueSemana } from '../destaque-semana/destaque-semana';
+import { SectionSkeleton } from '../../shared/section-skeleton/section-skeleton';
 
 @Component({
   selector: 'bra-home',
-  imports: [SlideHome, RecipeSection, CommonModule],
+  imports: [
+    SlideHome,
+    RecipeSection,
+    CommonModule,
+    SlicePipe,
+    DestaqueSemana,
+    SectionSkeleton,
+  ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
 export class Home implements OnInit {
   sections: Section[] = [];
-  slides: Recipes[] = []; // carrossel principal
+  slides: Recipes[] = [];
+  destaqueRecipe: ReceitaDestaque | null = null;
+  loadingSections = true;
 
   constructor(
     private secaoService: SecaoService,
     private ReceitaServices: ReceitaService,
+    private destaqueService: DestaqueService,
   ) {}
 
   ngOnInit() {
+    // Destaque da semana
+    this.destaqueService.buscar().subscribe({
+      next: (d) => {
+        this.destaqueRecipe = d;
+      },
+      error: () => {
+        this.destaqueRecipe = null;
+      },
+    });
+
     // Slide principal
     this.ReceitaServices.listRandom(5).subscribe((slides) => {
       this.slides = slides.map((r: any) => ({
@@ -47,14 +73,11 @@ export class Home implements OnInit {
             id: r.id,
             categoria: r.categoria,
             subcategoria: r.subcategoria ?? null,
-            subcategorias: r.subcategorias ?? [],
             url: `/receita/${toSlug(r.titulo)}/${r.id}`,
             imagem1: r.imagem1,
             titulo: r.titulo,
             qtd_fav: r.qtd_fav,
             resumo: r.resumo,
-            media_avaliacao: r.media_avaliacao ?? null,
-            qtd_avaliacoes: Number(r.qtd_avaliacoes ?? 0),
           }));
 
           return {
@@ -72,8 +95,9 @@ export class Home implements OnInit {
             cardExibir: secao.card_exibir ?? 'categoria',
           } as Section;
         })
-        // Não exibe seções sem receitas
         .filter((s) => s.recipes.length > 0);
+
+      this.loadingSections = false;
     });
   }
 

@@ -42,6 +42,27 @@ hr {
     font-size: 14px;
     font-weight: bold;
   }
+
+  .categorias {
+    width: 45%;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: center;
+
+      li {
+        text-align: center;
+        padding: 5px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2784313725);
+      }
+    }
+  }
 }
 
 .primary-footer {
@@ -53,15 +74,18 @@ hr {
 .categorias,
 .conta,
 .acesso,
+.contato,
 .subscribe {
   gap: 15px;
+  align-items: center;
 
   @include flex-column;
 
   ul {
-    display: flex;
-    flex-direction: column;
     gap: 10px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
   }
 }
 
@@ -94,12 +118,13 @@ hr {
   }
 
   button {
+    width: 50px;
+    height: 52px;
+    cursor: pointer;
     background-color: $tertiary-blue;
     border: 1.5px solid $tertiary-blue;
-    height: 52px;
-    width: 50px;
     border-radius: 0 6px 6px 0;
-    
+
     @include flex-center;
   }
 }
@@ -211,4 +236,80 @@ hr {
   footer {
     padding: 32px 20px;
   }
+}
+
+/* Newsletter feedback */
+.nl-descricao {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+.newsletter-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+
+  &.success {
+    i {
+      font-size: 1.6rem;
+      color: #4caf7d;
+    }
+    span {
+      color: #4caf7d;
+      font-weight: 600;
+    }
+  }
+}
+
+.nl-reset {
+  background: none;
+  border: 1px solid rgba($secondary-gray, 0.25);
+  color: $secondary-gray;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  width: fit-content;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.nl-error-border input {
+  border-color: #e05252 !important;
+}
+
+.nl-msg {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: -28px;
+
+  i {
+    flex-shrink: 0;
+  }
+
+  &.nl-msg-error {
+    color: #e05252;
+  }
+
+  &.nl-msg-duplicate {
+    color: #f5a623;
+  }
+}
+
+@keyframes nl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nl-spin {
+  display: inline-block;
+  animation: nl-spin 0.8s linear infinite;
 }

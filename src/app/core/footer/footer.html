@@ -10,7 +10,6 @@
         </ul>
       </div>
 
-      <!-- Mostrar "Conta" apenas se estiver logado -->
       <div *ngIf="auth.isLoggedIn()" class="conta">
         <h4>Conta</h4>
         <ul>
@@ -24,7 +23,6 @@
         </ul>
       </div>
 
-      <!-- Mostrar "Acesse sua conta" apenas se estiver deslogado -->
       <div *ngIf="!auth.isLoggedIn()" class="acesso">
         <h4>Acesse sua conta</h4>
         <ul>
@@ -41,15 +39,62 @@
       </div>
     </div>
 
+    <!-- Newsletter -->
     <div class="subscribe">
       <h4>Inscreva-se</h4>
-      <div class="inputNews">
-        <input type="text" placeholder="E-mail" />
-        <button>
-          <i class="fa-solid fa-arrow-pointer"></i>
+
+      <!-- Estado: sucesso -->
+      <div
+        *ngIf="newsletterStatus === 'success'"
+        class="newsletter-feedback success"
+      >
+        <i class="fa-solid fa-circle-check"></i>
+        <span>{{ newsletterMsg }}</span>
+        <button class="nl-reset" (click)="resetNewsletter()">
+          Novo e-mail
         </button>
       </div>
-      <p>
+
+      <!-- Estado: idle / loading / error / duplicate -->
+      <ng-container *ngIf="newsletterStatus !== 'success'">
+        <div
+          class="inputNews"
+          [class.nl-error-border]="newsletterStatus === 'error'"
+        >
+          <input
+            type="email"
+            placeholder="Seu e-mail"
+            [(ngModel)]="newsletterEmail"
+            (keydown.enter)="inscreverNewsletter()"
+            [disabled]="newsletterStatus === 'loading'"
+            aria-label="E-mail para newsletter"
+          />
+          <button
+            (click)="inscreverNewsletter()"
+            [disabled]="newsletterStatus === 'loading'"
+            aria-label="Inscrever na newsletter"
+          >
+            <i
+              class="fa-solid"
+              [class.fa-arrow-pointer]="newsletterStatus !== 'loading'"
+              [class.fa-spinner]="newsletterStatus === 'loading'"
+              [class.nl-spin]="newsletterStatus === 'loading'"
+            ></i>
+          </button>
+        </div>
+
+        <p
+          *ngIf="newsletterStatus === 'error' || newsletterStatus === 'duplicate'"
+          class="nl-msg"
+          [class.nl-msg-error]="newsletterStatus === 'error'"
+          [class.nl-msg-duplicate]="newsletterStatus === 'duplicate'"
+        >
+          <i class="fa-solid fa-circle-exclamation"></i>
+          {{ newsletterMsg }}
+        </p>
+      </ng-container>
+
+      <p class="nl-descricao">
         Seja para o dia a dia ou para ocasiões especiais, o BraFood está aqui
         para te acompanhar com receitas práticas, deliciosas e cheias de sabor
         brasileiro. Cozinhe, compartilhe e inspire!
@@ -77,13 +122,21 @@
     <div class="redes-sociais">
       <ul>
         <li>
-          <a href="https://www.linkedin.com/in/ana-let%C3%ADcia-de-souza-pinheiro-6b4008234" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a
+            href="https://www.linkedin.com/in/ana-let%C3%ADcia-de-souza-pinheiro-6b4008234"
+            target="_blank"
+            ><i class="fa-brands fa-linkedin-in"></i
+          ></a>
         </li>
         <li>
-          <a href="https://github.com/AnaSouzaPinheiro" target="_blank"><i class="fa-brands fa-github"></i></a>
+          <a href="https://github.com/AnaSouzaPinheiro" target="_blank"
+            ><i class="fa-brands fa-github"></i
+          ></a>
         </li>
         <li>
-          <a href="https://www.instagram.com/anale_05" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.instagram.com/anale_05" target="_blank"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
         </li>
       </ul>
     </div>

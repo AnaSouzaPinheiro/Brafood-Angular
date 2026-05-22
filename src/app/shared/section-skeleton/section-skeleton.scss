@@ -1,0 +1,68 @@
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+@mixin shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 8px;
+}
+
+.sk-section {
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.sk-title {
+  height: 28px;
+  width: 220px;
+  @include shimmer-bg;
+}
+
+.sk-row {
+  display: flex;
+  gap: 28px;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.sk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sk-img {
+  width: 290px;
+  height: 210px;
+  border-radius: 10px;
+  @include shimmer-bg;
+}
+
+.sk-line {
+  @include shimmer-bg;
+  height: 14px;
+
+  &--title {
+    width: 200px;
+  }
+
+  &--short {
+    width: 130px;
+  }
+}

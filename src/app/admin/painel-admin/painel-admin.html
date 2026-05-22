@@ -29,6 +29,13 @@
     >
       Seções da Home
     </button>
+    <button
+      class="tab-btn destaque-tab"
+      [class.active]="tab === 'destaque'"
+      (click)="trocarTab('destaque')"
+    >
+      ✦ Destaque da Semana
+    </button>
   </div>
 
   <!-- CATEGORIAS -->
@@ -732,6 +739,64 @@
           }
         </tbody>
       </table>
+    </div>
+  </section>
+  }
+
+  <!-- DESTAQUE DA SEMANA -->
+  @if (tab === 'destaque') {
+  <section class="section">
+    <div class="section-header">
+      <h2>Receita da Semana</h2>
+    </div>
+
+    <div class="destaque-atual" *ngIf="destaqueAtual">
+      <div class="destaque-preview">
+        <img
+          *ngIf="destaqueAtual.imagem1"
+          [src]="destaqueAtual.imagem1"
+          class="destaque-thumb"
+          alt=""
+        />
+        <div class="destaque-info">
+          <span class="destaque-badge">✦ Em destaque agora</span>
+          <p class="destaque-nome">{{ destaqueAtual.titulo }}</p>
+          <p class="destaque-cat">{{ destaqueAtual.categoria }}</p>
+        </div>
+        <button class="btn-danger" (click)="removerDestaque()">
+          Remover destaque
+        </button>
+      </div>
+    </div>
+
+    <div class="destaque-vazio" *ngIf="!destaqueAtual">
+      <p>Nenhuma receita em destaque no momento.</p>
+    </div>
+
+    <div class="destaque-busca-area">
+      <h3>{{ destaqueAtual ? 'Trocar destaque' : 'Selecionar receita' }}</h3>
+      <div class="field" style="max-width: 400px; margin-top: 12px">
+        <label>Buscar receita</label>
+        <input
+          [(ngModel)]="destaqueBusca"
+          (ngModelChange)="onDestaqueBuscaChange()"
+          placeholder="Digite o nome da receita..."
+        />
+      </div>
+
+      <div class="sugestoes-list" *ngIf="destaqueReceitas.length > 0">
+        <div
+          class="sugestao-item"
+          *ngFor="let r of destaqueReceitas"
+          (click)="ativarDestaque(r)"
+          [class.ja-destacada]="r.destaque == 1"
+        >
+          <img *ngIf="r.imagem1" [src]="r.imagem1" class="sug-thumb" alt="" />
+          <span>{{ r.titulo }}</span>
+          <span class="sug-badge" *ngIf="r.destaque == 1">atual</span>
+          <span class="sug-action" *ngIf="r.destaque != 1">Destacar →</span>
+        </div>
+      </div>
     </div>
   </section>
   }

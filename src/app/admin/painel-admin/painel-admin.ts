@@ -16,8 +16,9 @@ import {
 } from '../../services/admin/admin-secao.service';
 import { AdminUploadService } from '../../services/admin/admin-upload.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { DestaqueService } from '../../services/destaque/destaque.service';
 
-type Tab = 'categorias' | 'subcategorias' | 'secoes';
+type Tab = 'categorias' | 'subcategorias' | 'secoes' | 'destaque';
 
 @Component({
   selector: 'bra-painel-admin',
@@ -75,6 +76,13 @@ export class PainelAdmin implements OnInit {
 
   secTipoFundo: 'imagem' | 'cor' = 'imagem';
 
+  // Destaque da semana
+  destaqueAtual: any = null;
+  destaqueReceitas: any[] = [];
+  destaqueBusca = '';
+  destaqueLoading = false;
+  private destaqueBuscaSubject = new Subject<string>();
+
   // Upload seções
   previewFundoSecao: string | null = null;
   previewFundoTituloSecao: string | null = null;
@@ -101,12 +109,20 @@ export class PainelAdmin implements OnInit {
     private secaoService: AdminSecaoService,
     private uploadService: AdminUploadService,
     private modalService: ModalService,
+    private destaqueService: DestaqueService,
   ) {}
 
   ngOnInit(): void {
     this.userId = this.auth.getUserId()!;
 
     this.carregarCategorias();
+    this.carregarDestaque();
+
+    this.destaqueBuscaSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((t) => t.length >= 2 ? this.destaqueService.buscarReceitas(t) : of([])),
+    ).subscribe((res) => { this.destaqueReceitas = res; });
     this.carregarSubcategorias();
     this.carregarSecoes();
     this.carregarCategoriasComReceitas();
@@ -127,6 +143,57 @@ export class PainelAdmin implements OnInit {
   trocarTab(t: Tab) {
     this.tab = t;
     this.fecharForms();
+  }
+
+  // ── Destaque ──────────────────────────────────────────────────────────────
+
+  carregarDestaque() {
+    this.destaqueService.buscar().subscribe({
+      next: (d) => { this.destaqueAtual = d; },
+      error: () => { this.destaqueAtual = null; },
+    });
+  }
+
+  onDestaqueBuscaChange() {
+    this.destaqueBuscaSubject.next(this.destaqueBusca);
+  }
+
+  ativarDestaque(receita: any) {
+    this.destaqueLoading = true;
+    this.destaqueService.ativar(receita.id, this.userId).subscribe({
+      next: () => {
+        this.destaqueLoading = false;
+        this.destaqueBusca = '';
+        this.destaqueReceitas = [];
+        this.carregarDestaque();
+        this.modalService.open({ type: 'success', title: 'Destaque ativado', message: `"${receita.titulo}" é a nova receita da semana!` });
+      },
+      error: () => {
+        this.destaqueLoading = false;
+        this.modalService.open({ type: 'error', title: 'Erro', message: 'Erro ao ativar destaque.' });
+      },
+    });
+  }
+
+  removerDestaque() {
+    this.modalService.open({
+      type: 'warning',
+      title: 'Remover destaque',
+      message: 'Remover a receita em destaque? A seção não aparecerá na home.',
+      confirmText: 'Remover',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        this.destaqueService.remover(this.userId).subscribe({
+          next: () => {
+            this.destaqueAtual = null;
+            this.modalService.open({ type: 'success', title: 'Destaque removido', message: 'Nenhuma receita está em destaque.' });
+          },
+          error: () => {
+            this.modalService.open({ type: 'error', title: 'Erro', message: 'Erro ao remover destaque.' });
+          },
+        });
+      },
+    });
   }
 
   fecharForms() {
@@ -265,6 +332,13 @@ export class PainelAdmin implements OnInit {
         this.catForm = {};
         this.catEditId = null;
         this.carregarCategorias();
+    this.carregarDestaque();
+
+    this.destaqueBuscaSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((t) => t.length >= 2 ? this.destaqueService.buscarReceitas(t) : of([])),
+    ).subscribe((res) => { this.destaqueReceitas = res; });
       },
       error: () => {
         this.modalService.open({ type: 'error', title: 'Erro', message: 'Erro ao salvar categoria.' });
@@ -285,6 +359,13 @@ export class PainelAdmin implements OnInit {
           next: () => {
             this.modalService.open({ type: 'success', title: 'Categoria excluída', message: 'Categoria excluída com sucesso!' });
             this.carregarCategorias();
+    this.carregarDestaque();
+
+    this.destaqueBuscaSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((t) => t.length >= 2 ? this.destaqueService.buscarReceitas(t) : of([])),
+    ).subscribe((res) => { this.destaqueReceitas = res; });
             this.carregarSubcategorias();
           },
           error: () => {

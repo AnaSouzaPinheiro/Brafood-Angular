@@ -9,6 +9,8 @@ import { Recipes } from '../../model/myrecipes';
 import { FavoritoService } from '../../services/favorito/favorito.service';
 import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
 import { StarRating } from '../../shared/star-rating/star-rating';
+import { ModalService } from '../../services/modal/modal.service';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'bra-info-recipe',
@@ -53,12 +55,15 @@ export class InfoRecipe implements OnChanges {
   userId: number | null = null;
   user!: User;
   Recipes: Recipes[] = [];
+  avaliacaoLoading = false;
 
   constructor(
     private auth: AuthService,
     private favoritoService: FavoritoService,
     private avaliacaoService: AvaliacaoService,
     private router: Router,
+    private modalService: ModalService,
+    private toastService: ToastService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -115,16 +120,30 @@ export class InfoRecipe implements OnChanges {
 
   onAvaliar(nota: number | null) {
     if (!this.userId) {
-      this.router.navigate(['/login']);
+      this.modalService.open({
+        type: 'confirm',
+        title: 'Login necessário',
+        message: 'Para avaliar esta receita, você precisa estar logado.',
+        confirmText: 'Ir para login',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
+        },
+      });
       return;
     }
     const idReceita = Number(this.recipe.id);
+    this.avaliacaoLoading = true;
 
     if (nota === null) {
       this.avaliacaoService.remover(this.userId, idReceita).subscribe((res) => {
         this.notaUsuario = null;
         this.mediaAvaliacao = res.media ?? null;
         this.totalAvaliacoes = res.total;
+        this.avaliacaoLoading = false;
+        this.toastService.show('Avaliação removida.', 'info');
       });
     } else {
       this.avaliacaoService
@@ -133,6 +152,11 @@ export class InfoRecipe implements OnChanges {
           this.notaUsuario = nota;
           this.mediaAvaliacao = res.media;
           this.totalAvaliacoes = res.total;
+          this.avaliacaoLoading = false;
+          this.toastService.show(
+            `Avaliação registrada! ${'⭐'.repeat(nota)}`,
+            'success',
+          );
         });
     }
   }

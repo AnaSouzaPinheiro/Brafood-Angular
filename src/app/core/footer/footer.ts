@@ -1,25 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Categoria } from '../../model/categoria';
 import { CategoriaService } from '../../services/categoria/categoria.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { NewsletterService } from '../../services/newsletter/newsletter.service';
 import { toSlug } from '../../utils/slug';
 
 @Component({
   selector: 'bra-footer',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })
-export class Footer {
+export class Footer implements OnInit {
   logado = false;
   userId: string | null = null;
   categorias: Categoria[] = [];
 
+  // Newsletter
+  newsletterEmail = '';
+  newsletterStatus: 'idle' | 'loading' | 'success' | 'error' | 'duplicate' =
+    'idle';
+  newsletterMsg = '';
+
   constructor(
     public auth: AuthService,
-    private categoriaServices: CategoriaService
+    private categoriaServices: CategoriaService,
+    private newsletterService: NewsletterService,
   ) {}
 
   ngOnInit() {
@@ -45,5 +54,41 @@ export class Footer {
   logout() {
     this.auth.logout();
     location.reload();
+  }
+
+  inscreverNewsletter() {
+    const email = this.newsletterEmail.trim();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      this.newsletterStatus = 'error';
+      this.newsletterMsg = 'Informe um e-mail válido.';
+      return;
+    }
+
+    this.newsletterStatus = 'loading';
+
+    this.newsletterService.inscrever(email).subscribe({
+      next: (res) => {
+        this.newsletterStatus = 'success';
+        this.newsletterMsg = res.mensagem || 'Inscrição realizada!';
+        this.newsletterEmail = '';
+      },
+      error: (err) => {
+        const status = err?.status;
+        if (status === 409) {
+          this.newsletterStatus = 'duplicate';
+          this.newsletterMsg = 'Este e-mail já está inscrito.';
+        } else {
+          this.newsletterStatus = 'error';
+          this.newsletterMsg = 'Erro ao inscrever. Tente novamente.';
+        }
+      },
+    });
+  }
+
+  resetNewsletter() {
+    this.newsletterStatus = 'idle';
+    this.newsletterMsg = '';
+    this.newsletterEmail = '';
   }
 }

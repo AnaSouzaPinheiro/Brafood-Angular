@@ -8,7 +8,7 @@
           [notaUsuario]="notaUsuario"
           [media]="mediaAvaliacao"
           [total]="totalAvaliacoes"
-          [interativo]="!!userId"
+          [interativo]="!!userId && !avaliacaoLoading"
           (avaliar)="onAvaliar($event)"
         ></bra-star-rating>
       </p>

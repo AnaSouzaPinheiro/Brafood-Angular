@@ -1,5 +1,28 @@
 <bra-slide-home [recipes]="slides"></bra-slide-home>
-<bra-recipe-section
-  *ngFor="let section of sections, trackBy: trackById"
-  [section]="section"
-></bra-recipe-section>
+
+<!-- Skeleton enquanto seções carregam -->
+<ng-container *ngIf="loadingSections">
+  <bra-section-skeleton [cardCount]="4"></bra-section-skeleton>
+  <bra-section-skeleton [cardCount]="4"></bra-section-skeleton>
+</ng-container>
+
+<!-- Conteúdo carregado -->
+<ng-container *ngIf="!loadingSections">
+  <!-- Primeira seção (antes do destaque) -->
+  <bra-recipe-section
+    *ngIf="sections.length > 0"
+    [section]="sections[0]"
+  ></bra-recipe-section>
+
+  <!-- Receita em destaque intercalada -->
+  <bra-destaque-semana
+    *ngIf="destaqueRecipe"
+    [recipe]="destaqueRecipe"
+  ></bra-destaque-semana>
+
+  <!-- Demais seções -->
+  <bra-recipe-section
+    *ngFor="let section of sections | slice:1; trackBy: trackById"
+    [section]="section"
+  ></bra-recipe-section>
+</ng-container>

@@ -1,0 +1,62 @@
+<a [routerLink]="url" class="ds-link">
+  <div class="ds-card">
+
+    <!-- Imagem -->
+    <div class="ds-img">
+      <img
+        [src]="recipe.imagem1 | mediaUrl"
+        [alt]="recipe.titulo"
+        loading="lazy"
+      />
+      <div class="ds-week-pill">✦ Receita da semana</div>
+      <div class="ds-ghost-num">01</div>
+    </div>
+
+    <!-- Painel de conteúdo -->
+    <div class="ds-panel">
+
+      <div class="ds-badge">
+        <span class="ds-badge-line"></span>
+        <span>Em destaque</span>
+      </div>
+
+      <h2 class="ds-title">{{ recipe.titulo }}</h2>
+
+      <p class="ds-cat" *ngIf="categoriaLabel">{{ categoriaLabel }}</p>
+
+      <div class="ds-line"></div>
+
+      <p class="ds-text" *ngIf="recipe.resumo">{{ recipe.resumo }}</p>
+
+      <!-- Meta: estrelas + favoritos -->
+      <div class="ds-meta">
+        <div class="ds-meta-item ds-stars-row" *ngIf="recipe.media_avaliacao">
+          <ng-container *ngFor="let cheia of estrelas">
+            <i
+              class="fa-star"
+              [class.fa-solid]="cheia"
+              [class.fa-regular]="!cheia"
+              [class.star-filled]="cheia"
+              [class.star-empty]="!cheia"
+            ></i>
+          </ng-container>
+          <span class="ds-score">{{ recipe.media_avaliacao | number:'1.1-1' }}</span>
+          <span class="ds-total">({{ recipe.qtd_avaliacoes }})</span>
+        </div>
+
+        <div class="ds-sep" *ngIf="recipe.media_avaliacao && recipe.qtd_fav > 0"></div>
+
+        <div class="ds-meta-item" *ngIf="recipe.qtd_fav > 0">
+          <i class="fa-solid fa-heart ds-heart-icon"></i>
+          {{ favLabel }} favoritos
+        </div>
+      </div>
+
+      <div class="ds-btn">
+        Ver receita
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+
+    </div>
+  </div>
+</a>

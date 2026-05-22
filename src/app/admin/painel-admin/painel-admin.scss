@@ -347,7 +347,7 @@ table {
 .preview-item {
   gap: 6px;
 
-  @include flex-column-center ;
+  @include flex-column-center;
 
   small {
     font-size: 11px;
@@ -396,4 +396,144 @@ table {
 .sem-cor {
   color: $primary-gray;
   font-size: 14px;
+}
+
+// ── Destaque da Semana ────────────────────────────────────────────────────────
+.btn-danger {
+  background: transparent;
+  color: $quaternary-blue;
+  border-radius: 25px;
+  padding: 10px;
+  border: 1px solid $quaternary-blue;
+}
+
+.destaque-tab {
+  color: $primary-blue;
+  font-weight: 500;
+}
+
+.destaque-atual {
+  margin-bottom: 32px;
+}
+
+.destaque-preview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #000b28 0%, #001a5c 100%);
+  border-radius: 14px;
+  padding: 20px 24px;
+  flex-wrap: wrap;
+}
+
+.destaque-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.destaque-info {
+  flex: 1;
+  min-width: 160px;
+
+  .destaque-badge {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $quaternary-blue;
+    font-weight: 500;
+  }
+
+  .destaque-nome {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e8eeff;
+    margin-top: 4px;
+  }
+
+  .destaque-cat {
+    font-size: 12px;
+    color: $secondary-blue;
+    margin-top: 2px;
+  }
+}
+
+.destaque-vazio {
+  padding: 20px;
+  background: $secondary-gray;
+  border-radius: 10px;
+  color: $primary-gray;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.destaque-busca-area {
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $primary-blue;
+    margin-bottom: 4px;
+  }
+}
+
+.sugestoes-list {
+  margin-top: 8px;
+  border: 1px solid $quaternary-gray;
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.sugestao-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid $quaternary-gray;
+
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover {
+    background: $secondary-gray;
+  }
+
+  &.ja-destacada {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .sug-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .sug-badge {
+    flex: 0;
+    font-size: 10px;
+    background: $secondary-gray;
+    color: $primary-blue;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .sug-action {
+    flex: 0;
+    font-size: 12px;
+    color: $primary-blue;
+    font-weight: 500;
+  }
 }

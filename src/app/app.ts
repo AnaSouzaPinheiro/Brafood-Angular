@@ -9,8 +9,9 @@ import { Credit } from './core/credit/credit';
 import { Navbar } from './core/navbar/navbar';
 import { CategoryBar } from './core/category-bar/category-bar';
 import { Footer } from './core/footer/footer';
-import { ModalFeedback } from "./shared/modal-feedback/modal-feedback";
-import { CookieBanner } from "./core/cookie-banner/cookie-banner";
+import { ModalFeedback } from './shared/modal-feedback/modal-feedback';
+import { CookieBanner } from './core/cookie-banner/cookie-banner';
+import { Toast } from './shared/toast/toast';
 
 @Component({
   selector: 'app-root',
@@ -24,8 +25,9 @@ import { CookieBanner } from "./core/cookie-banner/cookie-banner";
     Credit,
     RouterModule,
     ModalFeedback,
-    CookieBanner
-],
+    CookieBanner,
+    Toast,
+  ],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
 })
@@ -35,7 +37,7 @@ export class App {
 
   constructor(
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     // Detecta se está no browser
     this.isBrowser = isPlatformBrowser(this.platformId);

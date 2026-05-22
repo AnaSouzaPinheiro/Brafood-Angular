@@ -1,4 +1,8 @@
-<div class="star-rating">
+<div
+  class="star-rating"
+  role="group"
+  [attr.aria-label]="interativo ? 'Avalie esta receita' : 'Avaliação da receita'"
+>
   <!-- Estrelas interativas (usuário avalia) -->
   <div
     class="stars"
@@ -15,6 +19,11 @@
       [class.active]="n <= notaAtiva + 0.5"
       (mouseenter)="onHover(n)"
       (click)="onClick(n)"
+      [attr.role]="interativo ? 'button' : null"
+      [attr.aria-label]="interativo ? (n + (n === 1 ? ' estrela' : ' estrelas')) : null"
+      [attr.tabindex]="interativo ? 0 : null"
+      (keydown.enter)="interativo && onClick(n)"
+      (keydown.space)="interativo && onClick(n)"
     ></i>
   </div>
 
