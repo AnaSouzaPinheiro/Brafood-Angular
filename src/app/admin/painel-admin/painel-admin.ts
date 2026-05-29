@@ -275,7 +275,7 @@ export class PainelAdmin implements OnInit {
     reader.readAsDataURL(file);
 
     this.uploadandoIconeCat = true;
-    this.uploadService.uploadImagem(file, 'categorias', this.userId).subscribe({
+    this.uploadService.uploadImagem(file, 'icone', this.userId).subscribe({
       next: (res) => {
         this.catForm.icone = res.caminho;
         this.uploadandoIconeCat = false;

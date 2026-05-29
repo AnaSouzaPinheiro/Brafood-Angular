@@ -10,7 +10,7 @@ export class AdminUploadService extends BaseService {
 
   uploadImagem(
     arquivo: File,
-    contexto: 'categorias' | 'secoes',
+    contexto: 'categorias' | 'icone' | 'secoes',
     userId: number
   ): Observable<{ caminho: string }> {
     const formData = new FormData();
