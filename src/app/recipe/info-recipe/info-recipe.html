@@ -1,19 +1,5 @@
 <div class="info-recipe">
   <div class="main">
-    <div class="avaliacao-block">
-      <p class="avaliacao-label">
-        {{ userId ? (notaUsuario ? 'Sua avaliação:' : 'Avalie esta receita:') :
-        'Avaliação:' }}
-        <bra-star-rating
-          [notaUsuario]="notaUsuario"
-          [media]="mediaAvaliacao"
-          [total]="totalAvaliacoes"
-          [interativo]="!!userId && !avaliacaoLoading"
-          (avaliar)="onAvaliar($event)"
-        ></bra-star-rating>
-      </p>
-    </div>
-
     <h1 class="title">{{ mappedInfoRecipe.titulo }}</h1>
 
     <div class="categories">
@@ -65,11 +51,14 @@
       ></bra-hover-things>
     </div>
 
-    <div class="item" (click)="scrollToComentarios()">
-      <i class="fa-regular fa-comments"></i>
+    <div class="item avaliacao-item" (click)="scrollToComentarios()">
+      <i class="fa-solid fa-star avaliacao-icon"></i>
+      <span class="avaliacao-compact" *ngIf="totalAvaliacoes > 0">
+        {{ mediaAvaliacao | number:'1.1-1' }}
+      </span>
       <bra-hover-things
         class="hover"
-        hoverText="Comentários"
+        hoverText="Avaliações e comentários"
       ></bra-hover-things>
     </div>
     <div class="item" (click)="shareRecipe()">

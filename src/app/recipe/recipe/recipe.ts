@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RecipeImages } from '../recipe-images/recipe-images';
 import { InfoRecipe } from '../info-recipe/info-recipe';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Receita } from '../../model/receita';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
@@ -16,8 +16,11 @@ import { ModalService } from '../../services/modal/modal.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { Meta, Title } from '@angular/platform-browser';
+import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
+import { StarRating } from '../../shared/star-rating/star-rating';
 import { Section } from '../../model/section-home';
 import { toSlug } from '../../utils/slug';
+import { ToastService } from '../../services/toast/toast.service';
 
 const MIN_COMENTARIO = 3;
 const MAX_COMENTARIO = 1000;
@@ -33,7 +36,7 @@ const MAX_COMENTARIO = 1000;
     FormsModule,
     MediaUrlPipe,
     RecipeSection,
-    RouterModule,
+    StarRating,
   ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
@@ -43,25 +46,32 @@ export class Recipe {
   comentarios: Comentario[] = [];
   secaoRelacionadas: Section | null = null;
 
+  // Avaliação integrada ao formulário de comentário
+  notaForm: number | null = null; // estrela selecionada antes de enviar
+  notaUsuario: number | null = null; // nota já salva do usuário
+  mediaAvaliacao: number | null = null;
+  totalAvaliacoes: number = 0;
+
   novoComentario = '';
   urlWhatsApp = '';
   visibleCommentsCount = 3;
 
   usuarioId: number | null = null;
-
   tentouComentar = false;
   comentarioTocado = false;
 
   constructor(
+    private meta: Meta,
     private router: Router,
+    private titleService: Title,
     private route: ActivatedRoute,
     private authService: AuthService,
     private modalService: ModalService,
     private ReceitaServices: ReceitaService,
+    private avaliacaoService: AvaliacaoService,
     private comentarioService: ComentarioService,
     private compartilhamentoService: CompartilhamentoService,
-    private meta: Meta,
-    private titleService: Title,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit() {
@@ -88,7 +98,6 @@ export class Recipe {
         data_criacao: r.data_criacao
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
           : '',
-        usuarioId: r.id_usuario ? Number(r.id_usuario) : null,
         autor: r.autor,
         foto_perfil: r.foto_perfil || '',
         bio: r.bio,
@@ -110,7 +119,37 @@ export class Recipe {
       this.getLinkWhatsApp();
       this.carregarRelacionadas();
       this.atualizarOG();
+      this.carregarAvaliacao();
     });
+  }
+
+  carregarAvaliacao() {
+    if (!this.recipe?.id) return;
+    const idReceita = Number(this.recipe.id);
+    const userId = this.usuarioId;
+    if (userId) {
+      this.avaliacaoService.buscar(userId, idReceita).subscribe({
+        next: (res) => {
+          this.notaUsuario = res.nota;
+          this.notaForm = res.nota; // pré-preenche as estrelas no form
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+        },
+        error: () => {},
+      });
+    } else {
+      this.avaliacaoService.buscar(0, idReceita).subscribe({
+        next: (res) => {
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+        },
+        error: () => {},
+      });
+    }
+  }
+
+  onNotaFormChange(nota: number | null) {
+    this.notaForm = nota;
   }
 
   atualizarOG() {
@@ -224,8 +263,10 @@ export class Recipe {
 
   get erroComentario(): string {
     const texto = this.novoComentario.trim();
-    if (!texto) return 'Escreva algo antes de comentar.';
-    if (texto.length < MIN_COMENTARIO)
+    // Precisa de nota OU texto — não exige os dois
+    if (!texto && !this.notaForm)
+      return 'Avalie com estrelas ou escreva um comentário.';
+    if (texto && texto.length < MIN_COMENTARIO)
       return `Escreva pelo menos ${MIN_COMENTARIO} caracteres.`;
     if (texto.length > MAX_COMENTARIO)
       return `O comentário não pode ultrapassar ${MAX_COMENTARIO} caracteres.`;
@@ -273,7 +314,7 @@ export class Recipe {
       this.modalService.open({
         type: 'confirm',
         title: 'Login necessário',
-        message: 'Para comentar nesta receita, você precisa estar logado.',
+        message: 'Para avaliar ou comentar, você precisa estar logado.',
         confirmText: 'Ir para login',
         cancelText: 'Cancelar',
         onConfirm: () => {
@@ -287,18 +328,53 @@ export class Recipe {
 
     if (this.erroComentario) return;
 
-    this.comentarioService
-      .criar({
-        id_usuario: this.usuarioId,
-        id_receita: this.recipe!.id,
-        texto: this.novoComentario.trim(),
-      })
-      .subscribe(() => {
-        this.novoComentario = '';
-        this.tentouComentar = false;
-        this.comentarioTocado = false;
-        this.recarregarComentarios();
-      });
+    const texto = this.novoComentario.trim();
+    const idReceita = this.recipe!.id;
+
+    // Guard: avaliação já enviada e nada mudou (mesma nota, sem texto novo)
+    const notaIgual =
+      this.notaForm !== null && this.notaForm === this.notaUsuario;
+    if (notaIgual && !texto) {
+      this.toastService.show('Você já enviou esta avaliação.', 'info');
+      return;
+    }
+
+    // Comentário com nota embutida (nota é opcional)
+    if (texto) {
+      this.comentarioService
+        .criar({
+          id_usuario: this.usuarioId,
+          id_receita: idReceita,
+          texto,
+          nota: this.notaForm ?? undefined,
+        })
+        .subscribe(() => {
+          this.novoComentario = '';
+          this.tentouComentar = false;
+          this.comentarioTocado = false;
+          if (this.notaForm) {
+            this.notaUsuario = this.notaForm;
+          }
+          this.carregarAvaliacao();
+          this.recarregarComentarios();
+          this.toastService.show('Comentário enviado com sucesso!', 'success');
+        });
+    } else if (this.notaForm) {
+      // Só nota sem texto — salva via avaliacaoService diretamente
+      this.avaliacaoService
+        .avaliar(this.usuarioId, idReceita, this.notaForm)
+        .subscribe({
+          next: (res) => {
+            this.notaUsuario = this.notaForm;
+            this.mediaAvaliacao = res.media;
+            this.totalAvaliacoes = res.total;
+            this.tentouComentar = false;
+            this.comentarioTocado = false;
+            this.toastService.show('Avaliação enviada com sucesso!', 'success');
+          },
+          error: () => {},
+        });
+    }
   }
 
   recarregarComentarios() {

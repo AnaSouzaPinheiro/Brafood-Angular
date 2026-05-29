@@ -168,6 +168,18 @@
           </div>
           <small>Hover</small>
         </div>
+        } @if (previewFundoCat || catForm.fundo) {
+        <div class="preview-item intern"
+        >
+          <div class="cat-intern">
+            <img alt="ícone"
+              onerror="this.style.display = 'none'"
+              [src]="previewFundoCat || catForm.fundo"
+            />
+            <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+          </div>
+          <small>Página interna</small>
+        </div>
         }
       </div>
       }

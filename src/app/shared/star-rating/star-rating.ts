@@ -25,6 +25,8 @@ export class StarRating implements OnChanges {
   @Output() avaliar = new EventEmitter<number | null>();
   /** Se false, exibe só a média (somente leitura) */
   @Input() interativo: boolean = true;
+  /** Quando true, estrelas vazias ficam vermelhas (validação) */
+  @Input() erro: boolean = false;
 
   estrelas = [1, 2, 3, 4, 5];
   hover: number | null = null;

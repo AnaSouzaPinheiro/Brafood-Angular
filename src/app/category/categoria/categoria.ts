@@ -36,12 +36,13 @@ export class Categoria {
   Recipes: Recipes[] = [];
   RecipesFiltradas: Recipes[] = [];
 
+  categoriaTemReceitas = false;
+
   begin = 0;
   end = 8;
 
   filtros!: FiltroState;
 
-  // Dropdown dinâmico de subcategorias (exclusivo desta página)
   subcategoriaItems: DropdownDinamicoItem[] = [];
 
   constructor(
@@ -80,16 +81,21 @@ export class Categoria {
           })),
         ];
 
-        this.buscarReceitas();
+        this.categoriaTemReceitas = false;
+        this.buscarReceitas(true);
       });
   }
 
   onFiltrosChange(filtros: FiltroState) {
     this.filtros = filtros;
-    this.buscarReceitas();
+    this.buscarReceitas(false);
   }
 
-  buscarReceitas() {
+  /**
+   * @param primeiraCargas — quando true, atualiza categoriaTemReceitas.
+   * Nas buscas com filtro ativo nunca derruba esse flag.
+   */
+  buscarReceitas(primeiraCarga = false) {
     if (!this.categoria) return;
 
     const req: any = { ordenar: this.filtros.ordenar };
@@ -107,7 +113,6 @@ export class Categoria {
       .subscribe((res) => {
         this.Recipes = res;
 
-        // Filtro de tempo mínimo ("Longo") aplicado no frontend
         this.RecipesFiltradas =
           this.filtros.tempoMin != null
             ? res.filter(
@@ -116,6 +121,10 @@ export class Categoria {
                   this.filtros.tempoMin!,
               )
             : [...res];
+
+        if (primeiraCarga) {
+          this.categoriaTemReceitas = this.RecipesFiltradas.length > 0;
+        }
 
         this.begin = 0;
         this.end = 8;
@@ -131,12 +140,11 @@ export class Categoria {
   }
 
   adicionarReceita() {
-    console.log("oi");
     if (!this.usuarioId) {
       this.modalService.open({
         type: 'confirm',
         title: 'Login necessário',
-        message: 'Para comentar nesta receita, você precisa estar logado.',
+        message: 'Para adicionar uma receita, você precisa estar logado.',
         confirmText: 'Ir para login',
         cancelText: 'Cancelar',
         onConfirm: () => {
@@ -146,8 +154,8 @@ export class Categoria {
         },
       });
       return;
-    } 
-    
+    }
+
     this.router.navigate(['/adicionar-receita/hub']);
   }
 }

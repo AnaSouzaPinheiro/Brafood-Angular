@@ -6,5 +6,5 @@
   aria-live="polite"
 >
   <i class="fa-solid" [ngClass]="icon"></i>
-  <span>{{ toast?.text }}</span>
+  <span [innerHTML]="toast?.text"></span>
 </div>

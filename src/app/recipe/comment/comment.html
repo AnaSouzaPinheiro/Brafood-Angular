@@ -1,21 +1,34 @@
 <div class="comment">
-
   <div class="reply-to" *ngIf="isReply() && comment.nome_pai">
     <i class="fa-solid fa-reply"></i>
-    em resposta a <span class="reply-to-name">{{ '@' + comment.nome_pai }}</span>
+    em resposta a
+    <span class="reply-to-name">{{ '@' + comment.nome_pai }}</span>
   </div>
 
   <div class="comment-body">
     <div class="person">
-      <bra-user-icon [user]="{ id: comment.id_usuario, nome: comment.nome_usuario, foto_perfil: comment.foto_perfil }"></bra-user-icon>
+      <bra-user-icon
+        [user]="{ id: comment.id_usuario, nome: comment.nome_usuario, foto_perfil: comment.foto_perfil }"
+      ></bra-user-icon>
 
       <span class="name">{{ comment.nome_usuario }}</span>
     </div>
 
     <div class="content">
-      <span class="data">
-        {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
-      </span>
+      <div class="comment-meta">
+        <span class="data">
+          {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
+        </span>
+        <div class="comment-nota" *ngIf="comment.nota">
+          <ng-container *ngFor="let i of [1,2,3,4,5]">
+            <i
+              class="fa-star comment-star"
+              [class.fa-solid]="i <= (comment.nota || 0)"
+              [class.fa-regular]="i > (comment.nota || 0)"
+            ></i>
+          </ng-container>
+        </div>
+      </div>
 
       <p class="text">{{ comment.texto }}</p>
 
@@ -65,7 +78,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <!-- REPLIES -->

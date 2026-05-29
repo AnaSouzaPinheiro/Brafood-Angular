@@ -41,7 +41,7 @@
 
     <!-- Newsletter -->
     <div class="subscribe">
-      <h4>Inscreva-se</h4>
+      <h4>Receba receitas no seu e-mail</h4>
 
       <!-- Estado: sucesso -->
       <div
@@ -63,7 +63,7 @@
         >
           <input
             type="email"
-            placeholder="Seu e-mail"
+            placeholder="Digite seu e-mail"
             [(ngModel)]="newsletterEmail"
             (keydown.enter)="inscreverNewsletter()"
             [disabled]="newsletterStatus === 'loading'"
@@ -76,7 +76,7 @@
           >
             <i
               class="fa-solid"
-              [class.fa-arrow-pointer]="newsletterStatus !== 'loading'"
+              [class.fa-paper-plane]="newsletterStatus !== 'loading'"
               [class.fa-spinner]="newsletterStatus === 'loading'"
               [class.nl-spin]="newsletterStatus === 'loading'"
             ></i>
@@ -95,9 +95,7 @@
       </ng-container>
 
       <p class="nl-descricao">
-        Seja para o dia a dia ou para ocasiões especiais, o BraFood está aqui
-        para te acompanhar com receitas práticas, deliciosas e cheias de sabor
-        brasileiro. Cozinhe, compartilhe e inspire!
+        Receba receitas, dicas e novidades do BraFood direto no seu e-mail.
       </p>
     </div>
   </div>

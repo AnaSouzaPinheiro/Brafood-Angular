@@ -1,44 +1,99 @@
 @if (imageList.length > 2) {
-  <div class="all-container">
-    <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="eager" />
-    </div>
-    
-    <div class="twoHalf">
-      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" loading="eager" />
-      <img class="three" (click)="openLightbox(2)" [src]="imageList[2] | mediaUrl" alt="" loading="eager" />
-    </div>
+<div class="all-container">
+  <div class="oneHalf">
+    <img
+      class="one"
+      (click)="openLightbox(0)"
+      [src]="imageList[0] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
   </div>
+
+  <div class="twoHalf">
+    <img
+      class="two"
+      (click)="openLightbox(1)"
+      [src]="imageList[1] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
+    <img
+      class="three"
+      (click)="openLightbox(2)"
+      [src]="imageList[2] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
+  </div>
+</div>
 } @else if (imageList.length == 2) {
-  <div class="two-container">
-    <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="eager" />
-    </div>
-    
-    <div class="twoHalf">
-      <img class="two" (click)="openLightbox(1)" [src]="imageList[1] | mediaUrl" alt="" loading="eager" />
-    </div>
+<div class="two-container">
+  <div class="oneHalf">
+    <img
+      class="one"
+      (click)="openLightbox(0)"
+      [src]="imageList[0] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
   </div>
+
+  <div class="twoHalf">
+    <img
+      class="two"
+      (click)="openLightbox(1)"
+      [src]="imageList[1] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
+  </div>
+</div>
 } @else {
-  <div class="one-container">
-    <div class="oneHalf">
-      <img class="one" (click)="openLightbox(0)" [src]="imageList[0] | mediaUrl" alt="" loading="eager" />
-    </div>
+<div class="one-container">
+  <div class="oneHalf">
+    <img
+      class="one"
+      (click)="openLightbox(0)"
+      [src]="imageList[0] | mediaUrl"
+      alt=""
+      loading="eager"
+    />
   </div>
+</div>
 }
 
 <!-- Lightbox -->
-<div class="lightbox" *ngIf="isLightboxOpen">
-  <div class="lightbox-content">
-    <button class="close" (click)="closeLightbox()">✖</button>
+<div class="lightbox" *ngIf="isLightboxOpen" (click)="closeLightbox()">
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <button class="close" (click)="closeLightbox()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
 
     <div class="all">
+      <button class="prev" (click)="prevImage(); $event.stopPropagation()">
+        <i class="fa-solid fa-caret-left"></i>
+      </button>
 
-        <button class="prev" (click)="prevImage()"><</button>
-        
-        <img [src]="imageList[currentIndex()] | mediaUrl" class="lightbox-image" loading="eager" />
-        
-        <button class="next" (click)="nextImage()">></button>
+      <img
+        [src]="imageList[currentIndex()] | mediaUrl"
+        class="lightbox-image"
+        loading="eager"
+      />
+
+      <button class="next" (click)="nextImage(); $event.stopPropagation()">
+        <i class="fa-solid fa-caret-right"></i>
+      </button>
+
+      <div class="mobile-arrows">
+        <button class="prev" (click)="prevImage(); $event.stopPropagation()">
+          <i class="fa-solid fa-caret-left"></i>
+        </button>
+
+        <button class="next" (click)="nextImage(); $event.stopPropagation()">
+          <i class="fa-solid fa-caret-right"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>

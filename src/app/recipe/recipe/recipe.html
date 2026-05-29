@@ -7,11 +7,7 @@
   <div class="receita">
     <div class="container">
       <div class="list">
-        <a
-          class="autor whatsApp autor-link"
-          [routerLink]="recipe?.usuarioId ? ['/chef', recipe?.usuarioId] : null"
-          [class.clickable]="recipe?.usuarioId"
-        >
+        <div class="autor whatsApp">
           <img
             class="bra-user-icon"
             [src]="recipe?.foto_perfil | mediaUrl"
@@ -22,7 +18,7 @@
             <span class="date">Publicado em: {{ recipe?.data_criacao }}</span>
             <p class="resumUser">{{ recipe?.bio }}</p>
           </div>
-        </a>
+        </div>
 
         <div class="whatsApp whatsApp-card">
           Ainda precisa comprar os ingredientes?
@@ -64,39 +60,83 @@
 
     <section class="commmets" id="comentarios">
       <div class="container com">
-        <h1 class="title sec">Comentários</h1>
+        <div class="ava">
+          <h1 class="title sec">Comentários</h1>
 
-        <div class="comment-input-wrapper">
-          <textarea
-            class="comment-textarea"
-            [class.comment-error]="comentarioInvalido"
-            placeholder="Nos conte o que achou dessa receita..."
-            [(ngModel)]="novoComentario"
-            (ngModelChange)="onComentarioChange()"
-            (blur)="onComentarioBlur()"
-            rows="3"
-            maxlength="1000"
-          ></textarea>
-
-          <span
-            class="char-counter"
-            [class.near-limit]="novoComentario.length >= 850"
-            [class.over-limit]="novoComentario.length > 1000"
-            aria-live="polite"
-          >
-            {{ novoComentario.length }}/1000
-          </span>
-
-          <span class="field-error" *ngIf="comentarioInvalido" role="alert">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            {{ erroComentario }}
-          </span>
+          <!-- Média geral (sempre visível se houver avaliações) -->
+          <div class="acb-media-block" *ngIf="totalAvaliacoes > 0">
+            <div class="acb-media-stars">
+              <bra-star-rating
+                class="ti"
+                [interativo]="false"
+                [media]="mediaAvaliacao"
+                [total]="totalAvaliacoes"
+              ></bra-star-rating>
+            </div>
+          </div>
         </div>
 
-        <bra-custom-button
-          label="Comentar"
-          (click)="comentar()"
-        ></bra-custom-button>
+        <!-- Box unificado avaliação + comentário -->
+        <div class="avaliacao-comment-box">
+          <div class="acb-header">
+            <!-- Estrelas interativas (logado) ou leitura (não logado) -->
+            <div class="acb-stars-block">
+              <div class="acb-label">
+                {{ notaUsuario ? 'Sua avaliação:' : 'Avalie esta receita:' }}
+
+                <div class="acb-stars-row">
+                  <bra-star-rating
+                    [notaUsuario]="notaForm"
+                    [interativo]="!!usuarioId"
+                    [erro]="comentarioInvalido && !notaForm"
+                    (avaliar)="onNotaFormChange($event)"
+                  ></bra-star-rating>
+                  <span class="acb-nota-hint" *ngIf="!notaForm">(opcional)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acb-divider"></div>
+
+          <div class="comment-input-wrapper">
+            <textarea
+              class="comment-textarea"
+              [class.comment-error]="comentarioInvalido && !notaForm"
+              placeholder="Nos conte o que achou dessa receita..."
+              [(ngModel)]="novoComentario"
+              (ngModelChange)="onComentarioChange()"
+              (blur)="onComentarioBlur()"
+              rows="3"
+              maxlength="1000"
+            ></textarea>
+
+            <span
+              class="char-counter"
+              [class.near-limit]="novoComentario.length >= 850"
+              [class.over-limit]="novoComentario.length > 1000"
+              aria-live="polite"
+            >
+              {{ novoComentario.length }}/1000
+            </span>
+          </div>
+
+          <!-- Erro único embaixo do textarea -->
+          <p
+            class="acb-hint-error"
+            *ngIf="comentarioInvalido && tentouComentar"
+            role="alert"
+          >
+            <i class="fa-solid fa-circle-exclamation"></i>
+            {{ erroComentario }}
+          </p>
+
+          <bra-custom-button
+            label="Enviar"
+            (click)="comentar()"
+          ></bra-custom-button>
+        </div>
+        <!-- /avaliacao-comment-box -->
 
         <div class="c">
           <bra-comment

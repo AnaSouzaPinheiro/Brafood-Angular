@@ -1,21 +1,20 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
 import { User } from '../../model/user';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Recipes } from '../../model/myrecipes';
 import { FavoritoService } from '../../services/favorito/favorito.service';
 import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
-import { StarRating } from '../../shared/star-rating/star-rating';
 import { ModalService } from '../../services/modal/modal.service';
 import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'bra-info-recipe',
   standalone: true,
-  imports: [NgFor, CustomButton, HoverThings, StarRating, RouterModule],
+  imports: [CommonModule, CustomButton, HoverThings],
   templateUrl: './info-recipe.html',
   styleUrl: './info-recipe.scss',
 })
@@ -48,22 +47,20 @@ export class InfoRecipe implements OnChanges {
   }
 
   isFavorite = false;
-  notaUsuario: number | null = null;
   mediaAvaliacao: number | null = null;
   totalAvaliacoes: number = 0;
   logado = false;
   userId: number | null = null;
   user!: User;
   Recipes: Recipes[] = [];
-  avaliacaoLoading = false;
 
   constructor(
-    private auth: AuthService,
-    private favoritoService: FavoritoService,
-    private avaliacaoService: AvaliacaoService,
     private router: Router,
+    private auth: AuthService,
     private modalService: ModalService,
     private toastService: ToastService,
+    private favoritoService: FavoritoService,
+    private avaliacaoService: AvaliacaoService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -73,6 +70,9 @@ export class InfoRecipe implements OnChanges {
     if (typeof window === 'undefined') return;
 
     this.logado = this.auth.isLoggedIn();
+
+    // Carrega média sempre — independente de estar logado
+    this.carregarAvaliacao();
 
     const userData = localStorage.getItem('user');
     if (!userData) return;
@@ -90,35 +90,24 @@ export class InfoRecipe implements OnChanges {
           console.error('Erro ao verificar favorito', err);
         },
       });
-
-    this.carregarAvaliacao();
   }
 
   carregarAvaliacao() {
+    // Busca só a média pública para exibir no info-recipe (leitura)
+    // A avaliação interativa do usuário vive no formulário de comentário
     if (!this.recipe?.id) return;
-    const idReceita = Number(this.recipe.id);
-    if (this.userId) {
-      this.avaliacaoService.buscar(this.userId, idReceita).subscribe({
-        next: (res) => {
-          this.notaUsuario = res.nota;
-          this.mediaAvaliacao = res.media;
-          this.totalAvaliacoes = res.total;
-        },
-        error: () => {},
-      });
-    } else {
-      // Usuário não logado: busca só a média
-      this.avaliacaoService.buscar(0, idReceita).subscribe({
+    this.avaliacaoService
+      .buscar(Number(this.userId), Number(this.recipe.id))
+      .subscribe({
         next: (res) => {
           this.mediaAvaliacao = res.media;
           this.totalAvaliacoes = res.total;
         },
         error: () => {},
       });
-    }
   }
 
-  onAvaliar(nota: number | null) {
+  toggleFavorito() {
     if (!this.userId) {
       this.modalService.open({
         type: 'confirm',
@@ -134,38 +123,6 @@ export class InfoRecipe implements OnChanges {
       });
       return;
     }
-    const idReceita = Number(this.recipe.id);
-    this.avaliacaoLoading = true;
-
-    if (nota === null) {
-      this.avaliacaoService.remover(this.userId, idReceita).subscribe((res) => {
-        this.notaUsuario = null;
-        this.mediaAvaliacao = res.media ?? null;
-        this.totalAvaliacoes = res.total;
-        this.avaliacaoLoading = false;
-        this.toastService.show('Avaliação removida.', 'info');
-      });
-    } else {
-      this.avaliacaoService
-        .avaliar(this.userId, idReceita, nota)
-        .subscribe((res) => {
-          this.notaUsuario = nota;
-          this.mediaAvaliacao = res.media;
-          this.totalAvaliacoes = res.total;
-          this.avaliacaoLoading = false;
-          this.toastService.show(
-            `Avaliação registrada! ${'⭐'.repeat(nota)}`,
-            'success',
-          );
-        });
-    }
-  }
-
-  toggleFavorito() {
-    if (!this.userId) {
-      this.router.navigate(['/login']);
-      return;
-    }
 
     const receitaIdNum = Number(this.recipe.id);
     const userIdNum = this.userId;
@@ -179,6 +136,10 @@ export class InfoRecipe implements OnChanges {
     } else {
       this.favoritoService.favoritar(userIdNum, receitaIdNum).subscribe(() => {
         this.isFavorite = true;
+        this.toastService.show(
+          `Receita favoritada! ${'<i class="fa-solid fa-heart"></i>'}`,
+          'success',
+        );
       });
     }
   }

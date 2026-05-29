@@ -38,7 +38,8 @@
   width: 100%;
 }
 
-.two-container .oneHalf, .two-container .twoHalf {
+.two-container .oneHalf,
+.two-container .twoHalf {
   width: 50%;
 
   .two {
@@ -88,6 +89,10 @@ img {
   color: white;
   font-size: 4rem;
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.1;
+  }
 }
 
 .close {
@@ -99,10 +104,16 @@ img {
 
 .all {
   width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
-  flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* setas mobile escondidas no desktop */
+.mobile-arrows {
+  display: none;
 }
 
 @media (max-width: 992px) {
@@ -125,6 +136,37 @@ img {
 
     .twoHalf {
       height: 280px;
+    }
+  }
+
+  .all {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .lightbox-image {
+    max-width: 90vw;
+    max-height: 70vh;
+  }
+
+  .close {
+    right: 20px;
+  }
+
+  /* esconde setas laterais no mobile */
+  .all > .prev,
+  .all > .next {
+    display: none;
+  }
+
+  /* mostra setas embaixo */
+  .mobile-arrows {
+    display: flex;
+    gap: 2rem;
+
+    .prev,
+    .next {
+      font-size: 3rem;
     }
   }
 }

@@ -5,7 +5,7 @@
 
 <div class="filter-container">
   <bra-filter-panel
-    *ngIf="Recipes.length > 0"
+    *ngIf="categoriaTemReceitas"
     mode="subcategoria"
     [dropdownDinamico]="subcategoriaItems"
     [labelDinamico]="'Subcategorias:'"
@@ -14,7 +14,7 @@
     (filtrosChange)="onFiltrosChange($event)"
   ></bra-filter-panel>
 
-  <span class="qtdReceitas">
+  <span class="qtdReceitas" *ngIf="categoriaTemReceitas">
     {{ RecipesFiltradas.length || 0 }} receitas encontradas
   </span>
 </div>
@@ -25,6 +25,7 @@
     <bra-recipe-card
       [recipe]="recipe"
       [selectedSubcategories]="filtros.subcategorias"
+      cardExibir="subcategoria"
     ></bra-recipe-card>
     }
   </div>
@@ -38,7 +39,21 @@
   </div>
 </div>
 
-<div class="empty-state" *ngIf="categoria && RecipesFiltradas.length === 0">
+<div
+  class="empty-state"
+  *ngIf="categoria && categoriaTemReceitas && RecipesFiltradas.length === 0"
+>
+  <i class="fa-solid fa-filter empty-icon-filter"></i>
+
+  <h2>
+    Nenhuma receita com esses filtros
+    <i class="fa-solid fa-face-frown-open"></i>
+  </h2>
+
+  <p>Tente ajustar ou remover alguns filtros para ver mais receitas.</p>
+</div>
+
+<div class="empty-state" *ngIf="categoria && !categoriaTemReceitas">
   <img [src]="categoria.icone" [alt]="categoria.nome" class="empty-icon" />
 
   <h2>

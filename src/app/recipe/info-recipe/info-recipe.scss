@@ -8,12 +8,13 @@
 
   .main {
     gap: 20px;
+    padding-top: 15px;
     width: min(850px, 85%);
 
     @include flex-column-center;
     @include white-card;
 
-    .avaliacao-label {
+    .avaliacao-block {
       gap: 10px;
       display: flex;
       padding-top: 25px;
@@ -31,7 +32,7 @@
     }
 
     .categories {
-      gap: 20px;
+      gap: 5px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -108,7 +109,7 @@
   gap: 10px;
   padding: 15px;
 
-  i {
+  .item {
     width: 25px;
     height: 25px;
 
@@ -206,4 +207,26 @@
 
 #comentarios {
   scroll-margin-top: 160px;
+}
+
+// ── Estrela compacta no painel things ─────────────────────────────────────────
+.avaliacao-item {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.avaliacao-icon {
+  font-size: 18px;
+  background: $seventh-gradient;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.avaliacao-compact {
+  font-size: 10px;
+  font-weight: 600;
+  color: $primary-blue;
+  line-height: 1;
+  text-align: center;
 }

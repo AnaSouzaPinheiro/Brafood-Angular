@@ -10,6 +10,7 @@ export interface Comentario {
   // dados extras (JOIN)
   nome_usuario: string;
   foto_perfil?: string;
+  nota?: number | null;
 
   replies?: Comentario[];
 }
@@ -19,4 +20,5 @@ export interface CriarComentarioPayload {
   id_receita: number;
   texto: string;
   id_comentario_pai?: number;
+  nota?: number | null;
 }
