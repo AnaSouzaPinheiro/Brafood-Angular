@@ -1,0 +1,31 @@
+<section class="recipe-credit" [class]="videoUrl">
+  <div class="credit-eyebrow">
+    <i class="fa-solid fa-clapperboard"></i>
+    <span>Receita original</span>
+  </div>
+
+  <div class="credit-content">
+    <div class="credit-box">
+      <i class="fa-solid fa-circle-info"></i>
+      <p>
+        Receita original de
+        <a
+          *ngIf="fonteUrl; else semLink"
+          [href]="fonteUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ fonteAutor }}
+        </a>
+        <ng-template #semLink>
+          <strong>{{ fonteAutor }}</strong>
+        </ng-template>
+        , as fotos e a organização são deste perfil.
+      </p>
+    </div>
+  </div>
+
+  <div class="credit-video" *ngIf="videoUrl">
+    <bra-video-embed [url]="videoUrl"></bra-video-embed>
+  </div>
+</section>

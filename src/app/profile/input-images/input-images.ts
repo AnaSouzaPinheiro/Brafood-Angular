@@ -1,7 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalService } from '../../services/modal/modal.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+
+export interface GaleriaChangeEvent {
+  /** Caminhos (URLs relativas) de imagens já existentes que o usuário manteve */
+  mantidas: string[];
+  /** Arquivos novos selecionados nesta sessão, ainda não enviados */
+  novas: File[];
+}
+
+const TIPOS_VALIDOS = ['image/png', 'image/jpeg'];
+const TAMANHO_MAXIMO = 3 * 1024 * 1024; // 3MB
 
 @Component({
   selector: 'bra-input-images',
@@ -11,118 +21,169 @@ import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
   styleUrls: ['./input-images.scss'],
 })
 export class InputImages {
-  previewSrc1: string | null = null;
-  previewSrc2: string | null = null;
-  previewSrc3: string | null = null;
+  // Capa (imagem principal, obrigatória)
+  @Input() initialCapa: string | null = null;
 
-  @Input() initialImage1!: string | null;
-  @Input() initialImage2!: string | null;
-  @Input() initialImage3!: string | null;
+  // Galeria (0..N imagens adicionais)
+  @Input() initialGaleria: string[] = [];
 
-  @Output() imagesChange = new EventEmitter<File[]>();
+  // Total de imagens permitido, contando a capa
+  @Input() maxImagens = 8;
 
-  private arquivosSelecionados: File[] = [];
+  @Output() capaChange = new EventEmitter<File | null>();
+  @Output() galeriaChange = new EventEmitter<GaleriaChangeEvent>();
+
+  previewCapa: string | null = null;
+  private capaFile: File | null = null;
+
+  // Imagens existentes (vindas do banco) que o usuário optou por manter
+  galeriaExistente: string[] = [];
+
+  // Novos arquivos escolhidos nesta sessão (ainda não enviados)
+  galeriaNovosArquivos: File[] = [];
+  galeriaNovosPreviews: string[] = [];
 
   constructor(private modalService: ModalService) {}
 
-  onFileChange(event: Event, index: number) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) {
-      this.clearPreview(index);
-      this.emitFiles();
-      return;
-    }
-
-    // Validação do tipo
-    const file = input.files[0];
-    const validTypes = ['image/png', 'image/jpeg'];
-    if (!validTypes.includes(file.type)) {
-      this.modalService.open({
-        type: 'error',
-        title: 'Erro',
-        message: 'Formato inválido! Apenas PNG e JPG são permitidos.',
-      });
-      input.value = ''; // limpa o input
-      this.clearPreview(index);
-      this.emitFiles();
-      return;
-    }
-
-    // Validação do tamanho (3MB)
-    const maxSize = 3 * 1024 * 1024; // bytes
-    if (file.size > maxSize) {
-      this.modalService.open({
-        type: 'error',
-        title: 'Erro',
-        message: 'Arquivo muito grande! Máx 3MB.',
-      });
-      input.value = '';
-      this.clearPreview(index);
-      this.emitFiles();
-      return;
-    }
-
-    // Se passou nas validações, gera o preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      switch (index) {
-        case 1:
-          this.previewSrc1 = reader.result as string;
-          break;
-        case 2:
-          this.previewSrc2 = reader.result as string;
-          break;
-        case 3:
-          this.previewSrc3 = reader.result as string;
-          break;
-      }
-    };
-    reader.readAsDataURL(file);
-
-    // salvar no array de arquivos
-    this.arquivosSelecionados[index - 1] = file;
-    this.emitFiles();
+  ngOnInit() {
+    this.previewCapa = this.initialCapa;
+    this.galeriaExistente = [...(this.initialGaleria ?? [])];
   }
 
-  clearPreview(index: number) {
-    switch (index) {
-      case 1:
-        this.previewSrc1 = null;
-        break;
-      case 2:
-        this.previewSrc2 = null;
-        break;
-      case 3:
-        this.previewSrc3 = null;
-        break;
+  ngOnChanges() {
+    if (this.initialCapa !== undefined) {
+      this.previewCapa = this.initialCapa;
     }
-    delete this.arquivosSelecionados[index - 1];
+    if (this.initialGaleria !== undefined) {
+      this.galeriaExistente = [...(this.initialGaleria ?? [])];
+    }
   }
 
-  emitFiles() {
-    // envia apenas arquivos existentes
-    this.imagesChange.emit(this.arquivosSelecionados.filter((f) => !!f));
+  get totalAtual(): number {
+    return (
+      (this.previewCapa ? 1 : 0) +
+      this.galeriaExistente.length +
+      this.galeriaNovosArquivos.length
+    );
+  }
+
+  get podeAdicionarMais(): boolean {
+    return this.totalAtual < this.maxImagens;
   }
 
   hasPreview(src: string | null | undefined): boolean {
     return !!src && src.trim() !== '';
   }
 
-  ngOnInit() {
-    if (this.initialImage1) this.previewSrc1 = this.initialImage1;
-    if (this.initialImage2) this.previewSrc2 = this.initialImage2;
-    if (this.initialImage3) this.previewSrc3 = this.initialImage3;
+  // ─── Capa ───────────────────────────────────────────────────────────────
+
+  onCapaChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    if (!file) {
+      this.previewCapa = this.initialCapa;
+      this.capaFile = null;
+      this.capaChange.emit(null);
+      return;
+    }
+
+    if (!this.arquivoValido(file)) {
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewCapa = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    this.capaFile = file;
+    this.capaChange.emit(file);
   }
 
-  ngOnChanges() {
-    if (this.initialImage1 !== undefined) {
-      this.previewSrc1 = this.initialImage1;
+  // ─── Galeria ────────────────────────────────────────────────────────────
+
+  onGaleriaFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const arquivos = input.files ? Array.from(input.files) : [];
+
+    if (arquivos.length === 0) return;
+
+    const espacoDisponivel = this.maxImagens - this.totalAtual;
+    if (espacoDisponivel <= 0) {
+      this.modalService.open({
+        type: 'error',
+        title: 'Limite de imagens',
+        message: `Você pode adicionar no máximo ${this.maxImagens} imagens por receita.`,
+      });
+      input.value = '';
+      return;
     }
-    if (this.initialImage2 !== undefined) {
-      this.previewSrc2 = this.initialImage2;
+
+    const aceitos = arquivos.slice(0, espacoDisponivel);
+    if (arquivos.length > aceitos.length) {
+      this.modalService.open({
+        type: 'error',
+        title: 'Limite de imagens',
+        message: `Só foi possível adicionar ${aceitos.length} imagem(ns) — o máximo é ${this.maxImagens} no total.`,
+      });
     }
-    if (this.initialImage3 !== undefined) {
-      this.previewSrc3 = this.initialImage3;
+
+    for (const file of aceitos) {
+      if (!this.arquivoValido(file)) continue;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.galeriaNovosPreviews.push(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      this.galeriaNovosArquivos.push(file);
     }
+
+    input.value = '';
+    this.emitGaleria();
+  }
+
+  removerExistente(index: number) {
+    this.galeriaExistente.splice(index, 1);
+    this.emitGaleria();
+  }
+
+  removerNova(index: number) {
+    this.galeriaNovosArquivos.splice(index, 1);
+    this.galeriaNovosPreviews.splice(index, 1);
+    this.emitGaleria();
+  }
+
+  private emitGaleria() {
+    this.galeriaChange.emit({
+      mantidas: [...this.galeriaExistente],
+      novas: [...this.galeriaNovosArquivos],
+    });
+  }
+
+  private arquivoValido(file: File): boolean {
+    if (!TIPOS_VALIDOS.includes(file.type)) {
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Formato inválido! Apenas PNG e JPG são permitidos.',
+      });
+      return false;
+    }
+
+    if (file.size > TAMANHO_MAXIMO) {
+      this.modalService.open({
+        type: 'error',
+        title: 'Erro',
+        message: 'Arquivo muito grande! Máx 3MB.',
+      });
+      return false;
+    }
+
+    return true;
   }
 }

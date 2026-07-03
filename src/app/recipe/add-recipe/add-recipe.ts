@@ -1,26 +1,25 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { Perfil } from '../../profile/perfil/perfil';
-import { InputImages } from '../../profile/input-images/input-images';
-import { BraInput } from '../../shared/input/input';
-import { Dropdown } from '../../profile/dropdown/dropdown';
-import { InputList } from '../../profile/input-list/input-list';
-import { Receita } from '../../model/receita';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria/categoria.service';
-import { Option } from '../../profile/dropdown/dropdown';
-import { ReceitaService } from '../../services/receita/receita.service';
-import { ModalService } from '../../services/modal/modal.service';
-import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { Categoria } from '../../model/categoria';
+import { Receita } from '../../model/receita';
+import { Dropdown, Option } from '../../profile/dropdown/dropdown';
+import { InputImages } from '../../profile/input-images/input-images';
+import { InputList } from '../../profile/input-list/input-list';
+import { Perfil } from '../../profile/perfil/perfil';
+import { AuthService } from '../../services/auth/auth.service';
+import { CategoriaService } from '../../services/categoria/categoria.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { BraInput } from '../../shared/input/input';
 
 @Component({
   selector: 'bra-add-recipe',
@@ -59,6 +58,9 @@ export class AddRecipe {
   tentouEnviar = false;
   erroImagem: string | null = null;
 
+  // Crédito de fonte — true = receita autoral (padrão)
+  receitaPropria = true;
+
   receita: Receita = {
     id: 0,
     titulo: '',
@@ -71,8 +73,7 @@ export class AddRecipe {
     porcoes: 0,
     tipo_porcao: '',
     imagem1: '',
-    imagem2: '',
-    imagem3: '',
+    imagens: [],
     qtd_fav: 0,
     data_criacao: '',
     autor: '',
@@ -80,7 +81,8 @@ export class AddRecipe {
     etapas: [{ titulo: '', ordem: 1, descricoes: [] }],
   };
 
-  imagensSelecionadas: File[] = [];
+  capaSelecionada: File | null = null;
+  galeriaSelecionada: File[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -125,7 +127,27 @@ export class AddRecipe {
       ],
       porcoes: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
       tipo_porcao: [null, Validators.required],
+      fonte_autor: ['', [Validators.maxLength(150)]],
+      fonte_url: ['', [Validators.maxLength(500)]],
+      video_url: ['', [Validators.maxLength(500)]],
     });
+  }
+
+  onReceitaPropriaChange(propria: boolean) {
+    this.receitaPropria = propria;
+
+    const fonteAutorCtrl = this.form.get('fonte_autor');
+    if (propria) {
+      fonteAutorCtrl?.clearValidators();
+      this.form.patchValue({ fonte_autor: '', fonte_url: '', video_url: '' });
+    } else {
+      fonteAutorCtrl?.setValidators([
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(150),
+      ]);
+    }
+    fonteAutorCtrl?.updateValueAndValidity();
   }
 
   ngOnInit() {
@@ -170,9 +192,13 @@ export class AddRecipe {
     this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
-  onImagensSelecionadas(files: File[]) {
-    this.imagensSelecionadas = files;
-    if (files.length > 0) this.erroImagem = null;
+  onCapaSelecionada(file: File | null) {
+    this.capaSelecionada = file;
+    if (file) this.erroImagem = null;
+  }
+
+  onGaleriaSelecionada(event: { mantidas: string[]; novas: File[] }) {
+    this.galeriaSelecionada = event.novas;
   }
 
   get ingredientesComoItems() {
@@ -253,8 +279,8 @@ export class AddRecipe {
     this.tentouEnviar = true;
     this.form.markAllAsTouched();
 
-    if (this.imagensSelecionadas.length === 0) {
-      this.erroImagem = 'Adicione pelo menos uma imagem da receita.';
+    if (!this.capaSelecionada) {
+      this.erroImagem = 'Adicione a imagem de capa da receita.';
     } else {
       this.erroImagem = null;
     }
@@ -274,12 +300,14 @@ export class AddRecipe {
 
     const listaValida = temIngrediente && temEtapa;
     const dropdownsValidos = temCategoria && temSubcategoria && temPorcao;
+    const fonteValida = this.receitaPropria || !!this.form.value.fonte_autor?.trim();
 
     if (
       this.form.invalid ||
-      this.imagensSelecionadas.length === 0 ||
+      !this.capaSelecionada ||
       !dropdownsValidos ||
-      !listaValida
+      !listaValida ||
+      !fonteValida
     ) {
       const primeiroErro = document.querySelector(
         '.input-error, .imagem-error, .field-error',
@@ -314,16 +342,22 @@ export class AddRecipe {
       etapas: this.receita.etapas,
       data_criacao: new Date().toISOString(),
       autor: userId,
+      eh_propria: this.receitaPropria,
+      fonte_autor: this.receitaPropria ? null : fv.fonte_autor?.trim(),
+      fonte_url: this.receitaPropria ? null : fv.fonte_url?.trim() || null,
+      video_url: this.receitaPropria ? null : fv.video_url?.trim() || null,
     };
 
     this.receitaService
-      .addReceita(receitaPronta, this.imagensSelecionadas)
+      .addReceita(receitaPronta, this.capaSelecionada, this.galeriaSelecionada)
       .subscribe({
         next: (res) => {
           if (res?.success) {
             this.form.reset();
-            this.imagensSelecionadas = [];
+            this.capaSelecionada = null;
+            this.galeriaSelecionada = [];
             this.tentouEnviar = false;
+            this.receitaPropria = true;
             this.modalService.open({
               type: 'success',
               title: 'Receita adicionada',

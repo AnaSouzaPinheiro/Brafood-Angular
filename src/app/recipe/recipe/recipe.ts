@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
-import { RecipeImages } from '../recipe-images/recipe-images';
-import { InfoRecipe } from '../info-recipe/info-recipe';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Receita } from '../../model/receita';
-import { ReceitaService } from '../../services/receita/receita.service';
 import { CommonModule } from '@angular/common';
-import { Comment } from '../comment/comment';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Comentario } from '../../model/comentario';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Comentario } from '../../model/comentario';
+import { Receita } from '../../model/receita';
+import { Section } from '../../model/section-home';
+import { AuthService } from '../../services/auth/auth.service';
+import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
 import { ComentarioService } from '../../services/comentario/comentario.service';
 import { CompartilhamentoService } from '../../services/compartilhamento/compartilhamento.service';
-import { AuthService } from '../../services/auth/auth.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { ToastService } from '../../services/toast/toast.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
-import { Meta, Title } from '@angular/platform-browser';
-import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
 import { StarRating } from '../../shared/star-rating/star-rating';
-import { Section } from '../../model/section-home';
 import { toSlug } from '../../utils/slug';
-import { ToastService } from '../../services/toast/toast.service';
+import { Comment } from '../comment/comment';
+import { InfoRecipe } from '../info-recipe/info-recipe';
+import { RecipeCredit } from '../recipe-credit/recipe-credit';
+import { RecipeImages } from '../recipe-images/recipe-images';
 
 const MIN_COMENTARIO = 3;
 const MAX_COMENTARIO = 1000;
@@ -37,6 +38,7 @@ const MAX_COMENTARIO = 1000;
     MediaUrlPipe,
     RecipeSection,
     StarRating,
+    RecipeCredit,
   ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
@@ -92,8 +94,7 @@ export class Recipe {
         porcoes: r.porcoes,
         tipo_porcao: r.tipo_porcao,
         imagem1: r.imagem1 || '',
-        imagem2: r.imagem2 || '',
-        imagem3: r.imagem3 || '',
+        imagens: r.imagens || [],
         qtd_fav: Number(r.qtd_fav),
         data_criacao: r.data_criacao
           ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
@@ -101,6 +102,10 @@ export class Recipe {
         autor: r.autor,
         foto_perfil: r.foto_perfil || '',
         bio: r.bio,
+        eh_propria: r.eh_propria === undefined ? true : Number(r.eh_propria) === 1,
+        fonte_autor: r.fonte_autor || '',
+        fonte_url: r.fonte_url || '',
+        video_url: r.video_url || '',
         ingredientes: (r.ingredientes || []).map((i: any) => ({
           titulo: i.titulo,
           itens: i.itens || [],

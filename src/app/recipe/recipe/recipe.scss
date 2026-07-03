@@ -158,6 +158,27 @@
     }
   }
 
+  // Fica depois do Modo de Preparo, já fora da altura do .list (float),
+  // então não precisa dividir espaço com o card de autor/WhatsApp.
+  // A faixa de fundo dá o efeito de "seção", pro card não boiar sozinho.
+  bra-recipe-credit {
+    display: block;
+    clear: both;
+    margin-top: 40px;
+    padding: 36px 24px;
+    border-radius: 24px;
+    background: linear-gradient(
+      180deg,
+      rgba($secondary-gray, 0.55) 0%,
+      rgba($secondary-gray, 0.2) 100%
+    );
+
+    @media (max-width: 480px) {
+      padding: 28px 14px;
+      border-radius: 18px;
+    }
+  }
+
   li {
     margin-left: 30px;
     font-size: 16px;
@@ -274,6 +295,10 @@
     }
     .preparo {
       order: 4;
+    }
+    bra-recipe-credit {
+      order: 5;
+      margin-top: 0;
     }
   }
 }

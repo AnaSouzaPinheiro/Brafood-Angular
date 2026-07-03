@@ -1,0 +1,73 @@
+<ng-container *ngIf="info">
+  <!-- YouTube: player embutido via iframe -->
+  <div class="video-frame" *ngIf="safeEmbedUrl">
+    <iframe
+      [src]="safeEmbedUrl"
+      title="Vídeo original da receita"
+      loading="lazy"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+
+  <!-- Instagram: widget oficial (embed.js). O link dentro do blockquote
+       funciona como fallback automático caso o script não processe o post
+       (removido, privado ou indisponível). -->
+  <div class="instagram-frame" *ngIf="info.plataforma === 'instagram'">
+    <blockquote
+      class="instagram-media"
+      [attr.data-instgrm-permalink]="info.originalUrl"
+      data-instgrm-version="14"
+    >
+      <a
+        class="video-card instagram-fallback"
+        [href]="info.originalUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-brands fa-instagram"></i>
+        <span>Ver publicação original no Instagram</span>
+        <i class="fa-solid fa-arrow-up-right-from-square seta"></i>
+      </a>
+    </blockquote>
+  </div>
+
+  <!-- TikTok: widget oficial (embed.js), assim como o Instagram. O iframe
+       direto (tiktok.com/embed/v2/ID) não é suportado oficialmente e
+       costuma vir em branco. O link dentro do blockquote funciona como
+       fallback automático caso o script não processe o post. -->
+  <div class="tiktok-frame" *ngIf="info.plataforma === 'tiktok'">
+    <blockquote
+      class="tiktok-embed"
+      [attr.cite]="info.originalUrl"
+      [attr.data-video-id]="info.videoId"
+      data-embed-from="oembed"
+    >
+      <section>
+        <a
+          class="video-card tiktok-fallback"
+          [href]="info.originalUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="fa-brands fa-tiktok"></i>
+          <span>Ver publicação original no TikTok</span>
+          <i class="fa-solid fa-arrow-up-right-from-square seta"></i>
+        </a>
+      </section>
+    </blockquote>
+  </div>
+
+  <!-- Qualquer outro link: card simples -->
+  <a
+    *ngIf="!safeEmbedUrl && info.plataforma !== 'instagram' && info.plataforma !== 'tiktok'"
+    class="video-card"
+    [href]="info.originalUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <i [class]="iconePlataforma"></i>
+    <span>Assistir vídeo original no {{ nomePlataforma }}</span>
+    <i class="fa-solid fa-arrow-up-right-from-square seta"></i>
+  </a>
+</ng-container>

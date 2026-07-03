@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Recipes } from '../../model/myrecipes';
-import { Slide } from '../../model/slide';
-import { Receita } from '../../model/receita';
-import { BaseService } from '../base/base.service';
 import { ApiResponse } from '../../model/api-response';
+import { Recipes } from '../../model/myrecipes';
+import { Receita } from '../../model/receita';
+import { Slide } from '../../model/slide';
+import { BaseService } from '../base/base.service';
 
 @Injectable({
   providedIn: 'root',
@@ -93,15 +93,19 @@ export class ReceitaService extends BaseService {
     );
   }
 
-  // Envia uma nova receita (dados + imagens)
-  addReceita(formValue: any, imagens: File[]): Observable<ApiResponse> {
+  // Envia uma nova receita (dados + capa + galeria)
+  // `capa` é a imagem principal (obrigatória); `galeria` são as imagens
+  // adicionais, em qualquer quantidade.
+  addReceita(
+    formValue: any,
+    capa: File | null,
+    galeria: File[] = [],
+  ): Observable<ApiResponse> {
     const formData = new FormData();
     formData.append('dados', JSON.stringify(formValue));
 
-    // Adiciona até 3 imagens, se existirem
-    imagens.forEach((img, i) => {
-      if (img) formData.append(`imagem${i + 1}`, img);
-    });
+    if (capa) formData.append('imagem1', capa);
+    galeria.forEach((img) => formData.append('galeria[]', img));
 
     return this.httpClient.post<ApiResponse>(
       this.url('receitas/add.php'),
@@ -112,15 +116,21 @@ export class ReceitaService extends BaseService {
   updateReceita(
     id: number,
     formValue: any,
-    imagens: File[],
+    capa: File | null,
+    galeriaAtual: string[],
+    galeriaNova: File[] = [],
   ): Observable<ApiResponse> {
     const formData = new FormData();
-    formData.append('dados', JSON.stringify(formValue));
 
-    // Adiciona até 3 imagens, se existirem
-    imagens.forEach((img, i) => {
-      if (img) formData.append(`imagem${i + 1}`, img);
-    });
+    // `galeriaAtual`: caminhos das imagens existentes que o usuário manteve
+    // (as removidas na tela simplesmente não entram aqui).
+    formData.append(
+      'dados',
+      JSON.stringify({ ...formValue, galeriaAtual }),
+    );
+
+    if (capa) formData.append('imagem1', capa);
+    galeriaNova.forEach((img) => formData.append('galeria[]', img));
 
     return this.httpClient.post<ApiResponse>(
       this.url(`receitas/update.php?id=${id}`),

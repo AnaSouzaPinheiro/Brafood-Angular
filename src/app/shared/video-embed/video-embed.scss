@@ -1,0 +1,80 @@
+@use "sass:color";
+@use "variables" as *;
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
+.instagram-frame {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  blockquote.instagram-media {
+    all: unset;
+    display: block;
+    width: 100%;
+  }
+}
+
+.tiktok-frame {
+  width: 100%;
+
+  blockquote.tiktok-embed {
+    all: unset;
+    display: block;
+    width: 100%;
+  }
+}
+
+.video-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 14px 20px;
+  border-radius: 10px;
+  background: $secondary-gray;
+  color: $primary-blue;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s ease;
+
+  i {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .seta {
+    font-size: 12px;
+    margin-left: auto;
+    opacity: 0.7;
+  }
+
+  &:hover {
+    background: color.adjust($secondary-gray, $lightness: -8%);
+  }
+}
+
+.instagram-fallback {
+  width: 100%;
+}
+
+.tiktok-fallback {
+  width: 100%;
+}

@@ -51,6 +51,13 @@
           </ul>
         </div>
       </section>
+
+      <bra-recipe-credit
+        *ngIf="recipe && recipe.eh_propria === false"
+        [fonteAutor]="recipe?.fonte_autor"
+        [fonteUrl]="recipe?.fonte_url"
+        [videoUrl]="recipe?.video_url"
+      ></bra-recipe-credit>
     </div>
 
     <bra-recipe-section

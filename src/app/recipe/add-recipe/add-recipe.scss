@@ -75,6 +75,44 @@
       justify-content: center;
       margin-bottom: 50px;
     }
+
+    .fonte-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+
+      @include page-container;
+
+      .toggle-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 2px solid $secondary-gray;
+        background: #fff;
+        color: $tertiary-gray;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.ativo {
+          border-color: $tertiary-blue;
+          background: $secondary-gray;
+          color: $primary-blue;
+        }
+
+        &:hover:not(.ativo) {
+          border-color: $primary-gray;
+        }
+      }
+    }
+
+    .fonte-campos {
+      .hint {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: $primary-gray;
+      }
+    }
   }
 }
 

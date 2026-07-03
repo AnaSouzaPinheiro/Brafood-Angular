@@ -1,0 +1,108 @@
+@use "variables" as *;
+
+// Card destacado: largura fixa e centralizado, pra não depender do
+// tamanho da receita e ganhar uma identidade visual própria (tipo
+// "receita em destaque"), ao invés de ficar solto na página.
+.recipe-credit {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 26px 30px 30px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(0, 44, 153, 0.1);
+  box-shadow: 0 16px 40px -20px rgba(0, 44, 153, 0.35);
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  // Faixa de destaque no topo, mesmo gradiente azul usado nas categorias.
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: $eighth-gradient;
+  }
+
+  .credit-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 6px 16px 6px 12px;
+    border-radius: 30px;
+    background: $secondary-gray;
+    color: $primary-blue;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    i {
+      font-size: 12px;
+    }
+  }
+
+  .credit-content {
+    width: 100%;
+  }
+
+  .credit-video {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    bra-video-embed {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 991px) {
+    width: auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 18px 24px;
+    border-radius: 16px;
+  }
+}
+
+.credit-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  i {
+    color: $tertiary-blue;
+    font-size: 16px;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: $tertiary-gray;
+    line-height: 1.6;
+  }
+
+  a {
+    color: $primary-blue;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  strong {
+    color: $primary-blue;
+  }
+}

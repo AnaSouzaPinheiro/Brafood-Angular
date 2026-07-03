@@ -1,27 +1,26 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { Perfil } from '../../profile/perfil/perfil';
-import { InputImages } from '../../profile/input-images/input-images';
-import { BraInput } from '../../shared/input/input';
-import { Dropdown } from '../../profile/dropdown/dropdown';
-import { InputList } from '../../profile/input-list/input-list';
-import { Receita } from '../../model/receita';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria/categoria.service';
-import { Option } from '../../profile/dropdown/dropdown';
-import { ReceitaService } from '../../services/receita/receita.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { ModalService } from '../../services/modal/modal.service';
+import { Categoria } from '../../model/categoria';
+import { Receita } from '../../model/receita';
+import { Dropdown, Option } from '../../profile/dropdown/dropdown';
+import { InputImages } from '../../profile/input-images/input-images';
+import { InputList } from '../../profile/input-list/input-list';
+import { Perfil } from '../../profile/perfil/perfil';
 import { AuthService } from '../../services/auth/auth.service';
+import { CategoriaService } from '../../services/categoria/categoria.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { ReceitaService } from '../../services/receita/receita.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { BraInput } from '../../shared/input/input';
 
 @Component({
   selector: 'bra-update-recipe',
@@ -51,9 +50,11 @@ export class UpdateRecipe implements OnInit {
   porcaoSelecionada: Option[] = [];
   tentouEnviar = false;
 
-  imagemPreview1: string | null = null;
-  imagemPreview2: string | null = null;
-  imagemPreview3: string | null = null;
+  // Crédito de fonte — true = receita autoral (padrão)
+  receitaPropria = true;
+
+  imagemPreviewCapa: string | null = null;
+  galeriaAtual: string[] = [];
 
   ingredientesComoItems: any[] = [];
   etapasComoItems: any[] = [];
@@ -79,8 +80,7 @@ export class UpdateRecipe implements OnInit {
     porcoes: 0,
     tipo_porcao: '',
     imagem1: '',
-    imagem2: '',
-    imagem3: '',
+    imagens: [],
     qtd_fav: 0,
     data_criacao: '',
     autor: '',
@@ -88,7 +88,8 @@ export class UpdateRecipe implements OnInit {
     etapas: [{ titulo: '', ordem: 1, descricoes: [] }],
   };
 
-  imagensSelecionadas: File[] = [];
+  capaSelecionada: File | null = null;
+  galeriaNova: File[] = [];
   idReceita: number = 0;
 
   constructor(
@@ -135,7 +136,27 @@ export class UpdateRecipe implements OnInit {
       ],
       porcoes: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
       tipo_porcao: [null, Validators.required],
+      fonte_autor: ['', [Validators.maxLength(150)]],
+      fonte_url: ['', [Validators.maxLength(500)]],
+      video_url: ['', [Validators.maxLength(500)]],
     });
+  }
+
+  onReceitaPropriaChange(propria: boolean) {
+    this.receitaPropria = propria;
+
+    const fonteAutorCtrl = this.form.get('fonte_autor');
+    if (propria) {
+      fonteAutorCtrl?.clearValidators();
+      this.form.patchValue({ fonte_autor: '', fonte_url: '', video_url: '' });
+    } else {
+      fonteAutorCtrl?.setValidators([
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(150),
+      ]);
+    }
+    fonteAutorCtrl?.updateValueAndValidity();
   }
 
   // INIT
@@ -163,6 +184,20 @@ export class UpdateRecipe implements OnInit {
           tipo_porcao: receita.tipo_porcao,
         });
 
+        this.receitaPropria =
+          receita.eh_propria === undefined ||
+          receita.eh_propria === null ||
+          Number(receita.eh_propria) === 1;
+
+        if (!this.receitaPropria) {
+          this.onReceitaPropriaChange(false);
+          this.form.patchValue({
+            fonte_autor: receita.fonte_autor ?? '',
+            fonte_url: receita.fonte_url ?? '',
+            video_url: receita.video_url ?? '',
+          });
+        }
+
         if (receita.tipo_porcao) {
           this.porcaoSelecionada = [
             { label: receita.tipo_porcao, value: receita.tipo_porcao },
@@ -185,9 +220,8 @@ export class UpdateRecipe implements OnInit {
       subitems: e.descricoes.map((d) => d.descricao),
     }));
 
-    this.imagemPreview1 = receita.imagem1;
-    this.imagemPreview2 = receita.imagem2 ?? null;
-    this.imagemPreview3 = receita.imagem3 ?? null;
+    this.imagemPreviewCapa = receita.imagem1;
+    this.galeriaAtual = [...(receita.imagens ?? [])];
   }
 
   prepararCategoriaESub(receita: Receita) {
@@ -289,24 +323,19 @@ export class UpdateRecipe implements OnInit {
     this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
-  onImagensSelecionadas(files: File[]) {
-    this.imagensSelecionadas = files;
+  onCapaSelecionada(file: File | null) {
+    this.capaSelecionada = file;
 
-    if (files[0]) {
+    if (file) {
       const r = new FileReader();
-      r.onload = () => (this.imagemPreview1 = r.result as string);
-      r.readAsDataURL(files[0]);
+      r.onload = () => (this.imagemPreviewCapa = r.result as string);
+      r.readAsDataURL(file);
     }
-    if (files[1]) {
-      const r = new FileReader();
-      r.onload = () => (this.imagemPreview2 = r.result as string);
-      r.readAsDataURL(files[1]);
-    }
-    if (files[2]) {
-      const r = new FileReader();
-      r.onload = () => (this.imagemPreview3 = r.result as string);
-      r.readAsDataURL(files[2]);
-    }
+  }
+
+  onGaleriaSelecionada(event: { mantidas: string[]; novas: File[] }) {
+    this.galeriaAtual = event.mantidas;
+    this.galeriaNova = event.novas;
   }
 
   atualizarIngredientes(lista: any[]) {
@@ -350,6 +379,7 @@ export class UpdateRecipe implements OnInit {
           (typeof d === 'string' ? d : (d.descricao ?? '')).trim().length > 0,
       ),
     );
+    const fonteValida = this.receitaPropria || !!this.form.value.fonte_autor?.trim();
 
     if (
       this.form.invalid ||
@@ -357,7 +387,8 @@ export class UpdateRecipe implements OnInit {
       !temSubcategoria ||
       !temPorcao ||
       !temIngrediente ||
-      !temEtapa
+      !temEtapa ||
+      !fonteValida
     ) {
       const primeiroErro = document.querySelector('.input-error, .field-error');
       primeiroErro?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -379,10 +410,20 @@ export class UpdateRecipe implements OnInit {
       tipo_porcao: fv.tipo_porcao,
       ingredientes: this.receita.ingredientes,
       etapas: this.receita.etapas,
+      eh_propria: this.receitaPropria,
+      fonte_autor: this.receitaPropria ? null : fv.fonte_autor?.trim(),
+      fonte_url: this.receitaPropria ? null : fv.fonte_url?.trim() || null,
+      video_url: this.receitaPropria ? null : fv.video_url?.trim() || null,
     };
 
     this.receitaService
-      .updateReceita(this.idReceita, receitaPronta, this.imagensSelecionadas)
+      .updateReceita(
+        this.idReceita,
+        receitaPronta,
+        this.capaSelecionada,
+        this.galeriaAtual,
+        this.galeriaNova,
+      )
       .subscribe({
         next: (res) => {
           if (res?.success) {

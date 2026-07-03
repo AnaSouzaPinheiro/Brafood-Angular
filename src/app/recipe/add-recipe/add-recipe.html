@@ -7,7 +7,8 @@
     <!-- Imagens -->
     <h3>Anexe até 3 imagens da receita:</h3>
     <bra-input-images
-      (imagesChange)="onImagensSelecionadas($event)"
+      (capaChange)="onCapaSelecionada($event)"
+      (galeriaChange)="onGaleriaSelecionada($event)"
     ></bra-input-images>
     <span class="field-error imagem-error" *ngIf="erroImagem" role="alert">
       <i class="fa-solid fa-circle-exclamation"></i> {{ erroImagem }}
@@ -133,6 +134,67 @@
             requiredMessage="Selecione o tipo de porção."
           ></bra-dropdown>
         </div>
+      </div>
+    </div>
+
+    <!-- Crédito de fonte -->
+    <h2>Essa receita é sua?*</h2>
+    <div class="fonte-toggle">
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.ativo]="receitaPropria"
+        (click)="onReceitaPropriaChange(true)"
+      >
+        Sim, é minha
+      </button>
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.ativo]="!receitaPropria"
+        (click)="onReceitaPropriaChange(false)"
+      >
+        Não, vi em outro lugar
+      </button>
+    </div>
+
+    <div class="inputs fonte-campos" *ngIf="!receitaPropria">
+      <div class="input-box">
+        <bra-input
+          [inType]="'input'"
+          name="fonteAutor"
+          formControlName="fonte_autor"
+          autocomplete="off"
+          [label]="'Quem criou essa receita?*'"
+          [placeholder]="'Ex: @fulana.na.cozinha'"
+          [errorMessages]="{ required: 'Dê o crédito de quem criou a receita.', minlength: 'Informe pelo menos 2 caracteres.' }"
+        ></bra-input>
+      </div>
+
+      <div class="input-box">
+        <bra-input
+          [inType]="'input'"
+          name="fonteUrl"
+          formControlName="fonte_url"
+          autocomplete="off"
+          [label]="'Link do perfil ou post original'"
+          [placeholder]="'https://www.instagram.com/fulana.na.cozinha'"
+        ></bra-input>
+      </div>
+
+      <div class="input-box">
+        <bra-input
+          [inType]="'input'"
+          name="videoUrl"
+          formControlName="video_url"
+          autocomplete="off"
+          [label]="'Link do vídeo (YouTube, TikTok ou Instagram)'"
+          [placeholder]="'https://www.tiktok.com/@fulana/video/123...'"
+        ></bra-input>
+        <span class="hint">
+          O vídeo do YouTube e do TikTok aparece embutido na página da
+          receita. Do Instagram, mostramos um link direto pro vídeo.
+        </span>
       </div>
     </div>
 

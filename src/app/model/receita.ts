@@ -18,8 +18,7 @@ export interface Receita {
   tipo_porcao: string;
 
   imagem1: string;
-  imagem2?: string;
-  imagem3?: string;
+  imagens?: string[];
 
   qtd_fav: number;
   data_criacao: string;
@@ -27,6 +26,11 @@ export interface Receita {
   autor: string;
   foto_perfil?: string;
   bio?: string;
+
+  eh_propria?: boolean | number;
+  fonte_autor?: string;
+  fonte_url?: string;
+  video_url?: string;
 
   ingredientes: Ingrediente[];
   etapas: Etapa[];

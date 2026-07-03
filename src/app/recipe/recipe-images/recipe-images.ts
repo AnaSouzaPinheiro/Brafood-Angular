@@ -15,11 +15,9 @@ export class RecipeImages {
   isLightboxOpen = false;
 
   get imageList() {
-    return [
-      this.images?.imagem1,
-      this.images?.imagem2,
-      this.images?.imagem3,
-    ].filter(Boolean);
+    return [this.images?.imagem1, ...(this.images?.imagens ?? [])].filter(
+      Boolean,
+    );
   }
 
   openLightbox(index: number) {
