@@ -1,74 +1,96 @@
 <div class="img-container">
-  <img [src]="categoria?.fundo" [alt]="categoria?.nome" class="background" />
-  <h1 class="title">{{ categoria?.nome }}</h1>
+  <div class="hero-skeleton" *ngIf="loadingCategoria"></div>
+  <ng-container *ngIf="!loadingCategoria">
+    <img [src]="categoria?.fundo" [alt]="categoria?.nome" class="background" />
+    <h1 class="title">{{ categoria?.nome }}</h1>
+  </ng-container>
 </div>
 
-<div class="filter-container">
-  <bra-filter-panel
-    *ngIf="categoriaTemReceitas"
-    mode="subcategoria"
-    [dropdownDinamico]="subcategoriaItems"
-    [labelDinamico]="'Subcategorias:'"
-    [totalReceitas]="RecipesFiltradas.length"
-    [showContadorMobile]="true"
-    (filtrosChange)="onFiltrosChange($event)"
-  ></bra-filter-panel>
-
-  <span class="qtdReceitas" *ngIf="categoriaTemReceitas">
-    {{ RecipesFiltradas.length || 0 }} receitas encontradas
-  </span>
+<!-- SKELETON enquanto a categoria e as receitas carregam -->
+<div class="content" *ngIf="loadingCategoria">
+  <bra-recipe-card-skeleton [count]="8"></bra-recipe-card-skeleton>
 </div>
 
-<div class="content" *ngIf="categoria && RecipesFiltradas.length > 0">
-  <div class="cards">
-    @for (recipe of RecipesPage; track recipe.id) {
-    <bra-recipe-card
-      [recipe]="recipe"
-      [selectedSubcategories]="filtros.subcategorias"
-      cardExibir="subcategoria"
-    ></bra-recipe-card>
-    }
+<ng-container *ngIf="!loadingCategoria">
+  <div class="toolbar-categoria" *ngIf="categoriaTemReceitas">
+    <span class="qtdReceitas">
+      {{ RecipesFiltradas.length || 0 }} receitas encontradas
+    </span>
+
+    <div class="busca-categoria">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input
+        type="text"
+        placeholder="Buscar nesta categoria..."
+        [ngModel]="termoBusca"
+        (ngModelChange)="onBuscaChange($event)"
+        autocomplete="off"
+      />
+    </div>
   </div>
-  <div class="pages">
+
+  <div class="filter-container" *ngIf="categoriaTemReceitas">
+    <bra-filter-panel
+      mode="subcategoria"
+      [dropdownDinamico]="subcategoriaItems"
+      [labelDinamico]="'Subcategorias:'"
+      [totalReceitas]="RecipesFiltradas.length"
+      [showContadorMobile]="false"
+      (filtrosChange)="onFiltrosChange($event)"
+    ></bra-filter-panel>
+  </div>
+
+  <div class="content" *ngIf="categoria && RecipesFiltradas.length > 0">
+    <div class="cards">
+      @for (recipe of RecipesPage; track recipe.id) {
+      <bra-recipe-card
+        [recipe]="recipe"
+        [selectedSubcategories]="filtros.subcategorias"
+        cardExibir="subcategoria"
+      ></bra-recipe-card>
+      }
+    </div>
+    <div class="pages">
+      <bra-custom-button
+        [hidden]="RecipesFiltradas.length < end"
+        [label]="'Ver mais receitas'"
+        [type]="'comment'"
+        (click)="verMais()"
+      ></bra-custom-button>
+    </div>
+  </div>
+
+  <div
+    class="empty-state"
+    *ngIf="categoria && categoriaTemReceitas && RecipesFiltradas.length === 0"
+  >
+    <i class="fa-solid fa-filter empty-icon-filter"></i>
+
+    <h2>
+      Nenhuma receita com esses filtros
+      <i class="fa-solid fa-face-frown-open"></i>
+    </h2>
+
+    <p>Tente ajustar ou remover alguns filtros para ver mais receitas.</p>
+  </div>
+
+  <div class="empty-state" *ngIf="categoria && !categoriaTemReceitas">
+    <img [src]="categoria.icone" [alt]="categoria.nome" class="empty-icon" />
+
+    <h2>
+      Ainda não temos receitas nessa categoria
+      <i class="fa-solid fa-heart-crack"></i>
+    </h2>
+
+    <p>
+      Seja a primeira pessoa a compartilhar uma receita de {{
+      categoria.nome.toLowerCase() }}!
+    </p>
+
     <bra-custom-button
-      [hidden]="RecipesFiltradas.length < end"
-      [label]="'Ver mais receitas'"
-      [type]="'comment'"
-      (click)="verMais()"
+      [label]="'Adicionar receita'"
+      [type]="'add'"
+      (click)="adicionarReceita()"
     ></bra-custom-button>
   </div>
-</div>
-
-<div
-  class="empty-state"
-  *ngIf="categoria && categoriaTemReceitas && RecipesFiltradas.length === 0"
->
-  <i class="fa-solid fa-filter empty-icon-filter"></i>
-
-  <h2>
-    Nenhuma receita com esses filtros
-    <i class="fa-solid fa-face-frown-open"></i>
-  </h2>
-
-  <p>Tente ajustar ou remover alguns filtros para ver mais receitas.</p>
-</div>
-
-<div class="empty-state" *ngIf="categoria && !categoriaTemReceitas">
-  <img [src]="categoria.icone" [alt]="categoria.nome" class="empty-icon" />
-
-  <h2>
-    Ainda não temos receitas nessa categoria
-    <i class="fa-solid fa-heart-crack"></i>
-  </h2>
-
-  <p>
-    Seja a primeira pessoa a compartilhar uma receita de {{
-    categoria.nome.toLowerCase() }}!
-  </p>
-
-  <bra-custom-button
-    [label]="'Adicionar receita'"
-    [type]="'add'"
-    (click)="adicionarReceita()"
-  ></bra-custom-button>
-</div>
+</ng-container>

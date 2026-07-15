@@ -1,15 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
+import { PerfilPublico, PerfilPublicoService } from '../../services/perfil-publico/perfil-publico.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
-import { PerfilPublicoService, PerfilPublico } from '../../services/perfil-publico/perfil-publico.service';
+import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
 import { toSlug } from '../../utils/slug';
 
 @Component({
   selector: 'bra-perfil-publico',
   standalone: true,
-  imports: [CommonModule, RouterModule, RecipeCard, MediaUrlPipe],
+  imports: [CommonModule, RouterModule, RecipeCard, RecipeCardSkeleton, MediaUrlPipe],
   templateUrl: './perfil-publico.html',
   styleUrl: './perfil-publico.scss',
 })

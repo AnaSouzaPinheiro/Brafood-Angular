@@ -1,23 +1,4 @@
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-
-@mixin shimmer-bg {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.04) 75%
-  );
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-  border-radius: 8px;
-}
+@use "skeleton" as *;
 
 .sk-section {
   padding: 2rem 0;
@@ -30,7 +11,7 @@
 .sk-title {
   height: 28px;
   width: 220px;
-  @include shimmer-bg;
+  @include skeleton-bg;
 }
 
 .sk-row {
@@ -51,11 +32,11 @@
   width: 290px;
   height: 210px;
   border-radius: 10px;
-  @include shimmer-bg;
+  @include skeleton-bg;
 }
 
 .sk-line {
-  @include shimmer-bg;
+  @include skeleton-bg;
   height: 14px;
 
   &--title {

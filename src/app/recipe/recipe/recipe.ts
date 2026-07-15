@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Comentario } from '../../model/comentario';
 import { Receita } from '../../model/receita';
 import { Section } from '../../model/section-home';
@@ -15,6 +15,7 @@ import { ReceitaService } from '../../services/receita/receita.service';
 import { ToastService } from '../../services/toast/toast.service';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+import { RecipeDetailSkeleton } from '../../shared/recipe-detail-skeleton/recipe-detail-skeleton';
 import { RecipeSection } from '../../shared/recipe-section/recipe-section';
 import { StarRating } from '../../shared/star-rating/star-rating';
 import { toSlug } from '../../utils/slug';
@@ -39,6 +40,8 @@ const MAX_COMENTARIO = 1000;
     RecipeSection,
     StarRating,
     RecipeCredit,
+    RouterModule,
+    RecipeDetailSkeleton,
   ],
   templateUrl: './recipe.html',
   styleUrl: './recipe.scss',
@@ -61,6 +64,7 @@ export class Recipe {
   usuarioId: number | null = null;
   tentouComentar = false;
   comentarioTocado = false;
+  loadingRecipe = true;
 
   constructor(
     private meta: Meta,
@@ -80,51 +84,60 @@ export class Recipe {
     this.usuarioId = this.authService.getUserId();
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.ReceitaServices.buscarPorId(id).subscribe((r: any) => {
-      this.recipe = {
-        id: Number(r.id),
-        titulo: r.titulo,
-        resumo: r.resumo,
-        categoria: r.categoria ?? '',
-        idCategoria: r.idCategoria ?? null,
-        subcategoria: r.subcategoria ?? '',
-        dificuldade: Number(r.dificuldade),
-        tempo_hora: Number(r.tempo_hora),
-        tempo_min: Number(r.tempo_min),
-        porcoes: r.porcoes,
-        tipo_porcao: r.tipo_porcao,
-        imagem1: r.imagem1 || '',
-        imagens: r.imagens || [],
-        qtd_fav: Number(r.qtd_fav),
-        data_criacao: r.data_criacao
-          ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
-          : '',
-        autor: r.autor,
-        foto_perfil: r.foto_perfil || '',
-        bio: r.bio,
-        eh_propria: r.eh_propria === undefined ? true : Number(r.eh_propria) === 1,
-        fonte_autor: r.fonte_autor || '',
-        fonte_url: r.fonte_url || '',
-        video_url: r.video_url || '',
-        ingredientes: (r.ingredientes || []).map((i: any) => ({
-          titulo: i.titulo,
-          itens: i.itens || [],
-        })),
-        etapas: (r.etapas || []).map((e: any) => ({
-          titulo: e.titulo,
-          ordem: Number(e.ordem),
-          descricoes: (e.descricoes || []).map((d: any) => ({
-            descricao: d.descricao,
-            ordem: Number(d.ordem),
+    this.ReceitaServices.buscarPorId(id).subscribe({
+      next: (r: any) => {
+        this.recipe = {
+          id: Number(r.id),
+          titulo: r.titulo,
+          resumo: r.resumo,
+          categoria: r.categoria ?? '',
+          idCategoria: r.idCategoria ?? null,
+          subcategoria: r.subcategoria ?? '',
+          dificuldade: Number(r.dificuldade),
+          tempo_hora: Number(r.tempo_hora),
+          tempo_min: Number(r.tempo_min),
+          porcoes: r.porcoes,
+          tipo_porcao: r.tipo_porcao,
+          imagem1: r.imagem1 || '',
+          imagens: r.imagens || [],
+          qtd_fav: Number(r.qtd_fav),
+          data_criacao: r.data_criacao
+            ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
+            : '',
+          usuarioId: r.id_usuario != null ? Number(r.id_usuario) : null,
+          autor: r.autor,
+          foto_perfil: r.foto_perfil || '',
+          bio: r.bio,
+          eh_propria:
+            r.eh_propria === undefined ? true : Number(r.eh_propria) === 1,
+          fonte_autor: r.fonte_autor || '',
+          fonte_url: r.fonte_url || '',
+          video_url: r.video_url || '',
+          ingredientes: (r.ingredientes || []).map((i: any) => ({
+            titulo: i.titulo,
+            itens: i.itens || [],
           })),
-        })),
-      };
+          etapas: (r.etapas || []).map((e: any) => ({
+            titulo: e.titulo,
+            ordem: Number(e.ordem),
+            descricoes: (e.descricoes || []).map((d: any) => ({
+              descricao: d.descricao,
+              ordem: Number(d.ordem),
+            })),
+          })),
+        };
 
-      this.recarregarComentarios();
-      this.getLinkWhatsApp();
-      this.carregarRelacionadas();
-      this.atualizarOG();
-      this.carregarAvaliacao();
+        this.loadingRecipe = false;
+
+        this.recarregarComentarios();
+        this.getLinkWhatsApp();
+        this.carregarRelacionadas();
+        this.atualizarOG();
+        this.carregarAvaliacao();
+      },
+      error: () => {
+        this.loadingRecipe = false;
+      },
     });
   }
 

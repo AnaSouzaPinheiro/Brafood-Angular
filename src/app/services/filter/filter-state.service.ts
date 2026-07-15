@@ -115,8 +115,8 @@ export class FilterStateService {
     };
   }
 
-  filtroInicial(): FiltroState {
-    return this.clonarFiltro(FILTRO_INICIAL);
+  filtroInicial(ordenar: string = FILTRO_INICIAL.ordenar): FiltroState {
+    return { ...this.clonarFiltro(FILTRO_INICIAL), ordenar };
   }
 
   contarFiltrosAtivos(filtros: FiltroState): number {

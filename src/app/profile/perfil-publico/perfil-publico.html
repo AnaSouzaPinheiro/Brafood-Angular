@@ -1,6 +1,21 @@
 <!-- Loading -->
-<div class="perfil-loading" *ngIf="carregando">
-  <i class="fa-solid fa-spinner fa-spin"></i>
+<div class="perfil-publico" *ngIf="carregando">
+  <section class="perfil-header">
+    <div class="ppk-avatar"></div>
+    <div class="ppk-info">
+      <div class="ppk-nome"></div>
+      <div class="ppk-bio"></div>
+      <div class="ppk-stats">
+        <div class="ppk-stat"></div>
+        <div class="ppk-stat"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="perfil-receitas">
+    <div class="ppk-titulo"></div>
+    <bra-recipe-card-skeleton [count]="4"></bra-recipe-card-skeleton>
+  </section>
 </div>
 
 <!-- Erro -->

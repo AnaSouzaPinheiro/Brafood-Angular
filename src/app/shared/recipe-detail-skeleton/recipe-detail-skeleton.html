@@ -1,0 +1,50 @@
+<div class="rds-wrapper">
+  <!-- Galeria -->
+  <div class="rds-hero"></div>
+
+  <!-- Título / infos -->
+  <div class="rds-info">
+    <div class="rds-title"></div>
+
+    <div class="rds-tags">
+      <div class="rds-tag"></div>
+      <div class="rds-tag"></div>
+    </div>
+
+    <div class="rds-line rds-line--l1"></div>
+    <div class="rds-line rds-line--l2"></div>
+
+    <div class="rds-meta">
+      <div class="rds-meta-item"></div>
+      <div class="rds-meta-item"></div>
+      <div class="rds-meta-item"></div>
+    </div>
+  </div>
+
+  <div class="rds-container">
+    <!-- Autor + whatsapp -->
+    <div class="rds-list">
+      <div class="rds-autor">
+        <div class="rds-avatar"></div>
+        <div class="rds-autor-lines">
+          <div class="rds-line rds-line--short"></div>
+          <div class="rds-line rds-line--short"></div>
+        </div>
+      </div>
+
+      <div class="rds-whatsapp"></div>
+    </div>
+
+    <!-- Ingredientes -->
+    <div class="rds-section">
+      <div class="rds-section-title"></div>
+      <div class="rds-line" *ngFor="let l of ingredientLines"></div>
+    </div>
+
+    <!-- Modo de preparo -->
+    <div class="rds-section">
+      <div class="rds-section-title"></div>
+      <div class="rds-line rds-line--long" *ngFor="let l of preparoLines"></div>
+    </div>
+  </div>
+</div>

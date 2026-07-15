@@ -1,0 +1,69 @@
+@use "skeleton" as *;
+
+.ph-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  margin: 48px 0;
+}
+
+.ph-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.ph-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  @include skeleton-bg;
+}
+
+.ph-name {
+  width: 180px;
+  height: 24px;
+  @include skeleton-bg;
+}
+
+.ph-resume {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ph-title {
+  width: 90px;
+  height: 18px;
+  @include skeleton-bg;
+}
+
+.ph-text {
+  height: 13px;
+  @include skeleton-bg;
+
+  &--l1 {
+    width: 460px;
+    max-width: 70vw;
+  }
+
+  &--l2 {
+    width: 320px;
+    max-width: 50vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .ph-main {
+    flex-direction: column;
+    gap: 28px;
+    margin: 28px;
+  }
+
+  .ph-resume {
+    align-items: center;
+  }
+}

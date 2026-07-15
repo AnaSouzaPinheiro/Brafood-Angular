@@ -1,25 +1,26 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+} from '@angular/core';
 
 import { FilterDropdown } from '../../category/filter-dropdown/filter-dropdown';
-import { CustomButton } from '../custom-button/custom-button';
 import {
-  FiltroState,
-  MAPA_ORDENACAO,
-  MAPA_TIPO_PORCAO,
-  OPTIONS_ORDENAR,
-  OPTIONS_DIFICULDADE,
-  OPTIONS_TEMPO,
-  OPTIONS_TIPO_PORCAO,
-  FilterStateService,
+    FilterStateService,
+    FiltroState,
+    MAPA_ORDENACAO,
+    MAPA_TIPO_PORCAO,
+    OPTIONS_DIFICULDADE,
+    OPTIONS_ORDENAR,
+    OPTIONS_TEMPO,
+    OPTIONS_TIPO_PORCAO,
 } from '../../services/filter/filter-state.service';
+import { CustomButton } from '../custom-button/custom-button';
 
 export interface DropdownDinamicoItem {
   id: number;
@@ -51,13 +52,17 @@ export interface DropdownDinamicoItem {
   templateUrl: './filter-panel.html',
   styleUrl: './filter-panel.scss',
 })
-export class FilterPanel implements OnChanges {
+export class FilterPanel implements OnChanges, OnInit {
   // ── Inputs ───────────────────────────────────────────────────────────────
   @Input() mode: 'subcategoria' | 'categoria' = 'categoria';
   @Input() dropdownDinamico: DropdownDinamicoItem[] = [];
   @Input() labelDinamico = 'Categorias:';
   @Input() totalReceitas = 0;
   @Input() showContadorMobile = false;
+  /** Ordenação selecionada por padrão ao abrir o painel (ex: 'mais_novos'). */
+  @Input() ordenarInicial = 'nome';
+  /** Quando false, oculta os filtros de dificuldade, tempo de preparo e tipo de porção. */
+  @Input() mostrarFiltrosAvancados = true;
 
   // ── Outputs ──────────────────────────────────────────────────────────────
   @Output() filtrosChange = new EventEmitter<FiltroState>();
@@ -85,6 +90,22 @@ export class FilterPanel implements OnChanges {
   }
 
   // ── Lifecycle ────────────────────────────────────────────────────────────
+  ngOnInit() {
+    if (this.ordenarInicial && this.ordenarInicial !== 'nome') {
+      this.filtros = this.filterService.filtroInicial(this.ordenarInicial);
+      this.filtrosPendentes = this.filterService.filtroInicial(
+        this.ordenarInicial,
+      );
+
+      const nomeOpcao = Object.keys(MAPA_ORDENACAO).find(
+        (nome) => MAPA_ORDENACAO[nome] === this.ordenarInicial,
+      );
+      this.optionsOrdenar.items.forEach((item) => {
+        item.checked = item.name === nomeOpcao;
+      });
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['dropdownDinamico'] || changes['labelDinamico']) {
       this.optionsDinamico = {
@@ -156,8 +177,10 @@ export class FilterPanel implements OnChanges {
   }
 
   limparFiltros() {
-    this.filtros = this.filterService.filtroInicial();
-    this.filtrosPendentes = this.filterService.filtroInicial();
+    this.filtros = this.filterService.filtroInicial(this.ordenarInicial);
+    this.filtrosPendentes = this.filterService.filtroInicial(
+      this.ordenarInicial,
+    );
     this.resetDropdowns();
     this.mobileFiltersOpen = false;
     this.emit();
@@ -183,6 +206,14 @@ export class FilterPanel implements OnChanges {
 
   private resetDropdowns() {
     this.optionsOrdenar = this.clonarOptions(OPTIONS_ORDENAR);
+    if (this.ordenarInicial && this.ordenarInicial !== 'nome') {
+      const nomeOpcao = Object.keys(MAPA_ORDENACAO).find(
+        (nome) => MAPA_ORDENACAO[nome] === this.ordenarInicial,
+      );
+      this.optionsOrdenar.items.forEach((item) => {
+        item.checked = item.name === nomeOpcao;
+      });
+    }
     this.optionsDificuldade = this.clonarOptions(OPTIONS_DIFICULDADE);
     this.optionsTempo = this.clonarOptions(OPTIONS_TEMPO);
     this.optionsTipoPorcao = this.clonarOptions(OPTIONS_TIPO_PORCAO);

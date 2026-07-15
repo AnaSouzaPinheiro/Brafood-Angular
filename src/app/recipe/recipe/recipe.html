@@ -1,4 +1,6 @@
-<div class="infos-recipe">
+<bra-recipe-detail-skeleton *ngIf="loadingRecipe"></bra-recipe-detail-skeleton>
+
+<div class="infos-recipe" *ngIf="!loadingRecipe">
   <div class="main-info">
     <bra-recipe-images [images]="recipe"></bra-recipe-images>
     <bra-info-recipe *ngIf="recipe" [recipe]="recipe"></bra-info-recipe>
@@ -7,7 +9,11 @@
   <div class="receita">
     <div class="container">
       <div class="list">
-        <div class="autor whatsApp">
+        <a
+          class="autor whatsApp"
+          [routerLink]="recipe?.usuarioId ? ['/chef', recipe?.usuarioId] : null"
+          [class.autor-clickable]="recipe?.usuarioId"
+        >
           <img
             class="bra-user-icon"
             [src]="recipe?.foto_perfil | mediaUrl"
@@ -18,7 +24,7 @@
             <span class="date">Publicado em: {{ recipe?.data_criacao }}</span>
             <p class="resumUser">{{ recipe?.bio }}</p>
           </div>
-        </div>
+        </a>
 
         <div class="whatsApp whatsApp-card">
           Ainda precisa comprar os ingredientes?

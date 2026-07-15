@@ -2,6 +2,7 @@
 @use "pagination" as *;
 @use "layout" as *;
 @use "grid" as *;
+@use "skeleton" as *;
 
 .perfil-loading,
 .perfil-erro {
@@ -13,6 +14,59 @@
   color: #888;
   gap: 10px;
 }
+
+// ── Skeleton (loading) ──────────────────────────────────
+.ppk-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  @include skeleton-bg;
+}
+
+.ppk-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    align-items: center;
+  }
+}
+
+.ppk-nome {
+  width: 220px;
+  height: 26px;
+  @include skeleton-bg;
+}
+
+.ppk-bio {
+  width: 420px;
+  max-width: 70vw;
+  height: 14px;
+  @include skeleton-bg;
+}
+
+.ppk-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.ppk-stat {
+  width: 70px;
+  height: 36px;
+  @include skeleton-bg;
+}
+
+.ppk-titulo {
+  width: 260px;
+  height: 20px;
+  margin: 0 auto 24px;
+  @include skeleton-bg;
+}
+
 
 .perfil-publico {
   max-width: 1100px;

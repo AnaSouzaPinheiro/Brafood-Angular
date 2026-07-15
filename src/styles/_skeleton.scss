@@ -1,0 +1,25 @@
+@use "variables" as *;
+
+// Shimmer compartilhado por todos os componentes de skeleton (loading state).
+// Tons de cinza (não branco) porque o fundo do site é claro — um shimmer
+// branco sobre branco fica praticamente invisível.
+@keyframes bra-shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+@mixin skeleton-bg {
+  background: linear-gradient(
+    90deg,
+    #{$quaternary-gray} 25%,
+    #{$secondary-gray} 50%,
+    #{$quaternary-gray} 75%
+  );
+  background-size: 600px 100%;
+  animation: bra-shimmer 1.4s infinite linear;
+  border-radius: 8px;
+}

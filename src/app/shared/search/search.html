@@ -6,11 +6,12 @@
       </h1>
       <span>
         Encontrado:
-        <span class="qtd">{{ RecipesFiltradas.length }}</span> receitas
+        <span class="qtd" *ngIf="!loadingSearch">{{ RecipesFiltradas.length }}</span
+        ><span class="qtd" *ngIf="loadingSearch">...</span> receitas
       </span>
     </div>
 
-    <div class="filter-container">
+    <div class="filter-container" *ngIf="!loadingSearch">
       <bra-filter-panel
         mode="categoria"
         [dropdownDinamico]="categoriaItems"
@@ -22,18 +23,26 @@
     </div>
   </div>
 
-  <div class="cards">
-    @for (recipe of RecipesPage; track $index) {
-    <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
-    }
-  </div>
+  <!-- SKELETON enquanto os resultados carregam -->
+  <bra-recipe-card-skeleton
+    *ngIf="loadingSearch"
+    [count]="8"
+  ></bra-recipe-card-skeleton>
 
-  <div class="pages">
-    <bra-custom-button
-      [hidden]="RecipesFiltradas.length < end"
-      [label]="'Ver mais receitas'"
-      [type]="'comment'"
-      (click)="verMais()"
-    ></bra-custom-button>
-  </div>
+  <ng-container *ngIf="!loadingSearch">
+    <div class="cards">
+      @for (recipe of RecipesPage; track $index) {
+      <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
+      }
+    </div>
+
+    <div class="pages">
+      <bra-custom-button
+        [hidden]="RecipesFiltradas.length < end"
+        [label]="'Ver mais receitas'"
+        [type]="'comment'"
+        (click)="verMais()"
+      ></bra-custom-button>
+    </div>
+  </ng-container>
 </div>

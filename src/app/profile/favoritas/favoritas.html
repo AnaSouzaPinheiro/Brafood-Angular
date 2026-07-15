@@ -3,12 +3,18 @@
 
   <div class="cabecalho">
       <h1 class="title">Minhas receitas favoritas</h1>
-      <span class="qtdReceitas">
+      <span class="qtdReceitas" *ngIf="!loadingFavoritas">
         {{ this.Recipes.length }} receitas favoritas</span
       >
   </div>
 
-  <div class="content">
+  <!-- SKELETON enquanto os favoritos carregam -->
+  <bra-recipe-card-skeleton
+    *ngIf="loadingFavoritas"
+    [count]="6"
+  ></bra-recipe-card-skeleton>
+
+  <div class="content" *ngIf="!loadingFavoritas">
     <div class="cards">
       @for (recipe of myRecipesPage; track $index) {
       <bra-recipe-card

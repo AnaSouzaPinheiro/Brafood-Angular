@@ -45,6 +45,7 @@
 
   <!-- Dificuldade -->
   <bra-filter-dropdown
+    *ngIf="mostrarFiltrosAvancados"
     [optionsDropwdown]="optionsDificuldade"
     type="multi"
     (changeMulti)="filtrarPorDificuldade($event)"
@@ -52,6 +53,7 @@
 
   <!-- Tempo de preparo -->
   <bra-filter-dropdown
+    *ngIf="mostrarFiltrosAvancados"
     [optionsDropwdown]="optionsTempo"
     type="single"
     (changeFilter)="filtrarPorTempo($event)"
@@ -59,6 +61,7 @@
 
   <!-- Tipo de porção -->
   <bra-filter-dropdown
+    *ngIf="mostrarFiltrosAvancados"
     [optionsDropwdown]="optionsTipoPorcao"
     type="multi"
     (changeMulti)="filtrarPorTipoPorcao($event)"

@@ -1,0 +1,45 @@
+@use "skeleton" as *;
+@use "grid" as *;
+
+.rcs-grid {
+  @include recipe-grid;
+}
+
+.rcs-card {
+  width: 290px;
+  height: 300px;
+  margin: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.rcs-img {
+  width: 290px;
+  height: 210px;
+  border-radius: 10px;
+  @include skeleton-bg;
+}
+
+.rcs-resume {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.rcs-line {
+  height: 12px;
+  width: 100%;
+  @include skeleton-bg;
+
+  &--title {
+    height: 14px;
+  }
+
+  &--short {
+    width: 70%;
+  }
+}

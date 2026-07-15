@@ -1,16 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Perfil } from '../perfil/perfil';
 import { Router, RouterModule } from '@angular/router';
-import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { Recipes } from '../../model/myrecipes';
-import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../model/user';
+import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
+import { AuthService } from '../../services/auth/auth.service';
 import { FavoritoService } from '../../services/favorito/favorito.service';
+import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
+import { Perfil } from '../perfil/perfil';
 
 @Component({
   selector: 'bra-favoritas',
   standalone: true,
-  imports: [Perfil, RecipeCard, RouterModule],
+  imports: [Perfil, RecipeCard, RecipeCardSkeleton, RouterModule, CommonModule],
   templateUrl: './favoritas.html',
   styleUrl: './favoritas.scss',
 })
@@ -19,6 +21,7 @@ export class Favoritas {
   currentPage!: number;
 
   Recipes: Recipes[] = [];
+  loadingFavoritas = true;
 
   logado = false;
   userId: string | null = null;
@@ -40,14 +43,23 @@ export class Favoritas {
     this.logado = this.auth.isLoggedIn();
 
     const userData = localStorage.getItem('user');
-    if (!userData) return;
+    if (!userData) {
+      this.loadingFavoritas = false;
+      return;
+    }
 
     this.userId = JSON.parse(userData).id;
 
     this.favoritoService
       .listarFavoritos(Number(this.userId))
-      .subscribe((data) => {
-        this.Recipes = Array.isArray(data) ? data : [];
+      .subscribe({
+        next: (data) => {
+          this.Recipes = Array.isArray(data) ? data : [];
+          this.loadingFavoritas = false;
+        },
+        error: () => {
+          this.loadingFavoritas = false;
+        },
       });
   }
 

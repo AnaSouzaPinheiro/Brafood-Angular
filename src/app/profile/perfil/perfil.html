@@ -1,5 +1,7 @@
 <div class="menuPerfil">
-  <div class="main">
+  <bra-profile-header-skeleton *ngIf="loadingUser"></bra-profile-header-skeleton>
+
+  <div class="main" *ngIf="!loadingUser">
     <div class="account">
       <bra-user-icon [userSignal]="user"></bra-user-icon>
       <h1 class="name">{{ user()?.nome }} {{ user()?.sobrenome }} </h1>
@@ -22,6 +24,13 @@
       [type]="'other'"
       [routerLink]="'/minhas-receitas/' + userId"
       [active]="isMinhasReceitas"
+    ></bra-custom-button>
+
+    <bra-custom-button
+      [label]="'Favoritas'"
+      [type]="'other'"
+      [routerLink]="'/favoritas/' + userId"
+      [active]="isFavoritas"
     ></bra-custom-button>
   </div>
   <hr />

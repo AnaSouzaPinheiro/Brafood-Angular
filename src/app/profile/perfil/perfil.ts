@@ -1,14 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { UserIcon } from '../../core/user-icon/user-icon';
-import { CustomButton } from '../../shared/custom-button/custom-button';
 import { Router, RouterModule } from '@angular/router';
+import { UserIcon } from '../../core/user-icon/user-icon';
 import { User } from '../../model/user';
 import { AuthService } from '../../services/auth/auth.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { ProfileHeaderSkeleton } from '../../shared/profile-header-skeleton/profile-header-skeleton';
 
 @Component({
   selector: 'bra-perfil',
-  imports: [UserIcon, CustomButton, RouterModule],
+  imports: [UserIcon, CustomButton, RouterModule, CommonModule, ProfileHeaderSkeleton],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',
 })
@@ -16,6 +18,7 @@ export class Perfil {
   logado = false;
   userId: string | null = null;
   user = signal<User | undefined>(undefined);
+  loadingUser = true;
 
   constructor(
     private usuarioService: UsuarioService,
@@ -36,20 +39,28 @@ export class Perfil {
     if (this.userId) {
       this.usuarioService
         .buscarUserPorId(Number(this.userId))
-        .subscribe((response) => {
-          const usuario = response.usuario;
+        .subscribe({
+          next: (response) => {
+            const usuario = response.usuario;
 
-          this.user.set({
-            id: Number(usuario.id),
-            nome: usuario.nome,
-            sobrenome: usuario.sobrenome,
-            apelido: usuario.apelido,
-            email: usuario.email,
-            genero: usuario.genero,
-            bio: usuario.bio,
-            foto_perfil: usuario.foto_perfil,
-          });
+            this.user.set({
+              id: Number(usuario.id),
+              nome: usuario.nome,
+              sobrenome: usuario.sobrenome,
+              apelido: usuario.apelido,
+              email: usuario.email,
+              genero: usuario.genero,
+              bio: usuario.bio,
+              foto_perfil: usuario.foto_perfil,
+            });
+            this.loadingUser = false;
+          },
+          error: () => {
+            this.loadingUser = false;
+          },
         });
+    } else {
+      this.loadingUser = false;
     }
   }
 
@@ -59,5 +70,9 @@ export class Perfil {
 
   get isMinhasReceitas() {
     return this.router.url === `/minhas-receitas/${this.userId}`;
+  }
+
+  get isFavoritas() {
+    return this.router.url === `/favoritas/${this.userId}`;
   }
 }

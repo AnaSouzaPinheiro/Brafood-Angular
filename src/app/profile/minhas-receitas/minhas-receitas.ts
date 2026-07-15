@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
-import { Perfil } from '../perfil/perfil';
-import {
-  FilterPanel,
-  DropdownDinamicoItem,
-} from '../../shared/filter-panel/filter-panel';
-import { CustomButton } from '../../shared/custom-button/custom-button';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-
-import { ReceitaService } from '../../services/receita/receita.service';
-import { AuthService } from '../../services/auth/auth.service';
-import { ModalService } from '../../services/modal/modal.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
 import {
-  FilterStateService,
-  FiltroState,
+    DropdownDinamicoItem,
+    FilterPanel,
+} from '../../shared/filter-panel/filter-panel';
+import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
+import { Perfil } from '../perfil/perfil';
+
+import { AuthService } from '../../services/auth/auth.service';
+import {
+    FilterStateService,
+    FiltroState,
 } from '../../services/filter/filter-state.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { ReceitaService } from '../../services/receita/receita.service';
 
 import { Recipes } from '../../model/myrecipes';
 import { Receita } from '../../model/receita';
@@ -31,8 +33,10 @@ import { toSlug } from '../../utils/slug';
     FilterPanel,
     CustomButton,
     RecipeCard,
+    RecipeCardSkeleton,
     RouterModule,
     CommonModule,
+    FormsModule,
   ],
   templateUrl: './minhas-receitas.html',
   styleUrls: ['./minhas-receitas.scss'],
@@ -49,9 +53,11 @@ export class MinhasReceitas {
   logado = false;
   userId: string | null = null;
   user!: User;
+  loadingRecipes = true;
 
   // ── Filtros ───────────────────────────────────────────────────────────────
   filtros!: FiltroState;
+  termoBusca = '';
 
   // Dropdown dinâmico de categorias das receitas do usuário
   categoriaItems: DropdownDinamicoItem[] = [];
@@ -71,14 +77,22 @@ export class MinhasReceitas {
     if (this.userId) {
       this.receitaServices
         .listPorUser(Number(this.userId))
-        .subscribe((data) => {
-          this.Recipes = data;
-          this.montarCategorias();
-          this.aplicarFiltros();
+        .subscribe({
+          next: (data) => {
+            this.Recipes = data;
+            this.montarCategorias();
+            this.aplicarFiltros();
+            this.loadingRecipes = false;
+          },
+          error: () => {
+            this.loadingRecipes = false;
+          },
         });
+    } else {
+      this.loadingRecipes = false;
     }
 
-    this.filtros = this.filterService.filtroInicial();
+    this.filtros = this.filterService.filtroInicial('mais_novos');
   }
 
   ngOnInit(): void {
@@ -130,12 +144,30 @@ export class MinhasReceitas {
   }
 
   aplicarFiltros() {
+    const base = this.termoBusca.trim()
+      ? this.Recipes.filter((r: any) =>
+          this.normalizar(r.titulo).includes(this.normalizar(this.termoBusca)),
+        )
+      : this.Recipes;
+
     this.RecipesFiltradas = this.filterService.aplicarFiltrosFrontend(
-      this.Recipes,
+      base,
       this.filtros,
     );
     this.indice = 0;
     this.currentPage = 1;
+  }
+
+  onBuscaChange(valor: string) {
+    this.termoBusca = valor;
+    this.aplicarFiltros();
+  }
+
+  private normalizar(texto: string): string {
+    return (texto || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
   }
 
   // ── Categorias dinâmicas ──────────────────────────────────────────────────

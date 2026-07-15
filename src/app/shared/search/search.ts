@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  FilterPanel,
-  DropdownDinamicoItem,
-} from '../filter-panel/filter-panel';
-import { CustomButton } from '../custom-button/custom-button';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-
-import { ReceitaService } from '../../services/receita/receita.service';
+import { CustomButton } from '../custom-button/custom-button';
 import {
-  FilterStateService,
-  FiltroState,
+    DropdownDinamicoItem,
+    FilterPanel,
+} from '../filter-panel/filter-panel';
+import { RecipeCardSkeleton } from '../recipe-card-skeleton/recipe-card-skeleton';
+
+import {
+    FilterStateService,
+    FiltroState,
 } from '../../services/filter/filter-state.service';
+import { ReceitaService } from '../../services/receita/receita.service';
 
 import { Recipes } from '../../model/myrecipes';
 
 @Component({
   selector: 'bra-search',
   standalone: true,
-  imports: [CommonModule, FilterPanel, CustomButton, RecipeCard],
+  imports: [CommonModule, FilterPanel, CustomButton, RecipeCard, RecipeCardSkeleton],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
@@ -29,6 +30,7 @@ export class Search {
 
   Recipes: Recipes[] = [];
   RecipesFiltradas: Recipes[] = [];
+  loadingSearch = true;
 
   begin = 0;
   end = 8;
@@ -49,7 +51,10 @@ export class Search {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const nome = params.get('nome');
-      if (!nome) return;
+      if (!nome) {
+        this.loadingSearch = false;
+        return;
+      }
 
       this.nomePesquisado = nome;
 
@@ -58,6 +63,7 @@ export class Search {
           if (!Array.isArray(res)) {
             this.Recipes = [];
             this.RecipesFiltradas = [];
+            this.loadingSearch = false;
             return;
           }
 
@@ -76,11 +82,13 @@ export class Search {
           ];
 
           this.aplicarFiltros();
+          this.loadingSearch = false;
         },
         error: (err) => {
           console.error('Erro ao carregar receitas:', err);
           this.Recipes = [];
           this.RecipesFiltradas = [];
+          this.loadingSearch = false;
         },
       });
     });
