@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
+    FormBuilder,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
-import { BraInput } from '../../shared/input/input';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { ModalService } from '../../services/modal/modal.service';
 import { EnviaEmailService } from '../../services/envia-email/envia-email.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { BraInput } from '../../shared/input/input';
 
 @Component({
   selector: 'bra-contact',
@@ -68,8 +68,6 @@ export class Contact {
     }
 
     const emailMsg = this.form.value;
-
-    console.log(emailMsg);
 
     this.enviaEmailService.enviarEmail(emailMsg).subscribe({
       next: (res) => {

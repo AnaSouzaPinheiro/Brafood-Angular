@@ -1,5 +1,10 @@
-<div class="category-bar">
-  <ul>
+<div
+  class="category-bar"
+  [class.is-carousel]="isDesktop"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <ul #track>
     <li
       *ngFor="let categoria of categorias"
       [ngClass]="categoria.css_class"
@@ -11,6 +16,22 @@
       <img class="icon"
         [src]="categoria.icone"
         alt="{{ categoria.nome }} ícone"
+      />
+      {{ categoria.nome }}
+    </li>
+    <!-- Duplicata só pro loop infinito no carrossel do desktop; some do
+         DOM em telas pequenas via CSS e é ignorada por leitores de tela. -->
+    <li
+      *ngFor="let categoria of categorias"
+      aria-hidden="true"
+      tabindex="-1"
+      class="clone"
+      [ngClass]="categoria.css_class"
+      [style.background-color]="categoria.cor_primaria || null"
+    >
+      <img class="icon"
+        [src]="categoria.icone"
+        alt=""
       />
       {{ categoria.nome }}
     </li>

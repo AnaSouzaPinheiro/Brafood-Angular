@@ -2,7 +2,7 @@
   <div class="primary-footer">
     <div class="acesso-rapido">
       <div class="categorias">
-        <h4>Categorias</h4>
+        <h3>Categorias</h3>
         <ul>
           <li *ngFor="let categoria of categorias">
             <a [routerLink]="categoria.url"> {{ categoria.nome }} </a>
@@ -11,7 +11,7 @@
       </div>
 
       <div *ngIf="auth.isLoggedIn()" class="conta">
-        <h4>Conta</h4>
+        <h3>Conta</h3>
         <ul>
           <li><a [routerLink]="'/editar-perfil/' + userId">Minha conta</a></li>
           <li>
@@ -24,7 +24,7 @@
       </div>
 
       <div *ngIf="!auth.isLoggedIn()" class="acesso">
-        <h4>Acesse sua conta</h4>
+        <h3>Acesse sua conta</h3>
         <ul>
           <li><a routerLink="/login">Entrar</a></li>
           <li><a routerLink="/cadastro">Cadastrar</a></li>
@@ -32,7 +32,7 @@
       </div>
 
       <div class="contato">
-        <h4>Contato</h4>
+        <h3>Contato</h3>
         <ul>
           <li><a [routerLink]="'/contato'">Fale Conosco</a></li>
         </ul>
@@ -41,7 +41,7 @@
 
     <!-- Newsletter -->
     <div class="subscribe">
-      <h4>Receba receitas no seu e-mail</h4>
+      <h3>Receba receitas no seu e-mail</h3>
 
       <!-- Estado: sucesso -->
       <div
@@ -107,6 +107,8 @@
       class="BraFoodLogo"
       src="assets/imagens/icones/BraFoodLogoR.png"
       alt="Logo BraFood"
+      width="75"
+      height="56"
     />
 
     <div class="terms">
@@ -123,16 +125,23 @@
           <a
             href="https://www.linkedin.com/in/ana-let%C3%ADcia-de-souza-pinheiro-6b4008234"
             target="_blank"
+            aria-label="LinkedIn"
             ><i class="fa-brands fa-linkedin-in"></i
           ></a>
         </li>
         <li>
-          <a href="https://github.com/AnaSouzaPinheiro" target="_blank"
+          <a
+            href="https://github.com/AnaSouzaPinheiro"
+            target="_blank"
+            aria-label="GitHub"
             ><i class="fa-brands fa-github"></i
           ></a>
         </li>
         <li>
-          <a href="https://www.instagram.com/anale_05" target="_blank"
+          <a
+            href="https://www.instagram.com/anale_05"
+            target="_blank"
+            aria-label="Instagram"
             ><i class="fa-brands fa-instagram"></i
           ></a>
         </li>

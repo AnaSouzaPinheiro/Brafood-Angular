@@ -1,29 +1,30 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { AuthService } from '../../services/auth/auth.service';
 import {
-  AdminCategoriaService,
-  CategoriaAdmin,
-  SubcategoriaAdmin,
+    AdminCategoriaService,
+    CategoriaAdmin,
+    SubcategoriaAdmin,
 } from '../../services/admin/admin-categoria.service';
 import {
-  AdminSecaoService,
-  SecaoAdmin,
-  ReceitaVinculada,
+    AdminSecaoService,
+    ReceitaVinculada,
+    SecaoAdmin,
 } from '../../services/admin/admin-secao.service';
 import { AdminUploadService } from '../../services/admin/admin-upload.service';
-import { ModalService } from '../../services/modal/modal.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { DestaqueService } from '../../services/destaque/destaque.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 
 type Tab = 'categorias' | 'subcategorias' | 'secoes' | 'destaque';
 
 @Component({
   selector: 'bra-painel-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MediaUrlPipe],
   templateUrl: './painel-admin.html',
   styleUrl: './painel-admin.scss',
 })

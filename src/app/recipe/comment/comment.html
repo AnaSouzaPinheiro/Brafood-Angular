@@ -42,6 +42,16 @@
         >
           Ver {{ comment.replies?.length || 0 }} respostas
         </span>
+
+        <span
+          class="excluir"
+          *ngIf="podeExcluir"
+          [class.disabled]="excluindo"
+          (click)="excluir()"
+        >
+          <i class="fa-regular fa-trash-can"></i>
+          {{ excluindo ? 'Excluindo...' : '' }}
+        </span>
       </div>
     </div>
   </div>
@@ -69,10 +79,17 @@
       </div>
 
       <div class="reply-actions">
-        <button class="cancelar" (click)="cancelar()">Cancelar</button>
+        <button
+          class="cancelar"
+          [disabled]="enviandoResposta"
+          (click)="cancelar()"
+        >
+          Cancelar
+        </button>
         <bra-custom-button
           class="send"
-          label="Responder"
+          [label]="enviandoResposta ? 'Enviando...' : 'Responder'"
+          [disabled]="enviandoResposta"
           (clicked)="enviar()"
         ></bra-custom-button>
       </div>
@@ -86,6 +103,7 @@
     *ngFor="let reply of (comment.replies || []) | slice:0:visibleRepliesCount"
     [comment]="reply"
     (sendReply)="sendReply.emit($event)"
+    (deleteComment)="deleteComment.emit($event)"
   ></bra-comment>
 
   <bra-custom-button

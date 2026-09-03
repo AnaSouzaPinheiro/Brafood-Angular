@@ -11,6 +11,19 @@
 }
 
 .category-bar {
+  // Clone da lista (usado só pro loop infinito do carrossel de desktop)
+  // some completamente em telas menores, que usam o scroll manual normal.
+  &:not(.is-carousel) .clone {
+    display: none;
+  }
+
+  // No desktop em modo carrossel, o JS controla o scrollLeft sozinho —
+  // então tira a scrollbar e o arraste manual pra não brigar com a animação.
+  &.is-carousel ul {
+    overflow-x: hidden;
+    cursor: default;
+  }
+
   ul {
     display: flex;
     align-items: stretch;

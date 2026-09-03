@@ -6,7 +6,7 @@ import { BaseService } from '../base/base.service';
 })
 export class CompartilhamentoService extends BaseService {
   getLinkWhatsApp(ingredientes: any[]) {
-    const link = window.location.href;
+    const link = typeof window !== 'undefined' ? window.location.href : '';
 
     return this.httpClient.get<string>(
       this.url(

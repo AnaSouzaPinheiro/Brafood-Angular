@@ -13,14 +13,14 @@
           <i class="fa-solid fa-circle-chevron-left"></i>
         </span>
 
-        <h1 class="title" [ngStyle]="getTituloStyle()">{{ section.title }}</h1>
+        <h2 class="title" [ngStyle]="getTituloStyle()">{{ section.title }}</h2>
 
         <span class="arrow" *ngIf="showRightArrow" (click)="scrollRight()">
           <i class="fa-solid fa-circle-chevron-right"></i>
         </span>
       </div>
 
-      <img [src]="section.fundoTitle | mediaUrl" class="fundoTitle" />
+      <img [src]="section.fundoTitle | mediaUrl" class="fundoTitle" alt="" />
     </div>
 
     <div

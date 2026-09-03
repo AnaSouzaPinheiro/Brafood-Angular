@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ReceitaService } from '../../services/receita/receita.service';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { toSlug } from '../../utils/slug';
 
 interface Sugestao {
@@ -17,7 +18,7 @@ interface Sugestao {
 @Component({
   selector: 'bra-search-bar',
   standalone: true,
-  imports: [FormsModule, RouterModule, CommonModule],
+  imports: [FormsModule, RouterModule, CommonModule, MediaUrlPipe],
   templateUrl: './search-bar.html',
   styleUrl: './search-bar.scss',
 })

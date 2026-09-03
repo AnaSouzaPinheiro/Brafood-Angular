@@ -4,7 +4,7 @@ export const serverRoutes: ServerRoute[] = [
   // ROTAS DINÂMICAS
   {
     path: 'receita/:nome/:id',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Server,
   },
   {
     path: 'editar-perfil/:id',

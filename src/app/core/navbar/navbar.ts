@@ -1,11 +1,11 @@
-import { Component, computed, HostListener, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, HostListener, signal, WritableSignal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { User } from '../../model/user';
+import { AuthService } from '../../services/auth/auth.service';
+import { UsuarioService } from '../../services/usuario/usuario.service';
 import { ModalLog } from '../modal-log/modal-log';
 import { SearchBar } from '../search-bar/search-bar';
 import { UserIcon } from '../user-icon/user-icon';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth/auth.service';
-import { User } from '../../model/user';
-import { UsuarioService } from '../../services/usuario/usuario.service';
 
 @Component({
   selector: 'bra-navbar',
@@ -35,6 +35,16 @@ export class Navbar {
     if (storedUser) {
       this.buildModalData(storedUser);
     }
+
+    // Mantém o ícone sincronizado com o AuthService: se a sessão for encerrada
+    // em qualquer lugar (expirou, logout em outra aba, erro 401 etc.), o
+    // sinal local do Navbar acompanha em vez de ficar com a foto travada.
+    effect(() => {
+      if (!this.auth.isLoggedIn()) {
+        this.user.set(undefined);
+        this.modalData = null;
+      }
+    });
   }
 
   ngOnInit() {
@@ -44,10 +54,21 @@ export class Navbar {
         // Atualiza com dados frescos do servidor em background
         this.usuarioService
           .buscarUserPorId(currentUser.id)
-          .subscribe((response) => {
-            const user = response.usuario;
-            this.user.set(user);
-            this.buildModalData(user);
+          .subscribe({
+            next: (response) => {
+              const user = response.usuario;
+              this.user.set(user);
+              this.buildModalData(user);
+            },
+            error: (err) => {
+              // Sessão expirada/token inválido no servidor: desloga de fato
+              // pra limpar storage e sincronizar todo o app (não só o ícone).
+              if (err.status === 401 || err.status === 403) {
+                this.auth.logout();
+                this.user.set(undefined);
+                this.modalData = null;
+              }
+            },
           });
       }
     }

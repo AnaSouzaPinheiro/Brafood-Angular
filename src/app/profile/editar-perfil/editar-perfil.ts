@@ -1,22 +1,23 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-  FormsModule,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { BraInput } from '../../shared/input/input';
-import { User } from '../../model/user';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    ValidationErrors,
+    Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { User } from '../../model/user';
+import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
-import { Perfil } from '../perfil/perfil';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { BraInput } from '../../shared/input/input';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+import { Perfil } from '../perfil/perfil';
 
 function senhasIguais(group: AbstractControl): ValidationErrors | null {
   const nova = group.get('novaSenha')?.value;
@@ -69,6 +70,7 @@ export class EditarPerfil implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private modalService: ModalService,
+    private logger: LoggerService,
   ) {
     this.form = this.fb.group(
       {
@@ -224,7 +226,7 @@ export class EditarPerfil implements OnInit {
           }
         },
         error: (err) => {
-          console.error(err);
+          this.logger.error('Erro ao atualizar perfil:', err);
           this.modalService.open({
             type: 'error',
             title: 'Erro',

@@ -16,8 +16,10 @@ import { InputList } from '../../profile/input-list/input-list';
 import { Perfil } from '../../profile/perfil/perfil';
 import { AuthService } from '../../services/auth/auth.service';
 import { CategoriaService } from '../../services/categoria/categoria.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ReceitaService } from '../../services/receita/receita.service';
+import { StorageService } from '../../services/storage/storage.service';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { BraInput } from '../../shared/input/input';
 
@@ -91,6 +93,8 @@ export class AddRecipe {
     private modalService: ModalService,
     private authService: AuthService,
     private router: Router,
+    private logger: LoggerService,
+    private storage: StorageService,
   ) {
     this.form = this.fb.group({
       titulo: [
@@ -164,13 +168,13 @@ export class AddRecipe {
             .map((sub) => ({ label: sub.nome, value: sub.id.toString() }));
         });
 
-        const aiData = localStorage.getItem('ai_recipe');
+        const aiData = this.storage.getItem('ai_recipe');
         if (aiData) {
           this.preencherFormularioComIA(JSON.parse(aiData));
-          localStorage.removeItem('ai_recipe');
+          this.storage.removeItem('ai_recipe');
         }
       },
-      error: (err: any) => console.error(err),
+      error: (err: any) => this.logger.error('Erro ao carregar categorias:', err),
     });
   }
   

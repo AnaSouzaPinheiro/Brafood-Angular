@@ -17,19 +17,18 @@
       </p>
     </div>
 
-    <bra-input-acesso
-      [type]="'email'"
-      [(ngModel)]="email"
-      name="emailRecuperacao"
-      autocomplete="email"
-    ></bra-input-acesso>
+    <form (ngSubmit)="enviar()">
+      <bra-input-acesso
+        [type]="'email'"
+        [(ngModel)]="email"
+        name="emailRecuperacao"
+        autocomplete="email"
+      ></bra-input-acesso>
 
-    <p class="erro" *ngIf="erro">{{ erro }}</p>
-    <p class="sucesso" *ngIf="sucesso">{{ sucesso }}</p>
+      <p class="erro" *ngIf="erro">{{ erro }}</p>
+      <p class="sucesso" *ngIf="sucesso">{{ sucesso }}</p>
 
-    <bra-custom-button
-      label="Enviar instruções"
-      (click)="enviar()"
-    ></bra-custom-button>
+      <bra-custom-button label="Enviar instruções"></bra-custom-button>
+    </form>
   </div>
 </div>

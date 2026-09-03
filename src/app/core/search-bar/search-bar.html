@@ -9,10 +9,10 @@
       (keyup.enter)="buscar()"
       autocomplete="off"
     />
-    <i class="fas fa-search search-icon" (click)="buscar()"></i>
+    <i class="fa-solid fa-search search-icon" (click)="buscar()"></i>
 
     <button class="mobile-search-btn" (click)="toggleMobileSearch()">
-      <i class="fas fa-search"></i>
+      <i class="fa-solid fa-search"></i>
     </button>
 
     <!-- Dropdown de sugestões -->
@@ -29,7 +29,7 @@
         >
           <img
             *ngIf="s.imagem1"
-            [src]="s.imagem1"
+            [src]="s.imagem1 | mediaUrl"
             class="sugestao-img"
             alt=""
             onerror="this.style.display = 'none'"

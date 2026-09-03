@@ -1,11 +1,12 @@
 import {
-  AngularNodeAppEngine,
-  createNodeRequestHandler,
-  isMainModule,
-  writeResponseToNodeResponse,
+    AngularNodeAppEngine,
+    createNodeRequestHandler,
+    isMainModule,
+    writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import { generateSitemap } from './sitemap';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -34,6 +35,19 @@ app.use(
     redirect: false,
   }),
 );
+
+/**
+ * Sitemap dinâmico: junta páginas estáticas + receitas + categorias
+ * vindas da API. Cacheado em memória por 1h (ver src/sitemap.ts).
+ */
+app.get('/sitemap.xml', async (req, res, next) => {
+  try {
+    const xml = await generateSitemap();
+    res.type('application/xml').send(xml);
+  } catch (err) {
+    next(err);
+  }
+});
 
 /**
  * Handle all other requests by rendering the Angular application.

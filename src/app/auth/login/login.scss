@@ -1,5 +1,23 @@
 @use "variables" as *;
+@use "layout" as *;
 @use "auth" as *;
+
+// O <form> novo (adicionado pra habilitar o Enter) precisa repetir o
+// flex/gap que o .modal aplicava direto nos filhos, senão o espaçamento
+// entre os campos colapsa.
+form {
+  align-items: center;
+  gap: 35px;
+  width: 100%;
+
+  @include flex-column;
+}
+
+@media (max-width: 480px) {
+  form {
+    gap: 25px;
+  }
+}
 
 span.error {
   color: red;

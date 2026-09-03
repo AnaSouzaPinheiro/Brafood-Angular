@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
+import { LoggerService } from '../../services/logger/logger.service';
 import { CustomButton } from '../custom-button/custom-button';
 import {
     DropdownDinamicoItem,
@@ -44,6 +45,7 @@ export class Search {
     private route: ActivatedRoute,
     private receitaService: ReceitaService,
     private filterService: FilterStateService,
+    private logger: LoggerService,
   ) {
     this.filtros = this.filterService.filtroInicial();
   }
@@ -85,7 +87,7 @@ export class Search {
           this.loadingSearch = false;
         },
         error: (err) => {
-          console.error('Erro ao carregar receitas:', err);
+          this.logger.error('Erro ao carregar receitas:', err);
           this.Recipes = [];
           this.RecipesFiltradas = [];
           this.loadingSearch = false;

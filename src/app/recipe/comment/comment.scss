@@ -64,6 +64,25 @@ $thread-line-color: #e0e0e0;
     }
   }
 
+  .excluir {
+    cursor: pointer;
+    font-weight: 300;
+    color: $primary-gray;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover, i:hover {
+      color: #e04b4b;
+    }
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+  }
+
   .replies {
     display: flex;
     gap: 15px;

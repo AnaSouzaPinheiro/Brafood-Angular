@@ -17,6 +17,7 @@ import { InputList } from '../../profile/input-list/input-list';
 import { Perfil } from '../../profile/perfil/perfil';
 import { AuthService } from '../../services/auth/auth.service';
 import { CategoriaService } from '../../services/categoria/categoria.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ReceitaService } from '../../services/receita/receita.service';
 import { CustomButton } from '../../shared/custom-button/custom-button';
@@ -100,6 +101,7 @@ export class UpdateRecipe implements OnInit {
     private router: Router,
     private modalService: ModalService,
     private authService: AuthService,
+    private logger: LoggerService,
   ) {
     this.form = this.fb.group({
       titulo: [
@@ -448,7 +450,7 @@ export class UpdateRecipe implements OnInit {
           }
         },
         error: (err) => {
-          console.error(err);
+          this.logger.error('Erro ao atualizar receita:', err);
           this.modalService.open({
             type: 'error',
             title: 'Erro de comunicação',
