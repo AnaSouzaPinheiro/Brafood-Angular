@@ -18,13 +18,21 @@
       alt=""
       loading="eager"
     />
-    <img
-      class="three"
-      (click)="openLightbox(2)"
-      [src]="imageList[2] | mediaUrl"
-      alt=""
-      loading="eager"
-    />
+
+    <div class="third-image">
+      <img
+        class="three"
+        (click)="openLightbox(2)"
+        [src]="imageList[2] | mediaUrl"
+        alt=""
+      />
+
+      @if (imageList.length > 3) {
+      <button class="more-images" type="button" (click)="openLightbox(2)">
+        +{{ imageList.length - 3 }}
+      </button>
+      }
+    </div>
   </div>
 </div>
 } @else if (imageList.length == 2) {
@@ -70,7 +78,7 @@
       <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <div class="all">
+    <div class="lightbox-viewer">
       <button class="prev" (click)="prevImage(); $event.stopPropagation()">
         <i class="fa-solid fa-caret-left"></i>
       </button>
@@ -84,16 +92,18 @@
       <button class="next" (click)="nextImage(); $event.stopPropagation()">
         <i class="fa-solid fa-caret-right"></i>
       </button>
+    </div>
 
-      <div class="mobile-arrows">
-        <button class="prev" (click)="prevImage(); $event.stopPropagation()">
-          <i class="fa-solid fa-caret-left"></i>
-        </button>
-
-        <button class="next" (click)="nextImage(); $event.stopPropagation()">
-          <i class="fa-solid fa-caret-right"></i>
-        </button>
-      </div>
+    <div class="thumbnail-carousel">
+      @for (image of imageList; track $index) {
+      <button
+        class="thumbnail"
+        [class.active]="currentIndex() === $index"
+        (click)="openLightbox($index); $event.stopPropagation()"
+      >
+        <img [src]="image | mediaUrl" alt="" />
+      </button>
+      }
     </div>
   </div>
 </div>

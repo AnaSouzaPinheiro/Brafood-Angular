@@ -31,11 +31,15 @@ export class RecipeImages {
 
   prevImage() {
     this.currentIndex.set(
-      (this.currentIndex() - 1 + this.imageList.length) % this.imageList.length
+      (this.currentIndex() - 1 + this.imageList.length) % this.imageList.length,
     );
   }
 
   nextImage() {
     this.currentIndex.set((this.currentIndex() + 1) % this.imageList.length);
+  }
+
+  get remainingImages() {
+    return Math.max(this.imageList.length - 3, 0);
   }
 }
