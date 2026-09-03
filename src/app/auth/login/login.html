@@ -15,24 +15,30 @@
       <p class="description">Faça o login para publicar suas receitas!</p>
     </div>
 
-    <bra-input-acesso
-      [type]="'email'"
-      [(ngModel)]="email"
-      name="emailLogin"
-      autocomplete="email"
-    ></bra-input-acesso>
-    <bra-input-acesso
-      [type]="'senha'"
-      [(ngModel)]="senha"
-      name="passwordLogin"
-      autocomplete="current-password"
-    ></bra-input-acesso>
+    <form (ngSubmit)="entrar()">
+      <bra-input-acesso
+        [type]="'email'"
+        [(ngModel)]="email"
+        name="emailLogin"
+        autocomplete="email"
+      ></bra-input-acesso>
+      <bra-input-acesso
+        [type]="'senha'"
+        [(ngModel)]="senha"
+        name="passwordLogin"
+        autocomplete="current-password"
+      ></bra-input-acesso>
 
-    <span class="error" *ngIf="erro">{{ erro }}</span>
+      <span class="error" *ngIf="erro">{{ erro }}</span>
 
-    <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
+      <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
 
-    <bra-custom-button label="Entrar" (click)="entrar()"></bra-custom-button>
+      <!-- Sem (click): o <button> interno do bra-custom-button não tem
+           [type] explícito, então por padrão do HTML ele já é type="submit"
+           dentro de um <form> — clicar OU apertar Enter em qualquer campo
+           aciona o (ngSubmit) do form abaixo, sem duplicar a chamada. -->
+      <bra-custom-button label="Entrar"></bra-custom-button>
+    </form>
 
     <p class="cadastre">
       Não possui uma conta?

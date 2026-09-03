@@ -1,17 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
+    FormBuilder,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AiService } from '../../services/ai/ai.service';
-import { BraInput } from '../../shared/input/input';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { CommonModule } from '@angular/common';
 import { Perfil } from '../../profile/perfil/perfil';
+import { AiService } from '../../services/ai/ai.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { StorageService } from '../../services/storage/storage.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { BraInput } from '../../shared/input/input';
 
 const MIN_CHARS_AI = 200;
 
@@ -44,6 +46,8 @@ export class AddRecipeAi {
     private fb: FormBuilder,
     private aiService: AiService,
     private modalService: ModalService,
+    private logger: LoggerService,
+    private storage: StorageService,
   ) {
     this.form = this.fb.group({
       textoReceita: [
@@ -61,7 +65,7 @@ export class AddRecipeAi {
       (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      console.warn('SpeechRecognition não suportado neste navegador.');
+      this.logger.warn('SpeechRecognition não suportado neste navegador.');
       return;
     }
 
@@ -102,7 +106,7 @@ export class AddRecipeAi {
 
     // Se der erro/permissão negada/etc
     this.recognition.onerror = (event: any) => {
-      console.error('Erro SpeechRecognition:', event);
+      this.logger.error('Erro SpeechRecognition:', event);
       this.isListening = false;
     };
 
@@ -139,7 +143,7 @@ export class AddRecipeAi {
 
     this.aiService.generate(this.form.value.textoReceita).subscribe({
       next: (receita) => {
-        localStorage.setItem('ai_recipe', JSON.stringify(receita));
+        this.storage.setItem('ai_recipe', JSON.stringify(receita));
         this.router.navigate(['/adicionar-receita']);
       },
       error: (err) => {

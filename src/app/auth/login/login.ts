@@ -1,10 +1,10 @@
-import { Component, Optional, QueryList, ViewChildren } from '@angular/core';
-import { InputAcesso } from '../input-acesso/input-acesso';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
+import { Component, Optional, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { InputAcesso } from '../input-acesso/input-acesso';
 
 @Component({
   selector: 'bra-login',
@@ -45,7 +45,7 @@ export class Login {
         if (res.success) {
           // Salva o objeto completo retornado pelo backend (inclui is_admin)
           const userData = res.user ?? { id: res.id, email: this.email };
-          this.auth.saveUserSession(userData);
+          this.auth.saveUserSession(userData, res.token);
           this.router.navigateByUrl(returnUrl);
         } else {
           this.erro = res.message || 'Erro no login.';

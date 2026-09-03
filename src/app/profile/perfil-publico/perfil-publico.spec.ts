@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PerfilPublico } from './perfil-publico';
+import { PerfilPublicoPage } from './perfil-publico';
 
-describe('PerfilPublico', () => {
-  let component: PerfilPublico;
-  let fixture: ComponentFixture<PerfilPublico>;
+describe('PerfilPublicoPage', () => {
+  let component: PerfilPublicoPage;
+  let fixture: ComponentFixture<PerfilPublicoPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PerfilPublico]
+      imports: [PerfilPublicoPage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PerfilPublico);
+    fixture = TestBed.createComponent(PerfilPublicoPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

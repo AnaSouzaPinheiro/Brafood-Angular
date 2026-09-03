@@ -583,7 +583,7 @@
           <label>Imagem do fundo do título</label>
           @if (previewFundoTituloSecao || secForm.fundo_titulo) {
           <img
-            [src]="previewFundoTituloSecao || secForm.fundo_titulo"
+            [src]="previewFundoTituloSecao || secForm.fundo_titulo | mediaUrl"
             alt="preview fundo título"
             class="img-preview"
           />
@@ -766,7 +766,7 @@
       <div class="destaque-preview">
         <img
           *ngIf="destaqueAtual.imagem1"
-          [src]="destaqueAtual.imagem1"
+          [src]="destaqueAtual.imagem1 | mediaUrl"
           class="destaque-thumb"
           alt=""
         />
@@ -803,10 +803,10 @@
           (click)="ativarDestaque(r)"
           [class.ja-destacada]="r.destaque == 1"
         >
-          <img *ngIf="r.imagem1" [src]="r.imagem1" class="sug-thumb" alt="" />
+          <img *ngIf="r.imagem1" [src]="r.imagem1 | mediaUrl" class="sug-thumb" alt="" />
           <span>{{ r.titulo }}</span>
           <span class="sug-badge" *ngIf="r.destaque == 1">atual</span>
-          <span class="sug-action" *ngIf="r.destaque != 1">Destacar →</span>
+          <span class="sug-action" *ngIf="r.destaque != 1">Destacar</span>
         </div>
       </div>
     </div>

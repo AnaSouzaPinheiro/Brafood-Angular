@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
-import { CategoriaService } from '../../services/categoria/categoria.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { CategoriaService } from '../../services/categoria/categoria.service';
 import { NewsletterService } from '../../services/newsletter/newsletter.service';
 import { toSlug } from '../../utils/slug';
 
@@ -34,8 +34,8 @@ export class Footer implements OnInit {
   ngOnInit() {
     this.logado = this.auth.isLoggedIn();
 
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    this.userId = user?.id ?? null;
+    const usuarioLogado = this.auth.user();
+    this.userId = usuarioLogado?.id ?? null;
 
     this.categoriaServices.listCats().subscribe((categorias) => {
       this.categorias = categorias.map((c: Categoria) => ({

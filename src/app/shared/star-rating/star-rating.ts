@@ -1,11 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+} from '@angular/core';
 
 @Component({
   selector: 'bra-star-rating',
@@ -27,6 +27,8 @@ export class StarRating implements OnChanges {
   @Input() interativo: boolean = true;
   /** Quando true, estrelas vazias ficam vermelhas (validação) */
   @Input() erro: boolean = false;
+
+  @Input() exibirResumo = true;
 
   estrelas = [1, 2, 3, 4, 5];
   hover: number | null = null;

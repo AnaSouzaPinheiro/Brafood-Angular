@@ -1,0 +1,143 @@
+/*
+  Subset customizado do Font Awesome — contém SOMENTE os ícones
+  realmente usados no projeto (gerado com fontawesome-subset).
+
+  Isso substitui o import de "@fortawesome/fontawesome-free/css/all.min.css",
+  que carregava ~76KB de CSS com 98% de regras não usadas (todo o catálogo
+  de ícones do FontAwesome), segundo o relatório do Lighthouse.
+
+  Se algum ícone novo for usado no futuro (classe fa-solid/fa-regular/fa-brands
+  fa-nome-do-icone), ele precisa ser adicionado aqui e no script
+  generate-fa-subset.js, e o script deve ser rodado de novo.
+*/
+
+@font-face {
+  font-family: 'FA Solid Subset';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/assets/fontawesome-subset/fa-solid-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'FA Regular Subset';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fontawesome-subset/fa-regular-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'FA Brands Subset';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fontawesome-subset/fa-brands-400.woff2') format('woff2');
+}
+
+// Suporte tanto ao padrão novo (fa-solid/fa-regular/fa-brands) quanto ao
+// antigo (fas/far/fab), pois ainda há templates usando a nomenclatura antiga
+// (ex: search-bar usa "fas fa-search"). Sem isso, o ícone fica sem font-family
+// nenhuma aplicada e o glifo não aparece mesmo estando correto no content.
+.fa-solid,
+.fas,
+.fa-regular,
+.far,
+.fa-brands,
+.fab {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+.fa-solid,
+.fas {
+  font-family: 'FA Solid Subset';
+  font-weight: 900;
+}
+
+.fa-regular,
+.far {
+  font-family: 'FA Regular Subset';
+  font-weight: 400;
+}
+
+.fa-brands,
+.fab {
+  font-family: 'FA Brands Subset';
+  font-weight: 400;
+}
+
+// Utilitários usados no projeto
+.fa-spin {
+  animation: fa-spin 2s linear infinite;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fa-rotate-90 {
+  transform: rotate(90deg);
+}
+
+// ---- Solid ----
+.fa-arrow-right::before { content: "\f061"; }
+.fa-arrow-right-from-bracket::before { content: "\f08b"; }
+.fa-arrow-turn-up::before { content: "\f148"; }
+.fa-arrow-up-right-from-square::before { content: "\f08e"; }
+.fa-bowl-food::before { content: "\e4c6"; }
+.fa-caret-left::before { content: "\f0d9"; }
+.fa-caret-right::before { content: "\f0da"; }
+.fa-circle-check::before { content: "\f058"; }
+.fa-circle-chevron-left::before { content: "\f137"; }
+.fa-circle-chevron-right::before { content: "\f138"; }
+.fa-circle-exclamation::before { content: "\f06a"; }
+.fa-circle-info::before { content: "\f05a"; }
+.fa-circle-question::before { content: "\f059"; }
+.fa-circle-xmark::before { content: "\f057"; }
+.fa-clapperboard::before { content: "\e131"; }
+.fa-face-frown-open::before { content: "\f57a"; }
+.fa-filter::before { content: "\f0b0"; }
+.fa-heart::before { content: "\f004"; }
+.fa-heart-crack::before { content: "\f7a9"; }
+.fa-lock::before { content: "\f023"; }
+.fa-magnifying-glass::before,
+.fa-search::before { content: "\f002"; } // search é alias de magnifying-glass, mesmo glifo
+.fa-microphone-lines::before { content: "\f3c9"; }
+.fa-paper-plane::before { content: "\f1d8"; }
+.fa-plus::before { content: "\2b"; }
+.fa-reply::before { content: "\f3e5"; }
+.fa-robot::before { content: "\f544"; }
+.fa-share-nodes::before { content: "\f1e0"; }
+.fa-spinner::before { content: "\f110"; }
+.fa-star::before { content: "\f005"; }
+.fa-star-half-stroke::before { content: "\f5c0"; }
+.fa-stop::before { content: "\f04d"; }
+.fa-triangle-exclamation::before { content: "\f071"; }
+.fa-utensils::before { content: "\f2e7"; }
+.fa-video::before { content: "\f03d"; }
+.fa-x::before { content: "\58"; }
+.fa-xmark::before { content: "\f00d"; }
+
+// fa-pen-to-square e fa-user existem em solid e regular; a regra de peso/família
+// já é definida por .fa-solid / .fa-regular, então o content pode ser compartilhado.
+.fa-pen-to-square::before { content: "\f044"; }
+.fa-user::before { content: "\f007"; }
+
+// ---- Regular ----
+.fa-clock::before { content: "\f017"; }
+.fa-lightbulb::before { content: "\f0eb"; }
+.fa-trash-can::before { content: "\f2ed"; }
+.fa-envelope::before { content: "\f0e0"; }
+
+// ---- Brands ----
+.fa-github::before { content: "\f09b"; }
+.fa-instagram::before { content: "\f16d"; }
+.fa-linkedin-in::before { content: "\f0e1"; }
+.fa-tiktok::before { content: "\e07b"; }
+.fa-whatsapp::before { content: "\f232"; }
+.fa-youtube::before { content: "\f167"; }

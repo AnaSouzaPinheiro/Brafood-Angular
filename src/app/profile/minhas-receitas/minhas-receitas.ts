@@ -71,8 +71,8 @@ export class MinhasReceitas {
   ) {
     this.logado = this.auth.isLoggedIn();
 
-    const userData = localStorage.getItem('user');
-    if (userData) this.userId = JSON.parse(userData).id;
+    const usuarioLogado = this.auth.user();
+    if (usuarioLogado) this.userId = usuarioLogado.id;
 
     if (this.userId) {
       this.receitaServices

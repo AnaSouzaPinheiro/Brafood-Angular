@@ -37,18 +37,18 @@ export class Favoritas {
     this.indice = 0;
     this.currentPage = 1;
 
-    // 🚨 garante que está no browser
+    // garante que está no browser
     if (typeof window === 'undefined') return;
 
     this.logado = this.auth.isLoggedIn();
 
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    const usuarioLogado = this.auth.user();
+    if (!usuarioLogado) {
       this.loadingFavoritas = false;
       return;
     }
 
-    this.userId = JSON.parse(userData).id;
+    this.userId = usuarioLogado.id;
 
     this.favoritoService
       .listarFavoritos(Number(this.userId))

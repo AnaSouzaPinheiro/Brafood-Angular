@@ -29,11 +29,9 @@ export class Perfil {
   ngOnInit() {
     this.logado = this.auth.isLoggedIn();
 
-    if (typeof window !== 'undefined') {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        this.userId = JSON.parse(userData).id;
-      }
+    const usuarioLogado = this.auth.user();
+    if (usuarioLogado) {
+      this.userId = usuarioLogado.id;
     }
 
     if (this.userId) {
@@ -65,14 +63,27 @@ export class Perfil {
   }
 
   get isEditarPerfil() {
-    return this.router.url === `/editar-perfil/${this.userId}`;
+    return this.pathStartsWith('/editar-perfil');
   }
 
   get isMinhasReceitas() {
-    return this.router.url === `/minhas-receitas/${this.userId}`;
+    // "Minhas receitas" também deve ficar ativo nas páginas de criar/editar
+    // receita, já que o usuário chega nelas a partir dessa seção.
+    return (
+      this.pathStartsWith('/minhas-receitas') ||
+      this.pathStartsWith('/editar-receita') ||
+      this.pathStartsWith('/adicionar-receita')
+    );
   }
 
   get isFavoritas() {
-    return this.router.url === `/favoritas/${this.userId}`;
+    return this.pathStartsWith('/favoritas');
+  }
+
+  // Compara só o caminho (ignora query string/fragment) e usa prefixo em vez
+  // de igualdade exata, pra cobrir sub-rotas e futuros query params.
+  private pathStartsWith(prefix: string): boolean {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    return path === prefix || path.startsWith(`${prefix}/`);
   }
 }

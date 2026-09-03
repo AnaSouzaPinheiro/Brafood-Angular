@@ -1,2 +1,17 @@
 @use "variables" as *;
+@use "layout" as *;
 @use "auth" as *;
+
+form {
+  align-items: center;
+  gap: 35px;
+  width: 100%;
+
+  @include flex-column;
+}
+
+@media (max-width: 480px) {
+  form {
+    gap: 25px;
+  }
+}

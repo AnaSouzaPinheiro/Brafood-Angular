@@ -1,15 +1,16 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CustomButton } from '../../shared/custom-button/custom-button';
-import { HoverThings } from '../hover-things/hover-things';
-import { User } from '../../model/user';
-import { AuthService } from '../../services/auth/auth.service';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Recipes } from '../../model/myrecipes';
-import { FavoritoService } from '../../services/favorito/favorito.service';
+import { User } from '../../model/user';
+import { AuthService } from '../../services/auth/auth.service';
 import { AvaliacaoService } from '../../services/avaliacao/avaliacao.service';
+import { FavoritoService } from '../../services/favorito/favorito.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ToastService } from '../../services/toast/toast.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
+import { HoverThings } from '../hover-things/hover-things';
 
 @Component({
   selector: 'bra-info-recipe',
@@ -61,6 +62,7 @@ export class InfoRecipe implements OnChanges {
     private toastService: ToastService,
     private favoritoService: FavoritoService,
     private avaliacaoService: AvaliacaoService,
+    private logger: LoggerService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -74,11 +76,10 @@ export class InfoRecipe implements OnChanges {
     // Carrega média sempre — independente de estar logado
     this.carregarAvaliacao();
 
-    const userData = localStorage.getItem('user');
-    if (!userData) return;
+    const usuarioLogado = this.auth.user();
+    if (!usuarioLogado) return;
 
-    const parsedUser = JSON.parse(userData);
-    this.userId = Number(parsedUser.id);
+    this.userId = Number(usuarioLogado.id);
 
     this.favoritoService
       .isFavorita(this.userId, Number(this.recipe.id))
@@ -87,7 +88,7 @@ export class InfoRecipe implements OnChanges {
           this.isFavorite = res.favorite;
         },
         error: (err) => {
-          console.error('Erro ao verificar favorito', err);
+          this.logger.error('Erro ao verificar favorito', err);
         },
       });
   }

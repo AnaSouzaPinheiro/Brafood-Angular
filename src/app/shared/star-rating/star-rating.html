@@ -13,7 +13,7 @@
   >
     <i
       *ngFor="let n of estrelas"
-      [class.fa-solid]="n <= notaAtiva"
+      [class.fa-solid]="n <= notaAtiva + 0.5"
       [class.fa-regular]="n > notaAtiva + 0.5"
       [class.fa-star-half-stroke]="n > notaAtiva && n <= notaAtiva + 0.5"
       [class.fa-star]="n <= notaAtiva || n > notaAtiva + 0.5"
@@ -29,11 +29,14 @@
   </div>
 
   <!-- Média + total -->
-  <div class="media-info" *ngIf="total > 0">
+  <div class="media-info" *ngIf="exibirResumo && total > 0">
     <span class="media-valor">{{ media | number: '1.1-1' }}</span>
     <span class="total">({{ total }})</span>
   </div>
-  <div class="media-info sem-avaliacao" *ngIf="total === 0 && !interativo">
+  <div
+    class="media-info sem-avaliacao"
+    *ngIf="exibirResumo && total === 0 && !interativo"
+  >
     <span>Sem avaliações</span>
   </div>
 </div>

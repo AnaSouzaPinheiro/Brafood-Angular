@@ -65,6 +65,7 @@ export class InstagramEmbedService {
    */
   async carregarEProcessar(): Promise<void> {
     await this.carregarScript();
+    if (typeof window === 'undefined') return;
     window.instgrm?.Embeds?.process();
   }
 }

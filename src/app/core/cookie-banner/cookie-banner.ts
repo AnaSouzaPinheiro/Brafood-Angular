@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { StorageService } from '../../services/storage/storage.service';
 
 @Component({
   selector: 'bra-cookie-banner',
@@ -13,23 +14,25 @@ export class CookieBanner implements OnInit {
   accepted = false;
   loaded = false;
 
-  private platformId = inject(PLATFORM_ID);
+  private storage = inject(StorageService);
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const acceptedCookies = localStorage.getItem('cookiesAccepted');
-
-      this.accepted = acceptedCookies === 'true';
-    }
-
+    this.accepted = this.storage.getItem('cookiesAccepted') === 'true';
     this.loaded = true;
   }
 
   accept(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    localStorage.setItem('cookiesAccepted', 'true');
-
+    // A UI precisa fechar o banner independente do storage funcionar —
+    // em aba anônima ou com bloqueio de terceiros o localStorage pode
+    // lançar erro, e antes isso travava o accept() antes de marcar
+    // accepted = true.
     this.accepted = true;
+
+    try {
+      this.storage.setItem('cookiesAccepted', 'true');
+    } catch {
+      // Sem storage disponível: o banner some agora, mas vai voltar a
+      // aparecer no próximo carregamento — comportamento aceitável.
+    }
   }
 }

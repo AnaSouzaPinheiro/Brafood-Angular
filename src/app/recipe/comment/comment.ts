@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { UserIcon } from '../../core/user-icon/user-icon';
-import { CustomButton } from '../../shared/custom-button/custom-button';
 import { CommonModule } from '@angular/common';
-import { Comentario } from '../../model/comentario';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserIcon } from '../../core/user-icon/user-icon';
+import { Comentario } from '../../model/comentario';
 import { AuthService } from '../../services/auth/auth.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { CustomButton } from '../../shared/custom-button/custom-button';
 
 export type CommentState = 'normal' | 'reply' | 'replying';
 
@@ -26,6 +26,12 @@ export class Comment {
     texto: string;
     id_comentario_pai: number;
     foto_perfil: string;
+    onDone: (success: boolean) => void;
+  }>();
+
+  @Output() deleteComment = new EventEmitter<{
+    id: number;
+    onDone: (success: boolean) => void;
   }>();
 
   replying = false;
@@ -33,6 +39,8 @@ export class Comment {
   tentouEnviarResposta = false;
   showReplies = false;
   visibleRepliesCount = 3;
+  enviandoResposta = false;
+  excluindo = false;
 
   constructor(
     private authService: AuthService,
@@ -42,6 +50,40 @@ export class Comment {
 
   isReply() {
     return !!this.comment.id_comentario_pai;
+  }
+
+  get podeExcluir(): boolean {
+    const usuarioId = this.authService.getUserId();
+    if (!usuarioId) return false;
+    const isDono = Number(usuarioId) === Number(this.comment.id_usuario);
+    const isAdmin = this.authService.getUser()?.is_admin === 1;
+    return isDono || isAdmin;
+  }
+
+  excluir() {
+    console.log('excluir', this.comment.id, this.comment.texto);
+    if (this.excluindo) return;
+
+    const temRespostas = (this.comment.replies?.length || 0) > 0;
+
+    this.modalService.open({
+      type: 'confirm',
+      title: 'Excluir comentário',
+      message: temRespostas
+        ? 'Tem certeza que quer excluir este comentário? As respostas dele também serão apagadas.'
+        : 'Tem certeza que quer excluir este comentário?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        this.excluindo = true;
+        this.deleteComment.emit({
+          id: this.comment.id,
+          onDone: () => {
+            this.excluindo = false;
+          },
+        });
+      },
+    });
   }
 
   responder() {
@@ -89,18 +131,27 @@ export class Comment {
   }
 
   enviar() {
+    if (this.enviandoResposta) return;
+
     this.tentouEnviarResposta = true;
 
     if (this.textoResposta.trim().length < MIN_CHARS) return;
+
+    this.enviandoResposta = true;
 
     this.sendReply.emit({
       texto: this.textoResposta,
       id_comentario_pai: this.comment.id,
       foto_perfil: this.comment.foto_perfil ?? '',
+      onDone: (success: boolean) => {
+        this.enviandoResposta = false;
+        if (success) {
+          this.showReplies = true;
+          this.cancelar();
+        }
+        // em caso de erro, deixa o texto no campo pra pessoa tentar de novo
+      },
     });
-
-    this.showReplies = true;
-    this.cancelar();
   }
 
   toggleReplies() {

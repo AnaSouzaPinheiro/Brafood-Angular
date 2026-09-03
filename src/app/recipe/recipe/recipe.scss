@@ -214,6 +214,10 @@
 
   .avaliacao-comment-box {
     width: 100%;
+
+    .acb-ja-comentou {
+      color: $primary-blue;
+    }
   }
 
   bra-star-rating.ti {

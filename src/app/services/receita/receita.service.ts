@@ -6,6 +6,7 @@ import { Recipes } from '../../model/myrecipes';
 import { Receita } from '../../model/receita';
 import { Slide } from '../../model/slide';
 import { BaseService } from '../base/base.service';
+import { FiltroState } from '../filter/filter-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,7 @@ export class ReceitaService extends BaseService {
 
   // excluir uma receita
   excluir(id: number): Observable<ApiResponse> {
-    return this.httpClient.get<ApiResponse>(
+    return this.httpClient.delete<ApiResponse>(
       this.url(`receitas/excluir.php?id=${id}`),
     );
   }
@@ -40,7 +41,7 @@ export class ReceitaService extends BaseService {
   // Lista receitas por categoria (usando id e nome na URL)
   listCat(
     categoria: { id: number; nome: string },
-    filtros?: any,
+    filtros?: Partial<FiltroState>,
   ): Observable<Recipes[]> {
     let params = new HttpParams().set('id', categoria.id.toString());
 
@@ -96,6 +97,12 @@ export class ReceitaService extends BaseService {
   // Envia uma nova receita (dados + capa + galeria)
   // `capa` é a imagem principal (obrigatória); `galeria` são as imagens
   // adicionais, em qualquer quantidade.
+  // `formValue` continua `any` de propósito: o que chega aqui não é o
+  // form.value puro, é um objeto montado nos componentes (form + autor +
+  // ingredientes/etapas + eh_propria) que não bate 1:1 com nenhuma
+  // interface existente hoje. Tipar direito aqui exige antes reconciliar
+  // esse payload com o model `Receita` nos componentes que chamam isso
+  // (add-recipe.ts / update-recipe.ts) — fica como próximo passo.
   addReceita(
     formValue: any,
     capa: File | null,

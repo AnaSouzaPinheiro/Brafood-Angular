@@ -38,7 +38,7 @@ hr {
     opacity: 0.5;
   }
 
-  h4 {
+  h3 {
     font-size: 14px;
     font-weight: bold;
   }
@@ -91,7 +91,9 @@ hr {
 
 /* Newsletter */
 .subscribe {
-  gap: 40px;
+  h3 {
+    font-size: 14px;
+  }
 
   p {
     font-size: 14px;
@@ -200,7 +202,7 @@ hr {
     padding: 40px 35px;
   }
 
-  h4,
+  h3,
   li {
     text-align: center;
   }

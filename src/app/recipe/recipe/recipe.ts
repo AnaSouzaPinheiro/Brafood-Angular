@@ -49,6 +49,8 @@ const MAX_COMENTARIO = 1000;
 export class Recipe {
   recipe?: Receita;
   comentarios: Comentario[] = [];
+  /** Comentário raiz já existente do usuário logado nesta receita (regra: só 1 por receita) */
+  meuComentario: Comentario | null = null;
   secaoRelacionadas: Section | null = null;
 
   // Avaliação integrada ao formulário de comentário
@@ -65,6 +67,7 @@ export class Recipe {
   tentouComentar = false;
   comentarioTocado = false;
   loadingRecipe = true;
+  enviandoComentario = false;
 
   constructor(
     private meta: Meta,
@@ -281,8 +284,13 @@ export class Recipe {
 
   get erroComentario(): string {
     const texto = this.novoComentario.trim();
+
+    // Estrelas voltaram a null depois de já ter uma nota salva = pedido
+    // válido de remoção da avaliação, não "faltou preencher".
+    const removendoNota = this.notaForm === null && this.notaUsuario !== null;
+
     // Precisa de nota OU texto — não exige os dois
-    if (!texto && !this.notaForm)
+    if (!texto && !this.notaForm && !removendoNota)
       return 'Avalie com estrelas ou escreva um comentário.';
     if (texto && texto.length < MIN_COMENTARIO)
       return `Escreva pelo menos ${MIN_COMENTARIO} caracteres.`;
@@ -325,6 +333,8 @@ export class Recipe {
   }
 
   comentar() {
+    if (this.enviandoComentario) return;
+
     this.tentouComentar = true;
     this.comentarioTocado = true;
 
@@ -349,6 +359,16 @@ export class Recipe {
     const texto = this.novoComentario.trim();
     const idReceita = this.recipe!.id;
 
+    // Regra: só um comentário raiz por receita. O textarea já fica
+    // escondido nesse caso, mas evita corrida/duplo clique.
+    if (texto && this.meuComentario) {
+      this.toastService.show(
+        'Você já comentou nesta receita. Exclua seu comentário atual para escrever outro.',
+        'info',
+      );
+      return;
+    }
+
     // Guard: avaliação já enviada e nada mudou (mesma nota, sem texto novo)
     const notaIgual =
       this.notaForm !== null && this.notaForm === this.notaUsuario;
@@ -356,6 +376,8 @@ export class Recipe {
       this.toastService.show('Você já enviou esta avaliação.', 'info');
       return;
     }
+
+    this.enviandoComentario = true;
 
     // Comentário com nota embutida (nota é opcional)
     if (texto) {
@@ -366,16 +388,37 @@ export class Recipe {
           texto,
           nota: this.notaForm ?? undefined,
         })
-        .subscribe(() => {
-          this.novoComentario = '';
-          this.tentouComentar = false;
-          this.comentarioTocado = false;
-          if (this.notaForm) {
-            this.notaUsuario = this.notaForm;
-          }
-          this.carregarAvaliacao();
-          this.recarregarComentarios();
-          this.toastService.show('Comentário enviado com sucesso!', 'success');
+        .subscribe({
+          next: () => {
+            this.novoComentario = '';
+            this.tentouComentar = false;
+            this.comentarioTocado = false;
+            if (this.notaForm) {
+              this.notaUsuario = this.notaForm;
+            }
+            this.carregarAvaliacao();
+            this.recarregarComentarios();
+            this.toastService.show('Comentário enviado com sucesso!', 'success');
+          },
+          error: (err) => {
+            this.enviandoComentario = false;
+            if (err?.status === 409) {
+              this.toastService.show(
+                err.error?.error ??
+                  'Você já comentou nesta receita. Exclua seu comentário atual para escrever outro.',
+                'info',
+              );
+              this.recarregarComentarios();
+              return;
+            }
+            this.toastService.show(
+              'Não foi possível enviar seu comentário. Tente de novo.',
+              'error',
+            );
+          },
+          complete: () => {
+            this.enviandoComentario = false;
+          },
         });
     } else if (this.notaForm) {
       // Só nota sem texto — salva via avaliacaoService diretamente
@@ -388,10 +431,47 @@ export class Recipe {
             this.totalAvaliacoes = res.total;
             this.tentouComentar = false;
             this.comentarioTocado = false;
+            // Se o usuário já tem um comentário salvo, a nota exibida nele
+            // vem sempre ao vivo do backend — só precisa recarregar.
+            this.recarregarComentarios();
             this.toastService.show('Avaliação enviada com sucesso!', 'success');
           },
-          error: () => {},
+          error: () => {
+            this.enviandoComentario = false;
+            this.toastService.show(
+              'Não foi possível enviar sua avaliação. Tente de novo.',
+              'error',
+            );
+          },
+          complete: () => {
+            this.enviandoComentario = false;
+          },
         });
+    } else if (this.notaForm === null && this.notaUsuario !== null) {
+      // Estrelas zeradas de novo (clicou na mesma nota) = remover avaliação
+      this.avaliacaoService.remover(this.usuarioId, idReceita).subscribe({
+        next: (res) => {
+          this.notaUsuario = null;
+          this.mediaAvaliacao = res.media;
+          this.totalAvaliacoes = res.total;
+          this.tentouComentar = false;
+          this.comentarioTocado = false;
+          this.recarregarComentarios();
+          this.toastService.show('Avaliação removida.', 'info');
+        },
+        error: () => {
+          this.enviandoComentario = false;
+          this.toastService.show(
+            'Não foi possível remover sua avaliação. Tente de novo.',
+            'error',
+          );
+        },
+        complete: () => {
+          this.enviandoComentario = false;
+        },
+      });
+    } else {
+      this.enviandoComentario = false;
     }
   }
 
@@ -402,11 +482,22 @@ export class Recipe {
       .listarcommentsPorReceita(this.recipe.id)
       .subscribe((cs) => {
         this.comentarios = this.buildTree(cs);
+        this.meuComentario =
+          this.usuarioId !== null
+            ? this.comentarios.find(
+                (c) => Number(c.id_usuario) === Number(this.usuarioId),
+              ) ?? null
+            : null;
       });
   }
 
-  enviarComentario(payload: { texto: string; id_comentario_pai: number }) {
+  enviarComentario(payload: {
+    texto: string;
+    id_comentario_pai: number;
+    onDone: (success: boolean) => void;
+  }) {
     if (!this.recipe || this.usuarioId === null) {
+      payload.onDone(false);
       return;
     }
 
@@ -417,7 +508,54 @@ export class Recipe {
         texto: payload.texto,
         id_comentario_pai: payload.id_comentario_pai,
       })
-      .subscribe(() => this.recarregarComentarios());
+      .subscribe({
+        next: () => {
+          this.recarregarComentarios();
+          this.toastService.show('Resposta enviada com sucesso!', 'success');
+          payload.onDone(true);
+        },
+        error: () => {
+          this.toastService.show(
+            'Não foi possível enviar sua resposta. Tente de novo.',
+            'error',
+          );
+          payload.onDone(false);
+        },
+      });
+  }
+
+  excluirComentario(payload: { id: number; onDone: (success: boolean) => void }) {
+    if (this.usuarioId === null) {
+      payload.onDone(false);
+      return;
+    }
+
+    this.comentarioService.deletar(payload.id).subscribe({
+      next: () => {
+        this.recarregarComentarios();
+
+        // A avaliação (estrelas) é independente do comentário e não é
+        // apagada junto — avisa a pessoa disso e como alterá-la se quiser.
+        if (this.notaUsuario) {
+          const plural = this.notaUsuario > 1 ? 's' : '';
+          this.toastService.show(
+            `Comentário excluído. Sua avaliação de ${this.notaUsuario} estrela${plural} continua valendo — clique nas estrelas acima pra mudá-la ou removê-la.`,
+            'info',
+          );
+        } else {
+          this.toastService.show('Comentário excluído com sucesso!', 'success');
+        }
+
+        payload.onDone(true);
+      },
+      error: () => {
+        this.toastService.show(
+          'Não foi possível excluir o comentário. Tente de novo.',
+          'error',
+        );
+        payload.onDone(false);
+      },
+    });
   }
 
   verMaisComentarios() {

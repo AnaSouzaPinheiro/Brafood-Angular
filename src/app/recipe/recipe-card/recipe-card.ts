@@ -1,9 +1,33 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RecipeResume } from '../recipe-resume/recipe-resume';
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { toSlug } from '../../utils/slug';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { LoggerService } from '../../services/logger/logger.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
+import { toSlug } from '../../utils/slug';
+import { RecipeResume } from '../recipe-resume/recipe-resume';
+
+/** Subcategoria como vem embutida na receita (raw da API). */
+interface SubcategoriaCard {
+  id: number | string;
+  nome: string;
+}
+
+/**
+ * Formato de receita "normalizado" que esse componente monta pra si
+ * mesmo (`mappedRecipe`) a partir do `recipe` recebido — puramente
+ * interno, então dá pra tipar sem mentira nenhuma.
+ */
+interface MappedRecipe {
+  category: string | null;
+  subcategory: string | null;
+  img: string;
+  url: string;
+  resume: {
+    title: string;
+    qtdFav: number;
+    text: string;
+  };
+}
 
 @Component({
   selector: 'bra-recipe-card',
@@ -13,14 +37,23 @@ import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
   styleUrl: './recipe-card.scss',
 })
 export class RecipeCard {
+  private logger = inject(LoggerService);
+
+  // `recipe` fica `any` de propósito: esse componente é alimentado tanto
+  // com objetos já mapeados pro card (formato `Recipes`, vindo de
+  // favoritas/recipe-section/search) quanto com receitas cruas da API
+  // (formato `Receita`, vindo de minhas-receitas) — são dois formatos
+  // diferentes de verdade, não preguiça de tipar. O ideal a médio prazo
+  // é normalizar pra um formato só antes de chegar aqui; até lá, forçar
+  // um tipo único só ia mentir sobre o que realmente chega.
   @Output() editar = new EventEmitter<any>();
 
   @Input() myRecipe: boolean = false;
   @Input() selectedSubcategories!: number[];
-  @Input() recipe!: any;
+  @Input() recipe: any;
   @Input() cardExibir: 'categoria' | 'subcategoria' = 'categoria';
 
-  mappedRecipe: any;
+  mappedRecipe: MappedRecipe | null = null;
   imgBroken: boolean = false;
 
   ngOnChanges() {
@@ -28,24 +61,24 @@ export class RecipeCard {
     this.imgBroken = false;
 
     // Garantir que subs seja array de objetos
-    let subs: any[] = [];
+    let subs: SubcategoriaCard[] = [];
     if (Array.isArray(this.recipe.subcategorias)) {
       subs = this.recipe.subcategorias;
     } else if (typeof this.recipe.subcategorias === 'string') {
       try {
         subs = JSON.parse(this.recipe.subcategorias);
       } catch (e) {
-        console.warn('Erro ao parsear subcategorias:', e);
+        this.logger.warn('Erro ao parsear subcategorias:', e);
         subs = [];
       }
     }
 
-    let chosenSub: any = null;
+    let chosenSub: SubcategoriaCard | null = null;
 
     // Se houver filtro de subcategoria, pega a primeira que a receita possui
     if (this.selectedSubcategories && this.selectedSubcategories.length > 0) {
       chosenSub =
-        subs.find((s: any) =>
+        subs.find((s) =>
           this.selectedSubcategories.includes(Number(s.id)),
         ) || null;
     }
