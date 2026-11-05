@@ -1,8 +1,9 @@
 RewriteEngine On
 RewriteBase /
 
-# Página inicial: sempre o shell atual do app (o Angular redireciona para /home)
-DirectoryIndex index.csr.html
+# Raiz: shell atual do app (index.csr.html). Pastas pré-renderizadas
+# (/home, /login...) só têm index.html, então ele é o segundo da lista.
+DirectoryIndex index.csr.html index.html
 
 # A API (/api) tem seu próprio .htaccess e não passa por aqui
 RewriteRule ^api(/|$) - [L]
