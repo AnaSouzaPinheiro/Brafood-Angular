@@ -356,6 +356,37 @@
             placeholder="Ex: 1"
             min="0"
           />
+          <small class="hint">Usada só para seções fixadas; as demais rotacionam todo dia.</small>
+        </div>
+
+        <div class="field">
+          <label>Fixar no topo até</label>
+          <input type="date" [(ngModel)]="secForm.fixar_ate" [min]="hojeIso" />
+          <small class="hint">Deixe vazio para a seção entrar na rotação diária.</small>
+        </div>
+
+        <div class="field full">
+          <label>Período em que aparece (todo ano)</label>
+          <div class="periodo">
+            <input
+              [(ngModel)]="secPeriodoDe"
+              placeholder="DD/MM"
+              maxlength="5"
+              inputmode="numeric"
+              aria-label="Início do período"
+            />
+            <span>até</span>
+            <input
+              [(ngModel)]="secPeriodoAte"
+              placeholder="DD/MM"
+              maxlength="5"
+              inputmode="numeric"
+              aria-label="Fim do período"
+            />
+          </div>
+          <small class="hint">
+            Ex.: Festa Junina 01/06 até 31/07 · Natal 01/12 até 06/01. Vazio = o ano todo.
+          </small>
         </div>
 
         <div class="field full">
@@ -704,7 +735,22 @@
           @for (sec of secoes; track sec.id) {
           <tr>
             <td class="center">{{ sec.ordem }}</td>
-            <td><strong>{{ sec.titulo }}</strong></td>
+            <td>
+              <strong>{{ sec.titulo }}</strong>
+              @if (secaoFixada(sec)) {
+                <span class="badge badge-fixada" title="Fixada até {{ sec.fixar_ate }}">📌 Fixada</span>
+              }
+              @if (sec.ativo_de && sec.ativo_ate) {
+                <span
+                  class="badge"
+                  [class.badge-periodo-on]="secaoNoPeriodo(sec)"
+                  [class.badge-periodo-off]="!secaoNoPeriodo(sec)"
+                >
+                  📅 {{ mesDiaParaDiaMes(sec.ativo_de) }}–{{ mesDiaParaDiaMes(sec.ativo_ate) }}
+                  {{ secaoNoPeriodo(sec) ? '' : '(fora do período)' }}
+                </span>
+              }
+            </td>
             <td>
               <span
                 class="badge"
@@ -760,6 +806,7 @@
   <section class="section">
     <div class="section-header">
       <h2>Receita da Semana</h2>
+      <small class="hint">Escolhida automaticamente toda segunda-feira (favoritos, avaliações e novidade). Se você escolher uma abaixo, ela vale para esta semana.</small>
     </div>
 
     <div class="destaque-atual" *ngIf="destaqueAtual">
@@ -775,8 +822,8 @@
           <p class="destaque-nome">{{ destaqueAtual.titulo }}</p>
           <p class="destaque-cat">{{ destaqueAtual.categoria }}</p>
         </div>
-        <button class="btn-danger" (click)="removerDestaque()">
-          Remover destaque
+        <button class="btn-danger" (click)="removerDestaque()" title="Desfaz a escolha manual desta semana">
+          Voltar para escolha automática
         </button>
       </div>
     </div>

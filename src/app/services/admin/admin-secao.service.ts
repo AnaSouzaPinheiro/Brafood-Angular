@@ -18,6 +18,11 @@ export interface SecaoAdmin {
   modo: 'aleatorio' | 'manual';
   card_exibir?: 'categoria' | 'subcategoria';
   ordem: number;
+  /** Período em que a seção aparece todo ano ("MM-DD"); null = ano todo */
+  ativo_de?: string | null;
+  ativo_ate?: string | null;
+  /** Fica em primeiro na home até esta data ("YYYY-MM-DD") */
+  fixar_ate?: string | null;
 }
 
 export interface ReceitaVinculada {

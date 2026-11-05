@@ -70,6 +70,10 @@ export class PainelAdmin implements OnInit {
   secoes: SecaoAdmin[] = [];
 
   secForm: Partial<SecaoAdmin> = {};
+  // Período sazonal digitado como DD/MM (convertido para MM-DD ao salvar)
+  secPeriodoDe = '';
+  secPeriodoAte = '';
+  readonly hojeIso = new Date().toISOString().slice(0, 10);
   secEditId: number | null = null;
 
   secLoading = false;
@@ -179,15 +183,15 @@ export class PainelAdmin implements OnInit {
   removerDestaque() {
     this.modalService.open({
       type: 'warning',
-      title: 'Remover destaque',
-      message: 'Remover a receita em destaque? A seção não aparecerá na home.',
+      title: 'Voltar para automático',
+      message: 'Desfazer a escolha desta semana? Uma receita será escolhida automaticamente.',
       confirmText: 'Remover',
       cancelText: 'Cancelar',
       onConfirm: () => {
         this.destaqueService.remover(this.userId).subscribe({
           next: () => {
             this.destaqueAtual = null;
-            this.modalService.open({ type: 'success', title: 'Destaque removido', message: 'Nenhuma receita está em destaque.' });
+            this.modalService.open({ type: 'success', title: 'Pronto', message: 'A receita da semana voltou a ser escolhida automaticamente.' });
           },
           error: () => {
             this.modalService.open({ type: 'error', title: 'Erro', message: 'Erro ao remover destaque.' });
@@ -214,6 +218,8 @@ export class PainelAdmin implements OnInit {
 
     this.secForm = {};
     this.secEditId = null;
+    this.secPeriodoDe = '';
+    this.secPeriodoAte = '';
 
     this.previewIconeCat = null;
     this.previewFundoCat = null;
@@ -468,6 +474,8 @@ export class PainelAdmin implements OnInit {
 
   abrirNovaSecao() {
     this.secEditId = null;
+    this.secPeriodoDe = '';
+    this.secPeriodoAte = '';
     this.secForm = {
       ordem: 99,
       url_fundo: null,
@@ -488,6 +496,8 @@ export class PainelAdmin implements OnInit {
   editarSecao(s: SecaoAdmin) {
     this.secEditId = s.id;
     this.secForm = { ...s };
+    this.secPeriodoDe = this.mesDiaParaDiaMes(s.ativo_de);
+    this.secPeriodoAte = this.mesDiaParaDiaMes(s.ativo_ate);
     this.secTipoFundo = s.url_fundo ? 'imagem' : 'cor';
     this.showSecForm = true;
     this.previewFundoSecao = null;
@@ -593,8 +603,22 @@ export class PainelAdmin implements OnInit {
       return;
     }
 
+    const de = this.diaMesParaMesDia(this.secPeriodoDe);
+    const ate = this.diaMesParaMesDia(this.secPeriodoAte);
+    if (de === undefined || ate === undefined || (!!de !== !!ate)) {
+      this.modalService.open({
+        type: 'warning',
+        title: 'Período inválido',
+        message: 'Preencha início e fim no formato DD/MM (ex.: 01/06 a 31/07), ou deixe os dois vazios.',
+      });
+      return;
+    }
+
     const payload: Partial<SecaoAdmin> = {
       ...this.secForm,
+      ativo_de: de,
+      ativo_ate: ate,
+      fixar_ate: this.secForm.fixar_ate || null,
       url_fundo: this.secTipoFundo === 'imagem' ? (this.secForm.url_fundo ?? null) : null,
       cor_fundo: this.secTipoFundo === 'cor'    ? (this.secForm.cor_fundo  ?? null) : null,
     };
@@ -623,6 +647,39 @@ export class PainelAdmin implements OnInit {
         this.secLoading = false;
       },
     });
+  }
+
+  /** "MM-DD" → "DD/MM" */
+  mesDiaParaDiaMes(v?: string | null): string {
+    if (!v || !/^\d{2}-\d{2}$/.test(v)) return '';
+    const [m, d] = v.split('-');
+    return `${d}/${m}`;
+  }
+
+  /** "DD/MM" → "MM-DD"; '' → null; inválido → undefined */
+  diaMesParaMesDia(v: string): string | null | undefined {
+    const t = (v ?? '').trim();
+    if (!t) return null;
+    const m = t.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (!m) return undefined;
+    const dia = Number(m[1]);
+    const mes = Number(m[2]);
+    const diasNoMes = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (mes < 1 || mes > 12 || dia < 1 || dia > diasNoMes[mes - 1]) return undefined;
+    return `${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+  }
+
+  /** A seção está no período hoje? (para o badge da tabela) */
+  secaoNoPeriodo(s: SecaoAdmin): boolean {
+    if (!s.ativo_de || !s.ativo_ate) return true;
+    const hoje = this.hojeIso.slice(5);
+    return s.ativo_de <= s.ativo_ate
+      ? hoje >= s.ativo_de && hoje <= s.ativo_ate
+      : hoje >= s.ativo_de || hoje <= s.ativo_ate;
+  }
+
+  secaoFixada(s: SecaoAdmin): boolean {
+    return !!s.fixar_ate && s.fixar_ate >= this.hojeIso;
   }
 
   excluirSecao(id: number, titulo: string) {
