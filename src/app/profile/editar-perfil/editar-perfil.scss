@@ -171,3 +171,11 @@ bra-input {
     justify-content: center;
   }
 }
+
+.apelido-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: $secondary-blue;
+  word-break: break-all;
+}

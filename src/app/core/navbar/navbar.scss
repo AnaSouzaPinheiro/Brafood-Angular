@@ -23,6 +23,38 @@ header {
   justify-content: center;
 }
 
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.user-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: $primary-blue;
+
+  &:hover {
+    color: $hover-blue;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $tertiary-blue;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
 .icon-area {
   width: 42px;
   height: 42px;
@@ -44,6 +76,11 @@ bra-modal-log.profile-container {
 @media (max-width: 992px) {
   header {
     padding: 14px 24px;
+  }
+
+  // Em telas menores fica só o ícone
+  .user-name {
+    display: none;
   }
 }
 

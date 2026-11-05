@@ -1,14 +1,16 @@
 <!-- Loading -->
 <div class="perfil-publico" *ngIf="carregando">
   <section class="perfil-header">
-    <div class="ppk-avatar"></div>
-    <div class="ppk-info">
-      <div class="ppk-nome"></div>
-      <div class="ppk-bio"></div>
+    <div class="perfil-card">
+      <div class="ppk-avatar"></div>
       <div class="ppk-stats">
         <div class="ppk-stat"></div>
         <div class="ppk-stat"></div>
       </div>
+    </div>
+    <div class="ppk-info">
+      <div class="ppk-nome"></div>
+      <div class="ppk-bio"></div>
     </div>
   </section>
 
@@ -27,50 +29,48 @@
 <div class="perfil-publico" *ngIf="perfil() && !carregando">
   <!-- Header do perfil -->
   <section class="perfil-header">
-    <div class="perfil-avatar">
-      <img
-        *ngIf="perfil()!.usuario.foto_perfil"
-        [src]="perfil()!.usuario.foto_perfil | mediaUrl"
-        [alt]="nomeCompleto"
-        class="avatar-img"
-      />
-      <div class="avatar-placeholder" *ngIf="!perfil()!.usuario.foto_perfil">
-        <i class="fa-solid fa-user"></i>
+    <!-- Cartão: foto + números -->
+    <div class="perfil-card">
+      <div class="perfil-avatar">
+        <img
+          *ngIf="perfil()!.usuario.foto_perfil"
+          [src]="perfil()!.usuario.foto_perfil | mediaUrl"
+          [alt]="nomeCompleto"
+          class="avatar-img"
+        />
+        <div class="avatar-placeholder" *ngIf="!perfil()!.usuario.foto_perfil">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+
+      <div class="perfil-stats">
+        <div class="stat">
+          <span class="stat-valor">{{ perfil()!.total_receitas }}</span>
+          <span class="stat-label">{{ perfil()!.total_receitas === 1 ? 'receita' : 'receitas' }}</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-valor">{{ perfil()!.total_favoritos }}</span>
+          <span class="stat-label">{{ perfil()!.total_favoritos === 1 ? 'favorito' : 'favoritos' }}</span>
+        </div>
       </div>
     </div>
 
     <div class="perfil-info">
       <h1 class="perfil-nome">{{ nomeCompleto }}</h1>
-      <p class="perfil-apelido" *ngIf="perfil()!.usuario.apelido">
-        {{ perfil()!.usuario.apelido }}
-      </p>
+      <p class="perfil-apelido">&#64;{{ perfil()!.usuario.apelido }}</p>
       <p class="perfil-bio" *ngIf="perfil()!.usuario.bio">
         {{ perfil()!.usuario.bio }}
       </p>
-
-      <div class="perfil-stats">
-        <div class="stat">
-          <span class="stat-valor">{{ perfil()!.total_receitas }}</span>
-          <span class="stat-label"
-            >{{ perfil()!.total_receitas === 1 ? 'receita' : 'receitas' }}</span
-          >
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-valor">{{ perfil()!.total_favoritos }}</span>
-          <span class="stat-label"
-            >{{ perfil()!.total_favoritos === 1 ? 'favorito recebido' :
-            'favoritos recebidos' }}</span
-          >
-        </div>
-      </div>
     </div>
   </section>
+
+  <hr class="perfil-divisoria" />
 
   <!-- Receitas do autor -->
   <section class="perfil-receitas">
     <h2 class="receitas-titulo">
-      Receitas de {{ perfil()!.usuario.apelido ?? perfil()!.usuario.nome }}
+      Receitas de {{ perfil()!.usuario.nome }}
     </h2>
 
     <div class="receitas-grid" *ngIf="perfil()!.receitas.length > 0">

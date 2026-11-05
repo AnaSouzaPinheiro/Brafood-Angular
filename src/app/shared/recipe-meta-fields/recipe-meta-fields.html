@@ -1,0 +1,108 @@
+<div class="meta-fields">
+  <!-- Dificuldade: 3 opções fixas -->
+  <fieldset class="field field--dificuldade">
+    <legend>Dificuldade*</legend>
+    <div class="segmented" role="radiogroup" aria-label="Dificuldade">
+      @for (d of dificuldades; track d.valor) {
+        <button
+          type="button"
+          role="radio"
+          class="segment"
+          [class.active]="form.get('dificuldade')?.value === d.valor"
+          [attr.aria-checked]="form.get('dificuldade')?.value === d.valor"
+          (click)="selecionarDificuldade(d.valor)"
+        >
+          <span class="dots" aria-hidden="true">{{ d.icone }}</span>
+          {{ d.rotulo }}
+        </button>
+      }
+    </div>
+    @if (invalido('dificuldade')) {
+      <span class="field-error">Selecione a dificuldade.</span>
+    }
+  </fieldset>
+
+  <!-- Tempo: horas + minutos (de 5 em 5) -->
+  <fieldset class="field">
+    <legend>Tempo de preparo*</legend>
+    <div class="time-selects">
+      <label class="select-wrap">
+        <select
+          formControlName="tempo_hora"
+          aria-label="Horas"
+          [class.input-error]="invalido('tempo_hora')"
+        >
+          <option [ngValue]="null" disabled>--</option>
+          @for (h of horasOpcoes; track h) {
+            <option [ngValue]="h">{{ h }}</option>
+          }
+        </select>
+        <span>h</span>
+      </label>
+
+      <label class="select-wrap">
+        <select
+          formControlName="tempo_min"
+          aria-label="Minutos"
+          [class.input-error]="invalido('tempo_min')"
+        >
+          <option [ngValue]="null" disabled>--</option>
+          @for (m of minutos; track m) {
+            <option [ngValue]="m">{{ m < 10 ? '0' + m : m }}</option>
+          }
+        </select>
+        <span>min</span>
+      </label>
+    </div>
+    @if (invalido('tempo_hora') || invalido('tempo_min')) {
+      <span class="field-error">Informe as horas e os minutos.</span>
+    } @else if (tempoZerado) {
+      <span class="field-error">O tempo de preparo não pode ser zero.</span>
+    }
+  </fieldset>
+
+  <!-- Porções: quantidade com - / + e tipo -->
+  <fieldset class="field">
+    <legend>Porções*</legend>
+    <div class="porcoes-row">
+      <div class="stepper" [class.input-error]="invalido('porcoes')">
+        <button
+          type="button"
+          aria-label="Diminuir porções"
+          (click)="alterarPorcoes(-1)"
+          [disabled]="(form.get('porcoes')?.value ?? 0) <= PORCOES_MIN"
+        >−</button>
+        <input
+          type="number"
+          inputmode="numeric"
+          formControlName="porcoes"
+          [min]="PORCOES_MIN"
+          [max]="PORCOES_MAX"
+          aria-label="Quantidade de porções"
+          placeholder="0"
+        />
+        <button
+          type="button"
+          aria-label="Aumentar porções"
+          (click)="alterarPorcoes(1)"
+          [disabled]="(form.get('porcoes')?.value ?? 0) >= PORCOES_MAX"
+        >+</button>
+      </div>
+
+      <div class="tipo-porcao">
+        <bra-dropdown
+          [label]="''"
+          [multiSelect]="false"
+          [selected]="porcaoSelecionada"
+          [options]="porcoesDropdown"
+          (optionSelected)="porcaoChange.emit($event)"
+          [forceValidate]="tentouEnviar"
+          requiredMessage="Selecione o tipo de porção."
+        ></bra-dropdown>
+      </div>
+    </div>
+    @if (invalido('porcoes')) {
+      <span class="field-error">Informe a quantidade de porções.</span>
+    }
+  </fieldset>
+</div>

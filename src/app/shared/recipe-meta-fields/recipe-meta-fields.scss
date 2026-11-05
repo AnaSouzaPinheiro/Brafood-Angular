@@ -1,0 +1,262 @@
+@use "variables" as *;
+@use "layout" as *;
+
+.meta-fields {
+  // Mesma margem lateral do resto do formulário
+  @include page-container;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px 72px;
+  margin-bottom: 40px;
+
+  // Celular: um campo por linha, ocupando a largura toda como os demais
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+}
+
+.field {
+  flex: 0 0 auto;
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+
+  legend {
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 17px;
+  }
+}
+
+$altura: 42px;
+
+// ── Dificuldade ─────────────────────────────────────────
+.field--dificuldade {
+  width: 340px;
+}
+
+
+.segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-left: 1px solid $quaternary-gray;
+  background: #fff;
+  color: $tertiary-gray;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:first-child {
+    border-left: none;
+  }
+
+  .dots {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: $quaternary-blue;
+  }
+
+  &:hover {
+    background: $secondary-gray;
+  }
+
+  &.active {
+    background: $primary-blue;
+    color: #fff;
+
+    .dots {
+      color: #fff;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $tertiary-blue;
+    outline-offset: -2px;
+  }
+}
+
+// ── Tempo ───────────────────────────────────────────────
+.time-selects {
+  display: flex;
+  gap: 12px;
+}
+
+.select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: $tertiary-gray;
+
+  select {
+    width: 64px; // cabe 2 dígitos + seta
+    height: $altura;
+    padding: 0 6px;
+    text-align: center;
+    text-align-last: center; // centraliza o número exibido no select
+    border: 1px solid $primary-gray;
+    border-radius: 5px;
+    background: #fff;
+    font: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+    }
+  }
+}
+
+// ── Porções ─────────────────────────────────────────────
+.porcoes-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stepper {
+  display: flex;
+  flex: 0 0 112px;
+  height: $altura;
+  border: 1px solid $primary-gray;
+  border-radius: 5px;
+  overflow: hidden;
+
+  button {
+    width: 32px;
+    border: none;
+    background: $secondary-gray;
+    color: $primary-blue;
+    font-size: 1.2rem;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    &:not(:disabled):hover {
+      background: $quaternary-blue;
+      color: #fff;
+    }
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    text-align: center;
+    font: inherit;
+    font-size: 1rem;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.tipo-porcao {
+  width: 140px;
+
+  // O dropdown padrão tem 530px e margem própria; aqui ele fica compacto
+  // e alinhado com o contador ao lado.
+  ::ng-deep {
+    .dropdown-label:empty {
+      display: none;
+    }
+
+    .custom-dropdown {
+      margin-top: 0;
+    }
+
+    .dropdown-header {
+      width: 140px;
+      max-width: 140px;
+      height: $altura;
+      box-sizing: border-box;
+    }
+
+    .dropdown-options {
+      max-width: 140px;
+    }
+  }
+}
+
+// ── Erros ───────────────────────────────────────────────
+.input-error,
+.stepper.input-error {
+  border-color: $alert-red !important;
+}
+
+.field-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: $alert-red;
+}
+
+// ── Celular (no fim para sobrescrever os tamanhos fixos acima) ──
+@media (max-width: 600px) {
+  .field,
+  .field--dificuldade {
+    width: 100%;
+  }
+
+  // Tempo: as duas listas dividem a linha
+  .time-selects {
+    width: 100%;
+  }
+
+  .select-wrap {
+    flex: 1;
+
+    select {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+  // Porções: contador + tipo dividem a linha
+  .porcoes-row {
+    width: 100%;
+  }
+
+  .tipo-porcao {
+    flex: 1;
+    width: auto;
+
+    ::ng-deep {
+      .dropdown-header,
+      .dropdown-options {
+        width: 100%;
+        max-width: none;
+      }
+    }
+  }
+}
+
+.segmented {
+  display: flex;
+  height: $altura;
+  border: 1px solid $primary-gray;
+  border-radius: 5px;
+  overflow: hidden;
+}

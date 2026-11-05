@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Perfil } from "../../profile/perfil/perfil";
 
 @Component({
   selector: 'bra-add-recipe-hub',
-  imports: [Perfil],
+  imports: [],
   templateUrl: './add-recipe-hub.html',
   styleUrl: './add-recipe-hub.scss',
 })

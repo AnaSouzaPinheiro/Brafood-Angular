@@ -1,5 +1,7 @@
 import { Component, computed, effect, HostListener, signal, WritableSignal } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationStart, Router, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { User } from '../../model/user';
 import { AuthService } from '../../services/auth/auth.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
@@ -22,6 +24,14 @@ export class Navbar {
   // computed garante reatividade automática — atualiza quando o signal muda
   logado = computed(() => this.auth.isLoggedIn());
 
+  /** Nome exibido ao lado do ícone (desktop): apelido, senão primeiro nome */
+  displayName = computed(() => {
+    // auth.user() é atualizado na hora ao editar o perfil
+    const u = { ...this.user(), ...(this.auth.user() ?? {}) };
+    if (!this.logado() || !u.nome) return 'Entrar';
+    return u.apelido?.trim() || u.nome?.trim().split(' ')[0] || 'Minha conta';
+  });
+
   constructor(
     private usuarioService: UsuarioService,
     private auth: AuthService,
@@ -39,6 +49,15 @@ export class Navbar {
     // Mantém o ícone sincronizado com o AuthService: se a sessão for encerrada
     // em qualquer lugar (expirou, logout em outra aba, erro 401 etc.), o
     // sinal local do Navbar acompanha em vez de ficar com a foto travada.
+    // Fecha o menu sempre que o usuário navega para outra página
+    // (clicou em "Minhas receitas", "Sair", etc.)
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationStart),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.openModal.set(false));
+
     effect(() => {
       if (!this.auth.isLoggedIn()) {
         this.user.set(undefined);
@@ -77,9 +96,9 @@ export class Navbar {
   private buildModalData(u: any) {
     this.modalData = {
       personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
-      myAccount:  u?.id ? `/editar-perfil/${u.id}` : '/editar-perfil',
-      myRecipes:  u?.id ? `/minhas-receitas/${u.id}` : '/minhas-receitas',
-      favs:       u?.id ? `/favoritas/${u.id}` : '/favoritas',
+      myAccount:  '/perfil/editar',
+      myRecipes:  '/perfil/receitas',
+      favs:       '/perfil/favoritas',
       // adminLink só aparece se is_admin === 1 (campo vindo do banco)
       adminLink:  u?.is_admin === 1 ? '/admin' : undefined,
     };
@@ -90,13 +109,20 @@ export class Navbar {
     this.openModal.set(!this.openModal());
   }
 
+  /** Clicou numa opção do menu (inclusive a página já aberta): fecha */
+  onMenuClick(event: Event) {
+    if ((event.target as HTMLElement).closest('a, li[routerLink], .logOut, .enter, .register')) {
+      this.openModal.set(false);
+    }
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
     const target = event.target as HTMLElement;
     if (
       this.openModal() &&
       !target.closest('.profile-container') &&
-      !target.closest('.icon-area')
+      !target.closest('.user-area')
     ) {
       this.openModal.set(false);
     }

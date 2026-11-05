@@ -1,5 +1,4 @@
 <div class="container">
-  <bra-perfil></bra-perfil>
 
   <form [formGroup]="form" class="adding">
     <h1 class="title">Adicionando minha receita</h1>
@@ -78,80 +77,13 @@
       </div>
     </div>
 
-    <!-- Dificuldade -->
-    <div class="some">
-      <div class="input-box">
-        <bra-input
-          [label]="'Dificuldade*'"
-          [inType]="'input'"
-          [type]="'number'"
-          [placeholder]="'1, 2 ou 3'"
-          formControlName="dificuldade"
-          name="dificuldadeReceita"
-          autocomplete="off"
-          [errorMessages]="{
-            required: 'Informe a dificuldade.',
-            min: 'O valor mínimo é 1.',
-            max: 'O valor máximo é 3.',
-            pattern: 'Apenas números.'
-          }"
-        ></bra-input>
-      </div>
-
-      <!-- Tempo de preparo -->
-      <div class="time">
-        <label for="">Tempo de preparo*</label>
-        <div class="input-box">
-          <bra-input
-            [label]="''"
-            [inType]="'input'"
-            [type]="'number'"
-            [placeholder]="'hora(s)'"
-            formControlName="tempo_hora"
-            name="hrTempoReceita"
-            autocomplete="off"
-            [errorMessages]="{ required: 'Informe as horas.', pattern: 'Apenas números.' }"
-          ></bra-input>
-          :
-          <bra-input
-            [label]="''"
-            [inType]="'input'"
-            [type]="'number'"
-            [placeholder]="'minuto(s)'"
-            formControlName="tempo_min"
-            name="minTempoReceita"
-            autocomplete="off"
-            [errorMessages]="{ required: 'Informe os minutos.', max: 'Máximo 59 minutos.', pattern: 'Apenas números.' }"
-          ></bra-input>
-        </div>
-      </div>
-
-      <!-- Porções -->
-      <div class="porcoes">
-        <label for="">Porções*</label>
-        <div class="input-box">
-          <bra-input
-            [label]="''"
-            [inType]="'input'"
-            [type]="'number'"
-            [placeholder]="''"
-            formControlName="porcoes"
-            name="qtdPorcoesReceita"
-            autocomplete="off"
-            [errorMessages]="{ required: 'Informe a quantidade de porções.', pattern: 'Apenas números.' }"
-          ></bra-input>
-          <bra-dropdown
-            [label]="''"
-            [multiSelect]="false"
-            [options]="porcoesDropdown"
-            [selected]="porcaoSelecionada"
-            (optionSelected)="onPorcaoSelecionada($event)"
-            [forceValidate]="tentouEnviar"
-            requiredMessage="Selecione o tipo de porção."
-          ></bra-dropdown>
-        </div>
-      </div>
-    </div>
+    <!-- Dificuldade / Tempo / Porções -->
+    <bra-recipe-meta-fields
+      [porcoesDropdown]="porcoesDropdown"
+      [porcaoSelecionada]="porcaoSelecionada"
+      [tentouEnviar]="tentouEnviar"
+      (porcaoChange)="onPorcaoSelecionada($event)"
+    ></bra-recipe-meta-fields>
 
     <!-- Crédito de fonte -->
     <h2>Essa receita é sua?*</h2>

@@ -47,11 +47,12 @@
             name="apelido"
             autocomplete="username"
             [maxChars]="30"
-            [errorMessages]="{
-              required: 'Informe um apelido.',
-              maxlength: 'O apelido pode ter no máximo 30 caracteres.'
-            }"
+            [errorMessages]="apelidoErros"
           ></bra-input>
+          <small class="apelido-hint">
+            Seu perfil: brafood.page.gd/chef/{{ form.get('apelido')?.value || 'apelido' }}
+            @if (form.get('apelido')?.pending) { · verificando… }
+          </small>
         </div>
 
         <div class="input-box gender">

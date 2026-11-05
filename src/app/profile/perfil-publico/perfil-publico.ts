@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { PerfilPublico, PerfilPublicoService } from '../../services/perfil-publico/perfil-publico.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
@@ -19,21 +20,39 @@ export class PerfilPublicoPage {
   carregando = true;
   erro = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private perfilService: PerfilPublicoService,
   ) {}
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) {
+    // Reage à troca do parâmetro (ir de um perfil para outro reaproveita o componente)
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.carregar(params.get('apelido') ?? ''));
+  }
+
+  private carregar(apelidoOuId: string) {
+    this.perfil.set(null);
+    this.erro = false;
+    this.carregando = true;
+
+    if (!apelidoOuId) {
       this.erro = true;
       this.carregando = false;
       return;
     }
 
-    this.perfilService.buscar(id).subscribe({
+    this.perfilService.buscar(apelidoOuId).subscribe({
       next: (data) => {
+        // Link antigo (/chef/5): troca a URL para /chef/{apelido} sem recarregar
+        if (/^\d+$/.test(apelidoOuId) && data.usuario.apelido) {
+          this.router.navigate(['/chef', data.usuario.apelido], { replaceUrl: true });
+          return;
+        }
         this.perfil.set(data);
         this.carregando = false;
       },

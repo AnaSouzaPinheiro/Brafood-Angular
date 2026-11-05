@@ -188,3 +188,12 @@
     }
   }
 }
+
+// Respiro abaixo da barra de categorias (o cabeçalho do perfil saiu daqui)
+.container {
+  margin-top: 40px;
+
+  @media (max-width: 768px) {
+    margin-top: 24px;
+  }
+}

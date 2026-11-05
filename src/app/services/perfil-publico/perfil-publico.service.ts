@@ -7,7 +7,7 @@ export interface PerfilPublico {
     id:          number;
     nome:        string;
     sobrenome:   string;
-    apelido:     string | null;
+    apelido:     string;
     bio:         string | null;
     foto_perfil: string | null;
   };
@@ -19,9 +19,11 @@ export interface PerfilPublico {
 @Injectable({ providedIn: 'root' })
 export class PerfilPublicoService extends BaseService {
 
-  buscar(id: number): Observable<PerfilPublico> {
-    return this.httpClient.get<PerfilPublico>(
-      this.url(`perfil_publico.php?id=${id}`)
-    );
+  /** Busca pelo apelido; um número (link antigo /chef/5) busca pelo id */
+  buscar(apelidoOuId: string): Observable<PerfilPublico> {
+    const param = /^\d+$/.test(apelidoOuId)
+      ? `id=${apelidoOuId}`
+      : `apelido=${encodeURIComponent(apelidoOuId)}`;
+    return this.httpClient.get<PerfilPublico>(this.url(`perfil_publico.php?${param}`));
   }
 }

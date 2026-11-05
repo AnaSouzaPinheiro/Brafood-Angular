@@ -7,7 +7,6 @@ import {
     Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Perfil } from '../../profile/perfil/perfil';
 import { AiService } from '../../services/ai/ai.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
@@ -20,7 +19,7 @@ const MIN_CHARS_AI = 200;
 @Component({
   selector: 'bra-add-recipe-ai',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BraInput, CustomButton, Perfil],
+  imports: [CommonModule, ReactiveFormsModule, BraInput, CustomButton],
   templateUrl: './add-recipe-ai.html',
   styleUrl: './add-recipe-ai.scss',
 })

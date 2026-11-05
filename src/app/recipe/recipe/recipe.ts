@@ -121,6 +121,7 @@ export class Recipe {
             ? new Date(r.data_criacao).toLocaleDateString('pt-BR')
             : '',
           usuarioId: r.id_usuario != null ? Number(r.id_usuario) : null,
+          usuarioApelido: r.autor_apelido || null,
           autor: r.autor,
           foto_perfil: r.foto_perfil || '',
           bio: r.bio,

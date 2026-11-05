@@ -29,3 +29,21 @@ ul#rules {
     grid-template-columns: auto;
   }
 }
+
+.apelido-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.apelido-hint {
+  margin-top: 4px;
+  padding-left: 4px;
+  font-size: 0.8rem;
+  color: #445daf;
+  word-break: break-all;
+
+  .ok {
+    color: #2e7d32;
+  }
+}
