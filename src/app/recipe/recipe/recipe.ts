@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -83,11 +85,22 @@ export class Recipe {
     private toastService: ToastService,
   ) {}
 
+  private destroyRef = inject(DestroyRef);
+
   ngOnInit() {
     this.usuarioId = this.authService.getUserId();
-    const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.ReceitaServices.buscarPorId(id).subscribe({
+    // O Angular reaproveita este componente ao navegar de uma receita para
+    // outra (ex.: "receitas relacionadas"), então é preciso reagir à troca
+    // do :id na URL em vez de ler o snapshot só uma vez.
+    this.route.paramMap
+      .pipe(
+        map((params) => Number(params.get('id'))),
+        tap(() => this.resetarEstado()),
+        switchMap((id) => this.ReceitaServices.buscarPorId(id)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
       next: (r: any) => {
         this.recipe = {
           id: Number(r.id),
@@ -142,6 +155,23 @@ export class Recipe {
         this.loadingRecipe = false;
       },
     });
+  }
+
+  /** Limpa os dados da receita anterior antes de carregar a próxima */
+  private resetarEstado() {
+    this.recipe = undefined;
+    this.comentarios = [];
+    this.meuComentario = null;
+    this.secaoRelacionadas = null;
+    this.notaForm = null;
+    this.notaUsuario = null;
+    this.mediaAvaliacao = null;
+    this.totalAvaliacoes = 0;
+    this.novoComentario = '';
+    this.visibleCommentsCount = 3;
+    this.tentouComentar = false;
+    this.comentarioTocado = false;
+    this.loadingRecipe = true;
   }
 
   carregarAvaliacao() {
