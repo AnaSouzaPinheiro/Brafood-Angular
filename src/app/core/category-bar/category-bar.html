@@ -4,7 +4,18 @@
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
 >
-  <ul #track>
+  @if (isDesktop) {
+    <button
+      type="button"
+      class="nav-arrow nav-arrow--left"
+      aria-label="Categorias anteriores"
+      (click)="scrollStep(-1)"
+    >
+      <i class="fa-solid fa-circle-chevron-left"></i>
+    </button>
+  }
+
+  <ul #track [class.dragging]="isDragging" (pointerdown)="onPointerDown($event)">
     <li
       *ngFor="let categoria of categorias"
       [ngClass]="categoria.css_class"
@@ -14,6 +25,7 @@
       (mouseleave)="onLeave($event, categoria)"
     >
       <img class="icon"
+        draggable="false"
         [src]="categoria.icone"
         alt="{{ categoria.nome }} ícone"
       />
@@ -28,12 +40,27 @@
       class="clone"
       [ngClass]="categoria.css_class"
       [style.background-color]="categoria.cor_primaria || null"
+      [routerLink]="categoria.url"
+      (mouseenter)="onHover($event, categoria)"
+      (mouseleave)="onLeave($event, categoria)"
     >
       <img class="icon"
+        draggable="false"
         [src]="categoria.icone"
         alt=""
       />
       {{ categoria.nome }}
     </li>
   </ul>
+
+  @if (isDesktop) {
+    <button
+      type="button"
+      class="nav-arrow nav-arrow--right"
+      aria-label="Próximas categorias"
+      (click)="scrollStep(1)"
+    >
+      <i class="fa-solid fa-circle-chevron-right"></i>
+    </button>
+  }
 </div>

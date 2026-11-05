@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, afterNextRender, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { StorageService } from '../../services/storage/storage.service';
 
@@ -10,15 +10,27 @@ import { StorageService } from '../../services/storage/storage.service';
   templateUrl: './cookie-banner.html',
   styleUrl: './cookie-banner.scss',
 })
-export class CookieBanner implements OnInit {
-  accepted = false;
-  loaded = false;
+export class CookieBanner {
+  // Signals: alterados dentro do afterNextRender, precisam avisar a view
+  accepted = signal(false);
+  loaded = signal(false);
 
   private storage = inject(StorageService);
 
-  ngOnInit(): void {
-    this.accepted = this.storage.getItem('cookiesAccepted') === 'true';
-    this.loaded = true;
+  constructor() {
+    // Só decide se mostra o banner no NAVEGADOR, depois da hidratação.
+    // Antes isso rodava também no prerender (sem localStorage), então o
+    // banner ficava "assado" no HTML estático de /home, /login etc. e,
+    // se a hidratação não casasse, sobrava um banner morto na tela que
+    // não respondia ao clique — mesmo para quem já tinha aceitado.
+    afterNextRender(() => {
+      try {
+        this.accepted.set(this.storage.getItem('cookiesAccepted') === 'true');
+      } catch {
+        this.accepted.set(false);
+      }
+      this.loaded.set(true);
+    });
   }
 
   accept(): void {
@@ -26,7 +38,7 @@ export class CookieBanner implements OnInit {
     // em aba anônima ou com bloqueio de terceiros o localStorage pode
     // lançar erro, e antes isso travava o accept() antes de marcar
     // accepted = true.
-    this.accepted = true;
+    this.accepted.set(true);
 
     try {
       this.storage.setItem('cookiesAccepted', 'true');

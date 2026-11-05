@@ -18,6 +18,10 @@ import { toSlug } from '../../utils/slug';
 // (arraste/touch) que já existia — é o comportamento de mobile/tablet.
 const DESKTOP_BREAKPOINT = 992;
 const SCROLL_SPEED_PX_POR_SECOND = 30;
+// Quanto cada clique na seta avança (px) e a partir de quantos px de
+// movimento um "clique" passa a ser considerado arraste.
+const ARROW_STEP_PX = 320;
+const DRAG_THRESHOLD_PX = 5;
 
 @Component({
   selector: 'bra-category-bar',
@@ -38,6 +42,15 @@ export class CategoryBar implements AfterViewInit, OnDestroy {
   private singleSetWidth = 0;
   private position = 0;
   private lastTimestamp = 0;
+
+  // Setas: deslocamento pendente, consumido suavemente a cada frame
+  private pendingOffset = 0;
+
+  // Arraste com mouse
+  private dragging = false;
+  private dragMoved = false;
+  private dragStartX = 0;
+  private dragStartPosition = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,7 +89,23 @@ export class CategoryBar implements AfterViewInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    if (!this.isBrowser || !this.trackRef) return;
+    // Depois de um arraste, o "soltar" do mouse dispara um click no item
+    // embaixo do cursor. Bloqueia esse click (fase de captura) para não
+    // navegar sem querer.
+    this.trackRef.nativeElement.addEventListener(
+      'click',
+      (e) => {
+        if (this.dragMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.dragMoved = false;
+        }
+      },
+      true,
+    );
+  }
 
   ngOnDestroy() {
     this.stopAutoScroll();
@@ -99,6 +128,50 @@ export class CategoryBar implements AfterViewInit, OnDestroy {
 
   onMouseLeave() {
     this.paused = false;
+    this.endDrag();
+  }
+
+  /** Setas laterais: -1 volta, 1 avança */
+  scrollStep(direction: -1 | 1) {
+    this.pendingOffset += direction * ARROW_STEP_PX;
+  }
+
+  onPointerDown(event: PointerEvent) {
+    if (!this.isDesktop || event.pointerType !== 'mouse' || event.button !== 0) return;
+    this.dragging = true;
+    this.dragMoved = false;
+    this.dragStartX = event.clientX;
+    this.dragStartPosition = this.position;
+    this.pendingOffset = 0;
+  }
+
+  @HostListener('window:pointermove', ['$event'])
+  onPointerMove(event: PointerEvent) {
+    if (!this.dragging || !this.trackRef) return;
+    const delta = event.clientX - this.dragStartX;
+    if (Math.abs(delta) > DRAG_THRESHOLD_PX) {
+      this.dragMoved = true;
+    }
+    if (this.dragMoved) {
+      this.position = this.wrap(this.dragStartPosition - delta);
+      this.trackRef.nativeElement.scrollLeft = this.position;
+    }
+  }
+
+  @HostListener('window:pointerup')
+  endDrag() {
+    this.dragging = false;
+  }
+
+  get isDragging() {
+    return this.dragging && this.dragMoved;
+  }
+
+  /** Mantém a posição dentro de um conjunto (loop infinito nos dois sentidos) */
+  private wrap(value: number) {
+    const w = this.singleSetWidth;
+    if (!w) return value;
+    return ((value % w) + w) % w;
   }
 
   private setupCarousel() {
@@ -132,14 +205,22 @@ export class CategoryBar implements AfterViewInit, OnDestroy {
     const deltaTime = (timestamp - this.lastTimestamp) / 1000; // segundos
     this.lastTimestamp = timestamp;
 
-    if (!this.paused) {
-      this.position += SCROLL_SPEED_PX_POR_SECOND * deltaTime;
+    if (!this.dragging) {
+      let move = this.paused ? 0 : SCROLL_SPEED_PX_POR_SECOND * deltaTime;
 
-      if (this.position >= this.singleSetWidth) {
-        this.position -= this.singleSetWidth;
+      // Consome o deslocamento das setas com desaceleração suave
+      if (Math.abs(this.pendingOffset) > 0.5) {
+        const step = this.pendingOffset * Math.min(1, deltaTime * 8);
+        this.pendingOffset -= step;
+        move += step;
+      } else {
+        this.pendingOffset = 0;
       }
 
-      track.scrollLeft = this.position;
+      if (move !== 0) {
+        this.position = this.wrap(this.position + move);
+        track.scrollLeft = this.position;
+      }
     }
 
     this.rafId = requestAnimationFrame(this.tick);

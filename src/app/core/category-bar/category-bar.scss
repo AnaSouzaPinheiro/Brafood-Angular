@@ -19,9 +19,70 @@
 
   // No desktop em modo carrossel, o JS controla o scrollLeft sozinho —
   // então tira a scrollbar e o arraste manual pra não brigar com a animação.
-  &.is-carousel ul {
-    overflow-x: hidden;
-    cursor: default;
+  &.is-carousel {
+    position: relative;
+
+    ul {
+      overflow-x: hidden;
+      cursor: grab;
+      user-select: none;
+
+      &.dragging {
+        cursor: grabbing;
+
+        li {
+          pointer-events: none;
+        }
+      }
+    }
+
+    // Setas aparecem ao passar o mouse sobre a barra (quando ela pausa)
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      color: #333;
+      font-size: 36px;
+      line-height: 1;
+      padding: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+
+      &--left {
+        left: 8px;
+      }
+
+      &--right {
+        right: 8px;
+      }
+
+      &:hover {
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      &:focus-visible {
+        opacity: 1;
+        pointer-events: auto;
+        outline: 2px solid #333;
+      }
+    }
+
+    &:hover .nav-arrow {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
   ul {
