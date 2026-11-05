@@ -1,4 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
+import { BraAlert } from '../../shared/alert/alert';
 import { Component, Optional, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -8,7 +9,7 @@ import { InputAcesso } from '../input-acesso/input-acesso';
 
 @Component({
   selector: 'bra-login',
-  imports: [FormsModule, InputAcesso, CustomButton, RouterModule, CommonModule],
+  imports: [FormsModule, InputAcesso, CustomButton, RouterModule, CommonModule, BraAlert],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

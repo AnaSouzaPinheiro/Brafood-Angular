@@ -49,8 +49,10 @@
         <li id="r4">1 carácter especial (ex : ! &#64; # $)</li>
       </ul>
 
-      <p class="erro" *ngIf="mensagem && !sucesso">{{ mensagem }}</p>
-      <p class="sucesso" *ngIf="sucesso">{{ mensagem }}</p>
+      <bra-alert type="error" *ngIf="mensagem && !sucesso">{{ mensagem }}</bra-alert>
+      <bra-alert type="success" *ngIf="sucesso">
+        {{ mensagem }} Redirecionando para o login…
+      </bra-alert>
 
       <bra-custom-button label="Redefinir"></bra-custom-button>
     </form>

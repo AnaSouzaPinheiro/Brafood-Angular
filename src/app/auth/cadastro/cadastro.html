@@ -69,6 +69,10 @@
         <li id="r4">1 carácter especial (ex : ! &#64; # $)</li>
       </ul>
 
+      @for (erro of erros; track erro) {
+        <bra-alert type="error">{{ erro }}</bra-alert>
+      }
+
       <bra-custom-button label="Cadastrar"></bra-custom-button>
     </form>
 

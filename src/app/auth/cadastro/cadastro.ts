@@ -1,4 +1,5 @@
 import { Component, DestroyRef, QueryList, ViewChildren, inject } from '@angular/core';
+import { BraAlert } from '../../shared/alert/alert';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import {
@@ -15,7 +16,7 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'bra-cadastro',
-  imports: [FormsModule, InputAcesso, CustomButton, RouterModule],
+  imports: [FormsModule, InputAcesso, CustomButton, RouterModule, BraAlert],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.scss',
 })

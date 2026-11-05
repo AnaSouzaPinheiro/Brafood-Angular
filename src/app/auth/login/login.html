@@ -29,7 +29,7 @@
         autocomplete="current-password"
       ></bra-input-acesso>
 
-      <span class="error" *ngIf="erro">{{ erro }}</span>
+      <bra-alert type="error" *ngIf="erro">{{ erro }}</bra-alert>
 
       <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
 

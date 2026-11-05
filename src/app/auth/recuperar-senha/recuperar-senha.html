@@ -25,8 +25,10 @@
         autocomplete="email"
       ></bra-input-acesso>
 
-      <p class="erro" *ngIf="erro">{{ erro }}</p>
-      <p class="sucesso" *ngIf="sucesso">{{ sucesso }}</p>
+      <bra-alert type="error" *ngIf="erro">{{ erro }}</bra-alert>
+      <bra-alert type="success" *ngIf="sucesso">
+        {{ sucesso }} Confira também a caixa de spam.
+      </bra-alert>
 
       <bra-custom-button label="Enviar instruções"></bra-custom-button>
     </form>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BraAlert } from '../../shared/alert/alert';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InputAcesso } from '../input-acesso/input-acesso';
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'bra-recuperar-senha',
   standalone: true,
-  imports: [FormsModule, RouterModule, InputAcesso, CustomButton, CommonModule],
+  imports: [FormsModule, RouterModule, InputAcesso, CustomButton, CommonModule, BraAlert],
   templateUrl: './recuperar-senha.html',
   styleUrl: './recuperar-senha.scss',
 })

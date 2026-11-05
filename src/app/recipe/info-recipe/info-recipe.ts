@@ -173,7 +173,7 @@ export class InfoRecipe implements OnChanges {
   fallbackShare(url: string) {
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(url);
-      alert('Link copiado!');
+      this.toastService.show('Link copiado!', 'success');
       return;
     }
 
@@ -184,6 +184,6 @@ export class InfoRecipe implements OnChanges {
     document.execCommand('copy');
     document.body.removeChild(textarea);
 
-    alert('Link copiado!');
+    this.toastService.show('Link copiado!', 'success');
   }
 }
