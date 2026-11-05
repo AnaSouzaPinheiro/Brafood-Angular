@@ -1,0 +1,55 @@
+name: Deploy Front (InfinityFree)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-front-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar Secrets obrigatórios
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          missing=0
+          for k in FTP_SERVER FTP_USER FTP_PASS; do
+            if [ -z "${!k}" ]; then echo "::error::Secret ausente: $k"; missing=1; fi
+          done
+          exit $missing
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build de produção
+        run: npm run build -- --configuration production
+
+      - name: Conferir saída do build
+        run: |
+          test -f dist/BraFood-Angular/browser/index.csr.html || { echo "::error::index.csr.html não gerado"; exit 1; }
+          test -f dist/BraFood-Angular/browser/.htaccess || { echo "::error::.htaccess não copiado"; exit 1; }
+
+      - name: Enviar por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          local-dir: dist/BraFood-Angular/browser/
+          server-dir: /htdocs/

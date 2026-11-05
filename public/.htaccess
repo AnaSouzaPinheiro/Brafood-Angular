@@ -1,0 +1,16 @@
+RewriteEngine On
+RewriteBase /
+
+# Página inicial: sempre o shell atual do app (o Angular redireciona para /home)
+DirectoryIndex index.csr.html
+
+# A API (/api) tem seu próprio .htaccess e não passa por aqui
+RewriteRule ^api(/|$) - [L]
+
+# Arquivos e pastas que existem (js, css, imagens, rotas pré-renderizadas)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Demais rotas do Angular (receita/..., perfil/...) → shell do app
+RewriteRule ^ index.csr.html [L]
