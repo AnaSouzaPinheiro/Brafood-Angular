@@ -21,8 +21,9 @@ export const routes: Routes = [
     path: 'receita/:nome/:id',
     loadComponent: () => import('./recipe/recipe/recipe').then((m) => m.Recipe),
   },
+  // Área do próprio usuário: sem id na URL (os dados vêm do login)
   {
-    path: 'editar-perfil/:id',
+    path: 'perfil/editar',
     loadComponent: () =>
       import('./profile/editar-perfil/editar-perfil').then(
         (m) => m.EditarPerfil,
@@ -30,14 +31,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'chef/:id',
-    loadComponent: () =>
-      import('./profile/perfil-publico/perfil-publico').then(
-        (m) => m.PerfilPublicoPage,
-      ),
-  },
-  {
-    path: 'minhas-receitas/:id',
+    path: 'perfil/receitas',
     loadComponent: () =>
       import('./profile/minhas-receitas/minhas-receitas').then(
         (m) => m.MinhasReceitas,
@@ -45,10 +39,23 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'favoritas/:id',
+    path: 'perfil/favoritas',
     loadComponent: () =>
       import('./profile/favoritas/favoritas').then((m) => m.Favoritas),
     canActivate: [AuthGuard],
+  },
+  // Links antigos com id continuam funcionando
+  { path: 'editar-perfil/:id', redirectTo: 'perfil/editar' },
+  { path: 'minhas-receitas/:id', redirectTo: 'perfil/receitas' },
+  { path: 'favoritas/:id', redirectTo: 'perfil/favoritas' },
+  {
+    // Perfil público pelo apelido. /chef/5 (link antigo) é redirecionado
+    // para /chef/{apelido} pelo próprio componente.
+    path: 'chef/:apelido',
+    loadComponent: () =>
+      import('./profile/perfil-publico/perfil-publico').then(
+        (m) => m.PerfilPublicoPage,
+      ),
   },
   {
     path: 'editar-receita/:nome/:id',

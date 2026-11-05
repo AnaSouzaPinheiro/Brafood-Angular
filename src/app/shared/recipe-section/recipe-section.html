@@ -9,19 +9,23 @@
   >
     <div class="titulo">
       <div class="header">
-        <span class="arrow" *ngIf="showLeftArrow" (click)="scrollLeft()">
-          <i class="fa-solid fa-circle-chevron-left"></i>
-        </span>
-
         <h2 class="title" [ngStyle]="getTituloStyle()">{{ section.title }}</h2>
-
-        <span class="arrow" *ngIf="showRightArrow" (click)="scrollRight()">
-          <i class="fa-solid fa-circle-chevron-right"></i>
-        </span>
       </div>
 
       <img [src]="section.fundoTitle | mediaUrl" class="fundoTitle" alt="" />
     </div>
+
+    <div class="slider-wrap">
+    <!-- Setas laterais: aparecem ao passar o mouse sobre a seção -->
+    <button
+      type="button"
+      class="nav-arrow nav-arrow--left"
+      [class.hidden]="!showLeftArrow"
+      aria-label="Receitas anteriores"
+      (click)="scrollLeft()"
+    >
+      <i class="fa-solid fa-circle-chevron-left"></i>
+    </button>
 
     <div
       class="main"
@@ -41,6 +45,17 @@
         ></bra-recipe-card>
         }
       </div>
+    </div>
+
+    <button
+      type="button"
+      class="nav-arrow nav-arrow--right"
+      [class.hidden]="!showRightArrow"
+      aria-label="Próximas receitas"
+      (click)="scrollRight()"
+    >
+      <i class="fa-solid fa-circle-chevron-right"></i>
+    </button>
     </div>
   </section>
 </div>

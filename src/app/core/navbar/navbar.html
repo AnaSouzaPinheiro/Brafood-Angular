@@ -11,11 +11,22 @@
 
   <bra-search-bar class="search-area"></bra-search-bar>
 
-  <bra-user-icon
-    class="icon-area"
-    [userSignal]="user"
-    (clickIcon)="togglePopup($event)"
-  ></bra-user-icon>
+  <div class="user-area">
+    <button
+      type="button"
+      class="user-name"
+      [attr.aria-expanded]="openModal()"
+      (click)="togglePopup($event)"
+    >
+      {{ displayName() }}
+    </button>
+
+    <bra-user-icon
+      class="icon-area"
+      [userSignal]="user"
+      (clickIcon)="togglePopup($event)"
+    ></bra-user-icon>
+  </div>
 
   @if (openModal()) {
   <bra-modal-log
@@ -23,6 +34,7 @@
     [loggedOut]="!logado()"
     [logout]="logout.bind(this)"
     class="profile-container"
+    (click)="onMenuClick($event)"
   ></bra-modal-log>
   }
 </header>

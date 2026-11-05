@@ -11,9 +11,9 @@ import { Router } from '@angular/router';
 import { Categoria } from '../../model/categoria';
 import { Receita } from '../../model/receita';
 import { Dropdown, Option } from '../../profile/dropdown/dropdown';
+import { RecipeMetaFields } from '../../shared/recipe-meta-fields/recipe-meta-fields';
 import { InputImages } from '../../profile/input-images/input-images';
 import { InputList } from '../../profile/input-list/input-list';
-import { Perfil } from '../../profile/perfil/perfil';
 import { AuthService } from '../../services/auth/auth.service';
 import { CategoriaService } from '../../services/categoria/categoria.service';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -26,7 +26,7 @@ import { BraInput } from '../../shared/input/input';
 @Component({
   selector: 'bra-add-recipe',
   imports: [
-    Perfil,
+    RecipeMetaFields,
     InputImages,
     BraInput,
     Dropdown,
@@ -129,7 +129,10 @@ export class AddRecipe {
         null,
         [Validators.required, Validators.max(59), Validators.pattern(/^\d+$/)],
       ],
-      porcoes: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
+      porcoes: [
+        null,
+        [Validators.required, Validators.min(1), Validators.max(50), Validators.pattern(/^\d+$/)],
+      ],
       tipo_porcao: [null, Validators.required],
       fonte_autor: ['', [Validators.maxLength(150)]],
       fonte_url: ['', [Validators.maxLength(500)]],
@@ -368,7 +371,7 @@ export class AddRecipe {
               message: 'Informações da receita foram salvas com sucesso!',
               confirmText: 'OK',
               onConfirm: () =>
-                this.router.navigate(['/minhas-receitas', userId]),
+                this.router.navigate(['/perfil/receitas']),
             });
           } else {
             this.modalService.open({

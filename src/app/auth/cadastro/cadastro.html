@@ -19,8 +19,28 @@
         <bra-input-acesso
           [type]="'nome'"
           [(ngModel)]="nome"
+          (ngModelChange)="onNomeChange($event)"
           name="nome"
         ></bra-input-acesso>
+        <div class="apelido-field">
+          <bra-input-acesso
+            [type]="'apelido'"
+            [ngModel]="apelido"
+            (ngModelChange)="onApelidoChange($event)"
+            [externalError]="apelidoErro"
+            name="apelido"
+          ></bra-input-acesso>
+          @if (apelido && !apelidoErro) {
+            <small class="apelido-hint">
+              brafood.page.gd/chef/{{ apelido }}
+              @if (apelidoStatus === 'verificando') {
+                · verificando…
+              } @else if (apelidoStatus === 'ok') {
+                · <span class="ok">disponível ✓</span>
+              }
+            </small>
+          }
+        </div>
         <bra-input-acesso
           [type]="'email'"
           [(ngModel)]="email"

@@ -9,8 +9,14 @@ import {
     ValidationErrors,
     Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { User } from '../../model/user';
+import {
+    APELIDO_ERROS,
+    ApelidoService,
+    apelidoFormatoValidator,
+} from '../../services/apelido/apelido.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
@@ -67,14 +73,26 @@ export class EditarPerfil implements OnInit {
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
-    private route: ActivatedRoute,
+    private auth: AuthService,
+    private apelidoService: ApelidoService,
     private router: Router,
     private modalService: ModalService,
     private logger: LoggerService,
   ) {
     this.form = this.fb.group(
       {
-        apelido: ['', [Validators.required, Validators.maxLength(30)]],
+        apelido: [
+          '',
+          {
+            validators: [
+              Validators.required,
+              Validators.minLength(3),
+              Validators.maxLength(30),
+              apelidoFormatoValidator,
+            ],
+            asyncValidators: [this.apelidoService.disponivelValidator()],
+          },
+        ],
         nome: ['', Validators.required],
         sobrenome: ['', Validators.required],
         genero: ['', Validators.required],
@@ -154,9 +172,12 @@ export class EditarPerfil implements OnInit {
   }
 
   idUser: number = 0;
+  apelidoErros = APELIDO_ERROS;
 
   ngOnInit() {
-    this.idUser = Number(this.route.snapshot.paramMap.get('id'));
+    // O usuário vem do login, não da URL (/perfil/editar)
+    this.idUser = Number(this.auth.user()?.id ?? 0);
+    if (!this.idUser) return;
 
     this.usuarioService.buscarUserPorId(this.idUser).subscribe((response) => {
       const user = response.usuario;
@@ -185,6 +206,11 @@ export class EditarPerfil implements OnInit {
   editarPerfil() {
     this.form.markAllAsTouched();
 
+    if (this.form.pending) {
+      // Ainda conferindo o apelido no servidor
+      return;
+    }
+
     if (this.form.invalid) {
       const primeiroErro = document.querySelector('.input-error');
       primeiroErro?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -208,16 +234,25 @@ export class EditarPerfil implements OnInit {
       .subscribe({
         next: (res) => {
           if (res?.success) {
+            // Mantém menu, abas e "Ver meu perfil" com o apelido/nome novos
+            this.auth.atualizarUsuario({
+              nome: payload.nome,
+              sobrenome: payload.sobrenome,
+              apelido: payload.apelido,
+            });
             this.modalService.open({
               type: 'success',
               title: 'Perfil atualizado',
               message: 'Suas informações foram salvas com sucesso!',
               confirmText: 'OK',
               onConfirm: () => {
-                this.router.navigate(['/editar-perfil', this.user.id]);
+                this.router.navigate(['/perfil/editar']);
               },
             });
           } else {
+            if (res?.campo === 'apelido') {
+              this.form.get('apelido')?.setErrors({ apelidoEmUso: true });
+            }
             this.modalService.open({
               type: 'error',
               title: 'Erro',

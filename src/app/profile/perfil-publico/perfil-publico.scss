@@ -76,9 +76,10 @@
 
 // ── Header ──────────────────────────────────────────────
 .perfil-header {
-  gap: 32px;
+  gap: 40px;
   display: flex;
-  margin-bottom: 48px;
+  align-items: center;
+  margin-bottom: 32px;
   justify-content: center;
 
   @media (max-width: 600px) {
@@ -112,8 +113,30 @@
   }
 }
 
+.perfil-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
 .perfil-info {
-  //flex: 1;
+  max-width: 520px;
+}
+
+.perfil-divisoria {
+  border: none;
+  height: 1px;
+  margin: 0 auto 32px;
+  max-width: 900px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    $secondary-gray 15%,
+    $secondary-gray 85%,
+    transparent
+  );
 }
 
 .perfil-nome {
@@ -124,7 +147,7 @@
 
 .perfil-apelido {
   font-size: 1rem;
-  color: #888;
+  color: $secondary-blue;
   margin: 0 0 12px;
 }
 
@@ -137,13 +160,10 @@
 }
 
 .perfil-stats {
-  gap: 20px;
+  gap: 16px;
   display: flex;
   align-items: center;
-
-  @media (max-width: 600px) {
-    justify-content: center;
-  }
+  justify-content: center;
 }
 
 .stat {
@@ -152,13 +172,13 @@
   align-items: center;
 
   .stat-valor {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: $category-seven;
   }
 
   .stat-label {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -167,8 +187,8 @@
 
 .stat-divider {
   width: 1px;
-  height: 36px;
-  background: $primary-gray;
+  height: 30px;
+  background: $secondary-gray;
 }
 
 // ── Receitas ─────────────────────────────────────────────

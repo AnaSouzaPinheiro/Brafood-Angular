@@ -7,15 +7,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
-    path: 'editar-perfil/:id',
+    path: 'perfil/**',
     renderMode: RenderMode.Client,
   },
   {
-    path: 'minhas-receitas/:id',
-    renderMode: RenderMode.Client,
-  },
-  {
-    path: 'favoritas/:id',
+    path: 'chef/:apelido',
     renderMode: RenderMode.Client,
   },
   {

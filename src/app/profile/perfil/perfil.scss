@@ -1,99 +1,102 @@
 @use "variables" as *;
-@use "layout" as *;
 
-.menuPerfil {
-  gap: 70px;
-  margin: 48px 0;
+.profile-tabs {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 32px 120px 24px;
+  border-bottom: 1px solid $quaternary-gray;
+}
 
-  @include flex-column-center;
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
 
-  .main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 48px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 
-    .account {
-      gap: 16px;
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 400;
+  color: $tertiary-gray;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px; // sobrepõe a linha do container
+  transition: color 0.2s ease, border-color 0.2s ease;
 
-      @include flex-column-center;
-
-      bra-user-icon {
-        width: 140px;
-        height: 140px;
-        display: inline-block;
-      }
-
-      .name {
-        font-size: 1.6rem;
-        font-weight: 500;
-        color: $primary-blue;
-        text-align: center;
-      }
-    }
-
-    .resume {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-
-      .title {
-        font-size: 1.2rem;
-        font-weight: 300;
-        color: $primary-gray;
-      }
-
-      .text {
-        max-width: 460px;
-
-        font-size: 0.95rem;
-        font-weight: 300;
-        color: $primary-blue;
-      }
-    }
+  i {
+    font-size: 0.9rem;
   }
 
-  .options {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 24px;
+  &:hover {
+    color: $primary-blue;
   }
 
-  hr {
-    width: calc(100% - 200px);
-    height: 1px;
+  &.active {
+    color: $primary-blue;
+    font-weight: 600;
+    border-bottom-color: $primary-blue;
   }
 
-  .url {
-    text-decoration: none;
+  &:focus-visible {
+    outline: 2px solid $tertiary-blue;
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+}
+
+.public-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 0;
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: $secondary-blue;
+
+  i {
+    font-size: 0.75rem;
   }
 
-  @media (max-width: 768px) {
-    gap: 40px;
-    margin: 28px;
+  &:hover {
+    color: $primary-blue;
+    text-decoration: underline;
+  }
+}
 
-    .main {
-      flex-direction: column;
-      gap: 28px;
+@media (max-width: 1095px) {
+  .profile-tabs {
+    margin: 28px 60px 20px;
+  }
+}
 
-      .resume {
-        align-items: center;
+@media (max-width: 768px) {
+  .profile-tabs {
+    margin: 20px 24px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
 
-        .text {
-          text-align: center;
-        }
-      }
-    }
+  .public-link {
+    order: -1;
+    align-self: flex-end;
+    padding: 0 0 8px;
+  }
 
-    .options {
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    hr {
-      width: calc(100% - 100px);
-    }
+  .tab {
+    padding: 10px 12px;
+    font-size: 0.9rem;
   }
 }

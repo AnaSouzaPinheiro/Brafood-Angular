@@ -2,7 +2,7 @@ import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-export type InputType = 'email' | 'senha' | 'nome' | 'confirmarSenha';
+export type InputType = 'email' | 'senha' | 'nome' | 'confirmarSenha' | 'apelido';
 
 @Component({
   selector: 'bra-input-acesso',
@@ -24,6 +24,8 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
 
   @Input() inputId: string = '';
   @Input() name: string = '';
+  /** Erro vindo de fora (ex.: servidor disse que o apelido já está em uso) */
+  @Input() externalError: string | null = null;
 
   placeholder: string = '';
   icon: string = '';
@@ -64,6 +66,12 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
         this.autocomplete = 'name';
         this.htmlType = 'text';
         break;
+      case 'apelido':
+        this.placeholder = 'Apelido (seu @ no BraFood)';
+        this.icon = 'fa-solid fa-user';
+        this.autocomplete = 'username';
+        this.htmlType = 'text';
+        break;
       case 'confirmarSenha':
         this.placeholder = 'Confirme sua senha';
         this.icon = 'fa-solid fa-lock';
@@ -101,6 +109,7 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
   }
 
   get errorMessage(): string {
+    if (this.externalError) return this.externalError;
     if (!this.touched) return '';
 
     switch (this.type) {
@@ -119,13 +128,16 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
       case 'confirmarSenha':
         if (!this.value) return 'Confirme sua senha.';
         break;
+      case 'apelido':
+        if (!this.value.trim()) return 'Informe um apelido.';
+        break;
     }
 
     return '';
   }
 
   get isInvalid(): boolean {
-    return this.touched && this.errorMessage.length > 0;
+    return (this.touched || !!this.externalError) && this.errorMessage.length > 0;
   }
 
   private isValidEmail(email: string): boolean {

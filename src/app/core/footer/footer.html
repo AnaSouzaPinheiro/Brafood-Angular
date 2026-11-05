@@ -13,12 +13,12 @@
       <div *ngIf="auth.isLoggedIn()" class="conta">
         <h3>Conta</h3>
         <ul>
-          <li><a [routerLink]="'/editar-perfil/' + userId">Minha conta</a></li>
+          <li><a routerLink="/perfil/editar">Minha conta</a></li>
           <li>
-            <a [routerLink]="'/minhas-receitas/' + userId">Minhas receitas</a>
+            <a routerLink="/perfil/receitas">Minhas receitas</a>
           </li>
           <li>
-            <a [routerLink]="'/favoritas/' + userId">Favoritas</a>
+            <a routerLink="/perfil/favoritas">Favoritas</a>
           </li>
         </ul>
       </div>

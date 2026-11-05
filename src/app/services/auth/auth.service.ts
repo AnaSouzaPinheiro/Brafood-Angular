@@ -36,9 +36,11 @@ export class AuthService extends BaseService {
     email: string,
     senha: string,
     confirmarSenha: string,
+    apelido = '',
   ): Observable<ApiResponse> {
     return this.httpClient.post<ApiResponse>(this.url('cadastro.php'), {
       nome,
+      apelido,
       email,
       senha,
       confirmarSenha,
@@ -112,6 +114,19 @@ export class AuthService extends BaseService {
   }
 
   // Retorna os dados do usuário logado
+  /** Atualiza os dados do usuário logado (ex.: depois de editar o perfil) */
+  atualizarUsuario(dados: Record<string, any>) {
+    const atual = this.user();
+    if (!atual) return;
+    const novo = { ...atual, ...dados };
+    this.user.set(novo);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('user', JSON.stringify(novo));
+      } catch {}
+    }
+  }
+
   getUser(): any {
     // Prioriza o signal (já carregado em memória); cai no storage como fallback
     return (

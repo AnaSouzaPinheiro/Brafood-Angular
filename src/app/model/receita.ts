@@ -1,5 +1,6 @@
 export interface Receita {
   usuarioId?: number | null;
+  usuarioApelido?: string | null;
 
   id: number;
   titulo: string;

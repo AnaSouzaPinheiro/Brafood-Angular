@@ -11,8 +11,8 @@
       <div class="list">
         <a
           class="autor whatsApp"
-          [routerLink]="recipe?.usuarioId ? ['/chef', recipe?.usuarioId] : null"
-          [class.autor-clickable]="recipe?.usuarioId"
+          [routerLink]="recipe?.usuarioApelido ? ['/chef', recipe?.usuarioApelido] : null"
+          [class.autor-clickable]="recipe?.usuarioApelido"
         >
           <img
             class="bra-user-icon"
