@@ -2,7 +2,7 @@
   <section
     class="container"
     [ngStyle]="section.urlSection
-      ? { 'background-image': 'url(' + section.urlSection + ')' }
+      ? { 'background-image': 'url(' + (section.urlSection | mediaUrl) + ')' }
       : section.corFundo
         ? { 'background-color': section.corFundo, 'background-image': 'none' }
         : { 'background-image': 'none' }"

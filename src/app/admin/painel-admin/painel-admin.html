@@ -509,7 +509,7 @@
           <label>Imagem de fundo</label>
           @if (previewFundoSecao || secForm.url_fundo) {
           <img
-            [src]="previewFundoSecao || secForm.url_fundo"
+            [src]="previewFundoSecao || secForm.url_fundo | mediaUrl"
             alt="preview fundo"
             class="img-preview img-preview--wide"
           />
@@ -636,11 +636,18 @@
       <div
         class="sec-preview"
         [ngStyle]="secTipoFundo === 'imagem' && (previewFundoSecao || secForm.url_fundo)
-          ? { 'background-image': 'url(' + (previewFundoSecao || secForm.url_fundo) + ')', 'background-size': 'cover', 'background-position': 'center' }
+          ? { 'background-image': 'url(' + ((previewFundoSecao || secForm.url_fundo) | mediaUrl) + ')', 'background-size': 'cover', 'background-position': 'center' }
           : secTipoFundo === 'cor' && secForm.cor_fundo
             ? { 'background-color': secForm.cor_fundo }
             : { 'background-color': '#eee' }"
       >
+        @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+        <img
+          [src]="previewFundoTituloSecao || secForm.fundo_titulo | mediaUrl"
+          alt=""
+          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 260px; z-index: 0; pointer-events: none;"
+        />
+        }
         <span class="sec-preview-title" [ngStyle]="getTituloPreviewStyle()">
           {{ secForm.titulo || 'Título da seção' }}
         </span>

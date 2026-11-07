@@ -36,6 +36,9 @@ export class MediaUrlPipe implements PipeTransform {
 
     // Caminho relativo do banco → prefixar com apiUrl + caminho do projeto PHP
     // ex: "uploads/receitas/foto.jpg"
-    return `${this.base}/${value}`;
+    // Uploads do admin salvam "api/uploads/..." (relativo à raiz do site);
+    // o apiUrl já aponta para a pasta da API, então remove o "api/" para
+    // não gerar ".../api/api/uploads/...".
+    return `${this.base}/${value.replace(/^\/?api\//, '')}`;
   }
 }
