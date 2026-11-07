@@ -2,15 +2,20 @@
 @use "layout" as *;
 
 .meta-fields {
-  // Mesma margem lateral do resto do formulário
-  @include page-container;
-
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
   gap: 24px 72px;
-  margin-bottom: 40px;
+
+  // Mesma margem lateral do resto do formulário. Fica depois das
+  // declarações (o mixin tem @media aninhado); margin-bottom vem depois
+  // para continuar sobrescrevendo a margem do mixin.
+  @include page-container;
+
+  & {
+    margin-bottom: 40px;
+  }
 
   // Celular: um campo por linha, ocupando a largura toda como os demais
   @media (max-width: 600px) {

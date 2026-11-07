@@ -27,3 +27,25 @@ main.with-navbar {
     padding-top: 76px;
   }
 }
+
+// Botão "Remover imagem" do painel admin (global para não estourar o
+// orçamento de CSS do componente painel-admin)
+.btn-remover-img {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  background: transparent;
+  color: #e5484d;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: #e5484d;
+    color: #fff;
+  }
+}
