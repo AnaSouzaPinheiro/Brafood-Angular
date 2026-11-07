@@ -55,10 +55,13 @@ export class RecipeCard {
 
   mappedRecipe: MappedRecipe | null = null;
   imgBroken: boolean = false;
+  /** Miniatura falhou → tenta a imagem original antes de mostrar o placeholder. */
+  thumbFalhou = false;
 
   ngOnChanges() {
     if (!this.recipe) return;
     this.imgBroken = false;
+    this.thumbFalhou = false;
 
     // Garantir que subs seja array de objetos
     let subs: SubcategoriaCard[] = [];

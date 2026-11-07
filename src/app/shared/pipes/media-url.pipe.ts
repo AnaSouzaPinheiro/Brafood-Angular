@@ -21,8 +21,17 @@ import { environment } from '../../../environments/environment';
 export class MediaUrlPipe implements PipeTransform {
   private readonly base = environment.apiUrl.replace(/\/$/, '');
 
-  transform(value: string | null | undefined): string | null {
+  /**
+   * @param variante 'thumb' troca uploads/receitas/x.jpg pela miniatura
+   *   uploads/receitas/thumbs/x.jpg.webp (600x420, gerada sob demanda
+   *   pelo thumb.php). Outros caminhos não são afetados.
+   */
+  transform(value: string | null | undefined, variante?: 'thumb'): string | null {
     if (!value) return null;
+
+    if (variante === 'thumb') {
+      value = value.replace(/(^|\/)uploads\/receitas\/([^/]+)$/, '$1uploads/receitas/thumbs/$2.webp');
+    }
 
     // Já é URL absoluta, data URL (preview local) ou caminho de asset → não altera
     if (

@@ -103,7 +103,17 @@
             class="img-preview"
           />
           }
+          @if (previewIconeCat || catForm.icone) {
+          <button
+            type="button"
+            class="btn-remover-img"
+            (click)="previewIconeCat = null; catForm.icone = null; inpIconeCat.value = ''"
+          >
+            <i class="fa-solid fa-xmark"></i> Remover imagem
+          </button>
+          }
           <input
+            #inpIconeCat
             type="file"
             accept="image/*"
             (change)="onIconeCatChange($event)"
@@ -121,7 +131,17 @@
             class="img-preview"
           />
           }
+          @if (previewFundoCat || catForm.fundo) {
+          <button
+            type="button"
+            class="btn-remover-img"
+            (click)="previewFundoCat = null; catForm.fundo = null; inpFundoCat.value = ''"
+          >
+            <i class="fa-solid fa-xmark"></i> Remover imagem
+          </button>
+          }
           <input
+            #inpFundoCat
             type="file"
             accept="image/*"
             (change)="onFundoCatChange($event)"
@@ -514,7 +534,17 @@
             class="img-preview img-preview--wide"
           />
           }
+          @if (previewFundoSecao || secForm.url_fundo) {
+          <button
+            type="button"
+            class="btn-remover-img"
+            (click)="previewFundoSecao = null; secForm.url_fundo = null; inpFundoSecao.value = ''"
+          >
+            <i class="fa-solid fa-xmark"></i> Remover imagem
+          </button>
+          }
           <input
+            #inpFundoSecao
             type="file"
             accept="image/*"
             (change)="onFundoSecaoChange($event)"
@@ -619,7 +649,17 @@
             class="img-preview"
           />
           }
+          @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+          <button
+            type="button"
+            class="btn-remover-img"
+            (click)="previewFundoTituloSecao = null; secForm.fundo_titulo = null; inpFundoTitulo.value = ''"
+          >
+            <i class="fa-solid fa-xmark"></i> Remover imagem
+          </button>
+          }
           <input
+            #inpFundoTitulo
             type="file"
             accept="image/*"
             (change)="onFundoTituloSecaoChange($event)"
