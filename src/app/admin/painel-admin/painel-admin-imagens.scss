@@ -1,0 +1,161 @@
+// Estilos dos campos de imagem do painel (separado de painel-admin.scss
+// para respeitar o orçamento de 8kB por arquivo de estilo).
+
+// Botão "Remover imagem"
+.btn-remover-img {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  background: transparent;
+  color: #e5484d;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: #e5484d;
+    color: #fff;
+  }
+}
+
+// Geração de imagem com IA
+.btn-ia {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 6px 0;
+  padding: 5px 12px;
+  border: 1px solid #7c3aed;
+  border-radius: 6px;
+  background: transparent;
+  color: #7c3aed;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover:not(:disabled),
+  &--primario {
+    background: #7c3aed;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.painel-ia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0 12px;
+  padding: 14px;
+  border: 1px dashed #c4b5fd;
+  border-radius: 10px;
+  background: #faf8ff;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  &__campos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  &__icones {
+    flex: 1 1 100%;
+  }
+
+  &__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__cores {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  &__cores-lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__cor {
+    position: relative;
+
+    // Tamanho explícito: o estilo genérico de input do admin achatava o
+    // seletor de cor e a cor escolhida virava um traço cinza
+    input[type="color"] {
+      width: 42px;
+      height: 42px;
+      padding: 2px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: #e5484d;
+      color: #fff;
+      font-size: 12px;
+      line-height: 18px;
+      cursor: pointer;
+    }
+  }
+
+  // Opções em tamanho grande, uma por linha, para dar para avaliar bem
+  &__opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__opcao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+
+    &.selecionada {
+      border-color: #7c3aed;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import {
     AdminCategoriaService,
     CategoriaAdmin,
@@ -26,7 +26,7 @@ type Tab = 'categorias' | 'subcategorias' | 'secoes' | 'destaque';
   standalone: true,
   imports: [CommonModule, FormsModule, MediaUrlPipe],
   templateUrl: './painel-admin.html',
-  styleUrl: './painel-admin.scss',
+  styleUrls: ['./painel-admin.scss', './painel-admin-imagens.scss'],
 })
 export class PainelAdmin implements OnInit {
   tab: Tab = 'categorias';
@@ -226,6 +226,7 @@ export class PainelAdmin implements OnInit {
 
     this.previewFundoSecao = null;
     this.previewFundoTituloSecao = null;
+    this.resetIa();
 
     this.receitasDaSecao = [];
 
@@ -490,6 +491,7 @@ export class PainelAdmin implements OnInit {
     this.showSecForm = true;
     this.previewFundoSecao = null;
     this.previewFundoTituloSecao = null;
+    this.resetIa();
     this.receitasDaSecao = [];
   }
 
@@ -502,6 +504,7 @@ export class PainelAdmin implements OnInit {
     this.showSecForm = true;
     this.previewFundoSecao = null;
     this.previewFundoTituloSecao = null;
+    this.resetIa();
 
     if (s.modo === 'manual') {
       this.carregarReceitasDaSecao(s.id);
@@ -531,6 +534,7 @@ export class PainelAdmin implements OnInit {
     if (!file) return;
 
     const reader = new FileReader();
+    delete this.iaSelecionada.fundo;
     reader.onload = () => { this.previewFundoSecao = reader.result as string; };
     reader.readAsDataURL(file);
 
@@ -552,6 +556,7 @@ export class PainelAdmin implements OnInit {
     if (!file) return;
 
     const reader = new FileReader();
+    delete this.iaSelecionada.titulo;
     reader.onload = () => { this.previewFundoTituloSecao = reader.result as string; };
     reader.readAsDataURL(file);
 
@@ -566,6 +571,128 @@ export class PainelAdmin implements OnInit {
         this.uploadandoFundoTituloSecao = false;
       },
     });
+  }
+
+  // ── Geração de imagem com IA (fundo da seção / fundo do título) ──────────
+
+  readonly IA_QTD_OPCOES = 2;
+  readonly IA_MAX_CORES = 3;
+
+  iaTipo: 'fundo' | 'titulo' | null = null;
+  iaTema = '';
+  iaIcones = '';
+  iaCores: string[] = ['#8b5cf6'];
+  iaSugerindo = false;
+  /** Opções geradas por campo — ficam disponíveis até salvar/fechar a seção. */
+  iaOpcoes: Record<'fundo' | 'titulo', { src: string | null; erro: boolean }[]> = { fundo: [], titulo: [] };
+  /** Opção escolhida (data URL) ainda não enviada; o upload acontece ao salvar. */
+  iaSelecionada: Partial<Record<'fundo' | 'titulo', string>> = {};
+
+  /** Zera a geração com IA ao abrir/fechar o formulário de seção. */
+  resetIa() {
+    this.iaTipo = null;
+    this.iaIcones = '';
+    this.iaOpcoes = { fundo: [], titulo: [] };
+    this.iaSelecionada = {};
+  }
+
+  abrirIa(tipo: 'fundo' | 'titulo') {
+    if (this.iaTipo === tipo) { this.iaTipo = null; return; }
+    this.iaTipo = tipo;
+    this.iaTema = this.secForm.titulo || '';
+    if (!this.iaIcones) {
+      const corTitulo = this.secForm.titulo_cor_tipo === 'solido'
+        ? this.secForm.titulo_cor_solid
+        : this.secForm.titulo_gradiente_2;
+      if (corTitulo && /^#[0-9a-f]{6}$/i.test(corTitulo)) this.iaCores = [corTitulo];
+      this.sugerirIconesIa();
+    }
+  }
+
+  adicionarCorIa() {
+    if (this.iaCores.length < this.IA_MAX_CORES) this.iaCores = [...this.iaCores, '#f5b700'];
+  }
+
+  removerCorIa(i: number) {
+    if (this.iaCores.length > 1) this.iaCores = this.iaCores.filter((_, idx) => idx !== i);
+  }
+
+  trocarCorIa(i: number, cor: string) {
+    this.iaCores = this.iaCores.map((c, idx) => (idx === i ? cor : c));
+  }
+
+  /** Contexto para a IA: receitas vinculadas (manual) ou categoria/subcategoria. */
+  private contextoIa(): string {
+    if (this.secForm.modo === 'manual' && this.receitasDaSecao.length) {
+      return this.receitasDaSecao.map(r => r.titulo).join(', ');
+    }
+    const cat = this.categorias.find(c => c.id == this.secForm.id_categoria)?.nome;
+    const sub = this.subcategorias.find(s => s.id == this.secForm.id_subcategoria)?.nome;
+    return [cat, sub].filter(Boolean).join(', ');
+  }
+
+  /** IA sugere ícones e uma paleta de cores combinando com o tema. */
+  sugerirIconesIa() {
+    if (!this.iaTema.trim()) return;
+    this.iaSugerindo = true;
+    this.uploadService.sugerirIconesIa(this.iaTema, this.contextoIa(), this.userId).subscribe({
+      next: (res) => {
+        this.iaIcones = res.icones;
+        if (res.cores?.length) this.iaCores = res.cores.slice(0, this.IA_MAX_CORES);
+        this.iaSugerindo = false;
+      },
+      error: () => {
+        this.iaSugerindo = false;
+        this.modalService.open({
+          type: 'warning',
+          title: 'Sugestão indisponível',
+          message: 'A IA não respondeu agora. Tente de novo ou escreva os ícones (em inglês, separados por vírgula).',
+        });
+      },
+    });
+  }
+
+  gerarOpcoesIa() {
+    if (!this.iaTipo || !this.iaTema.trim()) return;
+    const tipo = this.iaTipo;
+    const opcoes = Array.from({ length: this.IA_QTD_OPCOES }, () => ({ src: null as string | null, erro: false }));
+    this.iaOpcoes = { ...this.iaOpcoes, [tipo]: opcoes };
+    opcoes.forEach((opcao) => {
+      const seed = Math.floor(Math.random() * 1_000_000);
+      this.uploadService
+        .gerarImagemIa({ tipo, tema: this.iaTema, icones: this.iaIcones, cores: this.iaCores, seed }, this.userId)
+        .subscribe({
+          next: (res) => { opcao.src = res.imagem; },
+          error: () => { opcao.erro = true; },
+        });
+    });
+  }
+
+  /** Só aplica no preview; dá para alternar entre as opções antes de salvar. */
+  escolherOpcaoIa(tipo: 'fundo' | 'titulo', src: string) {
+    this.iaSelecionada = { ...this.iaSelecionada, [tipo]: src };
+    if (tipo === 'fundo') this.previewFundoSecao = src;
+    else this.previewFundoTituloSecao = src;
+  }
+
+  /** Escolhas da IA ainda não enviadas (ignora as removidas). */
+  private iaPendentes(): ['fundo' | 'titulo', string][] {
+    return (Object.entries(this.iaSelecionada) as ['fundo' | 'titulo', string | undefined][])
+      .filter((e): e is ['fundo' | 'titulo', string] => !!e[1]);
+  }
+
+  /** Envia as opções escolhidas pelo upload normal; resolve com os caminhos. */
+  private enviarSelecionadasIa() {
+    const envios = this.iaPendentes().map(([tipo, src]) => {
+      const [meta, base64] = src.split(',');
+      const mime = meta.match(/data:(.*?);/)?.[1] || 'image/jpeg';
+      const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+      const arquivo = new File([bytes], `ia-${tipo}.jpg`, { type: mime });
+      return this.uploadService.uploadImagem(arquivo, 'secoes', this.userId).pipe(
+        map((res) => ({ tipo, caminho: res.caminho }))
+      );
+    });
+    return forkJoin(envios);
   }
 
   getTituloPreviewStyle(): Record<string, string> {
@@ -610,6 +737,27 @@ export class PainelAdmin implements OnInit {
         type: 'warning',
         title: 'Período inválido',
         message: 'Preencha início e fim no formato DD/MM (ex.: 01/06 a 31/07), ou deixe os dois vazios.',
+      });
+      return;
+    }
+
+    // Opções da IA escolhidas: sobe agora e salva em seguida
+    if (this.iaPendentes().length) {
+      this.secLoading = true;
+      this.enviarSelecionadasIa().subscribe({
+        next: (enviados) => {
+          for (const { tipo, caminho } of enviados) {
+            if (tipo === 'fundo') this.secForm.url_fundo = caminho;
+            else this.secForm.fundo_titulo = caminho;
+          }
+          this.iaSelecionada = {};
+          this.secLoading = false;
+          this.salvarSecao();
+        },
+        error: () => {
+          this.secLoading = false;
+          this.modalService.open({ type: 'error', title: 'Erro no upload', message: 'Não foi possível enviar a imagem gerada.' });
+        },
       });
       return;
     }
