@@ -1,3 +1,6 @@
+# Manifest do app instalável (PWA)
+AddType application/manifest+json .webmanifest
+
 RewriteEngine On
 RewriteBase /
 
