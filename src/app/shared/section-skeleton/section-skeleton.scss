@@ -11,11 +11,20 @@
 .sk-title {
   height: 28px;
   width: 220px;
+  max-width: 70%;
   @include skeleton-bg;
 }
 
 .sk-row {
   display: flex;
+  // Sem width a linha ficava com a largura dos cards somados (>1000px)
+  // e empurrava a página para os lados no celular
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  // "safe": centraliza quando cabe; quando não cabe, começa da esquerda
+  // como o carrossel real (com o próximo card cortado na borda)
+  justify-content: safe center;
   gap: 28px;
   overflow: hidden;
   padding: 14px;
@@ -45,5 +54,24 @@
 
   &--short {
     width: 130px;
+  }
+}
+// Mesmos espaçamentos do recipe-section no celular
+@media (max-width: 768px) {
+  .sk-row {
+    gap: 24px;
+    padding: 14px 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sk-section {
+    padding: 1.5rem 0;
+    gap: 16px;
+  }
+
+  .sk-row {
+    gap: 16px;
+    padding: 14px 16px;
   }
 }

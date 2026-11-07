@@ -6,7 +6,9 @@
 }
 
 .rcs-card {
-  width: 290px;
+  // Mesmas medidas do card real: 290px, mas encolhe em telas estreitas
+  width: 100%;
+  max-width: 290px;
   height: 300px;
   margin: 14px;
   display: flex;
@@ -16,7 +18,7 @@
 }
 
 .rcs-img {
-  width: 290px;
+  width: 100%;
   height: 210px;
   border-radius: 10px;
   @include skeleton-bg;
@@ -24,6 +26,7 @@
 
 .rcs-resume {
   width: 200px;
+  max-width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,5 +44,11 @@
 
   &--short {
     width: 70%;
+  }
+}
+// Igual ao .receita-card no celular
+@media (max-width: 576px) {
+  .rcs-card {
+    margin: 14px 0;
   }
 }
