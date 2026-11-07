@@ -42,6 +42,30 @@
 }
 
 @media (max-width: 480px) {
+  .container { padding: 24px 16px; box-sizing: border-box; }
+
   .description, .cadastre { text-align: center; }
-  .modal { gap: 25px !important; padding: 35px 30px !important; }
+
+  // Cartão quase da largura da tela; os campos ocupam o cartão todo
+  .modal {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    gap: 25px !important;
+    padding: 32px 20px !important;
+  }
+
+  .title { font-size: 26px; text-align: center; }
+
+  // Botão principal largo, mais fácil de tocar
+  .modal bra-custom-button {
+    display: block;
+    width: 100%;
+
+    ::ng-deep button {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 16px;
+    }
+  }
 }

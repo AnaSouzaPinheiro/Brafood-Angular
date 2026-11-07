@@ -30,6 +30,18 @@ ul#rules {
   }
 }
 
+@media (max-width: 480px) {
+  #cadastro {
+    width: 100%;
+  }
+
+  #cadastro .inputsCadastro {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    width: 100%;
+  }
+}
+
 .apelido-field {
   display: flex;
   flex-direction: column;
