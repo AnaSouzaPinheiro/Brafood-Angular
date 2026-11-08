@@ -1,12 +1,6 @@
 <div class="legal-container">
   <article class="legal-content">
     
-    <div class="breadcrumb">
-      <a routerLink="/">Home</a>
-      <span>›</span>
-      <span>{{ title }}</span>
-    </div>
-
     <h1>{{ title }}</h1>
 
     <p class="intro">
@@ -15,7 +9,7 @@
 
     <section *ngFor="let section of sections">
       <h2>{{ section.title }}</h2>
-      <p>{{ section.content }}</p>
+      <p class="texto">{{ section.content }}</p>
     </section>
 
   </article>

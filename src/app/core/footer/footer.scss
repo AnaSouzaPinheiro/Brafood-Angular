@@ -158,6 +158,18 @@ hr {
 
 /* Redes Sociais */
 .redes-sociais {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  .rotulo-criadora {
+    font-size: 11px;
+    font-weight: bold;
+    color: $secondary-gray;
+    white-space: nowrap;
+  }
+
   ul {
     display: flex;
     gap: 15px;

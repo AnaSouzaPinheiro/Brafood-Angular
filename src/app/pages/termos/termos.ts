@@ -8,36 +8,63 @@ import { LegalPage } from '../../shared/legal-page/legal-page';
   styleUrl: './termos.scss',
 })
 export class Termos {
+  intro = 'Estes Termos explicam as regras para usar o BraFood. Última atualização: 8 de novembro de 2026.';
+
   sections = [
     {
-      title: '1. Aceitação dos Termos',
+      title: '1. Sobre o BraFood',
       content:
-        'Ao acessar e utilizar esta plataforma, o usuário declara que leu,compreendeu e concorda com os presentes Termos de Uso e com a Políticade Privacidade.',
+        'O BraFood é um projeto pessoal, gratuito e sem fins lucrativos, criado e mantido por uma desenvolvedora independente. Não é uma empresa e não exibe anúncios. Ainda assim, qualquer pessoa pode criar uma conta e usar a plataforma.',
     },
     {
-      title: '2. Uso da Plataforma',
+      title: '2. Aceitação',
       content:
-        'O usuário se compromete a utilizar a plataforma de forma ética,responsável e em conformidade com a legislação vigente, abstendo-se depraticar qualquer atividade ilícita ou que possa prejudicar terceiros.',
+        'Ao criar uma conta ou usar o BraFood, você concorda com estes Termos e com a Política de Privacidade. Se não concordar, não utilize a plataforma.',
     },
     {
-      title: '3. Cadastro e Conta',
+      title: '3. Sua conta',
       content:
-        'Para acesso a determinadas funcionalidades, poderá ser necessáriorealizar cadastro, sendo o usuário responsável pela veracidade dasinformações fornecidas e pela confidencialidade de suas credenciais.',
+        'Você é responsável pelas informações do cadastro e por manter sua senha em segurança. Avise pelo e-mail de contato se suspeitar de uso indevido da sua conta.',
     },
     {
-      title: '4. Conteúdo do Usuário',
+      title: '4. Suas receitas e conteúdos',
       content:
-        'O usuário é integralmente responsável pelos conteúdos publicados naplataforma, incluindo receitas, comentários e demais informações,devendo garantir que não violem direitos de terceiros ou disposiçõeslegais.',
+        'As receitas, fotos, comentários e avaliações que você publica continuam sendo seus. Ao publicá-los, você autoriza o BraFood a exibi-los na plataforma e garante que tem o direito de compartilhá-los (por exemplo, que as fotos são suas ou de uso permitido).',
     },
     {
-      title: '5. Limitação de Responsabilidade',
+      title: '5. Regras de convivência',
       content:
-        'A plataforma não se responsabiliza por eventuais danos decorrentes douso indevido das informações disponibilizadas, nem pelo conteúdoinserido por terceiros.',
+        'Não é permitido publicar conteúdo ofensivo, discriminatório, ilegal, enganoso, spam ou que viole direitos de terceiros. O BraFood pode remover conteúdos ou suspender contas que descumpram estas regras.',
     },
     {
-      title: '6. Alterações',
+      title: '6. Receitas geradas com IA',
       content:
-        'Estes Termos poderão ser atualizados a qualquer momento, sendorecomendada a sua revisão periódica pelo usuário.',
+        'O BraFood oferece uma ferramenta que gera um rascunho de receita com inteligência artificial. O resultado pode conter erros de quantidades, tempos ou ingredientes: revise tudo antes de publicar. Quem publica é responsável pelo conteúdo final.',
+    },
+    {
+      title: '7. Alimentação e segurança',
+      content:
+        'As receitas são compartilhadas por usuários e servem como inspiração. Elas não substituem orientação de nutricionista ou médico. Verifique os ingredientes em caso de alergias, intolerâncias ou restrições alimentares e siga boas práticas de higiene e preparo.',
+    },
+    {
+      title: '8. Disponibilidade',
+      content:
+        'Por ser um projeto pessoal em hospedagem gratuita, o BraFood pode ficar fora do ar, mudar funcionalidades ou ser encerrado sem aviso prévio. Não há garantia de disponibilidade contínua nem de backup do seu conteúdo.',
+    },
+    {
+      title: '9. Limitação de responsabilidade',
+      content:
+        'O BraFood não se responsabiliza pelo resultado das receitas, por conteúdos publicados por outros usuários nem por danos decorrentes do uso da plataforma, dentro do que a lei permite.',
+    },
+    {
+      title: '10. Alterações destes Termos',
+      content:
+        'Estes Termos podem ser atualizados. A data da última atualização fica no topo desta página.',
+    },
+    {
+      title: '11. Lei aplicável e contato',
+      content:
+        'Estes Termos seguem a legislação brasileira. Dúvidas: anapinheirole@gmail.com.',
     },
   ];
 }

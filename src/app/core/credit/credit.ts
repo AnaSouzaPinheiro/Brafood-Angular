@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './credit.scss'
 })
 export class Credit {
-
+  /** Ano atual, para o copyright não ficar desatualizado. */
+  readonly ano = new Date().getFullYear();
 }
