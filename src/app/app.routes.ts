@@ -44,6 +44,13 @@ export const routes: Routes = [
       import('./profile/favoritas/favoritas').then((m) => m.Favoritas),
     canActivate: [AuthGuard],
   },
+  {
+    // Um quadro de receitas salvas ("todas" = quadro fixo Favoritos)
+    path: 'perfil/favoritas/:id',
+    loadComponent: () =>
+      import('./profile/quadro/quadro').then((m) => m.Quadro),
+    canActivate: [AuthGuard],
+  },
   // Links antigos com id continuam funcionando
   { path: 'editar-perfil/:id', redirectTo: 'perfil/editar' },
   { path: 'minhas-receitas/:id', redirectTo: 'perfil/receitas' },

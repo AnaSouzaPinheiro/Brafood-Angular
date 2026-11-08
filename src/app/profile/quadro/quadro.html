@@ -1,0 +1,93 @@
+<div class="myRecipes">
+  <bra-perfil></bra-perfil>
+
+  <div class="cabecalho">
+    <a class="voltar" routerLink="/perfil/favoritas">
+      <i class="fa-solid fa-arrow-left"></i> Meus quadros
+    </a>
+
+    @if (!editando) {
+      <div class="titulo-linha">
+        <h1 class="title">
+          @if (ehFavoritos) { <i class="fa-solid fa-heart coracao"></i> }
+          {{ nome }}
+        </h1>
+        @if (!ehFavoritos && !carregando) {
+          <div class="acoes-quadro">
+            <button type="button" (click)="abrirEdicao()" aria-label="Editar quadro">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button type="button" (click)="excluirQuadro()" aria-label="Excluir quadro">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        }
+      </div>
+      @if (descricao) { <p class="descricao">{{ descricao }}</p> }
+      @if (!carregando) {
+        <span class="qtdReceitas">
+          {{ receitas.length }} {{ receitas.length === 1 ? 'receita' : 'receitas' }}
+        </span>
+      }
+    } @else {
+      <form class="form-edicao" (ngSubmit)="salvarEdicao()">
+        <input name="nome" [(ngModel)]="nomeEdit" maxlength="60" required aria-label="Nome do quadro" />
+        <textarea
+          name="descricao"
+          [(ngModel)]="descricaoEdit"
+          maxlength="255"
+          rows="2"
+          placeholder="Descrição (opcional)"
+        ></textarea>
+        <div class="acoes">
+          <button type="button" class="btn-sec" (click)="editando = false">Cancelar</button>
+          <button type="submit" class="btn" [disabled]="!nomeEdit.trim()">Salvar</button>
+        </div>
+      </form>
+    }
+  </div>
+
+  <bra-recipe-card-skeleton *ngIf="carregando" [count]="6"></bra-recipe-card-skeleton>
+
+  @if (!carregando) {
+    @if (receitas.length === 0) {
+      <div class="vazio">
+        <i class="fa-regular fa-bookmark"></i>
+        <p>
+          Nenhuma receita aqui ainda. Abra uma receita e toque no
+          <i class="fa-regular fa-heart"></i> para salvá-la
+          {{ ehFavoritos ? '' : 'neste quadro' }}.
+        </p>
+      </div>
+    } @else {
+      <div class="content">
+        <div class="cards">
+          @for (recipe of receitasPagina; track recipe.id) {
+            <div class="card-wrap">
+              <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
+              <button
+                type="button"
+                class="remover"
+                (click)="remover(recipe)"
+                [attr.aria-label]="ehFavoritos ? 'Remover dos favoritos' : 'Remover do quadro'"
+                [title]="ehFavoritos ? 'Remover dos favoritos' : 'Remover do quadro'"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (paginas > 1) {
+          <div class="pages">
+            <span (click)="irPara(pagina - 1)" class="setas">&lt;</span>
+            @for (p of paginasArray; track p) {
+              <span (click)="irPara(p)" class="numbers" [class.active]="p === pagina">{{ p }}</span>
+            }
+            <span (click)="irPara(pagina + 1)" class="setas">&gt;</span>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

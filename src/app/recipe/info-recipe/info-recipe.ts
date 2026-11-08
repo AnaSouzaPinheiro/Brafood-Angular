@@ -11,11 +11,12 @@ import { ModalService } from '../../services/modal/modal.service';
 import { ToastService } from '../../services/toast/toast.service';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
+import { SalvarEm } from '../salvar-em/salvar-em';
 
 @Component({
   selector: 'bra-info-recipe',
   standalone: true,
-  imports: [CommonModule, CustomButton, HoverThings],
+  imports: [CommonModule, CustomButton, HoverThings, SalvarEm],
   templateUrl: './info-recipe.html',
   styleUrl: './info-recipe.scss',
 })
@@ -48,6 +49,7 @@ export class InfoRecipe implements OnChanges {
   }
 
   isFavorite = false;
+  salvarAberto = false;
   mediaAvaliacao: number | null = null;
   totalAvaliacoes: number = 0;
   logado = false;
@@ -108,12 +110,15 @@ export class InfoRecipe implements OnChanges {
       });
   }
 
-  toggleFavorito() {
+  /** Abre o menu "Salvar em…" (Favoritos + quadros). */
+  toggleFavorito(ev?: Event) {
+    ev?.stopPropagation();
+
     if (!this.userId) {
       this.modalService.open({
         type: 'confirm',
         title: 'Login necessário',
-        message: 'Para avaliar esta receita, você precisa estar logado.',
+        message: 'Para salvar esta receita, você precisa estar logado.',
         confirmText: 'Ir para login',
         cancelText: 'Cancelar',
         onConfirm: () => {
@@ -125,24 +130,7 @@ export class InfoRecipe implements OnChanges {
       return;
     }
 
-    const receitaIdNum = Number(this.recipe.id);
-    const userIdNum = this.userId;
-
-    if (this.isFavorite) {
-      this.favoritoService
-        .desfavoritar(userIdNum, receitaIdNum)
-        .subscribe(() => {
-          this.isFavorite = false;
-        });
-    } else {
-      this.favoritoService.favoritar(userIdNum, receitaIdNum).subscribe(() => {
-        this.isFavorite = true;
-        this.toastService.show(
-          `Receita favoritada! ${'<i class="fa-solid fa-heart"></i>'}`,
-          'success',
-        );
-      });
-    }
+    this.salvarAberto = !this.salvarAberto;
   }
 
   scrollToComentarios() {

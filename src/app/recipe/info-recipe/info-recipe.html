@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="things">
-    <div class="item" (click)="toggleFavorito()">
+    <div class="item" [class.menu-aberto]="salvarAberto" (click)="toggleFavorito($event)">
       <i
         class="fa-heart"
         [class.fa-solid]="isFavorite"
@@ -47,8 +47,17 @@
 
       <bra-hover-things
         class="hover"
-        hoverText="Favorite essa receita"
+        hoverText="Salvar receita"
       ></bra-hover-things>
+
+      @if (salvarAberto) {
+        <bra-salvar-em
+          [idReceita]="+recipe.id"
+          [(favorito)]="isFavorite"
+          (fechar)="salvarAberto = false"
+          (click)="$event.stopPropagation()"
+        ></bra-salvar-em>
+      }
     </div>
 
     <div class="item avaliacao-item" (click)="scrollToComentarios()">

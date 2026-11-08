@@ -1,6 +1,5 @@
 @use "variables" as *;
 @use "layout" as *;
-@use "grid" as *;
 
 .myRecipes {
   @include flex-column;
@@ -15,7 +14,6 @@
 
     .title {
       color: $primary-blue;
-
       @include page-title;
     }
 
@@ -25,14 +23,161 @@
     }
   }
 
-  .content {
-    margin-bottom: 36px;
+  .quadros {
+    @include page-container;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 28px;
+    margin-bottom: 48px;
+  }
 
-    @include flex-column-center;
+  .quadro {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
 
-    .cards {
-      @include recipe-grid;
+    .mosaico {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: hidden;
+      background: $secondary-gray;
+      margin-bottom: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .vazio {
+        background: #e6ecfa;
+      }
+
+      .selo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: white;
+        color: $alert-red;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
     }
+
+    &:hover .mosaico,
+    &:focus-visible .mosaico {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 44, 153, 0.18);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: $primary-blue;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    p {
+      margin: 0;
+      color: $primary-gray;
+      font-size: 0.9rem;
+    }
+
+    &.novo .mosaico {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      place-items: center;
+      background: transparent;
+      border: 2px dashed $quaternary-blue;
+      color: $secondary-blue;
+      font-size: 2.2rem;
+    }
+
+    &.skeleton {
+      cursor: default;
+      .mosaico {
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+    }
+  }
+
+  .form-novo {
+    cursor: default;
+    gap: 8px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 2px solid $secondary-gray;
+
+    label {
+      font-size: 0.85rem;
+      color: $tertiary-gray;
+    }
+
+    input,
+    textarea {
+      font: inherit;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid $quaternary-gray;
+      resize: vertical;
+
+      &:focus {
+        outline: 2px solid $tertiary-blue;
+        border-color: transparent;
+      }
+    }
+
+    .acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+  }
+
+  .btn,
+  .btn-sec {
+    font: inherit;
+    border-radius: 999px;
+    padding: 8px 18px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn {
+    background: $primary-blue;
+    color: white;
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+
+  .btn-sec {
+    background: transparent;
+    color: $secondary-blue;
   }
 
   @media (max-width: 768px) {
@@ -44,5 +189,15 @@
         font-size: 1rem;
       }
     }
+
+    .quadros {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }

@@ -230,3 +230,8 @@
   line-height: 1;
   text-align: center;
 }
+
+// Com o menu "Salvar em…" aberto, esconde o tooltip do coração
+.item.menu-aberto .hover {
+  display: none !important;
+}

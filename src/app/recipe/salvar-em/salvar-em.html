@@ -1,0 +1,60 @@
+<div class="salvar-em" role="dialog" aria-label="Salvar receita em">
+  <div class="topo">
+    <strong>Salvar em…</strong>
+    <button type="button" class="fechar" (click)="fechar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  @if (carregando) {
+    <p class="carregando">Carregando…</p>
+  } @else {
+    <ul class="lista">
+      <li>
+        <button type="button" class="opcao" [class.marcado]="favorito" (click)="toggleFavoritos()" [disabled]="ocupado">
+          <span class="icone fav"><i class="fa-solid fa-heart"></i></span>
+          <span class="nome">Favoritos</span>
+          <i class="check fa-solid" [class.fa-circle-check]="favorito" [class.fa-circle]="!favorito"></i>
+        </button>
+      </li>
+
+      @for (q of quadros; track q.id) {
+        <li>
+          <button
+            type="button"
+            class="opcao"
+            [class.marcado]="selecionados.has(q.id)"
+            (click)="toggleQuadro(q)"
+            [disabled]="ocupado"
+          >
+            <span class="icone"><i class="fa-solid fa-table-cells-large"></i></span>
+            <span class="nome">{{ q.nome }}</span>
+            <i
+              class="check fa-solid"
+              [class.fa-circle-check]="selecionados.has(q.id)"
+              [class.fa-circle]="!selecionados.has(q.id)"
+            ></i>
+          </button>
+        </li>
+      }
+    </ul>
+
+    @if (!criando) {
+      <button type="button" class="novo" (click)="criando = true">
+        <i class="fa-solid fa-plus"></i> Criar novo quadro
+      </button>
+    } @else {
+      <form class="form-novo" (ngSubmit)="criarQuadro()">
+        <input
+          name="nome"
+          [(ngModel)]="novoNome"
+          maxlength="60"
+          placeholder="Nome do quadro"
+          aria-label="Nome do novo quadro"
+          autofocus
+        />
+        <button type="submit" [disabled]="!novoNome.trim() || ocupado">Criar</button>
+      </form>
+    }
+  }
+</div>

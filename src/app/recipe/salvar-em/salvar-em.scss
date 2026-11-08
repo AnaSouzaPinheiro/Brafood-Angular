@@ -1,0 +1,150 @@
+@use "variables" as *;
+
+:host {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 14px);
+  z-index: 50;
+  cursor: default;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+}
+
+.salvar-em {
+  width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 20, 80, 0.22);
+  padding: 14px;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    width: auto;
+    border-radius: 22px 22px 0 0;
+    padding: 18px 18px 26px;
+  }
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: $primary-blue;
+
+  .fechar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $primary-gray;
+    font-size: 1.1rem;
+  }
+}
+
+.carregando {
+  color: $primary-gray;
+  margin: 8px 0;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.opcao {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  color: $tertiary-gray;
+  text-align: left;
+
+  &:hover { background: #e6ecfa; }
+  &:disabled { cursor: progress; }
+
+  .icone {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: $secondary-gray;
+    color: $secondary-blue;
+
+    &.fav {
+      background: linear-gradient(45deg, #ff2929, #ff9100);
+      color: white;
+    }
+  }
+
+  .nome {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .check {
+    color: $quaternary-gray;
+    font-size: 1.15rem;
+  }
+
+  &.marcado .check { color: $tertiary-blue; }
+}
+
+.novo {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  background: none;
+  border: 2px dashed $quaternary-blue;
+  border-radius: 10px;
+  color: $secondary-blue;
+  cursor: pointer;
+  font: inherit;
+
+  &:hover { background: #e6ecfa; }
+}
+
+.form-novo {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid $quaternary-gray;
+  }
+
+  button {
+    font: inherit;
+    border: none;
+    border-radius: 10px;
+    padding: 0 14px;
+    background: $primary-blue;
+    color: white;
+    cursor: pointer;
+
+    &:disabled { opacity: 0.5; cursor: default; }
+  }
+}

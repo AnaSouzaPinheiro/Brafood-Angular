@@ -1,0 +1,140 @@
+@use "variables" as *;
+@use "layout" as *;
+@use "grid" as *;
+
+.myRecipes {
+  @include flex-column;
+
+  .cabecalho {
+    @include page-container;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .voltar {
+      color: $secondary-blue;
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      &:hover { text-decoration: underline; }
+    }
+
+    .titulo-linha {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      color: $primary-blue;
+      @include page-title;
+      .coracao { color: $alert-red; font-size: 0.8em; }
+    }
+
+    .acoes-quadro button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $secondary-blue;
+      font-size: 1.05rem;
+      padding: 8px;
+      border-radius: 50%;
+      &:hover { background: $secondary-gray; }
+    }
+
+    .descricao {
+      margin: 0;
+      color: $tertiary-gray;
+    }
+
+    .qtdReceitas {
+      color: $primary-gray;
+      font-size: 1rem;
+    }
+  }
+
+  .form-edicao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 480px;
+    margin: 12px 0;
+
+    input,
+    textarea {
+      font: inherit;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid $quaternary-gray;
+      resize: vertical;
+    }
+    input { font-size: 1.4rem; color: $primary-blue; }
+
+    .acoes { display: flex; gap: 8px; justify-content: flex-end; }
+  }
+
+  .btn,
+  .btn-sec {
+    font: inherit;
+    border-radius: 999px;
+    padding: 8px 18px;
+    cursor: pointer;
+    border: none;
+  }
+  .btn {
+    background: $primary-blue;
+    color: white;
+    &:disabled { opacity: 0.5; cursor: default; }
+  }
+  .btn-sec { background: transparent; color: $secondary-blue; }
+
+  .content {
+    margin-bottom: 36px;
+    @include flex-column-center;
+
+    .cards {
+      @include recipe-grid;
+    }
+  }
+
+  .card-wrap {
+    position: relative;
+
+    .remover {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.92);
+      color: $tertiary-gray;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transition: opacity 0.15s;
+
+      &:hover { color: $alert-red; }
+      &:focus-visible { opacity: 1; }
+    }
+
+    &:hover .remover { opacity: 1; }
+
+    // Toque: sem hover, deixa sempre visível
+    @media (hover: none) {
+      .remover { opacity: 1; }
+    }
+  }
+
+  .vazio {
+    @include page-container;
+    text-align: center;
+    color: $primary-gray;
+    padding: 60px 0;
+
+    > i { font-size: 2.5rem; margin-bottom: 12px; }
+  }
+}

@@ -1,100 +1,74 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { Recipes } from '../../model/myrecipes';
-import { User } from '../../model/user';
-import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
-import { AuthService } from '../../services/auth/auth.service';
-import { FavoritoService } from '../../services/favorito/favorito.service';
-import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { QuadroResumo, QuadroService } from '../../services/quadro/quadro.service';
+import { ToastService } from '../../services/toast/toast.service';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { Perfil } from '../perfil/perfil';
 
+/** Área "Salvas": mosaicos com o quadro fixo Favoritos + quadros do usuário. */
 @Component({
   selector: 'bra-favoritas',
   standalone: true,
-  imports: [Perfil, RecipeCard, RecipeCardSkeleton, RouterModule, CommonModule],
+  imports: [Perfil, RouterModule, CommonModule, FormsModule, MediaUrlPipe],
   templateUrl: './favoritas.html',
   styleUrl: './favoritas.scss',
 })
-export class Favoritas {
-  indice!: number;
-  currentPage!: number;
+export class Favoritas implements OnInit {
+  carregando = true;
+  favoritos = { total: 0, capas: [] as string[] };
+  quadros: QuadroResumo[] = [];
 
-  Recipes: Recipes[] = [];
-  loadingFavoritas = true;
-
-  logado = false;
-  userId: string | null = null;
-  user!: User;
+  criando = false;
+  novoNome = '';
+  novaDescricao = '';
+  salvando = false;
 
   constructor(
-    private favoritoService: FavoritoService,
-    private auth: AuthService,
-    private router: Router
+    private quadroService: QuadroService,
+    private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
-    this.indice = 0;
-    this.currentPage = 1;
-
-    // garante que está no browser
     if (typeof window === 'undefined') return;
-
-    this.logado = this.auth.isLoggedIn();
-
-    const usuarioLogado = this.auth.user();
-    if (!usuarioLogado) {
-      this.loadingFavoritas = false;
-      return;
-    }
-
-    this.userId = usuarioLogado.id;
-
-    this.favoritoService
-      .listarFavoritos(Number(this.userId))
-      .subscribe({
-        next: (data) => {
-          this.Recipes = Array.isArray(data) ? data : [];
-          this.loadingFavoritas = false;
-        },
-        error: () => {
-          this.loadingFavoritas = false;
-        },
-      });
+    this.carregar();
   }
 
-  get myRecipesPage() {
-    return this.Recipes.slice(this.indice, this.indice + 6);
+  carregar() {
+    this.quadroService.listar().subscribe({
+      next: (res) => {
+        this.favoritos = res.favoritos;
+        this.quadros = res.quadros;
+        this.carregando = false;
+      },
+      error: () => (this.carregando = false),
+    });
   }
 
-  get pages(): number {
-    return Math.ceil(this.Recipes.length / 6);
+  /** Sempre 4 posições no mosaico (vazias viram blocos de cor). */
+  mosaico(capas: string[]): (string | null)[] {
+    return [0, 1, 2, 3].map((i) => capas[i] ?? null);
   }
 
-  get pagesArray(): number[] {
-    return Array.from({ length: this.pages }, (_, i) => i + 1);
-  }
+  criarQuadro() {
+    const nome = this.novoNome.trim();
+    if (!nome || this.salvando) return;
+    this.salvando = true;
 
-  nextPage() {
-    let newIndex = this.indice + 6;
-    if (newIndex >= this.Recipes.length) {
-      newIndex = 0;
-    }
-    this.indice = newIndex;
-    this.currentPage = this.indice / 6 + 1;
-  }
-
-  prevPage() {
-    let newIndex = this.indice - 6;
-    if (newIndex < 0) {
-      newIndex = (this.pages - 1) * 6;
-    }
-    this.indice = newIndex;
-    this.currentPage = this.indice / 6 + 1;
-  }
-
-  goToPage(page: number) {
-    this.indice = (page - 1) * 6;
-    this.currentPage = page;
+    this.quadroService.criar(nome, this.novaDescricao.trim() || null).subscribe({
+      next: () => {
+        this.salvando = false;
+        this.criando = false;
+        this.novoNome = '';
+        this.novaDescricao = '';
+        this.toast.show('Quadro criado!', 'success');
+        this.carregar();
+      },
+      error: (err) => {
+        this.salvando = false;
+        this.toast.show(err?.error?.error ?? 'Erro ao criar quadro', 'error');
+      },
+    });
   }
 }
