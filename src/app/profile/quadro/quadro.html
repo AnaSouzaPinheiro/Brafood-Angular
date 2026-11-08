@@ -10,7 +10,7 @@
       <div class="capa-mosaico" aria-hidden="true">
         @for (img of mosaicoCapa; track $index) {
           @if (img) {
-            <img [src]="img | mediaUrl: 'thumb'" alt="" />
+            <img data-fade [src]="img | mediaUrl: 'thumb'" alt="" />
           } @else {
             <div class="vazio"></div>
           }

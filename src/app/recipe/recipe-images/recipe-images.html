@@ -1,7 +1,7 @@
 @if (imageList.length > 2) {
 <div class="all-container">
   <div class="oneHalf">
-    <img
+    <img data-fade
       class="one"
       (click)="openLightbox(0)"
       [src]="imageList[0] | mediaUrl"
@@ -11,7 +11,7 @@
   </div>
 
   <div class="twoHalf">
-    <img
+    <img data-fade
       class="two"
       (click)="openLightbox(1)"
       [src]="imageList[1] | mediaUrl"
@@ -20,7 +20,7 @@
     />
 
     <div class="third-image">
-      <img
+      <img data-fade
         class="three"
         (click)="openLightbox(2)"
         [src]="imageList[2] | mediaUrl"
@@ -38,7 +38,7 @@
 } @else if (imageList.length == 2) {
 <div class="two-container">
   <div class="oneHalf">
-    <img
+    <img data-fade
       class="one"
       (click)="openLightbox(0)"
       [src]="imageList[0] | mediaUrl"
@@ -48,7 +48,7 @@
   </div>
 
   <div class="twoHalf">
-    <img
+    <img data-fade
       class="two"
       (click)="openLightbox(1)"
       [src]="imageList[1] | mediaUrl"
@@ -60,7 +60,7 @@
 } @else {
 <div class="one-container">
   <div class="oneHalf">
-    <img
+    <img data-fade
       class="one"
       (click)="openLightbox(0)"
       [src]="imageList[0] | mediaUrl"
@@ -83,7 +83,7 @@
         <i class="fa-solid fa-caret-left"></i>
       </button>
 
-      <img
+      <img data-fade
         [src]="imageList[currentIndex()] | mediaUrl"
         class="lightbox-image"
         loading="eager"
@@ -101,7 +101,7 @@
         [class.active]="currentIndex() === $index"
         (click)="openLightbox($index); $event.stopPropagation()"
       >
-        <img [src]="image | mediaUrl" alt="" />
+        <img data-fade [src]="image | mediaUrl" alt="" />
       </button>
       }
     </div>

@@ -45,7 +45,7 @@
             [title]="travadas.has(r.id) ? 'Já está no quadro' : r.titulo"
           >
             @if (r.imagem1) {
-              <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
+              <img data-fade [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
             } @else {
               <div class="sem-img"><i class="fa-solid fa-utensils"></i></div>
             }

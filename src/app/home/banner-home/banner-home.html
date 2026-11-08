@@ -1,6 +1,6 @@
 <a [routerLink]="recipe.url" class="banner-container-link">
   <div class="banner-container">
-    <img [src]="recipe.img | mediaUrl" alt="Banner da Receita" fetchpriority="high" />
+    <img data-fade [src]="recipe.img | mediaUrl" alt="Banner da Receita" fetchpriority="high" />
 
     <bra-recipe-resume
       class="banner-resume"

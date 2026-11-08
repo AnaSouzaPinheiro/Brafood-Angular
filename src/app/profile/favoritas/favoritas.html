@@ -38,7 +38,7 @@
           <div class="mosaico">
             @for (img of mosaico(q.capas); track $index) {
               @if (img) {
-                <img [src]="img | mediaUrl: 'thumb'" alt="" draggable="false" />
+                <img data-fade [src]="img | mediaUrl: 'thumb'" alt="" draggable="false" />
               } @else {
                 <div class="vazio"></div>
               }
@@ -63,7 +63,7 @@
         <div class="mosaico">
           @for (img of mosaico(favoritos.capas); track $index) {
             @if (img) {
-              <img [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
+              <img data-fade [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
             } @else {
               <div class="vazio"></div>
             }
@@ -79,7 +79,7 @@
           <div class="mosaico">
             @for (img of mosaico(q.capas); track $index) {
               @if (img) {
-                <img [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
+                <img data-fade [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
               } @else {
                 <div class="vazio"></div>
               }

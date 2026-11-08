@@ -28,3 +28,30 @@ main.with-navbar {
   }
 }
 
+
+// ── Fade de imagens (atributo data-fade; ver App.ativarFadeDeImagens) ──────
+// Enquanto carrega, a imagem fica transparente — mas só por até 4s: a
+// animação termina e ela aparece de qualquer jeito (nunca fica sumida).
+// Usa animation (e não transition) para não brigar com transições dos
+// componentes, e o "to" vazio respeita a opacidade própria de cada imagem.
+img[data-fade]:not(.img-pronta) {
+  animation: bra-img-espera 4s step-end;
+}
+
+img[data-fade].img-pronta {
+  animation: bra-img-fade 0.35s ease;
+}
+
+@keyframes bra-img-espera {
+  0%, 100% { opacity: 0; }
+}
+
+@keyframes bra-img-fade {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  img[data-fade] {
+    animation: none !important;
+  }
+}

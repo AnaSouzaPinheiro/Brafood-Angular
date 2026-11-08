@@ -27,7 +27,7 @@
           <label>
             <input type="checkbox" [checked]="escolhidas.has(+r.id)" (change)="toggle(+r.id)" />
             @if (r.imagem1) {
-              <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
+              <img data-fade [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
             }
             <span>{{ r.titulo }}</span>
           </label>

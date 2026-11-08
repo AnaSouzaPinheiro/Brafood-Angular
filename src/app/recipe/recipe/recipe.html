@@ -14,7 +14,7 @@
           [routerLink]="recipe?.usuarioApelido ? ['/chef', recipe?.usuarioApelido] : null"
           [class.autor-clickable]="recipe?.usuarioApelido"
         >
-          <img
+          <img data-fade
             class="bra-user-icon"
             [src]="recipe?.foto_perfil | mediaUrl"
             loading="lazy"

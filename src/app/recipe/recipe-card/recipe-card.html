@@ -21,7 +21,7 @@
     </div>
 
     <ng-container *ngIf="mappedRecipe.img && !imgBroken; else imgFallback">
-      <img
+      <img data-fade
         [src]="thumbFalhou ? (mappedRecipe.img | mediaUrl) : (mappedRecipe.img | mediaUrl: 'thumb')"
         alt=""
         class="img-receita"

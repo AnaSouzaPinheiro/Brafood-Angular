@@ -48,6 +48,10 @@ export class Categoria {
   /** Subcategorias marcadas no cabeçalho (vazio = todas). */
   subcatsMarcadas: number[] = [];
 
+  // Imagem de fundo do cabeçalho
+  fundoCarregado = false;
+  fundoFalhou = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -82,6 +86,8 @@ export class Categoria {
           }));
 
           this.subcatsMarcadas = [];
+          this.fundoCarregado = false;
+          this.fundoFalhou = false;
           this.categoriaTemReceitas = false;
           this.buscarReceitas(true);
         },
@@ -126,6 +132,21 @@ export class Categoria {
         this.begin = 0;
         this.end = 8;
       });
+  }
+
+  /** Versão .webp dos fundos em assets (bem mais leve que o .jpg). */
+  get fundoOtimizado(): string | undefined {
+    const f = this.categoria?.fundo;
+    if (!f) return f;
+    return /assets\/imagens\/fundos\/[^/]+\.jpe?g$/i.test(f) ? f.replace(/\.jpe?g$/i, '.webp') : f;
+  }
+
+  aoFalharFundo() {
+    if (!this.fundoFalhou) {
+      this.fundoFalhou = true; // tenta o arquivo original
+    } else {
+      this.fundoCarregado = true; // nem o original: não deixa invisível
+    }
   }
 
   alternarSubcat(id: number) {

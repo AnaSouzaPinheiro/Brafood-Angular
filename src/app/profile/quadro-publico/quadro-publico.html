@@ -27,7 +27,7 @@
       <div class="meta">
         <a class="autor" [routerLink]="['/chef', dados.autor.apelido]">
           @if (dados.autor.foto) {
-            <img [src]="dados.autor.foto | mediaUrl" alt="" />
+            <img data-fade [src]="dados.autor.foto | mediaUrl" alt="" />
           } @else {
             <span class="avatar"><i class="fa-solid fa-user"></i></span>
           }

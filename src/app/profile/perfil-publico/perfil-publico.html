@@ -32,7 +32,7 @@
     <!-- Cartão: foto + números -->
     <div class="perfil-card">
       <div class="perfil-avatar">
-        <img
+        <img data-fade
           *ngIf="perfil()!.usuario.foto_perfil"
           [src]="perfil()!.usuario.foto_perfil | mediaUrl"
           [alt]="nomeCompleto"
@@ -77,7 +77,7 @@
             <div class="mosaico">
               @for (img of mosaico(q.capas); track $index) {
                 @if (img) {
-                  <img [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
+                  <img data-fade [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
                 } @else {
                   <div class="vazio"></div>
                 }

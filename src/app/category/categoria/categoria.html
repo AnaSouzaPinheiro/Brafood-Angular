@@ -1,7 +1,18 @@
 <div class="img-container">
   <div class="hero-skeleton" *ngIf="loadingCategoria"></div>
   <ng-container *ngIf="!loadingCategoria">
-    <img [src]="categoria?.fundo" [alt]="categoria?.nome" class="background" />
+    <!-- WebP leve quando existir; aparece com fade ao terminar de carregar
+         (em vez de "pintar" de cima para baixo) -->
+    <img
+      [src]="fundoFalhou ? categoria?.fundo : fundoOtimizado"
+      [alt]="categoria?.nome"
+      class="background"
+      [class.carregada]="fundoCarregado"
+      (load)="fundoCarregado = true"
+      (error)="aoFalharFundo()"
+      fetchpriority="high"
+      decoding="async"
+    />
     <div class="hero-texto">
       <h1 class="title">{{ categoria?.nome }}</h1>
       @if (categoriaTemReceitas && subcategoriaChips.length > 1) {

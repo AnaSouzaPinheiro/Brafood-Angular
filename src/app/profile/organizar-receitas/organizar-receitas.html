@@ -20,7 +20,7 @@
       <div class="item" cdkDrag cdkDragPreviewContainer="parent" [cdkDragData]="r">
         <div class="foto">
           @if (r.imagem1) {
-            <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" draggable="false" />
+            <img data-fade [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" draggable="false" />
           } @else {
             <div class="sem-img"><i class="fa-solid fa-utensils"></i></div>
           }
