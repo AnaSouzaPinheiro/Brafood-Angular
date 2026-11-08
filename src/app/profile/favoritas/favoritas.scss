@@ -19,8 +19,10 @@
       flex-wrap: wrap;
     }
 
+    // Mesmas distâncias do título de "Meus dados" (editar perfil)
     .title {
       color: $primary-blue;
+      margin: 0;
       @include page-title;
     }
 
@@ -277,18 +279,37 @@
   }
 
   @media (max-width: 768px) {
+    // Título centralizado em cima; embaixo, quantidade à esquerda e
+    // "Organizar quadros" à direita, na mesma linha.
     .cabecalho {
-      flex-direction: column;
-      gap: 0;
+      flex-wrap: wrap;
+      gap: 0 12px;
+      margin-bottom: 16px;
+
+      .titulo-bloco {
+        display: contents;
+      }
+
+      .title {
+        width: 100%;
+        margin: 0 0 24px;
+      }
 
       .qtdReceitas {
+        flex: 1;
+        min-width: 0;
         font-size: 1rem;
+      }
+
+      .acoes-topo {
+        flex-shrink: 0;
       }
     }
 
     .quadros {
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
+      margin-bottom: 40px;
     }
   }
 }

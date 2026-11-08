@@ -2,7 +2,21 @@
   <div class="hero-skeleton" *ngIf="loadingCategoria"></div>
   <ng-container *ngIf="!loadingCategoria">
     <img [src]="categoria?.fundo" [alt]="categoria?.nome" class="background" />
-    <h1 class="title">{{ categoria?.nome }}</h1>
+    <div class="hero-texto">
+      <h1 class="title">{{ categoria?.nome }}</h1>
+      @if (categoriaTemReceitas && subcategoriaChips.length > 1) {
+        <div class="subcats" role="group" aria-label="Subcategorias">
+          <button type="button" [class.ativo]="subcatsMarcadas.length === 0" (click)="limparSubcats()">
+            Todas
+          </button>
+          @for (s of subcategoriaChips; track s.id) {
+            <button type="button" [class.ativo]="subcatsMarcadas.includes(s.id)" (click)="alternarSubcat(s.id)">
+              {{ s.nome }}
+            </button>
+          }
+        </div>
+      }
+    </div>
   </ng-container>
 </div>
 
@@ -12,32 +26,14 @@
 </div>
 
 <ng-container *ngIf="!loadingCategoria">
-  <div class="toolbar-categoria" *ngIf="categoriaTemReceitas">
-    <span class="qtdReceitas">
-      {{ RecipesFiltradas.length || 0 }} receitas encontradas
-    </span>
-
-    <div class="busca-categoria">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input
-        type="text"
-        placeholder="Buscar nesta categoria..."
-        [ngModel]="termoBusca"
-        (ngModelChange)="onBuscaChange($event)"
-        autocomplete="off"
-      />
-    </div>
-  </div>
-
-  <div class="filter-container" *ngIf="categoriaTemReceitas">
-    <bra-filter-panel
-      mode="subcategoria"
-      [dropdownDinamico]="subcategoriaItems"
-      [labelDinamico]="'Subcategorias:'"
-      [totalReceitas]="RecipesFiltradas.length"
-      [showContadorMobile]="false"
+  <div class="barra-container" *ngIf="categoria && categoriaTemReceitas">
+    <bra-barra-filtros
+      [placeholder]="'Buscar em ' + categoria.nome + '...'"
+      modo="subcategoria"
+      [total]="RecipesFiltradas.length"
       (filtrosChange)="onFiltrosChange($event)"
-    ></bra-filter-panel>
+      (buscaChange)="onBuscaChange($event)"
+    ></bra-barra-filtros>
   </div>
 
   <div class="content" *ngIf="categoria && RecipesFiltradas.length > 0">
@@ -45,7 +41,7 @@
       @for (recipe of RecipesPage; track recipe.id) {
       <bra-recipe-card
         [recipe]="recipe"
-        [selectedSubcategories]="filtros.subcategorias"
+        [selectedSubcategories]="subcatsMarcadas"
         cardExibir="subcategoria"
       ></bra-recipe-card>
       }
@@ -68,7 +64,6 @@
 
     <h2>
       Nenhuma receita com esses filtros
-      <i class="fa-solid fa-face-frown-open"></i>
     </h2>
 
     <p>Tente ajustar ou remover alguns filtros para ver mais receitas.</p>

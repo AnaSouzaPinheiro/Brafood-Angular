@@ -5,9 +5,6 @@
   <div class="cabecalho">
     <div class="details">
       <h1 class="title">Minhas receitas</h1>
-      <span class="qtdReceitas" *ngIf="!loadingRecipes"
-        >{{ RecipesFiltradas.length }} receitas enviadas</span
-      >
     </div>
 
     <div class="buttons">
@@ -19,29 +16,18 @@
     </div>
   </div>
 
-  <!-- FILTROS — só aparece quando há mais de 1 receita -->
-  <div class="filter-container" *ngIf="!loadingRecipes && podeFiltrar">
-    <bra-filter-panel
-      mode="categoria"
-      [dropdownDinamico]="categoriaItems"
-      [labelDinamico]="'Categorias:'"
-      [totalReceitas]="RecipesFiltradas.length"
-      [showContadorMobile]="false"
-      [ordenarInicial]="'mais_novos'"
-      [mostrarFiltrosAvancados]="false"
+  <!-- BUSCA E FILTROS — só aparece quando há mais de 1 receita -->
+  <div class="barra-container" *ngIf="!loadingRecipes && podeFiltrar">
+    <bra-barra-filtros
+      placeholder="Buscar nas minhas receitas..."
+      modo="categoria"
+      [chips]="categoriaChips"
+      [total]="RecipesFiltradas.length"
+      ordenarInicial="mais_novos"
+      [filtrosAvancados]="false"
       (filtrosChange)="onFiltrosChange($event)"
-    ></bra-filter-panel>
-
-    <div class="busca-minhas-receitas">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input
-        type="text"
-        placeholder="Buscar nas minhas receitas..."
-        [ngModel]="termoBusca"
-        (ngModelChange)="onBuscaChange($event)"
-        autocomplete="off"
-      />
-    </div>
+      (buscaChange)="onBuscaChange($event)"
+    ></bra-barra-filtros>
   </div>
 
   <!-- SKELETON enquanto as receitas carregam -->
@@ -63,20 +49,12 @@
       }
     </div>
 
-    <!-- PAGINATION -->
-    <div class="pages" *ngIf="RecipesFiltradas.length > 8">
-      <span (click)="prevPage()" class="setas">&lt;</span>
-
-      @for (page of pagesArray; track page) {
-      <span
-        (click)="goToPage(page)"
-        class="numbers"
-        [class.active]="page === currentPage"
-        >{{ page }}</span
-      >
-      }
-
-      <span (click)="nextPage()" class="setas">&gt;</span>
+    <div class="pages" *ngIf="RecipesFiltradas.length > fim">
+      <bra-custom-button
+        [label]="'Ver mais receitas'"
+        [type]="'comment'"
+        (click)="verMais()"
+      ></bra-custom-button>
     </div>
   </div>
 </div>

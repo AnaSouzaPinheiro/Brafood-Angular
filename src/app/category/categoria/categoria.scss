@@ -4,6 +4,13 @@
 @use "grid" as *;
 @use "skeleton" as *;
 
+@mixin linha-centralizada {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 36px;
+}
+
 .img-container {
   height: 220px;
   display: flex;
@@ -18,11 +25,86 @@
     @include skeleton-bg;
   }
 
+  position: relative;
+
+  // Título + subcategorias, centralizados sobre a imagem
+  .hero-texto {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
   .title {
     font-size: 36px;
-    position: absolute;
+    margin: 0;
     text-align: center;
   }
+
+  // Subcategorias em tom escuro, para destacar sobre o fundo claro
+  .subcats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    // Ocupa até 80% da largura: só quebra quando não couber nisso
+    max-width: 80%;
+
+    button {
+      font: inherit;
+      font-size: 0.9rem;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(0, 0, 0, 0.75);
+      background: rgba(255, 255, 255, 0.35);
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      &.ativo {
+        background: #1a1a1a;
+        color: white;
+      }
+    }
+  }
+
+  // Celular: as subcategorias quebram em quantas linhas precisarem e o
+  // cabeçalho cresce junto (a imagem vira fundo e acompanha a altura).
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 220px;
+
+    .background {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+    }
+
+    .hero-texto {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      padding: 28px 16px;
+    }
+
+    .title { font-size: 28px; }
+
+    .subcats {
+      max-width: 100%;
+      gap: 6px;
+      button { font-size: 0.82rem; padding: 4px 12px; }
+    }
+  }
+
 
   .background {
     width: 100%;
@@ -32,66 +114,20 @@
   }
 }
 
-// Barra superior: contador à esquerda, busca à direita
-.toolbar-categoria {
-  gap: 20px;
-  display: flex;
-  margin-top: 35px !important;
-  align-items: center;
-  justify-content: space-between;
+// Busca + ordenar + filtros (bra-barra-filtros).
+// Margens próprias (sem page-container) para controlar o espaço de baixo.
+.barra-container {
+  margin: 0 110px 12px;
+  padding-top: 30px;
 
-  @include page-container;
-}
-
-.busca-categoria {
-  position: relative;
-  width: 450px;
-  max-width: 100%;
-  flex-shrink: 0;
-  margin-left: auto;
-
-  i {
-    position: absolute;
-    top: 50%;
-    left: 14px;
-    transform: translateY(-50%);
-    color: $primary-gray;
-    font-size: 0.9rem;
-    pointer-events: none;
+  @media (max-width: 1185px) {
+    margin: 0 50px 12px;
   }
 
-  input {
-    width: 100%;
-    height: 2.5rem;
-    border-radius: 20px;
-    border: none;
-    padding-left: 38px;
-    padding-right: 16px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba($primary-blue, 0.3);
-    outline: none;
-    font-family: inherit;
-    font-size: 0.95rem;
-
-    &::placeholder {
-      color: $primary-gray;
-    }
+  @media (max-width: 768px) {
+    margin: 0 24px 8px;
+    padding-top: 18px;
   }
-}
-
-.qtdReceitas {
-  color: $primary-blue;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-// Envolve o filter-panel
-.filter-container {
-  width: 100%;
-  display: flex;
-  margin: 0 0 32px;
-  align-items: center;
-  justify-content: center;
 }
 
 .content {
@@ -99,8 +135,33 @@
 
   @include flex-column;
 
+  // Enquanto as receitas não completam uma linha, ficam centralizadas;
+  // a partir da segunda linha, a grade normal (crescendo da esquerda).
+  // N = quantas colunas a grade tem em cada faixa de largura.
   .cards {
     @include recipe-grid;
+
+    &:not(:has(> :nth-child(4))) {
+      @include linha-centralizada;
+    }
+
+    @media (max-width: 1400px) {
+      &:not(:has(> :nth-child(4))) {
+        display: grid;
+      }
+      &:not(:has(> :nth-child(3))) {
+        @include linha-centralizada;
+      }
+    }
+
+    @media (max-width: 970px) {
+      &:not(:has(> :nth-child(3))) {
+        display: grid;
+      }
+      &:not(:has(> :nth-child(2))) {
+        @include linha-centralizada;
+      }
+    }
   }
 }
 
@@ -124,36 +185,14 @@
     line-height: 1.5;
   }
 
+  .empty-icon-filter {
+    font-size: 2rem;
+    color: $secondary-blue;
+  }
+
   .empty-icon {
     width: 50px;
     height: 50px;
     opacity: 0.8;
-  }
-}
-
-@media (max-width: 780px) {
-  .toolbar-categoria {
-    width: 90%;
-    margin: 16px auto 12px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .busca-categoria {
-    width: 100%;
-    max-width: none;
-    margin-left: 0;
-  }
-
-  .qtdReceitas {
-    text-align: center;
-  }
-
-  .filter-container {
-    width: 90%;
-    margin: 0 auto 16px;
-    flex-direction: column;
-    align-items: stretch;
   }
 }

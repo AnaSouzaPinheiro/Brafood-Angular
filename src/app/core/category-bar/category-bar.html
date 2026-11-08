@@ -20,16 +20,17 @@
       *ngFor="let categoria of categorias"
       [ngClass]="categoria.css_class"
       [style.background-color]="categoria.cor_primaria || null"
-      [routerLink]="categoria.url"
       (mouseenter)="onHover($event, categoria)"
       (mouseleave)="onLeave($event, categoria)"
     >
-      <img class="icon"
-        draggable="false"
-        [src]="categoria.icone"
-        alt="{{ categoria.nome }} ícone"
-      />
-      {{ categoria.nome }}
+      <a [routerLink]="categoria.url" draggable="false">
+        <img class="icon"
+          draggable="false"
+          [src]="categoria.icone"
+          alt="{{ categoria.nome }} ícone"
+        />
+        {{ categoria.nome }}
+      </a>
     </li>
     <!-- Duplicata só pro loop infinito no carrossel do desktop; some do
          DOM em telas pequenas via CSS e é ignorada por leitores de tela. -->
@@ -40,16 +41,17 @@
       class="clone"
       [ngClass]="categoria.css_class"
       [style.background-color]="categoria.cor_primaria || null"
-      [routerLink]="categoria.url"
       (mouseenter)="onHover($event, categoria)"
       (mouseleave)="onLeave($event, categoria)"
     >
-      <img class="icon"
-        draggable="false"
-        [src]="categoria.icone"
-        alt=""
-      />
-      {{ categoria.nome }}
+      <a [routerLink]="categoria.url" draggable="false" tabindex="-1">
+        <img class="icon"
+          draggable="false"
+          [src]="categoria.icone"
+          alt=""
+        />
+        {{ categoria.nome }}
+      </a>
     </li>
   </ul>
 

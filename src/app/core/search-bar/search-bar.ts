@@ -44,6 +44,7 @@ export class SearchBar {
           if (termo.trim().length < 2) {
             this.sugestoes = [];
             this.carregando = false;
+            this.mostrarDropdown = false;
             return [];
           }
           this.carregando = true;
@@ -58,7 +59,8 @@ export class SearchBar {
             imagem1: r.imagem1 ?? null,
             categoria: r.categoria ?? null,
           }));
-          this.mostrarDropdown = this.sugestoes.length > 0;
+          // Abre mesmo sem resultado, para mostrar "Nenhum resultado".
+          this.mostrarDropdown = true;
           this.carregando = false;
         },
         error: () => {
@@ -102,5 +104,10 @@ export class SearchBar {
 
   toggleMobileSearch() {
     this.isOpenMobile = !this.isOpenMobile;
+    // Ao fechar pelo ✕, some também a lista de sugestões / "Nenhum resultado".
+    if (!this.isOpenMobile) {
+      this.fecharDropdown();
+      this.carregando = false;
+    }
   }
 }

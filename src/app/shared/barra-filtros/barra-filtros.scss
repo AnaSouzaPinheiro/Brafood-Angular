@@ -1,0 +1,322 @@
+@use "variables" as *;
+
+:host {
+  display: block;
+}
+
+// ── Linha 1: busca · ordenar · filtros ─────────────────────────────────────
+.linha-busca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.busca {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+
+  > i {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: $primary-gray;
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    height: 44px;
+    border-radius: 999px;
+    border: 1.5px solid transparent;
+    padding: 0 40px 0 42px;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba($primary-blue, 0.25);
+    outline: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    background: white;
+    transition: border-color 0.15s ease;
+
+    &::placeholder {
+      color: $primary-gray;
+    }
+
+    &:focus {
+      border-color: $quaternary-blue;
+    }
+  }
+
+  .limpar-busca {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: #e6ecfa;
+    color: $secondary-blue;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+
+    &:hover {
+      background: $quaternary-blue;
+      color: white;
+    }
+  }
+}
+
+.controle {
+  position: relative;
+  flex-shrink: 0;
+}
+
+// Botão-pílula: mesmo idioma visual dos chips, com sombra igual à busca
+.pilula {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: white;
+  box-shadow: 0 0 10px rgba($primary-blue, 0.25);
+  color: $secondary-blue;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover,
+  &.aberto {
+    border-color: $quaternary-blue;
+    color: $primary-blue;
+  }
+
+  &.com-filtro {
+    border-color: $primary-blue;
+    color: $primary-blue;
+  }
+
+  .badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: $primary-blue;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+  }
+}
+
+// Menu de ordenação — mesmo estilo do menu ⋯ dos quadros
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 190px;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 20, 80, 0.22);
+
+  button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: $tertiary-gray;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+
+    &:hover {
+      background: #e6ecfa;
+    }
+
+    &.marcado {
+      color: $primary-blue;
+      font-weight: 600;
+
+      &::after {
+        content: '✓';
+        margin-left: auto;
+        padding-left: 12px;
+      }
+    }
+  }
+}
+
+// ── Linha 2: chips ──────────────────────────────────────────────────────────
+// As setas ficam do lado de fora do limite da barra (antes de "Todas"
+// e depois do último chip), só o < e o >.
+.chips-wrap {
+  position: relative;
+  margin-top: 14px;
+
+  // No celular a margem da página é curta: recua um pouco a faixa para
+  // as setas não encostarem na borda da tela.
+  @media (max-width: 768px) {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+}
+
+.seta {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1;
+  color: $secondary-blue;
+  cursor: pointer;
+
+  &:hover {
+    color: $primary-blue;
+  }
+
+  &.seta-esq {
+    right: 100%;
+    margin-right: 4px;
+  }
+
+  &.seta-dir {
+    left: 100%;
+    margin-left: 4px;
+  }
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  button {
+    flex-shrink: 0;
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1.5px solid $quaternary-blue;
+    background: white;
+    color: $secondary-blue;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: #e6ecfa;
+    }
+
+    &.ativo {
+      background: $primary-blue;
+      border-color: $primary-blue;
+      color: white;
+    }
+  }
+}
+
+// ── Linha 3: contador + filtros ativos ──────────────────────────────────────
+.resumo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 28px;
+  padding-top: 10px;
+  font-size: 0.9rem;
+
+  .total {
+    color: $primary-blue;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  .ativo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 12px;
+    border-radius: 999px;
+    border: none;
+    background: #e6ecfa;
+    color: $primary-blue;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    i {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    &:hover i {
+      opacity: 1;
+    }
+  }
+
+  .limpar-tudo {
+    border: none;
+    background: none;
+    padding: 4px;
+    font: inherit;
+    font-size: 0.85rem;
+    color: $tertiary-gray;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $primary-blue;
+    }
+  }
+}
+
+// ── Mobile: só ícones nos botões, busca ocupa o resto ──────────────────────
+@media (max-width: 600px) {
+  .linha-busca {
+    gap: 8px;
+  }
+
+  .busca input {
+    font-size: 0.85rem;
+  }
+
+  .pilula {
+    padding: 0 14px;
+
+    .rotulo {
+      display: none;
+    }
+  }
+}

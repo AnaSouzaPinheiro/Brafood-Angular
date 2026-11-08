@@ -134,8 +134,11 @@ export class FilterStateService {
     let resultado = [...receitas];
 
     if (filtros.categorias.length)
+      // r.categoria pode trazer várias, separadas por vírgula
       resultado = resultado.filter((r) =>
-        filtros.categorias.includes(r.categoria),
+        String(r.categoria ?? '')
+          .split(',')
+          .some((c) => filtros.categorias.includes(c.trim())),
       );
 
     if (filtros.dificuldades.length)

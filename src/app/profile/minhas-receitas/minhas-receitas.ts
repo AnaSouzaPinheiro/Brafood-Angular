@@ -5,10 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import {
-    DropdownDinamicoItem,
-    FilterPanel,
-} from '../../shared/filter-panel/filter-panel';
+import { BarraFiltros, ChipFiltro } from '../../shared/barra-filtros/barra-filtros';
 import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
 import { Perfil } from '../perfil/perfil';
 
@@ -30,7 +27,7 @@ import { toSlug } from '../../utils/slug';
   standalone: true,
   imports: [
     Perfil,
-    FilterPanel,
+    BarraFiltros,
     CustomButton,
     RecipeCard,
     RecipeCardSkeleton,
@@ -42,9 +39,8 @@ import { toSlug } from '../../utils/slug';
   styleUrls: ['./minhas-receitas.scss'],
 })
 export class MinhasReceitas {
-  // ── Paginação ─────────────────────────────────────────────────────────────
-  indice = 0;
-  currentPage = 1;
+  // ── "Ver mais" ────────────────────────────────────────────────────────────
+  fim = 8;
 
   // ── Dados ─────────────────────────────────────────────────────────────────
   Recipes: Recipes[] = [];
@@ -59,8 +55,8 @@ export class MinhasReceitas {
   filtros!: FiltroState;
   termoBusca = '';
 
-  // Dropdown dinâmico de categorias das receitas do usuário
-  categoriaItems: DropdownDinamicoItem[] = [];
+  // Chips com as categorias das receitas do usuário
+  categoriaChips: ChipFiltro[] = [];
 
   constructor(
     private receitaServices: ReceitaService,
@@ -95,46 +91,18 @@ export class MinhasReceitas {
     this.filtros = this.filterService.filtroInicial('mais_novos');
   }
 
-  ngOnInit(): void {
-    this.indice = 0;
-    this.currentPage = 1;
-  }
-
   // ── Guard de filtro ───────────────────────────────────────────────────────
   get podeFiltrar(): boolean {
     return this.Recipes.length > 1;
   }
 
-  // ── Paginação ─────────────────────────────────────────────────────────────
+  // ── "Ver mais" ────────────────────────────────────────────────────────────
   get myRecipesPage() {
-    return this.RecipesFiltradas.slice(this.indice, this.indice + 8);
+    return this.RecipesFiltradas.slice(0, this.fim);
   }
 
-  get pages(): number {
-    return Math.ceil(this.RecipesFiltradas.length / 8);
-  }
-
-  get pagesArray(): number[] {
-    return Array.from({ length: this.pages }, (_, i) => i + 1);
-  }
-
-  nextPage() {
-    let newIndex = this.indice + 8;
-    if (newIndex >= this.RecipesFiltradas.length) newIndex = 0;
-    this.indice = newIndex;
-    this.currentPage = this.indice / 8 + 1;
-  }
-
-  prevPage() {
-    let newIndex = this.indice - 8;
-    if (newIndex < 0) newIndex = (this.pages - 1) * 8;
-    this.indice = newIndex;
-    this.currentPage = this.indice / 8 + 1;
-  }
-
-  goToPage(page: number) {
-    this.indice = (page - 1) * 8;
-    this.currentPage = page;
+  verMais() {
+    this.fim += 8;
   }
 
   // ── Filtros ───────────────────────────────────────────────────────────────
@@ -154,8 +122,7 @@ export class MinhasReceitas {
       base,
       this.filtros,
     );
-    this.indice = 0;
-    this.currentPage = 1;
+    this.fim = 8;
   }
 
   onBuscaChange(valor: string) {
@@ -172,17 +139,22 @@ export class MinhasReceitas {
 
   // ── Categorias dinâmicas ──────────────────────────────────────────────────
   private montarCategorias() {
+    // Uma receita pode ter várias categorias ("Comemorativas, Sobremesas"):
+    // cada uma vira um chip próprio.
     const categoriasUnicas = [
-      ...new Set(this.Recipes.map((r: any) => r.categoria)),
-    ];
-    this.categoriaItems = [
-      { id: 0, name: 'Todas', checked: true },
-      ...categoriasUnicas.map((c, i) => ({
-        id: i + 1,
-        name: c as string,
-        checked: false,
-      })),
-    ];
+      ...new Set(
+        this.Recipes.flatMap((r: any) =>
+          String(r.categoria ?? '')
+            .split(',')
+            .map((c) => c.trim())
+            .filter(Boolean),
+        ),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+    this.categoriaChips = categoriasUnicas.map((c, i) => ({
+      id: i + 1,
+      nome: c as string,
+    }));
   }
 
   // ── Editar / Excluir ──────────────────────────────────────────────────────

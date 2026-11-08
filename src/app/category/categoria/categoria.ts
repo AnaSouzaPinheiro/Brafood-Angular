@@ -6,10 +6,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { CustomButton } from '../../shared/custom-button/custom-button';
-import {
-    DropdownDinamicoItem,
-    FilterPanel,
-} from '../../shared/filter-panel/filter-panel';
+import { BarraFiltros, ChipFiltro } from '../../shared/barra-filtros/barra-filtros';
 import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
 
 import { CategoriaService } from '../../services/categoria/categoria.service';
@@ -27,7 +24,7 @@ import { ModalService } from '../../services/modal/modal.service';
 @Component({
   selector: 'bra-categoria',
   standalone: true,
-  imports: [FilterPanel, CustomButton, RecipeCard, RecipeCardSkeleton, CommonModule, FormsModule],
+  imports: [BarraFiltros, CustomButton, RecipeCard, RecipeCardSkeleton, CommonModule, FormsModule],
   templateUrl: './categoria.html',
   styleUrl: './categoria.scss',
 })
@@ -47,7 +44,9 @@ export class Categoria {
   filtros!: FiltroState;
   termoBusca = '';
 
-  subcategoriaItems: DropdownDinamicoItem[] = [];
+  subcategoriaChips: ChipFiltro[] = [];
+  /** Subcategorias marcadas no cabeçalho (vazio = todas). */
+  subcatsMarcadas: number[] = [];
 
   constructor(
     private router: Router,
@@ -77,15 +76,12 @@ export class Categoria {
         next: (categoria) => {
           this.categoria = categoria;
 
-          this.subcategoriaItems = [
-            { id: 0, name: 'Todas', checked: true },
-            ...categoria.subcategorias.map((s) => ({
-              id: s.id,
-              name: s.nome,
-              checked: false,
-            })),
-          ];
+          this.subcategoriaChips = categoria.subcategorias.map((s) => ({
+            id: s.id,
+            nome: s.nome,
+          }));
 
+          this.subcatsMarcadas = [];
           this.categoriaTemReceitas = false;
           this.buscarReceitas(true);
         },
@@ -109,8 +105,7 @@ export class Categoria {
 
     const req: any = { ordenar: this.filtros.ordenar };
 
-    if (this.filtros.subcategorias.length)
-      req.subcategorias = this.filtros.subcategorias;
+    if (this.subcatsMarcadas.length) req.subcategorias = this.subcatsMarcadas;
     if (this.filtros.dificuldades.length)
       req.dificuldades = this.filtros.dificuldades;
     if (this.filtros.tiposPorcao.length)
@@ -131,6 +126,18 @@ export class Categoria {
         this.begin = 0;
         this.end = 8;
       });
+  }
+
+  alternarSubcat(id: number) {
+    this.subcatsMarcadas = this.subcatsMarcadas.includes(id)
+      ? this.subcatsMarcadas.filter((s) => s !== id)
+      : [...this.subcatsMarcadas, id];
+    this.buscarReceitas(false);
+  }
+
+  limparSubcats() {
+    this.subcatsMarcadas = [];
+    this.buscarReceitas(false);
   }
 
   onBuscaChange(valor: string) {

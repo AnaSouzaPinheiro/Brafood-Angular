@@ -11,8 +11,13 @@
     />
     <i class="fa-solid fa-search search-icon" (click)="buscar()"></i>
 
-    <button class="mobile-search-btn" (click)="toggleMobileSearch()">
-      <i class="fa-solid fa-search"></i>
+    <!-- Fechada: lupa para abrir. Aberta: ✕ para fechar (a lupa fica só na barra). -->
+    <button
+      class="mobile-search-btn"
+      (click)="toggleMobileSearch()"
+      [attr.aria-label]="isOpenMobile ? 'Fechar busca' : 'Abrir busca'"
+    >
+      <i class="fa-solid" [class.fa-search]="!isOpenMobile" [class.fa-xmark]="isOpenMobile"></i>
     </button>
 
     <!-- Dropdown de sugestões -->
@@ -42,6 +47,10 @@
           </div>
         </li>
       </ul>
+
+      <div class="autocomplete-vazio" *ngIf="!carregando && sugestoes.length === 0">
+        Nenhum resultado encontrado para "{{ termo }}"
+      </div>
 
       <div
         class="autocomplete-ver-todos"

@@ -1,0 +1,159 @@
+<div class="linha-busca">
+  <div class="busca">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="text"
+      [placeholder]="placeholder"
+      [ngModel]="termo"
+      (ngModelChange)="onBusca($event)"
+      autocomplete="off"
+      aria-label="Buscar"
+    />
+    @if (termo) {
+      <button type="button" class="limpar-busca" (click)="limparBusca()" aria-label="Limpar busca">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    }
+  </div>
+
+  <div class="controle">
+    <button
+      type="button"
+      class="pilula"
+      [class.aberto]="menuOrdenar"
+      (click)="alternarOrdenar()"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="menuOrdenar"
+    >
+      <i class="fa-solid fa-arrow-down-short-wide"></i>
+      <span class="rotulo">{{ rotuloOrdenar }}</span>
+    </button>
+
+    @if (menuOrdenar) {
+      <ul class="menu" role="menu">
+        @for (o of opcoesOrdenar; track o.valor) {
+          <li>
+            <button
+              type="button"
+              role="menuitemradio"
+              [attr.aria-checked]="o.valor === filtros.ordenar"
+              [class.marcado]="o.valor === filtros.ordenar"
+              (click)="ordenar(o.valor)"
+            >
+              {{ o.nome }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  @if (filtrosAvancados) {
+    <div class="controle">
+      <button
+        type="button"
+        class="pilula"
+        [class.aberto]="painelFiltros"
+        [class.com-filtro]="totalAvancados > 0"
+        (click)="alternarPainel()"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="painelFiltros"
+      >
+        <i class="fa-solid fa-filter"></i>
+        <span class="rotulo">Filtros</span>
+        @if (totalAvancados > 0) {
+          <span class="badge">{{ totalAvancados }}</span>
+        }
+      </button>
+
+      @if (painelFiltros) {
+        <div class="fundo-painel" (click)="fecharMenus()"></div>
+        <div class="painel" role="dialog" aria-label="Filtros">
+          <div class="painel-topo">
+            <span>Filtros</span>
+            <button type="button" class="fechar" (click)="fecharMenus()" aria-label="Fechar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="grupo">
+            <span class="titulo">Dificuldade</span>
+            <div class="opcoes">
+              @for (d of dificuldades; track d.id) {
+                <button
+                  type="button"
+                  [class.ativo]="filtros.dificuldades.includes(d.id)"
+                  (click)="alternarDificuldade(d.id)"
+                >{{ d.name }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="grupo">
+            <span class="titulo">Tempo de preparo</span>
+            <div class="opcoes">
+              @for (t of tempos; track t.name) {
+                <button type="button" [class.ativo]="tempoAtivo(t)" (click)="escolherTempo(t)">
+                  {{ t.name }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="grupo">
+            <span class="titulo">Tipo de porção</span>
+            <div class="opcoes">
+              @for (p of porcoes; track p.id) {
+                <button type="button" [class.ativo]="porcaoAtiva(p.id)" (click)="alternarPorcao(p.id)">
+                  {{ p.name }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="painel-rodape">
+            <button type="button" class="link" [disabled]="totalAvancados === 0" (click)="limparAvancados()">
+              Limpar
+            </button>
+            <button type="button" class="ver" (click)="fecharMenus()">
+              Ver {{ total }} {{ total === 1 ? 'receita' : 'receitas' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (chips.length > 1) {
+  <div class="chips-wrap">
+    @if (podeVoltar) {
+      <button type="button" class="seta seta-esq" (click)="rolarChips(-1)" aria-label="Ver anteriores">&lt;</button>
+    }
+    <div class="chips" #trilho role="group" aria-label="Filtrar por grupo" (scroll)="atualizarSetas()">
+      <button type="button" [class.ativo]="chipsMarcados.length === 0" (click)="limparChips()">
+        Todas
+      </button>
+      @for (c of chips; track c.id) {
+        <button type="button" [class.ativo]="chipAtivo(c.id)" (click)="alternarChip(c.id)">
+          {{ c.nome }}
+        </button>
+      }
+    </div>
+    @if (podeAvancar) {
+      <button type="button" class="seta seta-dir" (click)="rolarChips(1)" aria-label="Ver próximas">&gt;</button>
+    }
+  </div>
+}
+
+<div class="resumo">
+  <span class="total">{{ total }} {{ total === 1 ? 'receita' : 'receitas' }}</span>
+  @for (a of ativos; track a.rotulo) {
+    <button type="button" class="ativo-chip" (click)="a.remover()" [attr.aria-label]="'Remover ' + a.rotulo">
+      {{ a.rotulo }} <i class="fa-solid fa-xmark"></i>
+    </button>
+  }
+  @if (temAlgoAtivo) {
+    <button type="button" class="limpar-tudo" (click)="limparTudo()">Limpar tudo</button>
+  }
+</div>

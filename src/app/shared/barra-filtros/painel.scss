@@ -1,0 +1,153 @@
+@use "variables" as *;
+
+// Painel "Filtros": popover no desktop, gaveta de baixo no celular.
+.fundo-painel {
+  display: none;
+}
+
+.painel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: 340px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 20, 80, 0.22);
+}
+
+.painel-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+
+  span {
+    font-weight: 600;
+    color: $primary-blue;
+    font-size: 1.05rem;
+  }
+
+  .fechar {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: $tertiary-gray;
+    cursor: pointer;
+
+    &:hover {
+      background: #e6ecfa;
+    }
+  }
+}
+
+.grupo {
+  padding: 10px 0;
+
+  & + .grupo {
+    border-top: 1px solid $quaternary-gray;
+  }
+
+  .titulo {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $tertiary-gray;
+    margin-bottom: 8px;
+  }
+
+  .opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .opcoes button {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1.5px solid $quaternary-blue;
+    background: white;
+    color: $secondary-blue;
+    cursor: pointer;
+
+    &:hover {
+      background: #e6ecfa;
+    }
+
+    &.ativo {
+      background: $primary-blue;
+      border-color: $primary-blue;
+      color: white;
+    }
+  }
+}
+
+.painel-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid $quaternary-gray;
+
+  .link {
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 0.9rem;
+    color: $tertiary-gray;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  .ver {
+    border: none;
+    border-radius: 999px;
+    padding: 9px 18px;
+    background: $primary-blue;
+    color: white;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      background: $hover-blue;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .fundo-painel {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .painel {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    padding: 18px 20px calc(18px + env(safe-area-inset-bottom));
+  }
+}
