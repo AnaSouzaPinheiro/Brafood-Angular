@@ -1,0 +1,204 @@
+@use "variables" as *;
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 20, 60, 0.45);
+  z-index: 1000;
+}
+
+.janela {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(820px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 22px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 50px rgba(0, 20, 80, 0.3);
+
+  @media (max-width: 768px) {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 22px 22px 0 0;
+    padding: 16px;
+  }
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: $primary-blue;
+  }
+
+  .fechar {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: $primary-gray;
+    cursor: pointer;
+  }
+}
+
+.dica {
+  margin: 4px 0 12px;
+  color: $tertiary-gray;
+  font-size: 0.9rem;
+}
+
+.grade {
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 2px;
+}
+
+.item {
+  width: calc((100% - 36px) / 4);
+  box-sizing: border-box;
+  background: white;
+  border-radius: 12px;
+  cursor: grab;
+  user-select: none;
+
+  @media (max-width: 768px) {
+    width: calc((100% - 12px) / 2);
+  }
+
+  .foto {
+    position: relative;
+
+    img,
+    .sem-img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .sem-img {
+      display: grid;
+      place-items: center;
+      background: $secondary-gray;
+      color: $secondary-blue;
+      font-size: 1.4rem;
+    }
+  }
+
+  .posicao {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .alca {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.9);
+    color: $tertiary-gray;
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+  }
+
+  .nome {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: $tertiary-gray;
+  }
+
+  .setas {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+
+    button {
+      width: 30px;
+      height: 26px;
+      border: none;
+      border-radius: 8px;
+      background: #e6ecfa;
+      color: $secondary-blue;
+      cursor: pointer;
+      &:disabled { opacity: 0.35; cursor: default; }
+    }
+  }
+}
+
+// Estados do CDK durante o arraste
+.item.cdk-drag-preview {
+  z-index: 1100 !important; // acima da janela (1001)
+  box-shadow: 0 12px 28px rgba(0, 20, 80, 0.3);
+  cursor: grabbing;
+}
+
+.item.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.grade.cdk-drop-list-dragging .item:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 14px;
+  flex-shrink: 0;
+
+  .btn,
+  .btn-sec {
+    font: inherit;
+    border-radius: 999px;
+    padding: 9px 20px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn {
+    background: $primary-blue;
+    color: white;
+    &:disabled { opacity: 0.5; cursor: default; }
+  }
+
+  .btn-sec {
+    background: transparent;
+    color: $secondary-blue;
+  }
+}

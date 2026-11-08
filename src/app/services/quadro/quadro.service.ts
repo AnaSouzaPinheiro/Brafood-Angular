@@ -8,6 +8,8 @@ export interface QuadroResumo {
   descricao: string | null;
   total: number;
   capas: string[];
+  publico?: boolean;
+  token_publico?: string | null;
 }
 
 export interface QuadrosLista {
@@ -16,8 +18,28 @@ export interface QuadrosLista {
 }
 
 export interface QuadroDetalhe {
-  quadro: { id: number; nome: string; descricao: string | null };
+  quadro: {
+    id: number;
+    nome: string;
+    descricao: string | null;
+    publico: boolean;
+    token_publico: string | null;
+  };
   receitas: any[];
+}
+
+/** Quadro compartilhado, visto por qualquer pessoa (sem status/nota). */
+export interface QuadroPublico {
+  quadro: { nome: string; descricao: string | null };
+  autor: { nome: string; apelido: string; foto: string | null };
+  receitas: any[];
+}
+
+/** Lista de compras: ingredientes agrupados por receita. */
+export interface ReceitaCompras {
+  id: number;
+  titulo: string;
+  grupos: { titulo: string; itens: string[] }[];
 }
 
 export type StatusReceita = 'quero_fazer' | 'ja_fiz' | null;
@@ -38,6 +60,47 @@ export interface QuadroResposta {
 /** Quadros de receitas salvas. O usuário vem do token, nunca do cliente. */
 @Injectable({ providedIn: 'root' })
 export class QuadroService extends BaseService {
+  // ---- compartilhar ----------------------------------------------------------
+  definirPublico(id: number, publico: boolean) {
+    return this.httpClient.put<QuadroResposta & { token?: string; publico?: boolean }>(
+      this.url('quadros.php'),
+      { id, publico },
+    );
+  }
+
+  /** Visão pública (sem login) de um quadro compartilhado. */
+  publico(token: string): Observable<QuadroPublico> {
+    return this.httpClient.get<QuadroPublico>(
+      this.url(`quadro_publico.php?token=${encodeURIComponent(token)}`),
+    );
+  }
+
+  /** Quadros públicos de um usuário (perfil público). */
+  publicosDoUsuario(apelido: string): Observable<QuadroResumo[]> {
+    return this.httpClient.get<QuadroResumo[]>(
+      this.url(`quadro_publico.php?apelido=${encodeURIComponent(apelido)}`),
+    );
+  }
+
+  // ---- ordenar ---------------------------------------------------------------
+  reordenarQuadros(ordem: number[]) {
+    return this.httpClient.put<QuadroResposta>(this.url('quadros.php'), { ordem });
+  }
+
+  reordenarReceitas(idQuadro: number, ordemReceitas: number[]) {
+    return this.httpClient.put<QuadroResposta>(this.url('quadros.php'), {
+      idQuadro,
+      ordemReceitas,
+    });
+  }
+
+  // ---- lista de compras --------------------------------------------------------
+  listaDeCompras(idQuadro: number, idsReceitas: number[]): Observable<ReceitaCompras[]> {
+    return this.httpClient.get<ReceitaCompras[]>(
+      this.url(`quadros.php?compras=${idQuadro}&ids=${idsReceitas.join(',')}`),
+    );
+  }
+
   listar(): Observable<QuadrosLista> {
     return this.httpClient.get<QuadrosLista>(this.url('quadros.php'));
   }

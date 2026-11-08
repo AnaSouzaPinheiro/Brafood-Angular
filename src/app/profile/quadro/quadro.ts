@@ -12,8 +12,13 @@ import {
   StatusReceita,
 } from '../../services/quadro/quadro.service';
 import { ToastService } from '../../services/toast/toast.service';
+import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
+import { Compartilhar } from '../../shared/compartilhar/compartilhar';
+import { EditarQuadro, QuadroEditado } from '../editar-quadro/editar-quadro';
 import { EscolherQuadro } from '../escolher-quadro/escolher-quadro';
+import { ListaCompras } from '../lista-compras/lista-compras';
+import { OrganizarReceitas } from '../organizar-receitas/organizar-receitas';
 import { Perfil } from '../perfil/perfil';
 import { SeletorReceitas } from '../seletor-receitas/seletor-receitas';
 
@@ -39,10 +44,15 @@ type AcaoDestino = { tipo: 'adicionar' | 'mover'; ids: number[] };
     CommonModule,
     FormsModule,
     SeletorReceitas,
+    MediaUrlPipe,
     EscolherQuadro,
+    Compartilhar,
+    EditarQuadro,
+    ListaCompras,
+    OrganizarReceitas,
   ],
   templateUrl: './quadro.html',
-  styleUrls: ['./quadro.scss', './barra-selecao.scss'],
+  styleUrls: ['./quadro.scss', './capa.scss', './barra-selecao.scss'],
 })
 export class Quadro implements OnInit {
   idQuadro: number | null = null; // null = Favoritos
@@ -54,18 +64,26 @@ export class Quadro implements OnInit {
   /** Os demais quadros do usuário (destinos de adicionar/mover). */
   outrosQuadros: QuadroResumo[] = [];
 
-  editando = false;
-  nomeEdit = '';
-  descricaoEdit = '';
+  editarAberto = false;
 
   pagina = 1;
   filtroStatus: FiltroStatus = 'todas';
   seletorAberto = false;
 
+  /** Menu ⋯ do cartão de capa (editar, compartilhar, organizar, excluir). */
+  capaMenu = false;
+
   /** Id da receita com o menu ⋯ aberto. */
   menuAberto: number | null = null;
   /** Janelinha "Escolher quadro" aberta para esta ação. */
   acaoDestino: AcaoDestino | null = null;
+
+  // Fase 3: compartilhar, lista de compras, organizar
+  publico = false;
+  tokenPublico: string | null = null;
+  compartilharAberto = false;
+  comprasAberta = false;
+  organizarAberto = false;
 
   selecionando = false;
   selecionadas = new Set<number>();
@@ -120,6 +138,8 @@ export class Quadro implements OnInit {
       next: (res) => {
         this.nome = res.quadro.nome;
         this.descricao = res.quadro.descricao;
+        this.publico = !!res.quadro.publico;
+        this.tokenPublico = res.quadro.token_publico;
         this.setReceitas(res.receitas);
       },
       error: () => {
@@ -181,25 +201,22 @@ export class Quadro implements OnInit {
   }
 
   // ---- editar / excluir quadro ---------------------------------------
-  abrirEdicao() {
-    this.nomeEdit = this.nome;
-    this.descricaoEdit = this.descricao ?? '';
-    this.editando = true;
+  get linkPublico(): string {
+    if (!this.tokenPublico || typeof window === 'undefined') return '';
+    return `${window.location.origin}/quadro/${this.tokenPublico}`;
   }
 
-  salvarEdicao() {
-    const nome = this.nomeEdit.trim();
-    if (!nome || this.idQuadro === null) return;
-    const descricao = this.descricaoEdit.trim() || null;
-
-    this.quadroService.editar(this.idQuadro, nome, descricao).subscribe({
-      next: () => {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.editando = false;
-      },
-      error: (err) => this.toast.show(err?.error?.error ?? 'Erro ao salvar', 'error'),
-    });
+  /** Resultado da janela "Editar quadro" (nome, descrição, visibilidade). */
+  aplicarEdicao(e: QuadroEditado) {
+    const ficouPublico = e.publico && !this.publico;
+    this.nome = e.nome;
+    this.descricao = e.descricao;
+    this.publico = e.publico;
+    this.tokenPublico = e.token;
+    this.editarAberto = false;
+    this.toast.show('Quadro atualizado', 'success');
+    // Acabou de ficar público: já oferece o link
+    if (ficouPublico && e.token) this.compartilharAberto = true;
   }
 
   excluirQuadro() {
@@ -254,6 +271,19 @@ export class Quadro implements OnInit {
   @HostListener('document:click')
   fecharMenu() {
     this.menuAberto = null;
+    this.capaMenu = false;
+  }
+
+  toggleCapaMenu(ev: Event) {
+    ev.stopPropagation();
+    this.menuAberto = null;
+    this.capaMenu = !this.capaMenu;
+  }
+
+  /** As 4 primeiras fotos do quadro, na ordem dele (vazias viram blocos). */
+  get mosaicoCapa(): (string | null)[] {
+    const fotos = this.receitas.map((r) => r.imagem1).filter(Boolean);
+    return [0, 1, 2, 3].map((i) => fotos[i] ?? null);
   }
 
   @HostListener('document:keydown.escape')
@@ -400,6 +430,16 @@ export class Quadro implements OnInit {
     this.setReceitas(this.receitas.filter((r) => !fora.has(Number(r.id))));
     this.sairSelecao();
     this.carregarQuadros();
+  }
+
+  /** Aplica a ordem salva no "Organizar" sem recarregar. */
+  aplicarOrdem(ids: number[]) {
+    const pos = new Map(ids.map((id, i) => [id, i]));
+    this.receitas = [...this.receitas].sort(
+      (a, b) => (pos.get(Number(a.id)) ?? 0) - (pos.get(Number(b.id)) ?? 0),
+    );
+    this.organizarAberto = false;
+    this.pagina = 1;
   }
 
   get idsSelecionados(): number[] {

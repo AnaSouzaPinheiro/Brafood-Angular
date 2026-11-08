@@ -1,3 +1,4 @@
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +13,16 @@ import { SeletorReceitas } from '../seletor-receitas/seletor-receitas';
 @Component({
   selector: 'bra-favoritas',
   standalone: true,
-  imports: [Perfil, RouterModule, CommonModule, FormsModule, MediaUrlPipe, SeletorReceitas],
+  imports: [
+    Perfil,
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    MediaUrlPipe,
+    SeletorReceitas,
+    CdkDropList,
+    CdkDrag,
+  ],
   templateUrl: './favoritas.html',
   styleUrl: './favoritas.scss',
 })
@@ -47,6 +57,41 @@ export class Favoritas implements OnInit {
         this.carregando = false;
       },
       error: () => (this.carregando = false),
+    });
+  }
+
+  // ---- organizar (arrastar quadros) ----------------------------------------
+  organizando = false;
+  ordemEdicao: QuadroResumo[] = [];
+  salvandoOrdem = false;
+
+  organizar() {
+    this.ordemEdicao = [...this.quadros];
+    this.organizando = true;
+    this.criando = false;
+  }
+
+  cancelarOrganizar() {
+    this.organizando = false;
+  }
+
+  soltar(ev: CdkDragDrop<unknown>) {
+    moveItemInArray(this.ordemEdicao, ev.previousIndex, ev.currentIndex);
+  }
+
+  salvarOrdem() {
+    this.salvandoOrdem = true;
+    this.quadroService.reordenarQuadros(this.ordemEdicao.map((q) => q.id)).subscribe({
+      next: () => {
+        this.quadros = this.ordemEdicao;
+        this.organizando = false;
+        this.salvandoOrdem = false;
+        this.toast.show('Ordem salva', 'success');
+      },
+      error: () => {
+        this.salvandoOrdem = false;
+        this.toast.show('Não foi possível salvar a ordem', 'error');
+      },
     });
   }
 

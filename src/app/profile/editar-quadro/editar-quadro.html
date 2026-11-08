@@ -1,0 +1,46 @@
+<div class="fundo" (click)="fechar.emit()"></div>
+
+<form class="janela" role="dialog" aria-modal="true" aria-label="Editar quadro" (ngSubmit)="salvar()">
+  <div class="topo">
+    <h2>Editar quadro</h2>
+    <button type="button" class="fechar" (click)="fechar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <label for="eq-nome">Nome</label>
+  <input id="eq-nome" name="nome" [(ngModel)]="nomeEdit" maxlength="60" required autofocus />
+
+  <label for="eq-desc">Descrição (opcional)</label>
+  <textarea id="eq-desc" name="descricao" [(ngModel)]="descricaoEdit" maxlength="255" rows="2"></textarea>
+
+  <span class="rotulo">Visibilidade</span>
+  <div class="visibilidade" role="radiogroup" aria-label="Visibilidade">
+    <label class="opcao" [class.ativa]="!publicoEdit">
+      <input type="radio" name="vis" [value]="false" [(ngModel)]="publicoEdit" />
+      <span class="icone"><i class="fa-solid fa-lock"></i></span>
+      <span class="textos">
+        <strong>Privado</strong>
+        <small>Só você vê este quadro.</small>
+      </span>
+    </label>
+    <label class="opcao" [class.ativa]="publicoEdit">
+      <input type="radio" name="vis" [value]="true" [(ngModel)]="publicoEdit" />
+      <span class="icone"><i class="fa-solid fa-globe"></i></span>
+      <span class="textos">
+        <strong>Público</strong>
+        <small>Qualquer pessoa com o link vê. Aparece no seu perfil público.</small>
+      </span>
+    </label>
+  </div>
+  @if (publicoEdit) {
+    <p class="aviso">Suas notas e status ("quero fazer", "já fiz") continuam só seus.</p>
+  }
+
+  <div class="rodape">
+    <button type="button" class="btn-sec" (click)="fechar.emit()">Cancelar</button>
+    <button type="submit" class="btn" [disabled]="!nomeEdit.trim() || salvando">
+      {{ salvando ? 'Salvando…' : 'Salvar' }}
+    </button>
+  </div>
+</form>

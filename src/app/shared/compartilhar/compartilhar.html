@@ -1,0 +1,34 @@
+<div class="fundo" (click)="fechar.emit()"></div>
+
+<div class="janela" role="dialog" aria-modal="true" [attr.aria-label]="titulo">
+  <div class="topo">
+    <h2>{{ titulo }}</h2>
+    <button type="button" class="fechar" (click)="fechar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  @if (explicacao) {
+    <p class="explica"><i class="fa-solid fa-globe"></i> {{ explicacao }}</p>
+  }
+
+  <div class="link-box">
+    <input [value]="url" readonly aria-label="Link" (focus)="$any($event.target).select()" />
+    <button type="button" (click)="copiar()"><i class="fa-solid fa-link"></i> Copiar</button>
+  </div>
+
+  <div class="redes">
+    <button type="button" class="zap" (click)="whatsapp()">
+      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+    </button>
+    @if (temMenuNativo) {
+      <button type="button" class="mais" (click)="maisOpcoes()">
+        <i class="fa-solid fa-share-nodes"></i> Mais opções…
+      </button>
+    }
+  </div>
+
+  @if (aviso) {
+    <p class="aviso">{{ aviso }}</p>
+  }
+</div>

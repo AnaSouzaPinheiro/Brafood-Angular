@@ -1,0 +1,90 @@
+<div class="fundo" (click)="fechar.emit()"></div>
+
+<div class="janela" role="dialog" aria-modal="true" aria-label="Lista de compras">
+  <div class="topo">
+    @if (passo === 'lista') {
+      <button type="button" class="voltar" (click)="passo = 'escolher'" aria-label="Voltar para escolher receitas">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+    }
+    <h2><i class="fa-solid fa-cart-shopping"></i> Lista de compras</h2>
+    <button type="button" class="fechar" (click)="fechar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  @if (passo === 'escolher') {
+    <div class="barra">
+      <span>Quais receitas você vai fazer?</span>
+      <button type="button" class="link" (click)="toggleTodas()">
+        {{ todasEscolhidas ? 'Desmarcar todas' : 'Marcar todas' }}
+      </button>
+    </div>
+
+    <ul class="receitas">
+      @for (r of receitas; track r.id) {
+        <li>
+          <label>
+            <input type="checkbox" [checked]="escolhidas.has(+r.id)" (change)="toggle(+r.id)" />
+            @if (r.imagem1) {
+              <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
+            }
+            <span>{{ r.titulo }}</span>
+          </label>
+        </li>
+      }
+    </ul>
+
+    <div class="rodape">
+      <button type="button" class="btn" (click)="gerar()" [disabled]="!escolhidas.size || carregando">
+        {{ carregando ? 'Montando…' : 'Montar lista (' + escolhidas.size + ')' }}
+      </button>
+    </div>
+  } @else {
+    <div class="barra">
+      <span>{{ totalRiscados }} de {{ totalItens }} no carrinho</span>
+      @if (totalRiscados) {
+        <button type="button" class="link" (click)="limparRiscados()">Desmarcar tudo</button>
+      }
+    </div>
+
+    <div class="lista">
+      @for (r of lista; track r.id) {
+        <section>
+          <h3>{{ r.titulo }}</h3>
+          @if (!r.grupos.length) {
+            <p class="sem-itens">Sem ingredientes cadastrados.</p>
+          }
+          @for (g of r.grupos; track g.titulo) {
+            @if (g.titulo && r.grupos.length > 1) {
+              <h4>{{ g.titulo }}</h4>
+            }
+            <ul>
+              @for (item of g.itens; track $index) {
+                <li>
+                  <label [class.riscado]="riscados.has(chave(r, g.titulo, item))">
+                    <input
+                      type="checkbox"
+                      [checked]="riscados.has(chave(r, g.titulo, item))"
+                      (change)="riscar(chave(r, g.titulo, item))"
+                    />
+                    <span>{{ item }}</span>
+                  </label>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    </div>
+
+    <div class="rodape">
+      <button type="button" class="btn-sec" (click)="copiar()">
+        <i class="fa-solid fa-link"></i> Copiar
+      </button>
+      <button type="button" class="btn zap" (click)="whatsapp()">
+        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+      </button>
+    </div>
+  }
+</div>

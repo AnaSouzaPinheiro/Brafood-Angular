@@ -32,11 +32,15 @@
 
   .contagem {
     flex: 1;
+    min-width: 0;
     font-weight: 600;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .acoes-massa {
     display: flex;
+    flex-shrink: 0;
     gap: 6px;
     button {
       font: inherit;
@@ -51,14 +55,19 @@
       &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.28); }
       &:disabled { opacity: 0.45; cursor: default; }
       &.perigo:not(:disabled) { background: $alert-red; }
+
+      i.fa-solid { margin-right: 4px; }
     }
   }
-  @media (max-width: 576px) {
+  // Até tablet: só os ícones nos botões, para nunca passar da largura
+  @media (max-width: 768px) {
     bottom: 12px;
+    gap: 8px;
     padding: 8px 8px 8px 16px;
     .acoes-massa button {
       padding: 9px 12px;
       span { display: none; }
+      i.fa-solid { margin-right: 0; }
     }
   }
 }

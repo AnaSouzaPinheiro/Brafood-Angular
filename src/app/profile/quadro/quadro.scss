@@ -21,52 +21,6 @@ $lift: -10px;
       margin-top: 8px;
       &:hover { text-decoration: underline; }
     }
-    .titulo-linha {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .titulo-esq {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-    .titulo-dir {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .title {
-      color: $primary-blue;
-      @include page-title;
-      .coracao { color: $alert-red; font-size: 0.8em; }
-    }
-    .acoes-quadro {
-      display: flex;
-      gap: 2px;
-      button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: $secondary-blue;
-        font-size: 1rem;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        &:hover { background: $secondary-gray; }
-      }
-    }
-    .descricao {
-      margin: 0;
-      color: $tertiary-gray;
-    }
-    .qtdReceitas {
-      color: $primary-gray;
-      font-size: 1rem;
-    }
   }
   .pilula {
     font: inherit;
@@ -86,23 +40,6 @@ $lift: -10px;
       color: white;
     }
   }
-  .form-edicao {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 480px;
-    margin: 12px 0;
-    input,
-    textarea {
-      font: inherit;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid $quaternary-gray;
-      resize: vertical;
-    }
-    input { font-size: 1.4rem; color: $primary-blue; }
-    .acoes { display: flex; gap: 8px; justify-content: flex-end; }
-  }
   .btn,
   .btn-sec {
     font: inherit;
@@ -118,7 +55,6 @@ $lift: -10px;
   }
   .btn-sec { background: transparent; color: $secondary-blue; }
   .filtros {
-    @include page-container;
     display: flex;
     gap: 6px;
     overflow-x: auto;
@@ -165,7 +101,7 @@ $lift: -10px;
     i { margin-right: 3px; }
     &.quero { background: rgba(0, 44, 153, 0.78); }
     &.feito { background: rgba(46, 157, 91, 0.92); }
-    &.nota { background: #fff3bf; color: #8a6d00; }
+    &.nota { background: rgb(255 243 191 / 92%); color: #8a6d00; }
   }
   .menu-card {
     position: relative;
@@ -184,10 +120,17 @@ $lift: -10px;
     place-items: center;
     &:hover { background: white; color: $primary-blue; }
   }
+  // Abre à direita, do lado de fora do card (o ⋯ fica a 8px da borda dele).
+  // Em telas estreitas não cabe ao lado: abre embaixo do botão.
   .dropdown {
     position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    top: 0;
+    left: calc(100% + 8px + 10px);
+    @media (max-width: 970px) {
+      top: calc(100% + 6px);
+      left: auto;
+      right: 0;
+    }
     min-width: 210px;
     list-style: none;
     margin: 0;

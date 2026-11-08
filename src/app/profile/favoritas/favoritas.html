@@ -2,13 +2,57 @@
   <bra-perfil></bra-perfil>
 
   <div class="cabecalho">
-    <h1 class="title">Minhas receitas salvas</h1>
-    <span class="qtdReceitas" *ngIf="!carregando">
-      {{ quadros.length + 1 }} {{ quadros.length === 0 ? 'quadro' : 'quadros' }}
-    </span>
+    <div class="titulo-bloco">
+      <h1 class="title">Minhas receitas salvas</h1>
+      <span class="qtdReceitas" *ngIf="!carregando">
+        {{ quadros.length + 1 }} {{ quadros.length === 0 ? 'quadro' : 'quadros' }}
+      </span>
+    </div>
+
+    @if (!carregando && quadros.length > 1) {
+      <div class="acoes-topo">
+        @if (!organizando) {
+          <button type="button" class="pilula" (click)="organizar()">
+            <i class="fa-solid fa-arrow-down-short-wide"></i> Organizar quadros
+          </button>
+        } @else {
+          <button type="button" class="pilula sem-borda" (click)="cancelarOrganizar()">Cancelar</button>
+          <button type="button" class="pilula cheia" (click)="salvarOrdem()" [disabled]="salvandoOrdem">
+            Salvar ordem
+          </button>
+        }
+      </div>
+    }
   </div>
 
-  <div class="quadros">
+  @if (organizando) {
+    <p class="dica-organizar">Arraste os quadros para mudar a ordem. O quadro Favoritos fica sempre em primeiro.</p>
+    <div
+      class="quadros organizando"
+      cdkDropList
+      cdkDropListOrientation="mixed"
+      (cdkDropListDropped)="soltar($event)"
+    >
+      @for (q of ordemEdicao; track q.id) {
+        <div class="quadro" cdkDrag cdkDragPreviewContainer="parent">
+          <div class="mosaico">
+            @for (img of mosaico(q.capas); track $index) {
+              @if (img) {
+                <img [src]="img | mediaUrl: 'thumb'" alt="" draggable="false" />
+              } @else {
+                <div class="vazio"></div>
+              }
+            }
+            <span class="alca"><i class="fa-solid fa-grip-vertical"></i></span>
+          </div>
+          <h2>{{ q.nome }}</h2>
+          <p>{{ q.total }} {{ q.total === 1 ? 'receita' : 'receitas' }}</p>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="quadros" [hidden]="organizando">
     @if (carregando) {
       @for (i of [1, 2, 3]; track i) {
         <div class="quadro skeleton"><div class="mosaico"></div></div>
@@ -39,6 +83,9 @@
               } @else {
                 <div class="vazio"></div>
               }
+            }
+            @if (q.publico) {
+              <span class="selo publico" title="Quadro público"><i class="fa-solid fa-globe"></i></span>
             }
           </div>
           <h2>{{ q.nome }}</h2>

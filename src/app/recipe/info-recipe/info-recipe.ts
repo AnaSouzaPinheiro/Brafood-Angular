@@ -11,6 +11,7 @@ import { QuadroService } from '../../services/quadro/quadro.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ToastService } from '../../services/toast/toast.service';
+import { Compartilhar } from '../../shared/compartilhar/compartilhar';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { HoverThings } from '../hover-things/hover-things';
 import { SalvarEm } from '../salvar-em/salvar-em';
@@ -18,7 +19,7 @@ import { SalvarEm } from '../salvar-em/salvar-em';
 @Component({
   selector: 'bra-info-recipe',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomButton, HoverThings, SalvarEm],
+  imports: [CommonModule, FormsModule, CustomButton, HoverThings, SalvarEm, Compartilhar],
   templateUrl: './info-recipe.html',
   styleUrl: './info-recipe.scss',
 })
@@ -194,38 +195,15 @@ export class InfoRecipe implements OnChanges {
     }
   }
 
-  shareRecipe() {
-    const url = window.location.href;
+  // ---- compartilhar (janela padrão do site, igual à dos quadros) ----------
+  compartilharAberto = false;
 
-    if (navigator.share) {
-      navigator
-        .share({
-          title: this.recipe?.titulo,
-          text: `${this.recipe?.titulo} - Confira essa receita!`,
-          url,
-        })
-        .catch(() => this.fallbackShare(url));
-
-      return;
-    }
-
-    this.fallbackShare(url);
+  get linkAtual(): string {
+    return typeof window === 'undefined' ? '' : window.location.href;
   }
 
-  fallbackShare(url: string) {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(url);
-      this.toastService.show('Link copiado!', 'success');
-      return;
-    }
-
-    const textarea = document.createElement('textarea');
-    textarea.value = url;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-
-    this.toastService.show('Link copiado!', 'success');
+  shareRecipe() {
+    this.salvarAberto = false;
+    this.compartilharAberto = true;
   }
 }

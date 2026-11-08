@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { PerfilPublico, PerfilPublicoService } from '../../services/perfil-publico/perfil-publico.service';
+import { QuadroResumo, QuadroService } from '../../services/quadro/quadro.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { RecipeCardSkeleton } from '../../shared/recipe-card-skeleton/recipe-card-skeleton';
 import { toSlug } from '../../utils/slug';
@@ -17,6 +18,7 @@ import { toSlug } from '../../utils/slug';
 })
 export class PerfilPublicoPage {
   perfil = signal<PerfilPublico | null>(null);
+  quadros = signal<QuadroResumo[]>([]);
   carregando = true;
   erro = false;
 
@@ -26,6 +28,7 @@ export class PerfilPublicoPage {
     private route: ActivatedRoute,
     private router: Router,
     private perfilService: PerfilPublicoService,
+    private quadroService: QuadroService,
   ) {}
 
   ngOnInit() {
@@ -55,12 +58,28 @@ export class PerfilPublicoPage {
         }
         this.perfil.set(data);
         this.carregando = false;
+        this.carregarQuadros(data.usuario.apelido);
       },
       error: () => {
         this.erro = true;
         this.carregando = false;
       },
     });
+  }
+
+  /** Quadros que o autor deixou públicos (só os que têm receitas). */
+  private carregarQuadros(apelido: string) {
+    this.quadros.set([]);
+    if (!apelido) return;
+    this.quadroService.publicosDoUsuario(apelido).subscribe({
+      next: (lista) => this.quadros.set(Array.isArray(lista) ? lista : []),
+      error: () => {},
+    });
+  }
+
+  /** Sempre 4 posições no mosaico. */
+  mosaico(capas: string[]): (string | null)[] {
+    return [0, 1, 2, 3].map((i) => capas[i] ?? null);
   }
 
   /** Converte receita raw da API no shape que o recipe-card espera */

@@ -15,6 +15,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'quadro/:token',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'editar-receita/:nome/:id',
     renderMode: RenderMode.Client,
   },

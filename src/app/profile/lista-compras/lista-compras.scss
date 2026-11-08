@@ -1,0 +1,189 @@
+@use "variables" as *;
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 20, 60, 0.45);
+  z-index: 1000;
+}
+
+.janela {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 22px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 50px rgba(0, 20, 80, 0.3);
+
+  @media (max-width: 768px) {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 22px 22px 0 0;
+    padding: 16px;
+  }
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 1.2rem;
+    color: $primary-blue;
+    i { margin-right: 6px; }
+  }
+
+  .voltar,
+  .fechar {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: $primary-gray;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    &:hover { background: #e6ecfa; }
+  }
+}
+
+.barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $tertiary-gray;
+  font-size: 0.9rem;
+  padding: 12px 0 8px;
+
+  .link {
+    font: inherit;
+    background: none;
+    border: none;
+    color: $tertiary-blue;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+
+.receitas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    &:hover { background: #e6ecfa; }
+  }
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: $tertiary-blue;
+  cursor: pointer;
+}
+
+.lista {
+  overflow-y: auto;
+
+  section + section { margin-top: 14px; }
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    color: $primary-blue;
+  }
+
+  h4 {
+    margin: 8px 0 2px;
+    font-size: 0.85rem;
+    color: $secondary-blue;
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 4px;
+    cursor: pointer;
+    color: $tertiary-gray;
+
+    input { margin-top: 2px; }
+
+    &.riscado span {
+      text-decoration: line-through;
+      color: $primary-gray;
+    }
+  }
+
+  .sem-itens {
+    color: $primary-gray;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 14px;
+  flex-shrink: 0;
+
+  .btn,
+  .btn-sec {
+    font: inherit;
+    border-radius: 999px;
+    padding: 9px 20px;
+    border: none;
+    cursor: pointer;
+    i { margin-right: 4px; }
+  }
+
+  .btn {
+    background: $primary-blue;
+    color: white;
+    &:disabled { opacity: 0.5; cursor: default; }
+    &.zap { background: #25d366; }
+  }
+
+  .btn-sec {
+    background: #e6ecfa;
+    color: $secondary-blue;
+  }
+}

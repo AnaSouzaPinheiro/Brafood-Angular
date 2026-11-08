@@ -1,0 +1,68 @@
+<div class="quadro-publico">
+  @if (carregando) {
+    <div class="cabecalho">
+      <div class="sk sk-titulo"></div>
+      <div class="sk sk-autor"></div>
+    </div>
+    <bra-recipe-card-skeleton [count]="4"></bra-recipe-card-skeleton>
+  } @else if (erro || !dados) {
+    <div class="erro">
+      <i class="fa-solid fa-lock"></i>
+      <p>Este quadro não existe ou não está mais público.</p>
+      <a routerLink="/home">Ir para a página inicial</a>
+    </div>
+  } @else {
+    <a class="voltar" [routerLink]="['/chef', dados.autor.apelido]">
+      <i class="fa-solid fa-arrow-left"></i> Perfil de {{ primeiroNome }}
+    </a>
+
+    <header class="cabecalho">
+      <span class="tag"><i class="fa-solid fa-table-cells-large"></i> Quadro</span>
+      <div class="titulo-desc">
+        <h1>{{ dados.quadro.nome }}</h1>
+        @if (dados.quadro.descricao) {
+          <p class="descricao">{{ dados.quadro.descricao }}</p>
+        }
+      </div>
+      <div class="meta">
+        <a class="autor" [routerLink]="['/chef', dados.autor.apelido]">
+          @if (dados.autor.foto) {
+            <img [src]="dados.autor.foto | mediaUrl" alt="" />
+          } @else {
+            <span class="avatar"><i class="fa-solid fa-user"></i></span>
+          }
+          <small>&#64;{{ dados.autor.apelido }}</small>
+        </a>
+        <span class="ponto" aria-hidden="true">·</span>
+        <span class="qtd">
+          {{ dados.receitas.length }} {{ dados.receitas.length === 1 ? 'receita' : 'receitas' }}
+        </span>
+        <span class="ponto" aria-hidden="true">·</span>
+        <button type="button" class="compartilhar" (click)="compartilharAberto = true">
+          <i class="fa-solid fa-share-nodes"></i> Compartilhar
+        </button>
+      </div>
+    </header>
+
+    <hr class="divisoria" />
+
+    @if (dados.receitas.length) {
+      <div class="cards">
+        @for (r of dados.receitas; track r.id) {
+          <bra-recipe-card [recipe]="r"></bra-recipe-card>
+        }
+      </div>
+    } @else {
+      <p class="vazio">Este quadro ainda não tem receitas.</p>
+    }
+  }
+</div>
+
+@if (compartilharAberto && dados) {
+  <bra-compartilhar
+    [titulo]="'Compartilhar &quot;' + dados.quadro.nome + '&quot;'"
+    [texto]="'Olha o quadro &quot;' + dados.quadro.nome + '&quot; de ' + dados.autor.nome + ' no BraFood:'"
+    [url]="linkAtual"
+    (fechar)="compartilharAberto = false"
+  ></bra-compartilhar>
+}

@@ -110,9 +110,17 @@
     outline-offset: -3px;
   }
 
-  .resume {
-    border-radius: 12px;
-    box-shadow: 0 0 0 3px $tertiary-blue;
+  // O resumo começa 50px antes do fim da imagem (top 160 vs. imagem 210).
+  // A borda dele só aparece da junção para baixo — assim o contorno
+  // segue o formato do card (imagem + resumo), sem riscar a foto.
+  .resume::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 3px solid $tertiary-blue;
+    border-radius: 14px;
+    clip-path: inset(53px 0 0 0);
+    pointer-events: none;
   }
 
   .caixa-selecao {

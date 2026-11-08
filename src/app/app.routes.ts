@@ -51,6 +51,14 @@ export const routes: Routes = [
       import('./profile/quadro/quadro').then((m) => m.Quadro),
     canActivate: [AuthGuard],
   },
+  {
+    // Quadro compartilhado por link (público, só leitura, sem login)
+    path: 'quadro/:token',
+    loadComponent: () =>
+      import('./profile/quadro-publico/quadro-publico').then(
+        (m) => m.QuadroPublicoPage,
+      ),
+  },
   // Links antigos com id continuam funcionando
   { path: 'editar-perfil/:id', redirectTo: 'perfil/editar' },
   { path: 'minhas-receitas/:id', redirectTo: 'perfil/receitas' },

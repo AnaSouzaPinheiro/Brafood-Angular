@@ -12,6 +12,7 @@ const solid = [
   'user', 'utensils', 'video', 'x', 'xmark',
   // quadros de receitas salvas
   'arrow-left', 'check', 'circle', 'ellipsis', 'pen', 'table-cells-large', 'trash',
+  'cart-shopping', 'grip-vertical', 'link', 'globe', 'arrow-down-short-wide',
 ];
 
 const regular = [

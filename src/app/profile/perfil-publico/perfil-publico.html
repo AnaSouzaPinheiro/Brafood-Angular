@@ -67,11 +67,35 @@
 
   <hr class="perfil-divisoria" />
 
+  <!-- Quadros públicos do autor -->
+  @if (quadros().length) {
+    <section class="perfil-quadros">
+      <h2 class="receitas-titulo">Quadros</h2>
+      <div class="quadros-grid">
+        @for (q of quadros(); track q.id) {
+          <a class="quadro" [routerLink]="['/quadro', q.token_publico]">
+            <div class="mosaico">
+              @for (img of mosaico(q.capas); track $index) {
+                @if (img) {
+                  <img [src]="img | mediaUrl: 'thumb'" alt="" loading="lazy" />
+                } @else {
+                  <div class="vazio"></div>
+                }
+              }
+            </div>
+            <h3>{{ q.nome }}</h3>
+            <p>{{ q.total }} {{ q.total === 1 ? 'receita' : 'receitas' }}</p>
+          </a>
+        }
+      </div>
+    </section>
+
+    <hr class="perfil-divisoria" />
+  }
+
   <!-- Receitas do autor -->
   <section class="perfil-receitas">
-    <h2 class="receitas-titulo">
-      Receitas de {{ perfil()!.usuario.nome }}
-    </h2>
+    <h2 class="receitas-titulo">Receitas</h2>
 
     <div class="receitas-grid" *ngIf="perfil()!.receitas.length > 0">
       <bra-recipe-card

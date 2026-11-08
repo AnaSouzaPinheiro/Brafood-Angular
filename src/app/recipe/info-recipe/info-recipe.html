@@ -127,3 +127,12 @@
     </div>
   </div>
 </div>
+
+@if (compartilharAberto) {
+  <bra-compartilhar
+    [titulo]="'Compartilhar ' + (recipe?.titulo ?? 'receita')"
+    [texto]="(recipe?.titulo ?? '') + ' - Confira essa receita!'"
+    [url]="linkAtual"
+    (fechar)="compartilharAberto = false"
+  ></bra-compartilhar>
+}

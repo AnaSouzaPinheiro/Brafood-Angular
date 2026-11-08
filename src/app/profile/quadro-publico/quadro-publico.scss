@@ -1,0 +1,173 @@
+@use "variables" as *;
+@use "layout" as *;
+@use "grid" as *;
+
+.quadro-publico {
+  @include flex-column;
+  margin-bottom: 48px;
+}
+
+/* Cabeçalho centralizado, no estilo do perfil do chef */
+.cabecalho {
+  @include page-container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding-top: 8px;
+  margin-bottom: 0 !important;
+
+  .titulo-desc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  .titulo-desc .descricao {
+    padding-left: 18px;
+    border-left: 2px solid $secondary-gray;
+    text-align: left;
+  }
+
+  .compartilhar {
+    font: inherit;
+    font-size: 0.95rem;
+    border: none;
+    background: none;
+    color: $tertiary-blue;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+
+    i { margin-right: 4px; }
+    &:hover { background: #e6ecfa; }
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #e6ecfa;
+    color: $secondary-blue;
+
+    i { margin-right: 4px; }
+  }
+
+  h1 {
+    margin: 0;
+    color: $primary-blue;
+    @include page-title;
+    line-height: 1.15;
+  }
+
+  .descricao {
+    margin: 0;
+    max-width: 60ch;
+    color: $tertiary-gray;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+    color: $primary-gray;
+
+    .ponto { opacity: 0.6; }
+  }
+
+  // "Chip" do autor (clicável, leva ao perfil)
+  .autor {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 4px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: $tertiary-gray;
+    transition: box-shadow 0.2s;
+
+    img,
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      background: $secondary-gray;
+      color: $secondary-blue;
+      font-size: 0.8rem;
+    }
+
+    .nome { color: $primary-blue; font-weight: 600; }
+    small { color: $primary-gray; }
+
+    &:hover { box-shadow: 0 4px 16px rgba(0, 44, 153, 0.2); }
+  }
+
+  .sk {
+    border-radius: 10px;
+    background: $secondary-gray;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .sk-titulo { width: 320px; max-width: 80%; height: 40px; }
+  .sk-autor { width: 200px; height: 24px; }
+}
+
+/* Mesma divisória do perfil do chef */
+.divisoria {
+  border: none;
+  height: 1px;
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto 24px;
+  background: linear-gradient(90deg, transparent, $secondary-gray 15%, $secondary-gray 85%, transparent);
+}
+
+.voltar {
+  @include page-container;
+  align-self: flex-start;
+  // padding (e não margin): o page-container redefine a margem inteira
+  // nos breakpoints e zerava o espaço em cima.
+  padding-top: 28px;
+  margin-bottom: 0 !important;
+  color: $secondary-blue;
+  text-decoration: none;
+  font-size: 0.95rem;
+
+  &:hover { text-decoration: underline; }
+}
+
+.cards {
+  @include recipe-grid;
+  align-self: center;
+}
+
+.vazio,
+.erro {
+  @include page-container;
+  text-align: center;
+  color: $primary-gray;
+  padding: 60px 0;
+}
+
+.erro {
+  > i { font-size: 2.2rem; }
+  a { color: $tertiary-blue; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}

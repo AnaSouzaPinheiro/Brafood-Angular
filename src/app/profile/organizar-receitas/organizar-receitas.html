@@ -1,0 +1,52 @@
+<div class="fundo" (click)="fechar.emit()"></div>
+
+<div class="janela" role="dialog" aria-modal="true" aria-label="Organizar receitas">
+  <div class="topo">
+    <h2>Organizar receitas</h2>
+    <button type="button" class="fechar" (click)="fechar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <p class="dica">Arraste para mudar a ordem em que as receitas aparecem no quadro.</p>
+
+  <div
+    class="grade"
+    cdkDropList
+    cdkDropListOrientation="mixed"
+    [cdkDropListData]="itens"
+    (cdkDropListDropped)="soltar($event)"
+  >
+    @for (r of itens; track r.id; let i = $index) {
+      <div class="item" cdkDrag cdkDragPreviewContainer="parent" [cdkDragData]="r">
+        <div class="foto">
+          @if (r.imagem1) {
+            <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" draggable="false" />
+          } @else {
+            <div class="sem-img"><i class="fa-solid fa-utensils"></i></div>
+          }
+          <span class="posicao">{{ i + 1 }}</span>
+          <span class="alca"><i class="fa-solid fa-grip-vertical"></i></span>
+        </div>
+        <span class="nome">{{ r.titulo }}</span>
+        <div class="setas">
+          <button type="button" (click)="mover(i, -1)" [disabled]="i === 0" [attr.aria-label]="'Mover ' + r.titulo + ' para antes'">
+            <i class="fa-solid fa-caret-left"></i>
+          </button>
+          <button
+            type="button"
+            (click)="mover(i, 1)"
+            [disabled]="i === itens.length - 1"
+            [attr.aria-label]="'Mover ' + r.titulo + ' para depois'"
+          >
+            <i class="fa-solid fa-caret-right"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="rodape">
+    <button type="button" class="btn-sec" (click)="fechar.emit()">Cancelar</button>
+    <button type="button" class="btn" (click)="salvar()" [disabled]="salvando">Salvar ordem</button>
+  </div>
+</div>

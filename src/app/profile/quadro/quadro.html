@@ -6,66 +6,86 @@
       <i class="fa-solid fa-arrow-left"></i> Meus quadros
     </a>
 
-    @if (!editando) {
-      <div class="titulo-linha">
-        <div class="titulo-esq">
-          <h1 class="title">
-            @if (ehFavoritos) { <i class="fa-solid fa-heart coracao"></i> }
-            {{ nome }}
-          </h1>
-          @if (!ehFavoritos && !carregando && !selecionando) {
-            <div class="acoes-quadro">
-              <button type="button" (click)="abrirEdicao()" aria-label="Editar quadro" title="Editar quadro">
-                <i class="fa-solid fa-pen"></i>
-              </button>
-              <button type="button" (click)="excluirQuadro()" aria-label="Excluir quadro" title="Excluir quadro">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
+    <section class="capa">
+      <div class="capa-mosaico" aria-hidden="true">
+        @for (img of mosaicoCapa; track $index) {
+          @if (img) {
+            <img [src]="img | mediaUrl: 'thumb'" alt="" />
+          } @else {
+            <div class="vazio"></div>
           }
-        </div>
-
-        @if (!carregando && receitas.length > 0) {
-          <div class="titulo-dir">
-            @if (!selecionando) {
-              @if (!ehFavoritos) {
-                <button type="button" class="pilula" (click)="seletorAberto = true">
-                  <i class="fa-solid fa-plus"></i> Adicionar receitas
-                </button>
-              }
-              <button type="button" class="pilula" (click)="entrarSelecao()">
-                <i class="fa-regular fa-square-check"></i> Selecionar
-              </button>
-            } @else {
-              <button type="button" class="pilula" (click)="toggleTodas()">
-                {{ todasSelecionadas ? 'Desmarcar todas' : 'Selecionar todas' }}
-              </button>
-            }
-          </div>
+        }
+        @if (ehFavoritos) {
+          <span class="selo-fav"><i class="fa-solid fa-heart"></i></span>
         }
       </div>
-      @if (descricao) { <p class="descricao">{{ descricao }}</p> }
-      @if (!carregando) {
-        <span class="qtdReceitas">
-          {{ receitas.length }} {{ receitas.length === 1 ? 'receita' : 'receitas' }}
-        </span>
-      }
-    } @else {
-      <form class="form-edicao" (ngSubmit)="salvarEdicao()">
-        <input name="nome" [(ngModel)]="nomeEdit" maxlength="60" required aria-label="Nome do quadro" />
-        <textarea
-          name="descricao"
-          [(ngModel)]="descricaoEdit"
-          maxlength="255"
-          rows="2"
-          placeholder="Descrição (opcional)"
-        ></textarea>
-        <div class="acoes">
-          <button type="button" class="btn-sec" (click)="editando = false">Cancelar</button>
-          <button type="submit" class="btn" [disabled]="!nomeEdit.trim()">Salvar</button>
+
+      <div class="capa-info">
+        <div class="titulo-desc">
+          <h1 class="title">{{ nome }}</h1>
+          @if (descricao) {
+            <p class="descricao">{{ descricao }}</p>
+          }
         </div>
-      </form>
-    }
+        @if (!carregando) {
+          <p class="meta">
+            <span>{{ receitas.length }} {{ receitas.length === 1 ? 'receita' : 'receitas' }}</span>
+            @if (!ehFavoritos) {
+              <span class="ponto" aria-hidden="true">·</span>
+              @if (publico) {
+                <span class="vis publico"><i class="fa-solid fa-globe"></i> Público</span>
+              } @else {
+                <span class="vis"><i class="fa-solid fa-lock"></i> Privado</span>
+              }
+            }
+          </p>
+        }
+      </div>
+
+      @if (!ehFavoritos && !carregando) {
+        <div class="capa-menu">
+          <button
+            type="button"
+            class="mais"
+            (click)="toggleCapaMenu($event)"
+            aria-label="Opções do quadro"
+            title="Opções do quadro"
+            [attr.aria-expanded]="capaMenu"
+          >
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+          @if (capaMenu) {
+            <ul class="menu-capa" role="menu" (click)="$event.stopPropagation()">
+              <li>
+                <button type="button" role="menuitem" (click)="capaMenu = false; editarAberto = true">
+                  <i class="fa-solid fa-pen"></i> Editar quadro
+                </button>
+              </li>
+              @if (publico && tokenPublico) {
+                <li>
+                  <button type="button" role="menuitem" (click)="capaMenu = false; compartilharAberto = true">
+                    <i class="fa-solid fa-share-nodes"></i> Compartilhar
+                  </button>
+                </li>
+              }
+              @if (receitas.length > 1) {
+                <li>
+                  <button type="button" role="menuitem" (click)="capaMenu = false; organizarAberto = true">
+                    <i class="fa-solid fa-arrow-down-short-wide"></i> Organizar receitas
+                  </button>
+                </li>
+              }
+              <li class="sep"></li>
+              <li>
+                <button type="button" role="menuitem" class="perigo" (click)="capaMenu = false; excluirQuadro()">
+                  <i class="fa-solid fa-trash"></i> Excluir quadro
+                </button>
+              </li>
+            </ul>
+          }
+        </div>
+      }
+    </section>
   </div>
 
   <bra-recipe-card-skeleton *ngIf="carregando" [count]="6"></bra-recipe-card-skeleton>
@@ -86,12 +106,34 @@
         }
       </div>
     } @else {
-      <div class="filtros" role="group" aria-label="Filtrar por status">
-        @for (f of filtrosStatus; track f.valor) {
-          <button type="button" [class.ativo]="filtroStatus === f.valor" (click)="filtrar(f.valor)">
-            {{ f.rotulo }} <span>{{ contar(f.valor) }}</span>
-          </button>
-        }
+      <div class="barra-quadro">
+        <div class="filtros" role="group" aria-label="Filtrar por status">
+          @for (f of filtrosStatus; track f.valor) {
+            <button type="button" [class.ativo]="filtroStatus === f.valor" (click)="filtrar(f.valor)">
+              {{ f.rotulo }} <span>{{ contar(f.valor) }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="acoes-barra">
+          @if (!selecionando) {
+            @if (!ehFavoritos) {
+              <button type="button" class="pilula" (click)="comprasAberta = true">
+                <i class="fa-solid fa-cart-shopping"></i> Lista de compras
+              </button>
+              <button type="button" class="pilula" (click)="seletorAberto = true">
+                <i class="fa-solid fa-plus"></i> Adicionar
+              </button>
+            }
+            <button type="button" class="pilula" (click)="entrarSelecao()">
+              <i class="fa-regular fa-square-check"></i> Selecionar
+            </button>
+          } @else {
+            <button type="button" class="pilula" (click)="toggleTodas()">
+              {{ todasSelecionadas ? 'Desmarcar todas' : 'Selecionar todas' }}
+            </button>
+          }
+        </div>
       </div>
 
       @if (filtradas.length === 0) {
@@ -233,6 +275,47 @@
     (criar)="enviarParaNovo($event)"
     (cancelar)="acaoDestino = null"
   ></bra-escolher-quadro>
+}
+
+@if (compartilharAberto && tokenPublico) {
+  <bra-compartilhar
+    [titulo]="'Compartilhar &quot;' + nome + '&quot;'"
+    [texto]="'Olha meu quadro &quot;' + nome + '&quot; no BraFood:'"
+    [url]="linkPublico"
+    explicacao="Quem tiver o link pode ver as receitas deste quadro."
+    aviso="Para deixar privado, use Editar quadro."
+    (fechar)="compartilharAberto = false"
+  ></bra-compartilhar>
+}
+
+@if (editarAberto && idQuadro !== null) {
+  <bra-editar-quadro
+    [idQuadro]="idQuadro"
+    [nome]="nome"
+    [descricao]="descricao"
+    [publico]="publico"
+    [token]="tokenPublico"
+    (salvo)="aplicarEdicao($event)"
+    (fechar)="editarAberto = false"
+  ></bra-editar-quadro>
+}
+
+@if (comprasAberta && idQuadro !== null) {
+  <bra-lista-compras
+    [idQuadro]="idQuadro"
+    [nomeQuadro]="nome"
+    [receitas]="receitas"
+    (fechar)="comprasAberta = false"
+  ></bra-lista-compras>
+}
+
+@if (organizarAberto && idQuadro !== null) {
+  <bra-organizar-receitas
+    [idQuadro]="idQuadro"
+    [receitas]="receitas"
+    (salvo)="aplicarOrdem($event)"
+    (fechar)="organizarAberto = false"
+  ></bra-organizar-receitas>
 }
 
 @if (seletorAberto) {
