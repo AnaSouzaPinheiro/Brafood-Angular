@@ -9,6 +9,15 @@
       microfone para contar sua receita como se estivesse falando com alguém. A
       IA vai organizar ingredientes, etapas, categorias e porções para você.
     </p>
+
+    <!-- Dica no topo: visível assim que a página abre, sem rolar -->
+    <p class="hint">
+      <i class="fa-regular fa-lightbulb"></i>
+      <span>
+        <strong>Dica:</strong> mencione ingredientes, quantidades, tempo de
+        preparo e dificuldade — mais detalhes, melhor resultado.
+      </span>
+    </p>
   </div>
 
   <form [formGroup]="form">
@@ -25,18 +34,17 @@
         }"
       ></bra-input>
 
-      <!-- Contador / progresso de caracteres -->
-      <div class="char-counter" [class.char-ok]="charFaltando === 0">
-        <ng-container *ngIf="charFaltando > 0; else suficiente">
-          <i class="fa-solid fa-pen-to-square"></i>
-          Escreva mais {{ charFaltando }} caractere{{ charFaltando === 1 ? '' :
-          's' }} para a IA ter contexto suficiente.
-        </ng-container>
-        <ng-template #suficiente>
-          <i class="fa-solid fa-circle-check"></i>
-          Ótimo! A IA tem informações suficientes para gerar sua receita.
-        </ng-template>
-      </div>
+      <!-- Contador: só aparece depois que a pessoa começa a digitar,
+           no canto superior direito (na linha do rótulo do campo). -->
+      @if (charCount > 0) {
+        <div class="char-counter" [class.char-ok]="charFaltando === 0" aria-live="polite">
+          @if (charFaltando > 0) {
+            Faltam {{ charFaltando }} caractere{{ charFaltando === 1 ? '' : 's' }}
+          } @else {
+            <i class="fa-solid fa-circle-check"></i> Pronto para gerar
+          }
+        </div>
+      }
     </div>
 
     <div class="actions">
@@ -61,11 +69,5 @@
         (clicked)="gerarReceita()"
       ></bra-custom-button>
     </div>
-
-    <span class="hint">
-      <i class="fa-regular fa-lightbulb"></i> Dica: mencione ingredientes,
-      quantidades, tempo de preparo e dificuldade — mais detalhes, melhor
-      resultado.
-    </span>
   </form>
 </div>

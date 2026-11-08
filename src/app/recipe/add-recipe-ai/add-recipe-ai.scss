@@ -2,7 +2,7 @@
 @use "layout" as *;
 
 .container {
-  gap: 40px;
+  gap: 24px;
   justify-content: center;
   margin-inline: auto;
 
@@ -13,7 +13,7 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 
   h1 {
     color: $primary-blue;
@@ -22,14 +22,29 @@
   }
 
   p {
+    margin: 0;
     color: $tertiary-gray;
     line-height: 1.8;
     font-size: 1.05rem;
   }
 }
 
+.textarea-wrapper {
+  position: relative;
+}
+
+// Na linha do rótulo "Descreva sua receita*", à direita
 .char-counter {
-  margin-top: 15px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.82rem;
+  color: $primary-gray;
+  white-space: nowrap;
+
+  &.char-ok {
+    color: #2e9e5b;
+  }
 }
 
 .badge {
@@ -111,9 +126,26 @@ form {
   }
 }
 
-.hint {
-  color: $primary-gray;
-  line-height: 1.6;
+.header p.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 8px 14px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #e6ecfa;
+  color: $secondary-blue;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-align: left;
+
+  i {
+    margin-top: 3px;
+    color: $primary-blue;
+  }
 }
 
 @media (max-width: 768px) {
