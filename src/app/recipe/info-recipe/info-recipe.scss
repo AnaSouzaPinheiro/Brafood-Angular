@@ -235,3 +235,96 @@
 .item.menu-aberto .hover {
   display: none !important;
 }
+
+// Com a nota embaixo, a faixa azul deixa de ser o fim do card: linha reta
+.description.sem-fim {
+  border-radius: 0;
+}
+
+// Nota pessoal da usuária (só ela vê) — último bloco do card
+.minha-nota {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: -20px; // encosta na faixa azul (o card tem gap de 20px)
+  padding: 14px 30px 18px;
+  border-radius: 0 0 25px 25px;
+  background: #fff8db;
+  color: $tertiary-gray;
+  text-align: left;
+
+  .nota-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .rotulo {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #8a6d00;
+  }
+
+  .texto {
+    margin: 6px 0 0;
+    white-space: pre-line;
+    cursor: text;
+  }
+
+  .link {
+    font: inherit;
+    font-size: 0.85rem;
+    background: none;
+    border: none;
+    color: #8a6d00;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+
+    &:hover { background: rgba(138, 109, 0, 0.1); }
+    &.perigo { color: $alert-red; }
+  }
+
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 8px;
+    font: inherit;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #e8d48a;
+    background: white;
+    resize: vertical;
+
+    &:focus {
+      outline: 2px solid #e0b400;
+      border-color: transparent;
+    }
+  }
+
+  .nota-acoes {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+
+    .espaco { flex: 1; }
+
+    .salvar {
+      font: inherit;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 18px;
+      background: $primary-blue;
+      color: white;
+      cursor: pointer;
+
+      &:disabled { opacity: 0.5; }
+    }
+  }
+}
+
+.nota-icon {
+  font-size: 18px;
+  color: #c79a00;
+}

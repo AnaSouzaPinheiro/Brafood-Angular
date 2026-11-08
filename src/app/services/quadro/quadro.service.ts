@@ -20,6 +20,15 @@ export interface QuadroDetalhe {
   receitas: any[];
 }
 
+export type StatusReceita = 'quero_fazer' | 'ja_fiz' | null;
+
+export interface EstadoReceita {
+  favorito: boolean;
+  status: StatusReceita;
+  nota: string | null;
+  quadros: number[];
+}
+
 export interface QuadroResposta {
   success: boolean;
   id?: number;
@@ -39,16 +48,24 @@ export class QuadroService extends BaseService {
 
   /** Se a receita é favorita e em quais quadros ela está. */
   estadoDaReceita(idReceita: number) {
-    return this.httpClient.get<{ favorito: boolean; quadros: number[] }>(
+    return this.httpClient.get<EstadoReceita>(
       this.url(`quadros.php?idReceita=${idReceita}`),
     );
   }
 
-  criar(nome: string, descricao?: string | null, idReceita?: number) {
+  /** Cria o quadro, opcionalmente já com receitas dentro. */
+  criar(nome: string, descricao?: string | null, idsReceitas: number[] = []) {
     return this.httpClient.post<QuadroResposta>(this.url('quadros.php'), {
       nome,
       descricao,
-      idReceita,
+      idsReceitas,
+    });
+  }
+
+  adicionarVarias(idQuadro: number, idsReceitas: number[]) {
+    return this.httpClient.post<QuadroResposta>(this.url('quadros.php'), {
+      idQuadro,
+      idsReceitas,
     });
   }
 
@@ -70,6 +87,12 @@ export class QuadroService extends BaseService {
     return this.httpClient.post<QuadroResposta>(this.url('quadros.php'), {
       idQuadro,
       idReceita,
+    });
+  }
+
+  removerVarias(idQuadro: number, idsReceitas: number[]) {
+    return this.httpClient.request<QuadroResposta>('DELETE', this.url('quadros.php'), {
+      body: { idQuadro, idsReceitas },
     });
   }
 

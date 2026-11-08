@@ -1,6 +1,24 @@
-<div class="receita-card" *ngIf="mappedRecipe" [routerLink]="mappedRecipe.url">
+<div
+  class="receita-card"
+  *ngIf="mappedRecipe"
+  [routerLink]="selecionavel ? null : mappedRecipe.url"
+  (click)="onClickCard($event)"
+  [class.selecionavel]="selecionavel"
+  [class.selecionado]="selecionado"
+  [class.ativo]="ativo"
+  [attr.role]="selecionavel ? 'checkbox' : null"
+  [attr.aria-checked]="selecionavel ? selecionado : null"
+  [attr.tabindex]="selecionavel ? 0 : null"
+  (keydown.space)="selecionavel && onClickCard($event)"
+  (keydown.enter)="selecionavel && onClickCard($event)"
+>
   <div class="infos">
     <h2 class="categoria">{{ labelDoCard }}</h2>
+
+    <!-- Marcadores extras (ex.: "Já fiz") logo abaixo da categoria -->
+    <div class="selos-extra">
+      <ng-content select="[cardSelos]"></ng-content>
+    </div>
 
     <ng-container *ngIf="mappedRecipe.img && !imgBroken; else imgFallback">
       <img
@@ -19,6 +37,17 @@
         <img src="assets/imagens/icones/foto.png" alt="" loading="lazy" />
       </div>
     </ng-template>
+
+    <!-- Ações extras (ex.: menu ⋯) no canto da imagem -->
+    @if (!selecionavel) {
+      <div class="acoes-extra">
+        <ng-content select="[cardAcoes]"></ng-content>
+      </div>
+    } @else {
+      <span class="caixa-selecao" aria-hidden="true">
+        <i class="fa-solid fa-check"></i>
+      </span>
+    }
 
     <span
       [hidden]="myRecipe === false"

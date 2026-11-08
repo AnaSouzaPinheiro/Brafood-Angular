@@ -10,11 +10,15 @@ const solid = [
   'pen-to-square', 'plus', 'reply', 'robot', 'search', 'share-nodes',
   'spinner', 'star', 'star-half-stroke', 'stop', 'triangle-exclamation',
   'user', 'utensils', 'video', 'x', 'xmark',
+  // quadros de receitas salvas
+  'arrow-left', 'check', 'circle', 'ellipsis', 'pen', 'table-cells-large', 'trash',
 ];
 
 const regular = [
   'clock', 'lightbulb', 'pen-to-square', 'trash-can', 'envelope', 'user',
   'star', 'heart',
+  // quadros de receitas salvas
+  'bookmark', 'note-sticky', 'square-check',
 ];
 
 const brands = [

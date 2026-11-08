@@ -123,6 +123,19 @@
 .fa-x::before { content: "\58"; }
 .fa-xmark::before { content: "\f00d"; }
 
+// quadros de receitas salvas (solid)
+.fa-arrow-left::before { content: "\f060"; }
+.fa-check::before { content: "\f00c"; }
+.fa-circle::before { content: "\f111"; }
+.fa-ellipsis::before { content: "\f141"; }
+.fa-pen::before { content: "\f304"; }
+.fa-table-cells-large::before { content: "\f009"; }
+.fa-trash::before { content: "\f1f8"; }
+// quadros de receitas salvas (regular)
+.fa-bookmark::before { content: "\f02e"; }
+.fa-note-sticky::before { content: "\f249"; }
+.fa-square-check::before { content: "\f14a"; }
+
 // fa-pen-to-square e fa-user existem em solid e regular; a regra de peso/família
 // já é definida por .fa-solid / .fa-regular, então o content pode ser compartilhado.
 .fa-pen-to-square::before { content: "\f044"; }

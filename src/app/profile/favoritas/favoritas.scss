@@ -149,6 +149,21 @@
       }
     }
 
+    .escolher {
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1.5px dashed $quaternary-blue;
+      background: none;
+      color: $secondary-blue;
+      cursor: pointer;
+
+      i { margin-right: 6px; }
+      &:hover { background: #e6ecfa; }
+    }
+
     .acoes {
       display: flex;
       justify-content: flex-end;

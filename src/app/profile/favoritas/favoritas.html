@@ -75,8 +75,17 @@
             maxlength="255"
             rows="2"
           ></textarea>
+          <button type="button" class="escolher" (click)="seletorAberto = true">
+            <i class="fa-solid fa-table-cells-large"></i>
+            @if (idsEscolhidos.length) {
+              {{ idsEscolhidos.length }}
+              {{ idsEscolhidos.length === 1 ? 'receita escolhida' : 'receitas escolhidas' }} · alterar
+            } @else {
+              Escolher receitas salvas (opcional)
+            }
+          </button>
           <div class="acoes">
-            <button type="button" class="btn-sec" (click)="criando = false">Cancelar</button>
+            <button type="button" class="btn-sec" (click)="criando = false; idsEscolhidos = []">Cancelar</button>
             <button type="submit" class="btn" [disabled]="!novoNome.trim() || salvando">
               Criar
             </button>
@@ -86,3 +95,13 @@
     }
   </div>
 </div>
+
+@if (seletorAberto) {
+  <bra-seletor-receitas
+    titulo="Receitas para o quadro"
+    textoConfirmar="Escolher"
+    [selecionadasIniciais]="idsEscolhidos"
+    (confirmar)="idsEscolhidos = $event; seletorAberto = false"
+    (cancelar)="seletorAberto = false"
+  ></bra-seletor-receitas>
+}

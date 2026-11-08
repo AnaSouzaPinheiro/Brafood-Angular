@@ -1,4 +1,4 @@
-<div class="myRecipes">
+<div class="myRecipes" [class.com-barra]="selecionando">
   <bra-perfil></bra-perfil>
 
   <div class="cabecalho">
@@ -8,18 +8,39 @@
 
     @if (!editando) {
       <div class="titulo-linha">
-        <h1 class="title">
-          @if (ehFavoritos) { <i class="fa-solid fa-heart coracao"></i> }
-          {{ nome }}
-        </h1>
-        @if (!ehFavoritos && !carregando) {
-          <div class="acoes-quadro">
-            <button type="button" (click)="abrirEdicao()" aria-label="Editar quadro">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button type="button" (click)="excluirQuadro()" aria-label="Excluir quadro">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+        <div class="titulo-esq">
+          <h1 class="title">
+            @if (ehFavoritos) { <i class="fa-solid fa-heart coracao"></i> }
+            {{ nome }}
+          </h1>
+          @if (!ehFavoritos && !carregando && !selecionando) {
+            <div class="acoes-quadro">
+              <button type="button" (click)="abrirEdicao()" aria-label="Editar quadro" title="Editar quadro">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button type="button" (click)="excluirQuadro()" aria-label="Excluir quadro" title="Excluir quadro">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (!carregando && receitas.length > 0) {
+          <div class="titulo-dir">
+            @if (!selecionando) {
+              @if (!ehFavoritos) {
+                <button type="button" class="pilula" (click)="seletorAberto = true">
+                  <i class="fa-solid fa-plus"></i> Adicionar receitas
+                </button>
+              }
+              <button type="button" class="pilula" (click)="entrarSelecao()">
+                <i class="fa-regular fa-square-check"></i> Selecionar
+              </button>
+            } @else {
+              <button type="button" class="pilula" (click)="toggleTodas()">
+                {{ todasSelecionadas ? 'Desmarcar todas' : 'Selecionar todas' }}
+              </button>
+            }
           </div>
         }
       </div>
@@ -58,23 +79,110 @@
           <i class="fa-regular fa-heart"></i> para salvá-la
           {{ ehFavoritos ? '' : 'neste quadro' }}.
         </p>
+        @if (!ehFavoritos) {
+          <button type="button" class="btn" (click)="seletorAberto = true">
+            <i class="fa-solid fa-plus"></i> Escolher entre minhas receitas salvas
+          </button>
+        }
       </div>
     } @else {
+      <div class="filtros" role="group" aria-label="Filtrar por status">
+        @for (f of filtrosStatus; track f.valor) {
+          <button type="button" [class.ativo]="filtroStatus === f.valor" (click)="filtrar(f.valor)">
+            {{ f.rotulo }} <span>{{ contar(f.valor) }}</span>
+          </button>
+        }
+      </div>
+
+      @if (filtradas.length === 0) {
+        <p class="vazio-filtro">Nenhuma receita com esse status.</p>
+      }
+
       <div class="content">
         <div class="cards">
           @for (recipe of receitasPagina; track recipe.id) {
-            <div class="card-wrap">
-              <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
-              <button
-                type="button"
-                class="remover"
-                (click)="remover(recipe)"
-                [attr.aria-label]="ehFavoritos ? 'Remover dos favoritos' : 'Remover do quadro'"
-                [title]="ehFavoritos ? 'Remover dos favoritos' : 'Remover do quadro'"
-              >
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
+            <bra-recipe-card
+              [recipe]="recipe"
+              [selecionavel]="selecionando"
+              [selecionado]="selecionadas.has(+recipe.id)"
+              [ativo]="menuAberto === +recipe.id"
+              (alternarSelecao)="toggleSelecao(+recipe.id)"
+            >
+              <!-- Marcadores dentro do card, abaixo da categoria -->
+              @if (recipe.status === 'quero_fazer') {
+                <span cardSelos class="marcador quero">
+                  <i class="fa-regular fa-bookmark"></i> Quero fazer
+                </span>
+              } @else if (recipe.status === 'ja_fiz') {
+                <span cardSelos class="marcador feito"><i class="fa-solid fa-check"></i> Já fiz</span>
+              }
+              @if (recipe.nota) {
+                <span cardSelos class="marcador nota" [title]="recipe.nota">
+                  <i class="fa-regular fa-note-sticky"></i> Nota
+                </span>
+              }
+
+              <!-- Menu ⋯ no canto da imagem -->
+              <div cardAcoes class="menu-card">
+                <button
+                  type="button"
+                  class="mais"
+                  (click)="toggleMenu($event, +recipe.id)"
+                  aria-label="Opções da receita"
+                  title="Opções"
+                  [attr.aria-expanded]="menuAberto === +recipe.id"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+
+                @if (menuAberto === +recipe.id) {
+                  <ul class="dropdown" role="menu" (click)="$event.stopPropagation(); $event.preventDefault()">
+                    <li>
+                      <button type="button" role="menuitem" (click)="abrirDestino('adicionar', [+recipe.id])">
+                        <i class="fa-solid fa-plus"></i> Adicionar a outro quadro
+                      </button>
+                    </li>
+                    @if (!ehFavoritos) {
+                      <li>
+                        <button type="button" role="menuitem" (click)="abrirDestino('mover', [+recipe.id])">
+                          <i class="fa-solid fa-arrow-right"></i> Mover para…
+                        </button>
+                      </li>
+                    }
+                    <li class="sep"></li>
+                    <li>
+                      <button
+                        type="button"
+                        role="menuitemcheckbox"
+                        [attr.aria-checked]="recipe.status === 'quero_fazer'"
+                        [class.marcado]="recipe.status === 'quero_fazer'"
+                        (click)="marcarStatus(recipe, 'quero_fazer')"
+                      >
+                        <i class="fa-regular fa-bookmark"></i> Quero fazer
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        role="menuitemcheckbox"
+                        [attr.aria-checked]="recipe.status === 'ja_fiz'"
+                        [class.marcado]="recipe.status === 'ja_fiz'"
+                        (click)="marcarStatus(recipe, 'ja_fiz')"
+                      >
+                        <i class="fa-solid fa-check"></i> Já fiz
+                      </button>
+                    </li>
+                    <li class="sep"></li>
+                    <li>
+                      <button type="button" role="menuitem" class="perigo" (click)="remover([+recipe.id])">
+                        <i class="fa-solid fa-trash"></i>
+                        {{ ehFavoritos ? 'Remover dos favoritos' : 'Remover do quadro' }}
+                      </button>
+                    </li>
+                  </ul>
+                }
+              </div>
+            </bra-recipe-card>
           }
         </div>
 
@@ -91,3 +199,48 @@
     }
   }
 </div>
+
+<!-- Barra de ações da seleção em massa -->
+@if (selecionando) {
+  <div class="barra-selecao" role="toolbar" aria-label="Ações nas receitas selecionadas">
+    <button type="button" class="cancelar" (click)="sairSelecao()" aria-label="Cancelar seleção" title="Cancelar seleção">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <span class="contagem">
+      {{ selecionadas.size }} {{ selecionadas.size === 1 ? 'selecionada' : 'selecionadas' }}
+    </span>
+    <div class="acoes-massa">
+      <button type="button" [disabled]="!selecionadas.size" (click)="abrirDestino('adicionar', idsSelecionados)">
+        <i class="fa-solid fa-plus"></i> <span>Adicionar a…</span>
+      </button>
+      @if (!ehFavoritos) {
+        <button type="button" [disabled]="!selecionadas.size" (click)="abrirDestino('mover', idsSelecionados)">
+          <i class="fa-solid fa-arrow-right"></i> <span>Mover para…</span>
+        </button>
+      }
+      <button type="button" class="perigo" [disabled]="!selecionadas.size" (click)="remover(idsSelecionados)">
+        <i class="fa-solid fa-trash"></i> <span>Remover</span>
+      </button>
+    </div>
+  </div>
+}
+
+@if (acaoDestino) {
+  <bra-escolher-quadro
+    [titulo]="acaoDestino.tipo === 'mover' ? 'Mover para…' : 'Adicionar a…'"
+    [quadros]="outrosQuadros"
+    (escolher)="enviarPara($event)"
+    (criar)="enviarParaNovo($event)"
+    (cancelar)="acaoDestino = null"
+  ></bra-escolher-quadro>
+}
+
+@if (seletorAberto) {
+  <bra-seletor-receitas
+    [titulo]="'Adicionar a ' + nome"
+    textoConfirmar="Adicionar"
+    [jaNoQuadro]="idsNoQuadro"
+    (confirmar)="adicionarEscolhidas($event)"
+    (cancelar)="seletorAberto = false"
+  ></bra-seletor-receitas>
+}

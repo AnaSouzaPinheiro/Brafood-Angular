@@ -123,6 +123,23 @@ export class RecipeCard {
 
   @Output() excluir = new EventEmitter<number>();
 
+  // ---- Uso em quadros (área pessoal) ---------------------------------------
+  // Conteúdo extra pode ser encaixado DENTRO do bloco da imagem:
+  //   [cardSelos] → marcadores abaixo do rótulo de categoria
+  //   [cardAcoes] → botão no canto superior direito (aparece no hover do card)
+  /** Modo seleção: clicar marca/desmarca em vez de abrir a receita. */
+  @Input() selecionavel = false;
+  @Input() selecionado = false;
+  /** Mantém o card "levantado" (ex.: com o menu ⋯ aberto). */
+  @Input() ativo = false;
+  @Output() alternarSelecao = new EventEmitter<void>();
+
+  onClickCard(event: Event) {
+    if (!this.selecionavel) return;
+    event.preventDefault();
+    this.alternarSelecao.emit();
+  }
+
   onEditar(event: Event) {
     event.stopPropagation();
     this.editar.emit(this.recipe);

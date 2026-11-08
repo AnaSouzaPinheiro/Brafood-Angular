@@ -12,7 +12,7 @@
 
     <p class="resumo">{{ mappedInfoRecipe.resumo }}</p>
 
-    <div class="description">
+    <div class="description" [class.sem-fim]="nota || editandoNota">
       <div class="difficult">
         <img [src]="getDifficultyImage(mappedInfoRecipe.dificuldade)" />
         <p>Dificuldade</p>
@@ -35,6 +35,45 @@
         <p>{{ mappedInfoRecipe.porcoes }} {{ mappedInfoRecipe.tipo_porcao }}</p>
       </div>
     </div>
+
+    <!-- Nota pessoal (só a usuária vê). Edita aqui mesmo, sem abrir menu. -->
+    @if (nota || editandoNota) {
+      <div class="minha-nota" [class.editando]="editandoNota">
+        <div class="nota-topo">
+          <span class="rotulo"><i class="fa-regular fa-note-sticky"></i> Sua nota</span>
+          @if (!editandoNota) {
+            <button type="button" class="link" (click)="abrirNota()">
+              <i class="fa-solid fa-pen"></i> Editar
+            </button>
+          }
+        </div>
+
+        @if (!editandoNota) {
+          <p class="texto" (click)="abrirNota()">{{ nota }}</p>
+        } @else {
+          <textarea
+            id="campo-nota"
+            [(ngModel)]="notaEdit"
+            maxlength="1000"
+            rows="3"
+            placeholder="Ex.: usei metade do açúcar, dobrar o molho…"
+            aria-label="Sua nota pessoal"
+          ></textarea>
+          <div class="nota-acoes">
+            @if (nota) {
+              <button type="button" class="link perigo" (click)="apagarNota()" [disabled]="salvandoNota">
+                Apagar nota
+              </button>
+            }
+            <span class="espaco"></span>
+            <button type="button" class="link" (click)="editandoNota = false">Cancelar</button>
+            <button type="button" class="salvar" (click)="salvarNota()" [disabled]="salvandoNota">
+              Salvar
+            </button>
+          </div>
+        }
+      </div>
+    }
   </div>
   <div class="things">
     <div class="item" [class.menu-aberto]="salvarAberto" (click)="toggleFavorito($event)">
@@ -55,9 +94,18 @@
           [idReceita]="+recipe.id"
           [(favorito)]="isFavorite"
           (fechar)="salvarAberto = false"
+          (favoritoChange)="!$event && (nota = null)"
           (click)="$event.stopPropagation()"
         ></bra-salvar-em>
       }
+    </div>
+
+    <div class="item" (click)="abrirNota()">
+      <i class="fa-regular fa-note-sticky nota-icon"></i>
+      <bra-hover-things
+        class="hover"
+        [hoverText]="nota ? 'Editar sua nota' : 'Adicionar nota pessoal'"
+      ></bra-hover-things>
     </div>
 
     <div class="item avaliacao-item" (click)="scrollToComentarios()">

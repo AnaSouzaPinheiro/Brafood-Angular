@@ -16,17 +16,120 @@
 
   @include flex-column;
 
-  &:hover {
+  // O hover só vale em cima da imagem ou do resumo, não na "sobra"
+  // retangular em volta deles (o card não é um retângulo cheio).
+  pointer-events: none;
+
+  &:hover,
+  &.ativo {
     z-index: 3;
     cursor: pointer;
     position: relative;
     transform: translateY(-10px);
   }
+
+  &.ativo {
+    z-index: 4; // menu aberto: fica acima dos cards vizinhos
+  }
 }
 
 /* INFOS */
+.infos,
+.resume {
+  pointer-events: auto;
+}
+
 .infos {
   position: relative;
+}
+
+/* MARCADORES EXTRAS — mesmo estilo do rótulo de categoria, logo abaixo dele */
+.selos-extra {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+/* AÇÕES EXTRAS — canto superior direito da imagem, só no hover do card */
+.acoes-extra {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.receita-card:hover .acoes-extra,
+.receita-card.ativo .acoes-extra,
+.acoes-extra:focus-within {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .acoes-extra {
+    opacity: 1;
+  }
+}
+
+/* SELEÇÃO — borda separada na imagem e no resumo, acompanhando o formato */
+.caixa-selecao {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 2px solid #fff;
+  background: rgba(0, 0, 0, 0.3);
+  color: transparent;
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.receita-card.selecionado {
+  .img-receita,
+  .img-placeholder {
+    outline: 3px solid $tertiary-blue;
+    outline-offset: -3px;
+  }
+
+  .resume {
+    border-radius: 12px;
+    box-shadow: 0 0 0 3px $tertiary-blue;
+  }
+
+  .caixa-selecao {
+    background: $tertiary-blue;
+    border-color: $tertiary-blue;
+    color: #fff;
+  }
+}
+
+.receita-card.selecionavel:focus-visible {
+  outline: none;
+
+  .img-receita,
+  .img-placeholder {
+    outline: 3px dashed $tertiary-blue;
+    outline-offset: -3px;
+  }
 }
 
 /* IMAGEM */

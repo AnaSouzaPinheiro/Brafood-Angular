@@ -1,0 +1,42 @@
+<div class="fundo" (click)="cancelar.emit()"></div>
+
+<div class="janela" role="dialog" aria-modal="true" [attr.aria-label]="titulo">
+  <div class="topo">
+    <h2>{{ titulo }}</h2>
+    <button type="button" class="fechar" (click)="cancelar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <ul class="lista">
+    @for (q of quadros; track q.id) {
+      <li>
+        <button type="button" class="opcao" (click)="escolher.emit(q.id)">
+          <span class="icone"><i class="fa-solid fa-table-cells-large"></i></span>
+          <span class="nome">{{ q.nome }}</span>
+          <span class="total">{{ q.total }}</span>
+        </button>
+      </li>
+    } @empty {
+      <li class="vazio">Você ainda não tem outros quadros.</li>
+    }
+  </ul>
+
+  @if (!criando) {
+    <button type="button" class="novo" (click)="criando = true">
+      <i class="fa-solid fa-plus"></i> Criar novo quadro
+    </button>
+  } @else {
+    <form class="form-novo" (ngSubmit)="confirmarNovo()">
+      <input
+        name="nome"
+        [(ngModel)]="novoNome"
+        maxlength="60"
+        placeholder="Nome do quadro"
+        aria-label="Nome do novo quadro"
+        autofocus
+      />
+      <button type="submit" [disabled]="!novoNome.trim()">Criar</button>
+    </form>
+  }
+</div>

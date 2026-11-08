@@ -1,0 +1,67 @@
+<div class="fundo" (click)="cancelar.emit()"></div>
+
+<div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="titulo">
+  <div class="topo">
+    <h2>{{ titulo }}</h2>
+    <button type="button" class="fechar" (click)="cancelar.emit()" aria-label="Fechar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  @if (carregando) {
+    <p class="aviso">Carregando suas receitas salvas…</p>
+  } @else if (receitas.length === 0) {
+    <p class="aviso">
+      Você ainda não salvou nenhuma receita. Abra uma receita e toque no
+      <i class="fa-regular fa-heart"></i> para salvá-la.
+    </p>
+  } @else {
+    <!-- Filtro por categoria -->
+    <div class="chips" role="group" aria-label="Filtrar por categoria">
+      <button type="button" [class.ativo]="filtro === null" (click)="filtro = null">Todas</button>
+      @for (c of categorias; track c) {
+        <button type="button" [class.ativo]="filtro === c" (click)="filtro = c">{{ c }}</button>
+      }
+    </div>
+
+    <div class="barra">
+      <span>{{ visiveis.length }} {{ visiveis.length === 1 ? 'receita' : 'receitas' }}</span>
+      <button type="button" class="link" (click)="toggleTodasVisiveis()">
+        {{ todasVisiveisMarcadas ? 'Desmarcar' : 'Selecionar' }}
+        {{ filtro ? 'todas de ' + filtro : 'todas' }}
+      </button>
+    </div>
+
+    <ul class="grade">
+      @for (r of visiveis; track r.id) {
+        <li>
+          <button
+            type="button"
+            class="item"
+            [class.marcado]="selecionadas.has(r.id) || travadas.has(r.id)"
+            [class.travado]="travadas.has(r.id)"
+            (click)="toggle(r.id)"
+            [attr.aria-pressed]="selecionadas.has(r.id) || travadas.has(r.id)"
+            [title]="travadas.has(r.id) ? 'Já está no quadro' : r.titulo"
+          >
+            @if (r.imagem1) {
+              <img [src]="r.imagem1 | mediaUrl: 'thumb'" alt="" loading="lazy" />
+            } @else {
+              <div class="sem-img"><i class="fa-solid fa-utensils"></i></div>
+            }
+            <span class="check"><i class="fa-solid fa-check"></i></span>
+            <span class="nome">{{ r.titulo }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="rodape">
+    <button type="button" class="btn-sec" (click)="cancelar.emit()">Cancelar</button>
+    <button type="button" class="btn" (click)="ok()" [disabled]="carregando">
+      {{ textoConfirmar }}
+      @if (novas.length) { ({{ novas.length }}) }
+    </button>
+  </div>
+</div>

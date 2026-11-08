@@ -56,5 +56,29 @@
         <button type="submit" [disabled]="!novoNome.trim() || ocupado">Criar</button>
       </form>
     }
+
+    <!-- Status: só para receitas salvas -->
+    @if (favorito) {
+      <div class="extras">
+        <div class="status">
+          <button
+            type="button"
+            [class.ativo]="status === 'quero_fazer'"
+            (click)="escolherStatus('quero_fazer')"
+            [disabled]="ocupado"
+          >
+            <i class="fa-regular fa-bookmark"></i> Quero fazer
+          </button>
+          <button
+            type="button"
+            [class.ativo]="status === 'ja_fiz'"
+            (click)="escolherStatus('ja_fiz')"
+            [disabled]="ocupado"
+          >
+            <i class="fa-solid fa-check"></i> Já fiz
+          </button>
+        </div>
+      </div>
+    }
   }
 </div>

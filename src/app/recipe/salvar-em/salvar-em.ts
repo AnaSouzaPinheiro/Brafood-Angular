@@ -11,13 +11,18 @@ import {
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { FavoritoService } from '../../services/favorito/favorito.service';
-import { QuadroResumo, QuadroService } from '../../services/quadro/quadro.service';
+import {
+  QuadroResumo,
+  QuadroService,
+  StatusReceita,
+} from '../../services/quadro/quadro.service';
 import { ToastService } from '../../services/toast/toast.service';
 
 /**
  * Menu "Salvar em…" da página da receita: Favoritos (genérico),
- * quadros do usuário e criação de quadro novo.
+ * quadros do usuário, criação de quadro novo e status (quero fazer / já fiz).
  * Salvar num quadro também favorita; tirar dos Favoritos tira de todos.
+ * A nota pessoal é editada direto na página da receita, não aqui.
  */
 @Component({
   selector: 'bra-salvar-em',
@@ -34,6 +39,7 @@ export class SalvarEm implements OnInit {
 
   quadros: QuadroResumo[] = [];
   selecionados = new Set<number>();
+  status: StatusReceita = null;
   carregando = true;
   ocupado = false;
 
@@ -55,6 +61,7 @@ export class SalvarEm implements OnInit {
       next: ({ lista, estado }) => {
         this.quadros = lista.quadros;
         this.selecionados = new Set(estado.quadros);
+        this.status = estado.status;
         this.setFavorito(estado.favorito);
         this.carregando = false;
       },
@@ -91,6 +98,7 @@ export class SalvarEm implements OnInit {
         next: () => {
           this.setFavorito(false);
           this.selecionados.clear(); // saiu de todos os quadros
+          this.status = null;
           this.ocupado = false;
         },
         error: () => (this.ocupado = false),
@@ -135,12 +143,29 @@ export class SalvarEm implements OnInit {
     }
   }
 
+  /** Clicar no status já marcado desmarca. */
+  escolherStatus(s: Exclude<StatusReceita, null>) {
+    if (!this.favorito || this.ocupado) return;
+    const novo = this.status === s ? null : s;
+    this.ocupado = true;
+    this.favoritoService.atualizarExtras(this.idReceita, { status: novo }).subscribe({
+      next: () => {
+        this.status = novo;
+        this.ocupado = false;
+      },
+      error: () => {
+        this.ocupado = false;
+        this.toast.show('Erro ao salvar status', 'error');
+      },
+    });
+  }
+
   criarQuadro() {
     const nome = this.novoNome.trim();
     if (!nome || this.ocupado) return;
     this.ocupado = true;
 
-    this.quadroService.criar(nome, null, this.idReceita).subscribe({
+    this.quadroService.criar(nome, null, [this.idReceita]).subscribe({
       next: (res) => {
         if (res.id) {
           this.quadros = [{ id: res.id, nome, descricao: null, total: 1, capas: [] }, ...this.quadros];

@@ -1,16 +1,19 @@
 @use "variables" as *;
 @use "layout" as *;
 @use "grid" as *;
-
+$card-margem: 14px;
+$card-margem-mobile: 0px;
+$lift: -10px;
 .myRecipes {
   @include flex-column;
-
+  &.com-barra {
+    padding-bottom: 90px;
+  }
   .cabecalho {
     @include page-container;
     display: flex;
     flex-direction: column;
     gap: 4px;
-
     .voltar {
       color: $secondary-blue;
       text-decoration: none;
@@ -18,49 +21,77 @@
       margin-top: 8px;
       &:hover { text-decoration: underline; }
     }
-
     .titulo-linha {
       display: flex;
       align-items: center;
-      gap: 16px;
+      justify-content: space-between;
+      gap: 12px;
       flex-wrap: wrap;
     }
-
+    .titulo-esq {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .titulo-dir {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .title {
       color: $primary-blue;
       @include page-title;
       .coracao { color: $alert-red; font-size: 0.8em; }
     }
-
-    .acoes-quadro button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: $secondary-blue;
-      font-size: 1.05rem;
-      padding: 8px;
-      border-radius: 50%;
-      &:hover { background: $secondary-gray; }
+    .acoes-quadro {
+      display: flex;
+      gap: 2px;
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: $secondary-blue;
+        font-size: 1rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        &:hover { background: $secondary-gray; }
+      }
     }
-
     .descricao {
       margin: 0;
       color: $tertiary-gray;
     }
-
     .qtdReceitas {
       color: $primary-gray;
       font-size: 1rem;
     }
   }
-
+  .pilula {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1.5px solid $quaternary-blue;
+    background: white;
+    color: $secondary-blue;
+    cursor: pointer;
+    white-space: nowrap;
+    i { margin-right: 4px; }
+    &:hover { background: #e6ecfa; }
+    &.cheia {
+      background: $primary-blue;
+      border-color: $primary-blue;
+      color: white;
+    }
+  }
   .form-edicao {
     display: flex;
     flex-direction: column;
     gap: 8px;
     max-width: 480px;
     margin: 12px 0;
-
     input,
     textarea {
       font: inherit;
@@ -70,10 +101,8 @@
       resize: vertical;
     }
     input { font-size: 1.4rem; color: $primary-blue; }
-
     .acoes { display: flex; gap: 8px; justify-content: flex-end; }
   }
-
   .btn,
   .btn-sec {
     font: inherit;
@@ -88,53 +117,122 @@
     &:disabled { opacity: 0.5; cursor: default; }
   }
   .btn-sec { background: transparent; color: $secondary-blue; }
-
+  .filtros {
+    @include page-container;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 0 4px;
+    button {
+      flex-shrink: 0;
+      font: inherit;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1.5px solid $quaternary-blue;
+      background: white;
+      color: $secondary-blue;
+      cursor: pointer;
+      span { opacity: 0.7; margin-left: 2px; }
+      &.ativo {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        color: white;
+      }
+    }
+  }
+  .vazio-filtro {
+    @include page-container;
+    color: $primary-gray;
+    text-align: center;
+    padding: 30px 0;
+  }
   .content {
     margin-bottom: 36px;
     @include flex-column-center;
-
     .cards {
       @include recipe-grid;
     }
   }
-
-  .card-wrap {
+  .marcador {
+    padding: 4px 10px;
+    border-radius: 0 4px 4px 0;
+    background: rgba(0, 0, 0, 0.47);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    i { margin-right: 3px; }
+    &.quero { background: rgba(0, 44, 153, 0.78); }
+    &.feito { background: rgba(46, 157, 91, 0.92); }
+    &.nota { background: #fff3bf; color: #8a6d00; }
+  }
+  .menu-card {
     position: relative;
-
-    .remover {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 2;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
+  }
+  .mais {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: $tertiary-gray;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    display: grid;
+    place-items: center;
+    &:hover { background: white; color: $primary-blue; }
+  }
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 210px;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 20, 80, 0.22);
+    cursor: default;
+    .sep {
+      height: 1px;
+      margin: 4px 6px;
+      background: $quaternary-gray;
+    }
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
       border: none;
-      background: rgba(255, 255, 255, 0.92);
+      background: none;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.9rem;
       color: $tertiary-gray;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      transition: opacity 0.15s;
-
-      &:hover { color: $alert-red; }
-      &:focus-visible { opacity: 1; }
-    }
-
-    &:hover .remover { opacity: 1; }
-
-    // Toque: sem hover, deixa sempre visível
-    @media (hover: none) {
-      .remover { opacity: 1; }
+      text-align: left;
+      white-space: nowrap;
+      i { width: 16px; text-align: center; color: $secondary-blue; }
+      &:hover { background: #e6ecfa; }
+      &.marcado {
+        color: $primary-blue;
+        font-weight: 600;
+        &::after { content: '✓'; margin-left: auto; }
+      }
+      &.perigo,
+      &.perigo i { color: $alert-red; }
     }
   }
-
   .vazio {
     @include page-container;
     text-align: center;
     color: $primary-gray;
     padding: 60px 0;
-
     > i { font-size: 2.5rem; margin-bottom: 12px; }
+    .btn { margin-top: 8px; }
   }
 }

@@ -6,12 +6,13 @@ import { QuadroResumo, QuadroService } from '../../services/quadro/quadro.servic
 import { ToastService } from '../../services/toast/toast.service';
 import { MediaUrlPipe } from '../../shared/pipes/media-url.pipe';
 import { Perfil } from '../perfil/perfil';
+import { SeletorReceitas } from '../seletor-receitas/seletor-receitas';
 
 /** Área "Salvas": mosaicos com o quadro fixo Favoritos + quadros do usuário. */
 @Component({
   selector: 'bra-favoritas',
   standalone: true,
-  imports: [Perfil, RouterModule, CommonModule, FormsModule, MediaUrlPipe],
+  imports: [Perfil, RouterModule, CommonModule, FormsModule, MediaUrlPipe, SeletorReceitas],
   templateUrl: './favoritas.html',
   styleUrl: './favoritas.scss',
 })
@@ -24,6 +25,9 @@ export class Favoritas implements OnInit {
   novoNome = '';
   novaDescricao = '';
   salvando = false;
+  /** Receitas salvas escolhidas para já entrar no quadro novo. */
+  idsEscolhidos: number[] = [];
+  seletorAberto = false;
 
   constructor(
     private quadroService: QuadroService,
@@ -56,12 +60,13 @@ export class Favoritas implements OnInit {
     if (!nome || this.salvando) return;
     this.salvando = true;
 
-    this.quadroService.criar(nome, this.novaDescricao.trim() || null).subscribe({
+    this.quadroService.criar(nome, this.novaDescricao.trim() || null, this.idsEscolhidos).subscribe({
       next: () => {
         this.salvando = false;
         this.criando = false;
         this.novoNome = '';
         this.novaDescricao = '';
+        this.idsEscolhidos = [];
         this.toast.show('Quadro criado!', 'success');
         this.carregar();
       },

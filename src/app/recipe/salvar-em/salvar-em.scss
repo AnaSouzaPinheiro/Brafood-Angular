@@ -1,9 +1,11 @@
 @use "variables" as *;
 
+// Abre embaixo do coração, centralizado com ele
 :host {
   position: absolute;
-  top: 0;
-  right: calc(100% + 14px);
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 50;
   cursor: default;
 
@@ -13,6 +15,7 @@
     right: 0;
     left: 0;
     bottom: 0;
+    transform: none;
   }
 }
 
@@ -146,5 +149,37 @@
     cursor: pointer;
 
     &:disabled { opacity: 0.5; cursor: default; }
+  }
+}
+
+.extras {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid $quaternary-gray;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status {
+  display: flex;
+  gap: 6px;
+
+  button {
+    flex: 1;
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 7px 6px;
+    border-radius: 999px;
+    border: 1.5px solid $quaternary-blue;
+    background: white;
+    color: $secondary-blue;
+    cursor: pointer;
+
+    &.ativo {
+      background: $primary-blue;
+      border-color: $primary-blue;
+      color: white;
+    }
   }
 }
