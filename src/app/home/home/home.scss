@@ -1,6 +1,29 @@
+@use "variables" as *;
+
 bra-destaque-semana {
   width: 100%;
   display: flex;
   position: relative;
   justify-content: center;
+}
+
+// Duas seções brancas seguidas: linha fina entre elas (a mesma do perfil
+// público), para o espaço não parecer sobrando
+bra-recipe-section {
+  display: block;
+}
+
+bra-recipe-section.sem-fundo + bra-recipe-section.sem-fundo::before {
+  content: "";
+  display: block;
+  height: 1px;
+  width: min(900px, calc(100% - 48px));
+  margin: 0 auto;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    $secondary-gray 15%,
+    $secondary-gray 85%,
+    transparent
+  );
 }

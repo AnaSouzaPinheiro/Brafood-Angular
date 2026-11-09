@@ -3,8 +3,7 @@ import {
   Input,
   ElementRef,
   ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+  AfterViewInit, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { Section } from '../../model/section-home';
@@ -18,6 +17,11 @@ import { MediaUrlPipe } from '../pipes/media-url.pipe';
   styleUrls: ['./recipe-section.scss'],
 })
 export class RecipeSection implements AfterViewInit {
+  /** Seção sem imagem nem cor de fundo (a home põe uma divisória entre duas assim). */
+  @HostBinding('class.sem-fundo') get semFundo(): boolean {
+    return !this.section?.urlSection && !this.section?.corFundo;
+  }
+
   @Input() section!: Section;
 
   @ViewChild('slider')

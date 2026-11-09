@@ -283,3 +283,20 @@
     }
   }
 }
+
+// Celular: foto, nome, @, descrição e só então os números
+@media (max-width: 600px) {
+  .perfil-publico .perfil-header {
+    .perfil-card {
+      display: contents; // foto e números viram itens soltos do cabeçalho
+    }
+
+    .perfil-avatar { order: 1; }
+    .perfil-info { order: 2; }
+    .perfil-stats { order: 3; }
+  }
+
+  .perfil-publico .perfil-header {
+    gap: 16px;
+  }
+}
