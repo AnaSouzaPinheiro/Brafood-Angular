@@ -12,8 +12,8 @@ $thread-line-color: #e0e0e0;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 15px;
-  background: white;
+  padding: 6px 0; // o card (host) já dá o espaço e o fundo
+  background: transparent;
 }
 
 .comment-body,
@@ -35,17 +35,28 @@ $thread-line-color: #e0e0e0;
     width: 45px;
     height: 45px;
   }
+
+  // Nome = link para o perfil: sem sublinhado nem roxo de visitado
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+
+    &,
+    &:visited {
+      color: $tertiary-gray;
+    }
+
+    &:hover {
+      color: $primary-blue;
+    }
+  }
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  .name {
-    font-size: 16px;
-    font-weight: 500;
-  }
 
   .data {
     font-weight: 400;
@@ -120,9 +131,14 @@ $thread-line-color: #e0e0e0;
   .reply-to-name {
     color: $primary-blue;
     font-weight: 500;
+    text-decoration: none;
+
+    &:visited {
+      color: $primary-blue;
+    }
 
     &:hover {
-      text-decoration: underline;
+      color: $hover-blue;
       cursor: pointer;
     }
   }
@@ -242,8 +258,13 @@ i {
   align-items: center;
 }
 
+// Estrelas antes da data, separadas por "·"
+.comment-meta .ponto {
+  color: $primary-gray;
+}
+
 .comment-star {
-  font-size: 11px;
+  font-size: 13px;
   color: $primary-blue;
 
   &.fa-regular {
@@ -284,5 +305,101 @@ i {
   &.near-limit {
     color: #e67e00;
     font-weight: 500;
+  }
+}
+
+// ── Avaliação em card ───────────────────────────────────────────────────────
+// Card no próprio componente: a avaliação e as respostas ficam dentro dele
+:host(.card) {
+  display: block;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid $secondary-gray;
+  box-shadow: 0 2px 10px rgba(0, 44, 153, 0.06);
+}
+
+:host(.card.minha) {
+  border-color: $quaternary-blue;
+  background: #f7f9ff;
+}
+
+// Respostas dentro do card: recuadas, ligadas pela linha fina à esquerda
+:host(.card) .replies-list {
+  margin-top: 14px;
+}
+
+.etiqueta {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: $secondary-gray;
+  color: $primary-blue;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// Rodapé: Responder/ver respostas à esquerda, ações do dono à direita
+.replies {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+
+  .acoes-dono {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+
+  .acao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 0.85rem;
+    color: $tertiary-gray;
+    cursor: pointer;
+
+    &:hover {
+      background: #eef2fc;
+      color: $primary-blue;
+    }
+
+    &.perigo:hover {
+      background: rgba($alert-red, 0.08);
+      color: $alert-red;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+// O conteúdo ocupa o resto do card/linha, para as ações do dono irem à direita
+.comment .content {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment .replies {
+  width: 100%;
+}
+
+// Celular: recuo das respostas menor (65px tirava muito espaço)
+@media (max-width: 600px) {
+  :host(.card) {
+    padding: 14px 14px;
+  }
+
+  .replies-list {
+    margin-left: 8px;
+    padding-left: 12px;
   }
 }

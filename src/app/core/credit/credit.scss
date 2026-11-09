@@ -5,6 +5,22 @@
   font-size: 13px;
   color: #fff;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  gap: 0 6px;
+  text-align: center;
   background-color: $primary-blue;
+}
+
+// Celular: "© ano BraFood" numa linha e o crédito na outra, centralizados
+@media (max-width: 600px) {
+  .credit {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .ponto {
+    display: none;
+  }
 }

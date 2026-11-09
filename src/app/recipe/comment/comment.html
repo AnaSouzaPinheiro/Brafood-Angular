@@ -2,24 +2,30 @@
   <div class="reply-to" *ngIf="isReply() && comment.nome_pai">
     <i class="fa-solid fa-reply"></i>
     em resposta a
-    <span class="reply-to-name">{{ '@' + comment.nome_pai }}</span>
+    <a
+      class="reply-to-name"
+      [routerLink]="['/chef', comment.apelido_pai || comment.id_usuario_pai]"
+      [title]="comment.nome_pai"
+    >{{ '@' + (comment.apelido_pai || comment.nome_pai) }}</a>
   </div>
 
   <div class="comment-body">
     <div class="person">
+      <!-- Foto e nome levam ao perfil público da pessoa -->
       <bra-user-icon
         [user]="{ id: comment.id_usuario, nome: comment.nome_usuario, foto_perfil: comment.foto_perfil }"
+        (clickIcon)="abrirPerfil()"
+        [attr.title]="'Ver perfil de ' + comment.nome_usuario"
       ></bra-user-icon>
 
-      <span class="name">{{ comment.nome_usuario }}</span>
+      <a class="name" [routerLink]="linkPerfil">{{ comment.nome_usuario }}</a>
+      @if (minha) { <span class="etiqueta">Sua avaliação</span> }
     </div>
 
     <div class="content">
       <div class="comment-meta">
-        <span class="data">
-          {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
-        </span>
-        <div class="comment-nota" *ngIf="comment.nota">
+        <!-- Avaliação primeiro, depois a data -->
+        <div class="comment-nota" *ngIf="comment.nota" [attr.aria-label]="'Nota ' + comment.nota + ' de 5'">
           <ng-container *ngFor="let i of [1,2,3,4,5]">
             <i
               class="fa-star comment-star"
@@ -28,29 +34,43 @@
             ></i>
           </ng-container>
         </div>
+        <span class="ponto" *ngIf="comment.nota" aria-hidden="true">·</span>
+        <span class="data">
+          {{ comment.data_criacao | date: "dd/MM/yy 'às' HH'h'mm" }}
+        </span>
       </div>
 
-      <p class="text">{{ comment.texto }}</p>
+      @if (comment.texto) { <p class="text">{{ comment.texto }}</p> }
 
       <div class="replies">
-        <span class="response" (click)="responder()">Responder</span>
+        <!-- Avaliação só com estrelas não é comentário: não recebe resposta -->
+        @if (!comment.so_nota) {
+          <span class="response" (click)="responder()">Responder</span>
+        }
 
         <span
           class="seeReplies"
           *ngIf="(comment.replies?.length || 0) && !showReplies"
           (click)="toggleReplies()"
         >
-          Ver {{ comment.replies?.length || 0 }} respostas
+          Ver {{ comment.replies?.length || 0 }} {{ comment.replies?.length === 1 ? 'resposta' : 'respostas' }}
         </span>
 
-        <span
-          class="excluir"
-          *ngIf="podeExcluir"
-          [class.disabled]="excluindo"
-          (click)="excluir()"
-        >
-          <i class="fa-regular fa-trash-can"></i>
-          {{ excluindo ? 'Excluindo...' : '' }}
+        <!-- Ações do dono no canto direito, longe do Responder -->
+        <span class="acoes-dono">
+          @if (minha) {
+            <button type="button" class="acao" (click)="editar.emit()">
+              <i class="fa-solid fa-pen"></i> Editar
+            </button>
+            <button type="button" class="acao perigo" (click)="excluirAvaliacao.emit()">
+              <i class="fa-regular fa-trash-can"></i> Excluir
+            </button>
+          } @else if (podeExcluir && !comment.so_nota) {
+            <button type="button" class="acao perigo" [disabled]="excluindo" (click)="excluir()" title="Excluir comentário">
+              <i class="fa-regular fa-trash-can"></i>
+              {{ excluindo ? 'Excluindo...' : '' }}
+            </button>
+          }
         </span>
       </div>
     </div>

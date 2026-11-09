@@ -59,3 +59,60 @@ ul#rules {
     color: #2e7d32;
   }
 }
+
+// Cadastro tem mais campos: a marca fica mais estreita (≈35/65)
+.card-dividido {
+  --coluna-marca: 0.55fr;
+}
+
+
+// Celular: formulário com a largura toda e centralizado
+@media (max-width: 720px) {
+  #cadastro,
+  #cadastro .inputsCadastro {
+    width: 100%;
+  }
+
+  #cadastro .inputsCadastro {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
+  ul#rules {
+    box-sizing: border-box;
+    padding: 0 4px;
+    margin: 0;
+  }
+}
+
+// Grade de 10 colunas: nome na linha toda; e-mail (60%) + apelido (40%);
+// senha + confirmar senha meio a meio
+@media (min-width: 931px) {
+  #cadastro .inputsCadastro {
+    width: 100%;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 22px 20px;
+
+    > * {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .apelido-field ::ng-deep bra-input-acesso {
+      width: 100%;
+    }
+
+    > :nth-child(1) { grid-column: span 10; } // nome
+    > :nth-child(2) { grid-column: span 6; }  // e-mail
+    > :nth-child(3) { grid-column: span 4; }  // apelido
+    > :nth-child(4),
+    > :nth-child(5) { grid-column: span 5; }  // senha, confirmar
+  }
+}
+
+// Formulário mais compacto: cabe na tela mesmo com mensagens de erro
+.card-dividido .modal {
+  gap: 16px;
+  padding-top: 42px;
+  padding-bottom: 24px;
+}

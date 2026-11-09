@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { UserIcon } from '../../core/user-icon/user-icon';
 import { Comentario } from '../../model/comentario';
 import { AuthService } from '../../services/auth/auth.service';
@@ -15,12 +15,34 @@ const MIN_CHARS = 3;
 @Component({
   selector: 'bra-comment',
   standalone: true,
-  imports: [CommonModule, FormsModule, UserIcon, CustomButton],
+  imports: [CommonModule, FormsModule, RouterLink, UserIcon, CustomButton],
   templateUrl: './comment.html',
   styleUrl: './comment.scss',
 })
 export class Comment {
+  /** Perfil público de quem comentou (/chef/{apelido}; o id também funciona). */
+  get linkPerfil(): (string | number)[] {
+    return ['/chef', this.comment.apelido_usuario || this.comment.id_usuario];
+  }
+
+  abrirPerfil() {
+    this.router.navigate(this.linkPerfil);
+  }
+
   @Input() comment!: Comentario;
+  /** É a avaliação da própria pessoa (mostra "Sua avaliação", Editar e Excluir). */
+  @Input() minha = false;
+  @Output() editar = new EventEmitter<void>();
+
+  /** O card envolve a avaliação E as respostas dela (respostas não viram card). */
+  @HostBinding('class.card') get ehCard() {
+    return !this.isReply();
+  }
+
+  @HostBinding('class.minha') get ehMinha() {
+    return this.minha;
+  }
+  @Output() excluirAvaliacao = new EventEmitter<void>();
 
   @Output() sendReply = new EventEmitter<{
     texto: string;
@@ -61,7 +83,6 @@ export class Comment {
   }
 
   excluir() {
-    console.log('excluir', this.comment.id, this.comment.texto);
     if (this.excluindo) return;
 
     const temRespostas = (this.comment.replies?.length || 0) > 0;

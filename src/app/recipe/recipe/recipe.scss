@@ -438,3 +438,46 @@
     margin-bottom: 12px;
   }
 }
+// ── Avaliações: formulário em card ─────────────────────────────────────────
+.avaliacao-comment-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: #f5f8ff;
+  border: 1px solid $secondary-gray;
+
+  .acb-label {
+    padding: 0;
+    font-weight: 600;
+    color: $primary-blue;
+  }
+}
+
+.acb-acoes {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.acb-cancelar {
+  border: none;
+  background: none;
+  font: inherit;
+  color: $tertiary-gray;
+  cursor: pointer;
+
+  &:hover {
+    color: $primary-blue;
+  }
+}
+
+// Lista: um card por avaliação, com espaço entre eles
+.commmets .c {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

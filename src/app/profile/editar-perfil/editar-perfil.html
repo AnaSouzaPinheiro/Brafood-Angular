@@ -8,7 +8,7 @@
         <label class="picture" for="picture_input">
           <input
             type="file"
-            accept="image/png, image/jpg"
+            accept="image/png, image/jpeg"
             id="picture_input"
             (change)="onFileChange($event)"
           />
@@ -32,9 +32,23 @@
           </bra-custom-button>
         </label>
       </div>
-      <p>Formato: jpg ou png</p>
-      <p>Dimensões ideais em pixels: 920 x 600</p>
-      <p>Peso: até 3mb cada</p>
+      <!-- Regras da foto: verde = ok, vermelho = recusada, amarelo = aviso -->
+      <ul class="regras-foto" aria-live="polite">
+        <li [class]="'regra ' + regraFormato">
+          <i class="fa-solid" [class]="iconeRegra(regraFormato)"></i>
+          Formato: JPG ou PNG
+        </li>
+        <li [class]="'regra ' + regraPeso">
+          <i class="fa-solid" [class]="iconeRegra(regraPeso)"></i>
+          Peso: até 3 MB
+          @if (regraPeso === 'erro' && pesoMb) { <span class="detalhe">(a sua tem {{ pesoMb }} MB)</span> }
+        </li>
+        <li [class]="'regra ' + regraDimensao">
+          <i class="fa-solid" [class]="iconeRegra(regraDimensao)"></i>
+          Quadrada, a partir de 400 × 400 px
+          @if (avisoDimensao) { <span class="detalhe">{{ avisoDimensao }}</span> }
+        </li>
+      </ul>
     </div>
 
     <div class="inputs">
@@ -72,28 +86,19 @@
         </div>
       </div>
 
-      <div class="input-child">
+      <div class="input-child unico">
         <div class="input-box">
           <bra-input
-            [label]="'Nome*'"
+            [label]="'Nome completo*'"
             [inType]="'input'"
             formControlName="nome"
             name="nome"
-            autocomplete="given-name"
-            [errorMessages]="{ required: 'Informe seu nome.' }"
+            autocomplete="name"
+            [maxChars]="80"
+            [errorMessages]="{ required: 'Informe seu nome.', minlength: 'Nome muito curto.', maxlength: 'Use no máximo 80 caracteres.' }"
           ></bra-input>
         </div>
 
-        <div class="input-box">
-          <bra-input
-            [label]="'Sobrenome*'"
-            [inType]="'input'"
-            formControlName="sobrenome"
-            name="sobrenome"
-            autocomplete="family-name"
-            [errorMessages]="{ required: 'Informe seu sobrenome.' }"
-          ></bra-input>
-        </div>
       </div>
 
       <bra-input

@@ -41,7 +41,7 @@
   .register { font-weight: 600; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 720px) {
   .container { padding: 24px 16px; box-sizing: border-box; }
 
   .description, .cadastre { text-align: center; }
@@ -67,5 +67,220 @@
       padding: 13px 16px;
       font-size: 16px;
     }
+  }
+}
+// ═══ Card dividido (login e cadastro) ═══════════════════════════════════════
+// Marca com gradiente à esquerda, formulário à direita. A página tem a altura
+// exata da tela: sem rolagem. A proporção vem de --coluna-marca (padrão 50/50).
+
+// Ocupa a tela (sem o copyright); só cresce se o conteúdo não couber
+.container:has(.card-dividido) {
+  flex: 1;
+  justify-content: center;
+  height: auto;
+  min-height: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.card-dividido {
+  display: grid;
+  grid-template-columns: var(--coluna-marca, 1fr) 1fr;
+  width: min(1200px, 100%);
+  // Tela menos o copyright (~56px) e as margens; % não funciona aqui
+  min-height: min(720px, calc(100dvh - 84px));
+  border-radius: 28px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 20, 80, 0.3);
+
+  // O formulário vira a metade direita (deixa de ser cartão próprio)
+  .modal {
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    box-shadow: none;
+    border-radius: 0;
+    gap: 28px;
+    padding: 40px 56px;
+    // Usa a altura do card: título mais em cima, "Não possui conta" mais embaixo
+    justify-content: space-evenly;
+  }
+
+  // "Voltar" no canto, sem ocupar uma linha inteira
+  .back {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    font-size: 0.9rem;
+  }
+}
+
+// Gradiente "mesh": vários pontos de luz nos azuis do site
+.lado-marca {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 40px 32px;
+  isolation: isolate;
+  background-color: $category-six;
+  background-image:
+    radial-gradient(at 12% 18%, $quaternary-blue 0px, transparent 50%),
+    radial-gradient(at 85% 8%, $tertiary-blue 0px, transparent 45%),
+    radial-gradient(at 70% 60%, $category-eleven 0px, transparent 50%),
+    radial-gradient(at 8% 90%, $primary-blue 0px, transparent 55%),
+    radial-gradient(at 95% 95%, $category-thirteen 0px, transparent 45%),
+    radial-gradient(at 40% 45%, $category-three 0px, transparent 55%);
+  background-size: 140% 140%;
+  animation: mesh-mover 18s ease-in-out infinite alternate;
+
+  .bolha {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.55;
+  }
+
+  .b1 { width: 260px; height: 260px; top: -60px; right: -40px; background: $secondary-gray; }
+  .b2 { width: 220px; height: 220px; bottom: -50px; left: -30px; background: $tertiary-blue; }
+
+  // Logo num selo de vidro claro (o texto da logo é azul-escuro)
+  .selo-logo {
+    display: grid;
+    place-items: center;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 40px rgba(0, 20, 80, 0.35), inset 0 0 0 6px rgba(255, 255, 255, 0.5);
+    transition: box-shadow 0.25s ease;
+
+    // Sem zoom: o scale sobre o vidro fosco desfocava a logo
+    &:hover {
+      box-shadow: 0 16px 48px rgba(0, 20, 80, 0.5), inset 0 0 0 6px rgba(255, 255, 255, 0.7);
+    }
+
+    img { width: 150px; height: auto; }
+  }
+
+  .frase {
+    max-width: 280px;
+    margin: 0;
+    text-align: center;
+    color: #fff;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    text-shadow: 0 1px 8px rgba(0, 20, 80, 0.4);
+  }
+}
+
+@keyframes mesh-mover {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lado-marca { animation: none; }
+}
+
+@media (max-width: 960px) {
+  .card-dividido .modal { padding: 40px 28px; }
+
+  .lado-marca .selo-logo {
+    width: 170px;
+    height: 170px;
+    img { width: 118px; }
+  }
+}
+
+// Celular: sem cartão e sem foto de fundo. Faixa da marca no topo, encostada
+// nas bordas, e o formulário logo abaixo, ocupando o resto da tela.
+@media (max-width: 720px) {
+  // Estica até o copyright (sem bloco branco sobrando embaixo)
+  .container:has(.card-dividido) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    background: #fff;
+  }
+
+  .card-dividido {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    .modal {
+      flex: 1;
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box; // sem isso o padding somava à largura e vazava
+      overflow: visible;
+      justify-content: flex-start;
+      gap: 20px !important;
+      padding: 24px 22px 20px !important;
+    }
+
+    .back {
+      position: static;
+      align-self: flex-start;
+    }
+
+    .title {
+      font-size: 24px;
+    }
+  }
+
+  .lado-marca {
+    flex-shrink: 0;
+    gap: 10px;
+    padding: 26px 20px 22px;
+
+    .bolha { filter: blur(30px); }
+
+    .selo-logo {
+      width: 96px;
+      height: 96px;
+      box-shadow: 0 6px 20px rgba(0, 20, 80, 0.3);
+      img { width: 68px; }
+    }
+
+    .frase {
+      max-width: 300px;
+      font-size: 0.88rem;
+    }
+  }
+}
+
+// Celular de tela baixa: faixa da marca mais curta, sem a frase
+@media (max-width: 720px) and (max-height: 760px) {
+  .lado-marca {
+    padding: 16px 20px;
+
+    .frase { display: none; }
+
+    .selo-logo {
+      width: 80px;
+      height: 80px;
+      img { width: 56px; }
+    }
+  }
+
+  .card-dividido .modal {
+    gap: 16px !important;
   }
 }

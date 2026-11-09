@@ -95,7 +95,7 @@ export class Navbar {
 
   private buildModalData(u: any) {
     this.modalData = {
-      personName: `${u?.nome || ''} ${u?.sobrenome || ''}`.trim(),
+      personName: u?.nome || '',
       myAccount:  '/perfil/editar',
       myRecipes:  '/perfil/receitas',
       favs:       '/perfil/favoritas',

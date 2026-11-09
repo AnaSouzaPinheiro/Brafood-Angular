@@ -42,6 +42,11 @@ function senhasIguais(group: AbstractControl): ValidationErrors | null {
   return null;
 }
 
+/** Nome completo num campo só (o sobrenome entra aqui, se a pessoa quiser). */
+const LIMITE_NOME_USUARIO = 80;
+
+type EstadoRegra = 'neutro' | 'ok' | 'erro' | 'aviso';
+
 @Component({
   selector: 'bra-editar-perfil',
   imports: [
@@ -63,7 +68,6 @@ export class EditarPerfil implements OnInit {
     id: 0,
     email: '',
     nome: '',
-    sobrenome: '',
     apelido: '',
     genero: '',
     bio: '',
@@ -93,8 +97,7 @@ export class EditarPerfil implements OnInit {
             asyncValidators: [this.apelidoService.disponivelValidator()],
           },
         ],
-        nome: ['', Validators.required],
-        sobrenome: ['', Validators.required],
+        nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(LIMITE_NOME_USUARIO)]],
         genero: ['', Validators.required],
         bio: ['', [Validators.maxLength(300)]],
         email: ['', [Validators.required, Validators.email]],
@@ -110,39 +113,44 @@ export class EditarPerfil implements OnInit {
   @Output() imageChange = new EventEmitter<File | null>();
   private arquivoSelecionado: File | null = null;
 
+  // ── Regras da foto (como as da senha) ─────────────────────────────────
+  // neutro = nada escolhido; ok = verde; erro = recusada; aviso = só alerta
+  regraFormato: EstadoRegra = 'neutro';
+  regraPeso: EstadoRegra = 'neutro';
+  regraDimensao: EstadoRegra = 'neutro';
+  avisoDimensao = '';
+  pesoMb = '';
+
+  /** A foto aparece em círculo de até 180px (360px em telas de alta densidade). */
+  private readonly FOTO_MIN_PX = 400;
+
+  iconeRegra(estado: EstadoRegra): string {
+    return {
+      neutro: 'fa-solid fa-circle-info',
+      ok: 'fa-solid fa-circle-check',
+      erro: 'fa-solid fa-circle-xmark',
+      aviso: 'fa-solid fa-triangle-exclamation',
+    }[estado];
+  }
+
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
-    if (!input.files || input.files.length === 0) {
-      this.clearPreview();
-      this.emitFile();
+    if (!file) {
       return;
     }
 
-    const file = input.files[0];
+    this.regraFormato = ['image/png', 'image/jpeg'].includes(file.type) ? 'ok' : 'erro';
+    this.regraPeso = file.size <= 3 * 1024 * 1024 ? 'ok' : 'erro';
+    this.pesoMb = (file.size / 1024 / 1024).toFixed(1).replace('.', ',');
+    this.regraDimensao = 'neutro';
+    this.avisoDimensao = '';
 
-    const validTypes = ['image/png', 'image/jpeg'];
-    if (!validTypes.includes(file.type)) {
-      this.modalService.open({
-        type: 'error',
-        title: 'Erro',
-        message: 'Formato inválido! Apenas PNG e JPG são permitidos.',
-      });
+    // Formato ou peso errado: a foto é recusada (a regra fica vermelha)
+    if (this.regraFormato === 'erro' || this.regraPeso === 'erro') {
       input.value = '';
-      this.clearPreview();
-      this.emitFile();
-      return;
-    }
-
-    const maxSize = 3 * 1024 * 1024;
-    if (file.size > maxSize) {
-      this.modalService.open({
-        type: 'error',
-        title: 'Erro',
-        message: 'Arquivo muito grande! Máx 3MB.',
-      });
-      input.value = '';
-      this.clearPreview();
+      this.arquivoSelecionado = null;
       this.emitFile();
       return;
     }
@@ -152,10 +160,32 @@ export class EditarPerfil implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.previewSrc = reader.result as string;
+      this.conferirDimensoes(this.previewSrc);
     };
     reader.readAsDataURL(file);
 
     this.emitFile();
+  }
+
+  /** Dimensões não bloqueiam: só avisam se ficar embaçada ou cortada. */
+  private conferirDimensoes(src: string) {
+    const img = new Image();
+    img.onload = () => {
+      const { naturalWidth: w, naturalHeight: h } = img;
+      const menor = Math.min(w, h);
+      const quadrada = Math.abs(w - h) / Math.max(w, h) <= 0.1;
+
+      if (menor < this.FOTO_MIN_PX) {
+        this.regraDimensao = 'aviso';
+        this.avisoDimensao = `(a sua tem ${w} × ${h} px e pode ficar embaçada)`;
+      } else if (!quadrada) {
+        this.regraDimensao = 'aviso';
+        this.avisoDimensao = `(a sua tem ${w} × ${h} px; as bordas serão cortadas no círculo)`;
+      } else {
+        this.regraDimensao = 'ok';
+      }
+    };
+    img.src = src;
   }
 
   clearPreview() {
@@ -189,7 +219,6 @@ export class EditarPerfil implements OnInit {
       this.form.patchValue({
         email: user.email,
         nome: user.nome,
-        sobrenome: user.sobrenome,
         apelido: user.apelido,
         genero: user.genero,
         bio: user.bio,
@@ -237,7 +266,6 @@ export class EditarPerfil implements OnInit {
             // Mantém menu, abas e "Ver meu perfil" com o apelido/nome novos
             this.auth.atualizarUsuario({
               nome: payload.nome,
-              sobrenome: payload.sobrenome,
               apelido: payload.apelido,
             });
             this.modalService.open({

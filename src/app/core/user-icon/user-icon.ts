@@ -35,7 +35,6 @@ export class UserIcon {
     return {
       id: u?.id ?? 0,
       nome: u?.nome ?? '',
-      sobrenome: u?.sobrenome ?? '',
       apelido: u?.apelido ?? '',
       email: u?.email ?? '',
       genero: u?.genero ?? '',

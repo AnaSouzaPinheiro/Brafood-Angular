@@ -61,7 +61,7 @@ export class InputAcesso implements OnInit, ControlValueAccessor {
         this.htmlType = 'password';
         break;
       case 'nome':
-        this.placeholder = 'Nome';
+        this.placeholder = 'Nome completo';
         this.icon = 'fa-regular fa-user';
         this.autocomplete = 'name';
         this.htmlType = 'text';

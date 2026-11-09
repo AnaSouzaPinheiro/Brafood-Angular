@@ -109,6 +109,6 @@ export class PerfilPublicoPage {
   get nomeCompleto(): string {
     const u = this.perfil()?.usuario;
     if (!u) return '';
-    return [u.nome, u.sobrenome].filter(Boolean).join(' ');
+    return u.nome;
   }
 }

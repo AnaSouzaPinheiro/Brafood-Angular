@@ -2,7 +2,6 @@ export interface User {
   id: any;
   email: string;
   nome?: string;
-  sobrenome?: string;
   apelido?: string;
   genero?: string;
   bio?: string;

@@ -63,9 +63,12 @@
     font-weight: 200;
   }
 
-  > div {
-    flex: 1;
+  // Todos os blocos (inclusive a avaliação, que é um botão) com a mesma largura
+  > * {
+    flex: 1 1 0;
     min-width: 0;
+    padding: 0 8px;
+    box-sizing: border-box;
 
     @include flex-column-center;
   }
@@ -75,6 +78,7 @@
 .difficult {
   img {
     width: 140px;
+    max-width: 100%;
     margin-bottom: 10px;
   }
 }
@@ -106,14 +110,16 @@
   @include white-card(0 25px 25px 0);
 
   flex-direction: column;
-  gap: 10px;
-  padding: 15px;
+  // 4 ações numa coluna compacta: a aba fica bem mais baixa que o card
+  // e não chega perto dos cantos arredondados
+  gap: 8px;
+  padding: 12px;
 
   .item {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
 
-    padding: 10px;
+    padding: 8px;
 
     border-radius: 50%;
     border: 2px solid $primary-blue;
@@ -210,26 +216,21 @@
 }
 
 // ── Estrela compacta no painel things ─────────────────────────────────────────
-.avaliacao-item {
-  flex-direction: column;
-  gap: 2px;
-}
-
-.avaliacao-icon {
+// Ícones das ações: neutros; ganham cor só quando marcados
+.avaliacao-icon,
+.nota-icon {
   font-size: 18px;
-  background: $seventh-gradient;
-
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: $tertiary-gray;
 }
 
-.avaliacao-compact {
-  font-size: 10px;
-  font-weight: 600;
+.avaliacao-icon.marcado {
   color: $primary-blue;
-  line-height: 1;
-  text-align: center;
 }
+
+.nota-icon.marcado {
+  color: #e0a800;
+}
+
 
 // Com o menu "Salvar em…" aberto, esconde o tooltip do coração
 .item.menu-aberto .hover {
@@ -324,7 +325,27 @@
   }
 }
 
-.nota-icon {
-  font-size: 18px;
-  color: #c79a00;
+
+
+/* AVALIAÇÃO (média na faixa azul, quando houver) */
+.description .avaliacao {
+  border: none;
+  border-left: 2px solid #fff;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+
+  i {
+    font-size: 25px;
+    color: #fff; // mesmo branco dos outros ícones da faixa
+  }
+
+  .qtd {
+    font-size: 0.7em;
+    opacity: 0.85;
+  }
+
+  &:hover i {
+    transform: scale(1.1);
+  }
 }

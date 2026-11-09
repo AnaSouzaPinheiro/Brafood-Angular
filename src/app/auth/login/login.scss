@@ -18,3 +18,11 @@ form {
     gap: 25px;
   }
 }
+
+
+// Computador: campos mais largos (e-mails longos não cortam ao lado do ícone)
+@media (min-width: 721px) {
+  form bra-input-acesso {
+    width: min(380px, 100%);
+  }
+}

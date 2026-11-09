@@ -29,6 +29,23 @@ main.with-navbar {
 }
 
 
+// ── Login / cadastro: a página tem a altura exata da tela ────────────────────
+// O conteúdo ocupa o que sobra depois do copyright, então nada passa da tela.
+app-root:has(bra-login, bra-cadastro) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+
+  bra-login,
+  bra-cadastro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+}
+
 // ── Fade de imagens (atributo data-fade; ver App.ativarFadeDeImagens) ──────
 // Enquanto carrega, a imagem fica transparente — mas só por até 4s: a
 // animação termina e ela aparece de qualquer jeito (nunca fica sumida).

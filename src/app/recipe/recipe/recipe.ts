@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, switchMap, tap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -170,6 +170,7 @@ export class Recipe {
     this.totalAvaliacoes = 0;
     this.novoComentario = '';
     this.visibleCommentsCount = 3;
+    this.editandoAvaliacao = false;
     this.tentouComentar = false;
     this.comentarioTocado = false;
     this.loadingRecipe = true;
@@ -313,21 +314,89 @@ export class Recipe {
     return this.erroComentario.length > 0;
   }
 
+  /** Estrelas obrigatórias; texto opcional (mas, se tiver, com 3+ caracteres). */
   get erroComentario(): string {
     const texto = this.novoComentario.trim();
-
-    // Estrelas voltaram a null depois de já ter uma nota salva = pedido
-    // válido de remoção da avaliação, não "faltou preencher".
-    const removendoNota = this.notaForm === null && this.notaUsuario !== null;
-
-    // Precisa de nota OU texto — não exige os dois
-    if (!texto && !this.notaForm && !removendoNota)
-      return 'Avalie com estrelas ou escreva um comentário.';
+    if (!this.notaForm) return 'Escolha de 1 a 5 estrelas para avaliar.';
     if (texto && texto.length < MIN_COMENTARIO)
-      return `Escreva pelo menos ${MIN_COMENTARIO} caracteres.`;
+      return `Escreva pelo menos ${MIN_COMENTARIO} caracteres (ou deixe o texto em branco).`;
     if (texto.length > MAX_COMENTARIO)
-      return `O comentário não pode ultrapassar ${MAX_COMENTARIO} caracteres.`;
+      return `O texto não pode ultrapassar ${MAX_COMENTARIO} caracteres.`;
+    if (!texto && this.minhaAvaliacao && !this.minhaAvaliacao.so_nota && (this.minhaAvaliacao.replies?.length || 0) > 0)
+      return 'Sua avaliação tem respostas, então o texto não pode ficar vazio.';
     return '';
+  }
+
+  // ── Minha avaliação ──────────────────────────────────────────────────────
+  editandoAvaliacao = false;
+
+  /** A avaliação da própria pessoa (com ou sem texto), se existir. */
+  get minhaAvaliacao(): Comentario | null {
+    return this.meuComentario;
+  }
+
+  /** O formulário aparece para quem ainda não avaliou, ou ao editar. */
+  get mostrarFormulario(): boolean {
+    return !this.minhaAvaliacao || this.editandoAvaliacao;
+  }
+
+  editarMinhaAvaliacao() {
+    const minha = this.minhaAvaliacao;
+    if (!minha) return;
+    this.editandoAvaliacao = true;
+    this.notaForm = this.notaUsuario ?? minha.nota ?? null;
+    this.novoComentario = minha.so_nota ? '' : minha.texto;
+    this.tentouComentar = false;
+    this.comentarioTocado = false;
+    setTimeout(() =>
+      document.querySelector('.avaliacao-comment-box')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+    );
+  }
+
+  cancelarEdicao() {
+    this.editandoAvaliacao = false;
+    this.notaForm = this.notaUsuario;
+    this.novoComentario = '';
+    this.tentouComentar = false;
+    this.comentarioTocado = false;
+  }
+
+  /** Apaga a avaliação inteira: estrelas + texto (e as respostas do texto). */
+  excluirMinhaAvaliacao() {
+    const minha = this.minhaAvaliacao;
+    if (!minha || !this.usuarioId || !this.recipe) return;
+    const temRespostas = (minha.replies?.length || 0) > 0;
+
+    this.modalService.open({
+      type: 'confirm',
+      title: 'Excluir avaliação',
+      message: temRespostas
+        ? 'Sua avaliação e as respostas dela serão apagadas. Continuar?'
+        : 'Tem certeza que quer excluir sua avaliação?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        const idReceita = Number(this.recipe!.id);
+        const apagarTexto$ = minha.so_nota
+          ? of(null)
+          : this.comentarioService.deletar(minha.id).pipe(catchError(() => of(null)));
+
+        apagarTexto$
+          .pipe(switchMap(() => this.avaliacaoService.remover(this.usuarioId!, idReceita)))
+          .subscribe({
+            next: (res) => {
+              this.notaUsuario = null;
+              this.notaForm = null;
+              this.mediaAvaliacao = res.media;
+              this.totalAvaliacoes = res.total;
+              this.editandoAvaliacao = false;
+              this.recarregarComentarios();
+              this.toastService.show('Avaliação excluída.', 'success');
+            },
+            error: () => this.toastService.show('Não foi possível excluir sua avaliação. Tente de novo.', 'error'),
+          });
+      },
+    });
   }
 
   buildTree(comments: Comentario[]) {
@@ -343,6 +412,8 @@ export class Recipe {
         const pai = map.get(c.id_comentario_pai);
         if (pai) {
           c.nome_pai = pai.nome_usuario;
+          c.apelido_pai = pai.apelido_usuario;
+          c.id_usuario_pai = pai.id_usuario;
           pai.replies?.push(c);
         }
         return false;
@@ -363,6 +434,7 @@ export class Recipe {
       });
   }
 
+  /** Publica (ou salva a edição de) uma avaliação: estrelas + texto opcional. */
   comentar() {
     if (this.enviandoComentario) return;
 
@@ -373,7 +445,7 @@ export class Recipe {
       this.modalService.open({
         type: 'confirm',
         title: 'Login necessário',
-        message: 'Para avaliar ou comentar, você precisa estar logado.',
+        message: 'Para avaliar, você precisa estar logado.',
         confirmText: 'Ir para login',
         cancelText: 'Cancelar',
         onConfirm: () => {
@@ -387,123 +459,47 @@ export class Recipe {
 
     if (this.erroComentario) return;
 
+    const nota = this.notaForm!;
     const texto = this.novoComentario.trim();
-    const idReceita = this.recipe!.id;
+    const idReceita = Number(this.recipe!.id);
+    const minha = this.minhaAvaliacao;
+    const temTexto = !!minha && !minha.so_nota;
 
-    // Regra: só um comentário raiz por receita. O textarea já fica
-    // escondido nesse caso, mas evita corrida/duplo clique.
-    if (texto && this.meuComentario) {
-      this.toastService.show(
-        'Você já comentou nesta receita. Exclua seu comentário atual para escrever outro.',
-        'info',
-      );
-      return;
-    }
-
-    // Guard: avaliação já enviada e nada mudou (mesma nota, sem texto novo)
-    const notaIgual =
-      this.notaForm !== null && this.notaForm === this.notaUsuario;
-    if (notaIgual && !texto) {
-      this.toastService.show('Você já enviou esta avaliação.', 'info');
-      return;
+    // 1) estrelas (cria ou atualiza)  2) texto: cria, edita, apaga ou nada
+    let texto$: Observable<unknown> = of(null);
+    if (temTexto && texto && texto !== minha!.texto) {
+      texto$ = this.comentarioService.atualizar(minha!.id, texto);
+    } else if (temTexto && !texto) {
+      texto$ = this.comentarioService.deletar(minha!.id);
+    } else if (!temTexto && texto) {
+      texto$ = this.comentarioService.criar({ id_usuario: this.usuarioId, id_receita: idReceita, texto, nota });
     }
 
     this.enviandoComentario = true;
+    const editando = this.editandoAvaliacao;
 
-    // Comentário com nota embutida (nota é opcional)
-    if (texto) {
-      this.comentarioService
-        .criar({
-          id_usuario: this.usuarioId,
-          id_receita: idReceita,
-          texto,
-          nota: this.notaForm ?? undefined,
-        })
-        .subscribe({
-          next: () => {
-            this.novoComentario = '';
-            this.tentouComentar = false;
-            this.comentarioTocado = false;
-            if (this.notaForm) {
-              this.notaUsuario = this.notaForm;
-            }
-            this.carregarAvaliacao();
-            this.recarregarComentarios();
-            this.toastService.show('Comentário enviado com sucesso!', 'success');
-          },
-          error: (err) => {
-            this.enviandoComentario = false;
-            if (err?.status === 409) {
-              this.toastService.show(
-                err.error?.error ??
-                  'Você já comentou nesta receita. Exclua seu comentário atual para escrever outro.',
-                'info',
-              );
-              this.recarregarComentarios();
-              return;
-            }
-            this.toastService.show(
-              'Não foi possível enviar seu comentário. Tente de novo.',
-              'error',
-            );
-          },
-          complete: () => {
-            this.enviandoComentario = false;
-          },
-        });
-    } else if (this.notaForm) {
-      // Só nota sem texto — salva via avaliacaoService diretamente
-      this.avaliacaoService
-        .avaliar(this.usuarioId, idReceita, this.notaForm)
-        .subscribe({
-          next: (res) => {
-            this.notaUsuario = this.notaForm;
-            this.mediaAvaliacao = res.media;
-            this.totalAvaliacoes = res.total;
-            this.tentouComentar = false;
-            this.comentarioTocado = false;
-            // Se o usuário já tem um comentário salvo, a nota exibida nele
-            // vem sempre ao vivo do backend — só precisa recarregar.
-            this.recarregarComentarios();
-            this.toastService.show('Avaliação enviada com sucesso!', 'success');
-          },
-          error: () => {
-            this.enviandoComentario = false;
-            this.toastService.show(
-              'Não foi possível enviar sua avaliação. Tente de novo.',
-              'error',
-            );
-          },
-          complete: () => {
-            this.enviandoComentario = false;
-          },
-        });
-    } else if (this.notaForm === null && this.notaUsuario !== null) {
-      // Estrelas zeradas de novo (clicou na mesma nota) = remover avaliação
-      this.avaliacaoService.remover(this.usuarioId, idReceita).subscribe({
+    this.avaliacaoService
+      .avaliar(this.usuarioId, idReceita, nota)
+      .pipe(switchMap((res) => texto$.pipe(map(() => res))))
+      .subscribe({
         next: (res) => {
-          this.notaUsuario = null;
+          this.notaUsuario = nota;
           this.mediaAvaliacao = res.media;
           this.totalAvaliacoes = res.total;
+          this.novoComentario = '';
           this.tentouComentar = false;
           this.comentarioTocado = false;
+          this.editandoAvaliacao = false;
+          this.enviandoComentario = false;
           this.recarregarComentarios();
-          this.toastService.show('Avaliação removida.', 'info');
+          this.toastService.show(editando ? 'Avaliação atualizada!' : 'Avaliação publicada!', 'success');
         },
         error: () => {
           this.enviandoComentario = false;
-          this.toastService.show(
-            'Não foi possível remover sua avaliação. Tente de novo.',
-            'error',
-          );
-        },
-        complete: () => {
-          this.enviandoComentario = false;
+          this.recarregarComentarios();
+          this.toastService.show('Não foi possível salvar sua avaliação. Tente de novo.', 'error');
         },
       });
-    } else {
-      this.enviandoComentario = false;
-    }
   }
 
   recarregarComentarios() {
@@ -512,13 +508,14 @@ export class Recipe {
     this.comentarioService
       .listarcommentsPorReceita(this.recipe.id)
       .subscribe((cs) => {
-        this.comentarios = this.buildTree(cs);
-        this.meuComentario =
-          this.usuarioId !== null
-            ? this.comentarios.find(
-                (c) => Number(c.id_usuario) === Number(this.usuarioId),
-              ) ?? null
-            : null;
+        // Mais recentes primeiro; a avaliação da própria pessoa fica no topo
+        const raizes = this.buildTree(cs).reverse();
+        const ehMinha = (c: Comentario) =>
+          this.usuarioId !== null && Number(c.id_usuario) === Number(this.usuarioId);
+        this.meuComentario = raizes.find(ehMinha) ?? null;
+        this.comentarios = this.meuComentario
+          ? [this.meuComentario, ...raizes.filter((c) => c !== this.meuComentario)]
+          : raizes;
       });
   }
 
@@ -561,22 +558,11 @@ export class Recipe {
       return;
     }
 
+    // Exclui uma resposta (ou, se admin, o texto de outra pessoa)
     this.comentarioService.deletar(payload.id).subscribe({
       next: () => {
         this.recarregarComentarios();
-
-        // A avaliação (estrelas) é independente do comentário e não é
-        // apagada junto — avisa a pessoa disso e como alterá-la se quiser.
-        if (this.notaUsuario) {
-          const plural = this.notaUsuario > 1 ? 's' : '';
-          this.toastService.show(
-            `Comentário excluído. Sua avaliação de ${this.notaUsuario} estrela${plural} continua valendo — clique nas estrelas acima pra mudá-la ou removê-la.`,
-            'info',
-          );
-        } else {
-          this.toastService.show('Comentário excluído com sucesso!', 'success');
-        }
-
+        this.toastService.show('Comentário excluído.', 'success');
         payload.onDone(true);
       },
       error: () => {

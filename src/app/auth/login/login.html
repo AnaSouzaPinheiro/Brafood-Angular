@@ -1,48 +1,52 @@
 <div class="container">
-  <a [routerLink]="'/home'">
-    <img
-      class="logo"
-      src="assets/imagens/icones/BraFoodLogoR.png"
-      alt="Logo BraFood"
-    />
-  </a>
-
-  <div class="modal">
-    <span class="back" (click)="voltar()">< Voltar</span>
-
-    <div class="infos">
-      <h1 class="title">Acesse sua conta</h1>
-      <p class="description">Faça o login para publicar suas receitas!</p>
+  <!-- Card dividido: marca à esquerda, formulário à direita -->
+  <div class="card-dividido">
+    <div class="lado-marca">
+      <span class="bolha b1" aria-hidden="true"></span>
+      <span class="bolha b2" aria-hidden="true"></span>
+      <a class="selo-logo" [routerLink]="'/home'" aria-label="Ir para a página inicial">
+        <img src="assets/imagens/icones/BraFoodLogoR.png" alt="Logo BraFood" width="150" height="111" />
+      </a>
+      <p class="frase">Que bom te ver de novo! Suas receitas estão te esperando.</p>
     </div>
 
-    <form (ngSubmit)="entrar()">
-      <bra-input-acesso
-        [type]="'email'"
-        [(ngModel)]="email"
-        name="emailLogin"
-        autocomplete="email"
-      ></bra-input-acesso>
-      <bra-input-acesso
-        [type]="'senha'"
-        [(ngModel)]="senha"
-        name="passwordLogin"
-        autocomplete="current-password"
-      ></bra-input-acesso>
+    <div class="modal">
+      <span class="back" (click)="voltar()">< Voltar</span>
 
-      <bra-alert type="error" *ngIf="erro">{{ erro }}</bra-alert>
+      <div class="infos">
+        <h1 class="title">Acesse sua conta</h1>
+        <p class="description">Faça o login para publicar suas receitas!</p>
+      </div>
 
-      <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
+      <form (ngSubmit)="entrar()">
+        <bra-input-acesso
+          [type]="'email'"
+          [(ngModel)]="email"
+          name="emailLogin"
+          autocomplete="email"
+        ></bra-input-acesso>
+        <bra-input-acesso
+          [type]="'senha'"
+          [(ngModel)]="senha"
+          name="passwordLogin"
+          autocomplete="current-password"
+        ></bra-input-acesso>
 
-      <!-- Sem (click): o <button> interno do bra-custom-button não tem
-           [type] explícito, então por padrão do HTML ele já é type="submit"
-           dentro de um <form> — clicar OU apertar Enter em qualquer campo
-           aciona o (ngSubmit) do form abaixo, sem duplicar a chamada. -->
-      <bra-custom-button label="Entrar"></bra-custom-button>
-    </form>
+        <bra-alert type="error" *ngIf="erro">{{ erro }}</bra-alert>
 
-    <p class="cadastre">
-      Não possui uma conta?
-      <span class="register" [routerLink]="'/cadastro'">Cadastre-se.</span>
-    </p>
+        <span class="forgot" (click)="irParaRecuperacao()">Esqueceu a senha?</span>
+
+        <!-- Sem (click): o <button> interno do bra-custom-button não tem
+             [type] explícito, então por padrão do HTML ele já é type="submit"
+             dentro de um <form> — clicar OU apertar Enter em qualquer campo
+             aciona o (ngSubmit) do form abaixo, sem duplicar a chamada. -->
+        <bra-custom-button label="Entrar"></bra-custom-button>
+      </form>
+
+      <p class="cadastre">
+        Não possui uma conta?
+        <span class="register" [routerLink]="'/cadastro'">Cadastre-se.</span>
+      </p>
+    </div>
   </div>
 </div>

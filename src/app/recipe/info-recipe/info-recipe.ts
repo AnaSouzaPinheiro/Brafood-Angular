@@ -60,6 +60,8 @@ export class InfoRecipe implements OnChanges {
   salvandoNota = false;
   mediaAvaliacao: number | null = null;
   totalAvaliacoes: number = 0;
+  /** Nota que a própria pessoa deu (estrela cheia na coluna de ações). */
+  minhaAvaliacao: number | null = null;
   logado = false;
   userId: number | null = null;
   user!: User;
@@ -84,13 +86,15 @@ export class InfoRecipe implements OnChanges {
 
     this.logado = this.auth.isLoggedIn();
 
+    // Usuário antes da avaliação: senão a busca ia sem id e a estrela
+    // nunca aparecia preenchida para quem já avaliou
+    const usuarioLogado = this.auth.user();
+    this.userId = usuarioLogado ? Number(usuarioLogado.id) : null;
+
     // Carrega média sempre — independente de estar logado
     this.carregarAvaliacao();
 
-    const usuarioLogado = this.auth.user();
     if (!usuarioLogado) return;
-
-    this.userId = Number(usuarioLogado.id);
 
     this.quadroService
       .estadoDaReceita(Number(this.recipe.id))
@@ -115,6 +119,7 @@ export class InfoRecipe implements OnChanges {
         next: (res) => {
           this.mediaAvaliacao = res.media;
           this.totalAvaliacoes = res.total;
+          this.minhaAvaliacao = res.nota ?? null;
         },
         error: () => {},
       });

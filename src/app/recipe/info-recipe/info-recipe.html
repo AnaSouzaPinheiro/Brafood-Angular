@@ -34,6 +34,16 @@
         <i class="fa-solid fa-utensils"></i>
         <p>{{ mappedInfoRecipe.porcoes }} {{ mappedInfoRecipe.tipo_porcao }}</p>
       </div>
+      @if (totalAvaliacoes > 0) {
+        <!-- Média das avaliações: só aparece se a receita tiver alguma -->
+        <button type="button" class="avaliacao" (click)="scrollToComentarios()" title="Ver avaliações e comentários">
+          <i class="fa-solid fa-star"></i>
+          <p>
+            {{ mediaAvaliacao | number: '1.1-1' }}
+            <span class="qtd">({{ totalAvaliacoes }})</span>
+          </p>
+        </button>
+      }
     </div>
 
     <!-- Nota pessoal (só a usuária vê). Edita aqui mesmo, sem abrir menu. -->
@@ -101,7 +111,12 @@
     </div>
 
     <div class="item" (click)="abrirNota()">
-      <i class="fa-regular fa-note-sticky nota-icon"></i>
+      <i
+        class="fa-note-sticky nota-icon"
+        [class.fa-solid]="nota"
+        [class.fa-regular]="!nota"
+        [class.marcado]="nota"
+      ></i>
       <bra-hover-things
         class="hover"
         [hoverText]="nota ? 'Editar sua nota' : 'Adicionar nota pessoal'"
@@ -109,10 +124,13 @@
     </div>
 
     <div class="item avaliacao-item" (click)="scrollToComentarios()">
-      <i class="fa-solid fa-star avaliacao-icon"></i>
-      <span class="avaliacao-compact" *ngIf="totalAvaliacoes > 0">
-        {{ mediaAvaliacao | number:'1.1-1' }}
-      </span>
+      <!-- Estrela cheia só se a pessoa já avaliou esta receita -->
+      <i
+        class="fa-star avaliacao-icon"
+        [class.fa-solid]="minhaAvaliacao"
+        [class.fa-regular]="!minhaAvaliacao"
+        [class.marcado]="minhaAvaliacao"
+      ></i>
       <bra-hover-things
         class="hover"
         hoverText="Avaliações e comentários"

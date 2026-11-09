@@ -6,7 +6,6 @@ export interface PerfilPublico {
   usuario: {
     id:          number;
     nome:        string;
-    sobrenome:   string;
     apelido:     string;
     bio:         string | null;
     foto_perfil: string | null;

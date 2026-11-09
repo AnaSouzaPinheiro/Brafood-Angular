@@ -77,6 +77,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
+
+  &.unico {
+    grid-template-columns: 1fr;
+  }
 }
 
 .input-box {
@@ -89,10 +93,27 @@ bra-input {
 }
 
 /* GÊNERO */
+// Gênero: título em cima, opções lado a lado
 .input-box.gender {
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 12px 32px;
 
-  @include flex-column;
+  .genero {
+    flex-basis: 100%;
+  }
+}
+
+// Mais espaço entre o apelido e o gênero
+.input-child:has(.gender) {
+  column-gap: 56px;
+}
+
+@media (max-width: 768px) {
+  .input-box.gender {
+    margin-top: 8px;
+  }
 }
 
 .genero {
@@ -178,4 +199,45 @@ bra-input {
   font-size: 0.8rem;
   color: $secondary-blue;
   word-break: break-all;
+}
+
+// Regras da foto: um pouco abaixo do botão, com estado por cor
+.regras-foto {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+
+  .regra {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 6px;
+    color: $tertiary-gray;
+    transition: color 0.2s;
+
+    i {
+      flex-shrink: 0;
+      font-size: 13px;
+      color: $primary-gray;
+    }
+
+    .detalhe {
+      flex-basis: 100%;
+      padding-left: 19px;
+      font-size: 12px;
+    }
+
+    &.ok,
+    &.ok i { color: #1e7b3a; }
+
+    &.erro,
+    &.erro i { color: $alert-red; font-weight: 500; }
+
+    &.aviso,
+    &.aviso i { color: #a15c00; }
+  }
 }

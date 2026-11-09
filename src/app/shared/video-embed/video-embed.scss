@@ -33,11 +33,26 @@
 
 .tiktok-frame {
   width: 100%;
+  display: flex;
+  justify-content: center;
 
   blockquote.tiktok-embed {
     all: unset;
     display: block;
     width: 100%;
+  }
+
+  // O embed.js do TikTok troca o conteúdo por um iframe de largura fixa,
+  // inserido depois (sem o atributo do Angular): centraliza com ::ng-deep
+  ::ng-deep blockquote.tiktok-embed,
+  ::ng-deep blockquote.tiktok-embed > iframe,
+  ::ng-deep iframe {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  ::ng-deep iframe {
+    display: block;
   }
 }
 

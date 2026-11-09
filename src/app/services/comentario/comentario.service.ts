@@ -25,6 +25,14 @@ export class ComentarioService extends BaseService {
   // que o authInterceptor já anexa automaticamente — não precisa mandar
   // id_usuario aqui, e nem deveria: o cliente não pode ser a fonte da
   // verdade de quem está autorizado a apagar o quê.
+  /** Edita o texto do próprio comentário (avaliação com texto). */
+  atualizar(idComentario: number, texto: string): Observable<ApiResponse> {
+    return this.httpClient.put<ApiResponse>(
+      this.url(`comentarios.php?id=${idComentario}`),
+      { texto },
+    );
+  }
+
   deletar(idComentario: number): Observable<ApiResponse> {
     return this.httpClient.delete<ApiResponse>(
       this.url(`comentarios.php?id=${idComentario}`),
