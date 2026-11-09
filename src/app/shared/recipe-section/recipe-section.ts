@@ -17,9 +17,18 @@ import { MediaUrlPipe } from '../pipes/media-url.pipe';
   styleUrls: ['./recipe-section.scss'],
 })
 export class RecipeSection implements AfterViewInit {
-  /** Seção sem imagem nem cor de fundo (a home põe uma divisória entre duas assim). */
-  @HostBinding('class.sem-fundo') get semFundo(): boolean {
-    return !this.section?.urlSection && !this.section?.corFundo;
+  /**
+   * Fundo claro: sem imagem e sem cor, ou com uma cor quase branca
+   * (ex.: #F4F7FF). A home põe uma divisória entre duas seções assim.
+   */
+  @HostBinding('class.fundo-claro') get fundoClaro(): boolean {
+    if (this.section?.urlSection) return false;
+    const cor = this.section?.corFundo;
+    if (!cor) return true;
+    const hex = /^#?([0-9a-f]{6})$/i.exec(cor.trim())?.[1];
+    if (!hex) return false;
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    return 0.299 * r + 0.587 * g + 0.114 * b > 225;
   }
 
   @Input() section!: Section;

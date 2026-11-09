@@ -7,13 +7,13 @@ bra-destaque-semana {
   justify-content: center;
 }
 
-// Duas seções brancas seguidas: linha fina entre elas (a mesma do perfil
+// Duas seções de fundo claro seguidas (branco ou quase branco): linha fina entre elas (a mesma do perfil
 // público), para o espaço não parecer sobrando
 bra-recipe-section {
   display: block;
 }
 
-bra-recipe-section.sem-fundo + bra-recipe-section.sem-fundo::before {
+bra-recipe-section.fundo-claro + bra-recipe-section.fundo-claro::before {
   content: "";
   display: block;
   height: 1px;
