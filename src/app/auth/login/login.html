@@ -5,7 +5,14 @@
       <span class="bolha b1" aria-hidden="true"></span>
       <span class="bolha b2" aria-hidden="true"></span>
       <a class="selo-logo" [routerLink]="'/home'" aria-label="Ir para a página inicial">
-        <img src="assets/imagens/icones/BraFoodLogoR.png" alt="Logo BraFood" width="150" height="111" />
+        <img
+          src="assets/imagens/icones/BraFoodLogoR.png"
+          srcset="assets/imagens/icones/BraFoodLogo-156.png 156w, assets/imagens/icones/BraFoodLogo-234.png 234w, assets/imagens/icones/BraFoodLogoR.png 640w"
+          sizes="(max-width: 720px) 68px, 150px"
+          alt="Logo BraFood"
+          width="150"
+          height="111"
+        />
       </a>
       <p class="frase">Que bom te ver de novo! Suas receitas estão te esperando.</p>
     </div>
