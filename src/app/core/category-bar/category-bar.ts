@@ -243,8 +243,6 @@ export class CategoryBar implements AfterViewInit, OnDestroy {
   onLeave(event: MouseEvent, categoria: Categoria) {
     const el = event.currentTarget as HTMLElement;
     el.style.background = '';
-    if (categoria.cor_primaria) {
-      el.style.backgroundColor = categoria.cor_primaria;
-    }
+    el.style.backgroundColor = categoria.cor_primaria || '#8BACFF';
   }
 }

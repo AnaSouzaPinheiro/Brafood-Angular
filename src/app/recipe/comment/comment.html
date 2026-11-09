@@ -70,7 +70,17 @@
           [(ngModel)]="textoResposta"
           (ngModelChange)="tentouEnviarResposta = false"
           rows="3"
+          maxlength="1000"
         ></textarea>
+
+        <span
+          class="char-counter"
+          *ngIf="(textoResposta || '').length > 0"
+          [class.near-limit]="(textoResposta || '').length >= 850"
+          aria-live="polite"
+        >
+          {{ (textoResposta || '').length }}/1000
+        </span>
 
         <span class="field-error" *ngIf="respostaInvalida" role="alert">
           <i class="fa-solid fa-circle-exclamation"></i>

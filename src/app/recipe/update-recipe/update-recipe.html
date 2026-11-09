@@ -29,7 +29,7 @@
         ></bra-input>
       </div>
 
-      <div class="input-box">
+      <div class="input-box resumo">
         <bra-input
           [label]="'Resumo da receita*'"
           [inType]="'textarea'"
@@ -37,11 +37,11 @@
           formControlName="resumo"
           name="resumoReceita"
           autocomplete="recipe-description"
-          [maxChars]="500"
+          [maxChars]="255"
           [errorMessages]="{
             required: 'Escreva um resumo da receita.',
             minlength: 'Escreva pelo menos 10 caracteres para o resumo.',
-            maxlength: 'O resumo não pode ultrapassar 500 caracteres.'
+            maxlength: 'O resumo não pode ultrapassar 255 caracteres.'
           }"
         ></bra-input>
       </div>
@@ -191,7 +191,7 @@
     <div class="buttons">
       <bra-custom-button
         [label]="'Cancelar'"
-        [type]="'add'"
+        [type]="'cancel'"
         (clicked)="cancelar()"
       ></bra-custom-button>
 

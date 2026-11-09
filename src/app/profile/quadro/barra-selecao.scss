@@ -61,11 +61,32 @@
   }
   // Até tablet: só os ícones nos botões, para nunca passar da largura
   @media (max-width: 768px) {
-    bottom: 12px;
-    gap: 8px;
-    padding: 8px 8px 8px 16px;
+    bottom: 16px;
+    gap: 10px;
+    padding: 6px 6px 6px 14px;
+    // Só o tamanho do conteúdo, centralizada, com folga nas laterais
+    // (left/right + margin auto: com left 50% a largura ficava limitada
+    // à metade da tela e o conteúdo era cortado)
+    left: 0;
+    right: 0;
+    transform: none;
+    margin: 0 auto;
+    width: fit-content;
+    max-width: calc(100vw - 48px);
+    box-sizing: border-box;
+    .cancelar {
+      width: 28px;
+      height: 28px;
+      margin-left: -6px;
+      font-size: 0.85rem;
+    }
+    .contagem {
+      flex: 0 1 auto;
+      font-size: 0.9rem;
+    }
     .acoes-massa button {
-      padding: 9px 12px;
+      padding: 8px 11px;
+      font-size: 0.85rem;
       span { display: none; }
       i.fa-solid { margin-right: 0; }
     }

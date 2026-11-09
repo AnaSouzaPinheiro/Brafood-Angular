@@ -73,37 +73,57 @@
 
 <!-- Lightbox -->
 <div class="lightbox" *ngIf="isLightboxOpen" (click)="closeLightbox()">
-  <div class="lightbox-content" (click)="$event.stopPropagation()">
-    <button class="close" (click)="closeLightbox()">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
+  <button class="close" type="button" (click)="closeLightbox()" aria-label="Fechar">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
 
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
     <div class="lightbox-viewer">
-      <button class="prev" (click)="prevImage(); $event.stopPropagation()">
-        <i class="fa-solid fa-caret-left"></i>
-      </button>
+      @if (imageList.length > 1) {
+        <button class="prev seta-lateral" type="button" (click)="prevImage()" aria-label="Imagem anterior">
+          <i class="fa-solid fa-caret-left"></i>
+        </button>
+      }
 
       <img data-fade
         [src]="imageList[currentIndex()] | mediaUrl"
         class="lightbox-image"
+        alt=""
         loading="eager"
       />
 
-      <button class="next" (click)="nextImage(); $event.stopPropagation()">
-        <i class="fa-solid fa-caret-right"></i>
-      </button>
-    </div>
-
-    <div class="thumbnail-carousel">
-      @for (image of imageList; track $index) {
-      <button
-        class="thumbnail"
-        [class.active]="currentIndex() === $index"
-        (click)="openLightbox($index); $event.stopPropagation()"
-      >
-        <img data-fade [src]="image | mediaUrl" alt="" />
-      </button>
+      @if (imageList.length > 1) {
+        <button class="next seta-lateral" type="button" (click)="nextImage()" aria-label="Próxima imagem">
+          <i class="fa-solid fa-caret-right"></i>
+        </button>
       }
     </div>
+
+    <!-- Miniaturas (só com mais de uma imagem). No celular, as setas
+         ficam aqui, dos lados das miniaturas. -->
+    @if (imageList.length > 1) {
+      <div class="rodape-galeria">
+        <button class="prev seta-rodape" type="button" (click)="prevImage()" aria-label="Imagem anterior">
+          <i class="fa-solid fa-caret-left"></i>
+        </button>
+
+        <div class="thumbnail-carousel">
+          @for (image of imageList; track $index) {
+          <button
+            class="thumbnail"
+            type="button"
+            [class.active]="currentIndex() === $index"
+            (click)="openLightbox($index)"
+          >
+            <img data-fade [src]="image | mediaUrl" alt="" />
+          </button>
+          }
+        </div>
+
+        <button class="next seta-rodape" type="button" (click)="nextImage()" aria-label="Próxima imagem">
+          <i class="fa-solid fa-caret-right"></i>
+        </button>
+      </div>
+    }
   </div>
 </div>

@@ -5,10 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RecipeCard } from '../../recipe/recipe-card/recipe-card';
 import { LoggerService } from '../../services/logger/logger.service';
 import { CustomButton } from '../custom-button/custom-button';
-import {
-    DropdownDinamicoItem,
-    FilterPanel,
-} from '../filter-panel/filter-panel';
+import { BarraFiltros, ChipFiltro } from '../barra-filtros/barra-filtros';
 import { RecipeCardSkeleton } from '../recipe-card-skeleton/recipe-card-skeleton';
 
 import {
@@ -22,7 +19,7 @@ import { Recipes } from '../../model/myrecipes';
 @Component({
   selector: 'bra-search',
   standalone: true,
-  imports: [CommonModule, FilterPanel, CustomButton, RecipeCard, RecipeCardSkeleton],
+  imports: [CommonModule, BarraFiltros, CustomButton, RecipeCard, RecipeCardSkeleton],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
@@ -38,8 +35,9 @@ export class Search {
 
   filtros!: FiltroState;
 
-  // Dropdown dinâmico de categorias encontradas na busca
-  categoriaItems: DropdownDinamicoItem[] = [];
+  // Chips com as categorias encontradas na busca
+  categoriaChips: ChipFiltro[] = [];
+  termoBusca = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -59,6 +57,7 @@ export class Search {
       }
 
       this.nomePesquisado = nome;
+      this.loadingSearch = true;
 
       this.receitaService.listForSerach(nome).subscribe({
         next: (res: any) => {
@@ -71,17 +70,23 @@ export class Search {
 
           this.Recipes = res;
 
+          // "Comemorativas, Sobremesas" vira dois chips
           const categoriasUnicas = [
-            ...new Set(res.map((r: any) => r.categoria)),
-          ];
-          this.categoriaItems = [
-            { id: 0, name: 'Todas', checked: true },
-            ...categoriasUnicas.map((cat, idx) => ({
-              id: idx + 1,
-              name: cat as string,
-              checked: false,
-            })),
-          ];
+            ...new Set(
+              res.flatMap((r: any) =>
+                String(r.categoria ?? '')
+                  .split(',')
+                  .map((c) => c.trim())
+                  .filter(Boolean),
+              ),
+            ),
+          ].sort((x, y) => (x as string).localeCompare(y as string));
+          this.categoriaChips = categoriasUnicas.map((c, i) => ({
+            id: i + 1,
+            nome: c as string,
+          }));
+          this.termoBusca = '';
+          this.filtros = this.filterService.filtroInicial();
 
           this.aplicarFiltros();
           this.loadingSearch = false;
@@ -101,9 +106,18 @@ export class Search {
     this.aplicarFiltros();
   }
 
+  onBuscaChange(valor: string) {
+    this.termoBusca = valor;
+    this.aplicarFiltros();
+  }
+
   aplicarFiltros() {
+    const termo = this.normalizar(this.termoBusca.trim());
+    const base = termo
+      ? this.Recipes.filter((r: any) => this.normalizar(r.titulo).includes(termo))
+      : this.Recipes;
     this.RecipesFiltradas = this.filterService.aplicarFiltrosFrontend(
-      this.Recipes,
+      base,
       this.filtros,
     );
     this.begin = 0;
@@ -112,6 +126,13 @@ export class Search {
 
   get RecipesPage() {
     return this.RecipesFiltradas.slice(this.begin, this.end);
+  }
+
+  private normalizar(texto: string): string {
+    return (texto || '')
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toLowerCase();
   }
 
   verMais() {

@@ -1,0 +1,80 @@
+<section class="section">
+  <div class="section-header">
+    <h2>
+      Subcategorias <span class="count">{{ subcategorias.length }}</span>
+    </h2>
+    <button class="btn-add" (click)="abrirNovaSub()">
+      + Nova Subcategoria
+    </button>
+  </div>
+
+  <div class="filtro-row field">
+    <label>Filtrar por categoria:</label>
+    <select [(ngModel)]="filtroCategoria" (change)="filtrarPorCategoria()">
+      <option [ngValue]="null">Todas</option>
+      @for (cat of categorias; track cat.id) {
+      <option [ngValue]="cat.id">{{ cat.nome }}</option>
+      }
+    </select>
+  </div>
+
+  @if (showSubForm) {
+  <div class="form-card">
+    <h3>{{ subEditId ? 'Editar Subcategoria' : 'Nova Subcategoria' }}</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Nome *</label>
+        <input [(ngModel)]="subForm.nome" placeholder="Ex: Bolos &amp; Tortas" [attr.maxlength]="LIMITE_NOME" />
+        <span class="hint contador" [class.no-limite]="(subForm.nome || '').length >= LIMITE_NOME">
+          {{ (subForm.nome || '').length }}/{{ LIMITE_NOME }} caracteres
+        </span>
+      </div>
+      <div class="field">
+        <label>Categoria *</label>
+        <select [(ngModel)]="subForm.id_categoria">
+          <option [ngValue]="null">Selecione...</option>
+          @for (cat of categorias; track cat.id) {
+          <option [ngValue]="cat.id">{{ cat.nome }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-save" (click)="salvarSub()" [disabled]="subLoading">
+        {{ subLoading ? 'Salvando...' : (subEditId ? 'Atualizar' : 'Criar') }}
+      </button>
+      <button class="btn-cancel" (click)="showSubForm = false">
+        Cancelar
+      </button>
+    </div>
+  </div>
+  }
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sub of subcatsFiltradas; track sub.id) {
+        <tr>
+          <td class="center">{{ sub.id }}</td>
+          <td>{{ sub.nome }}</td>
+          <td>{{ sub.nome_categoria }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="editarSub(sub)">Editar</button>
+            <button class="btn-del" (click)="excluirSub(sub.id, sub.nome)">
+              Excluir
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

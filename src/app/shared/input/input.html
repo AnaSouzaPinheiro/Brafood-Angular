@@ -19,6 +19,8 @@
 
   <ng-template #textareaTpl>
     <textarea
+      #campoTexto
+      [class.auto-grow]="autoGrow"
       [id]="inputId"
       [name]="name"
       class="input-text textarea"

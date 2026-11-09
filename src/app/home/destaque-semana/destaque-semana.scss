@@ -302,8 +302,13 @@
 }
 
 @media (max-width: 576px) {
+  // Celular: ocupa a largura toda da tela, sem cantos arredondados
+  .ds-link {
+    width: 100%;
+  }
+
   .ds-card {
-    border-radius: 14px;
+    border-radius: 0;
     grid-template-rows: 220px auto;
   }
 

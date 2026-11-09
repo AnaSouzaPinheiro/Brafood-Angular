@@ -18,10 +18,14 @@
     <!-- Subinputs -->
     <div
       class="input-row"
+      [class.passo]="ehPasso"
       *ngFor="let sub of item.subitems; let j = index; trackBy: trackByIndex"
     >
+      <span class="numero" *ngIf="ehPasso" aria-hidden="true"><span class="palavra">Passo </span>{{ j + 1 }}</span>
+
       <bra-input
         [inType]="inType"
+        [autoGrow]="ehPasso"
         [label]="''"
         [placeholder]="subitemPlaceholder"
         [value]="subitemControls[i][j].value"
@@ -34,20 +38,21 @@
         *ngIf="item.subitems.length > 1"
         type="button"
         (click)="removeSubitem(i, j)"
+        [attr.aria-label]="ehPasso ? 'Remover passo ' + (j + 1) : 'Remover ingrediente'"
       >
-        ×
-      </button>
-
-      <button
-        class="adicionar"
-        *ngIf="j === item.subitems.length - 1"
-        type="button"
-        (click)="addSubitem(i)"
-        [disabled]="item.subitems.length >= maxItems"
-      >
-        +
+        <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
+
+    <button
+      class="adicionar-sub"
+      type="button"
+      *ngIf="item.subitems.length < maxItems"
+      (click)="addSubitem(i)"
+    >
+      <i class="fa-solid fa-plus"></i>
+      {{ ehPasso ? 'Adicionar passo' : 'Adicionar ingrediente' }}
+    </button>
 
     <bra-custom-button
       [type]="'comment'"

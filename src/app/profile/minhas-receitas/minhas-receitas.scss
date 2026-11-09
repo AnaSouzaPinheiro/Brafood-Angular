@@ -6,6 +6,47 @@
 .myRecipes {
   @include flex-column;
 
+  // Espaço para a barra fixa da seleção não cobrir os últimos cards
+  &.com-barra {
+    padding-bottom: 90px;
+  }
+
+  // "Selecionar" acima dos cards, alinhado à direita
+  .linha-selecao {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 110px 4px;
+
+    @media (max-width: 1185px) {
+      margin: 0 50px 4px;
+    }
+
+    @media (max-width: 768px) {
+      margin: 0 24px 4px;
+    }
+  }
+
+  .pilula {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1.5px solid $quaternary-blue;
+    background: white;
+    color: $secondary-blue;
+    cursor: pointer;
+    white-space: nowrap;
+
+    i {
+      margin-right: 4px;
+    }
+
+    &:hover {
+      background: #e6ecfa;
+    }
+  }
+
   .cabecalho {
     display: flex;
     justify-content: space-between;
@@ -83,27 +124,85 @@
   }
 
   @media (max-width: 780px) {
-    .cabecalho {
-      flex-direction: column;
-      gap: 0;
-
-      .details {
-        flex-direction: column-reverse;
-        width: 100%;
-        gap: 0;
-      }
-
-      .title {
-        margin: 0 0 24px;
-      }
-
-      .qtdReceitas {
+    .cabecalho .qtdReceitas {
         font-size: 1rem;
-      }
     }
 
     .cards:first-child {
       margin-top: 12px;
     }
   }
+}
+
+// ── Botão flutuante "Adicionar receita" (celular) ─────────────────────────
+.fab-adicionar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .myRecipes .cabecalho .buttons {
+    display: none;
+  }
+
+  // Abre "estendido" com o texto e, depois de ~2,5s, encolhe para só o +
+  .fab-adicionar {
+    position: fixed;
+    right: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 50;
+    height: 56px;
+    min-width: 56px;
+    box-sizing: border-box;
+    padding: 0 19px;
+    border-radius: 28px;
+    background: $primary-blue;
+    color: white;
+    font-size: 1.4rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0, 44, 153, 0.35);
+    transition: transform 0.15s ease, background 0.15s ease;
+    animation: fab-entrar 0.35s ease-out;
+
+    &:active {
+      transform: scale(0.94);
+      background: $hover-blue;
+    }
+
+    .fab-texto {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 0.95rem;
+      font-weight: 500;
+      max-width: 0;
+      margin-left: 0;
+      opacity: 0;
+      animation: fab-recolher 3.2s ease forwards;
+    }
+  }
+
+  @keyframes fab-entrar {
+    from { transform: translateY(20px); opacity: 0; }
+  }
+
+  // 0–78% (~2,5s) mostra o texto; depois encolhe
+  @keyframes fab-recolher {
+    0%, 78% { max-width: 160px; margin-left: 10px; opacity: 1; }
+    100% { max-width: 0; margin-left: 0; opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fab-adicionar,
+    .fab-adicionar .fab-texto {
+      animation: none;
+    }
+  }
+}
+
+// Some enquanto a barra de seleção está aberta
+.fab-adicionar.escondido {
+  display: none !important;
 }

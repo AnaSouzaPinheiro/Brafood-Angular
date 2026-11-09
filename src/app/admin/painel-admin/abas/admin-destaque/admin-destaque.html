@@ -1,0 +1,57 @@
+<section class="section">
+  <div class="section-header empilhado">
+    <h2>Receita da Semana</h2>
+    <small class="hint">Escolhida automaticamente toda segunda-feira (favoritos, avaliações e novidade). Se você escolher uma abaixo, ela vale para esta semana.</small>
+  </div>
+
+  <div class="destaque-atual" *ngIf="destaqueAtual">
+    <div class="destaque-preview">
+      <img
+        *ngIf="destaqueAtual.imagem1"
+        [src]="destaqueAtual.imagem1 | mediaUrl"
+        class="destaque-thumb"
+        alt=""
+      />
+      <div class="destaque-info">
+        <span class="destaque-badge">
+          ✦ Em destaque agora · {{ destaqueAtual.manual ? 'escolhida por você' : 'escolha automática' }}
+        </span>
+        <p class="destaque-nome">{{ destaqueAtual.titulo }}</p>
+        <p class="destaque-cat">{{ destaqueAtual.categoria }}</p>
+      </div>
+      <button *ngIf="destaqueAtual.manual" class="btn-danger" (click)="removerDestaque()" title="Desfaz a escolha manual desta semana">
+        Voltar para escolha automática
+      </button>
+    </div>
+  </div>
+
+  <div class="destaque-vazio" *ngIf="!destaqueAtual">
+    <p>Nenhuma receita em destaque no momento.</p>
+  </div>
+
+  <div class="destaque-busca-area">
+    <h3>{{ destaqueAtual ? 'Trocar destaque' : 'Selecionar receita' }}</h3>
+    <div class="field" style="max-width: 400px; margin-top: 12px">
+      <label>Buscar receita</label>
+      <input
+        [(ngModel)]="destaqueBusca"
+        (ngModelChange)="onDestaqueBuscaChange()"
+        placeholder="Digite o nome da receita..."
+      />
+    </div>
+
+    <div class="sugestoes-list" *ngIf="destaqueReceitas.length > 0">
+      <div
+        class="sugestao-item"
+        *ngFor="let r of destaqueReceitas"
+        (click)="ativarDestaque(r)"
+        [class.ja-destacada]="r.destaque == 1"
+      >
+        <img *ngIf="r.imagem1" [src]="r.imagem1 | mediaUrl" class="sug-thumb" alt="" />
+        <span>{{ r.titulo }}</span>
+        <span class="sug-badge" *ngIf="r.destaque == 1">atual</span>
+        <span class="sug-action" *ngIf="r.destaque != 1">Destacar</span>
+      </div>
+    </div>
+  </div>
+</section>

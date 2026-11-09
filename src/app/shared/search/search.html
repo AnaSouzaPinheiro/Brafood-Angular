@@ -1,26 +1,20 @@
 <div class="content">
   <div class="result">
-    <div class="infos">
-      <h1>
-        Resultados da pesquisa: <span class="name">{{ nomePesquisado }}</span>
-      </h1>
-      <span>
-        Encontrado:
-        <span class="qtd" *ngIf="!loadingSearch">{{ RecipesFiltradas.length }}</span
-        ><span class="qtd" *ngIf="loadingSearch">...</span> receitas
-      </span>
-    </div>
+    <h1>
+      Resultados para <span class="name">“{{ nomePesquisado }}”</span>
+    </h1>
 
-    <div class="filter-container" *ngIf="!loadingSearch">
-      <bra-filter-panel
-        mode="categoria"
-        [dropdownDinamico]="categoriaItems"
-        [labelDinamico]="'Categorias:'"
-        [totalReceitas]="RecipesFiltradas.length"
-        [showContadorMobile]="false"
+    @if (!loadingSearch && Recipes.length > 0) {
+      <bra-barra-filtros
+        placeholder="Refinar nos resultados..."
+        modo="categoria"
+        [chips]="categoriaChips"
+        [total]="RecipesFiltradas.length"
+        ordenarInicial="nome"
         (filtrosChange)="onFiltrosChange($event)"
-      ></bra-filter-panel>
-    </div>
+        (buscaChange)="onBuscaChange($event)"
+      ></bra-barra-filtros>
+    }
   </div>
 
   <!-- SKELETON enquanto os resultados carregam -->
@@ -30,6 +24,12 @@
   ></bra-recipe-card-skeleton>
 
   <ng-container *ngIf="!loadingSearch">
+    @if (Recipes.length === 0) {
+      <p class="vazio">Nenhuma receita encontrada para “{{ nomePesquisado }}”.</p>
+    } @else if (RecipesFiltradas.length === 0) {
+      <p class="vazio">Nenhuma receita com esses filtros.</p>
+    }
+
     <div class="cards">
       @for (recipe of RecipesPage; track $index) {
       <bra-recipe-card [recipe]="recipe"></bra-recipe-card>
@@ -38,7 +38,7 @@
 
     <div class="pages">
       <bra-custom-button
-        [hidden]="RecipesFiltradas.length < end"
+        [hidden]="RecipesFiltradas.length <= end"
         [label]="'Ver mais receitas'"
         [type]="'comment'"
         (click)="verMais()"

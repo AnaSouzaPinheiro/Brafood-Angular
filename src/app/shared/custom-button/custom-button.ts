@@ -9,7 +9,8 @@ export type ButtonType =
   | 'add'
   | 'comment'
   | 'category'
-  | 'filter';
+  | 'filter'
+  | 'cancel';
 
 @Component({
   selector: 'bra-custom-button',

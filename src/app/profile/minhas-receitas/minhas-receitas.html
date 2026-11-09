@@ -1,4 +1,4 @@
-<div class="myRecipes">
+<div class="myRecipes" [class.com-barra]="selecionando">
   <bra-perfil></bra-perfil>
 
   <!-- HEADER -->
@@ -15,6 +15,12 @@
       ></bra-custom-button>
     </div>
   </div>
+
+  <!-- Botão flutuante (só no celular, no lugar do botão do cabeçalho) -->
+  <a class="fab-adicionar" [class.escondido]="selecionando" routerLink="/adicionar-receita/hub" aria-label="Adicionar receita">
+    <i class="fa-solid fa-plus"></i>
+    <span class="fab-texto">Adicionar receita</span>
+  </a>
 
   <!-- BUSCA E FILTROS — só aparece quando há mais de 1 receita -->
   <div class="barra-container" *ngIf="!loadingRecipes && podeFiltrar">
@@ -38,11 +44,28 @@
 
   <!-- CONTENT -->
   <div class="content" *ngIf="!loadingRecipes">
+    @if (RecipesFiltradas.length > 1) {
+      <div class="linha-selecao">
+        @if (!selecionando) {
+          <button type="button" class="pilula" (click)="entrarSelecao()">
+            <i class="fa-regular fa-square-check"></i> Selecionar
+          </button>
+        } @else {
+          <button type="button" class="pilula" (click)="toggleTodas()">
+            {{ todasSelecionadas ? 'Desmarcar todas' : 'Selecionar todas' }}
+          </button>
+        }
+      </div>
+    }
+
     <div class="cards">
       @for (recipe of myRecipesPage; track recipe.id) {
       <bra-recipe-card
-        [myRecipe]="true"
+        [myRecipe]="!selecionando"
         [recipe]="recipe"
+        [selecionavel]="selecionando"
+        [selecionado]="selecionadas.has(+recipe.id)"
+        (alternarSelecao)="toggleSelecao(+recipe.id)"
         (editar)="editarReceita($event)"
         (excluir)="excluirReceita($event)"
       ></bra-recipe-card>
@@ -58,3 +81,20 @@
     </div>
   </div>
 </div>
+
+<!-- Barra de ações da seleção em massa -->
+@if (selecionando) {
+  <div class="barra-selecao" role="toolbar" aria-label="Ações nas receitas selecionadas">
+    <button type="button" class="cancelar" (click)="sairSelecao()" aria-label="Cancelar seleção" title="Cancelar seleção">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <span class="contagem">
+      {{ selecionadas.size }} {{ selecionadas.size === 1 ? 'selecionada' : 'selecionadas' }}
+    </span>
+    <div class="acoes-massa">
+      <button type="button" class="perigo" [disabled]="!selecionadas.size" (click)="excluirSelecionadas()">
+        <i class="fa-solid fa-trash"></i> <span>Excluir</span>
+      </button>
+    </div>
+  </div>
+}

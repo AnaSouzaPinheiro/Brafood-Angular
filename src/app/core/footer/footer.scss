@@ -136,7 +136,7 @@ hr {
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  height: 64px;
+  min-height: 64px; // cresce no celular, quando os itens ficam empilhados
 }
 
 .terms {
@@ -243,11 +243,49 @@ hr {
   .redes-sociais ul {
     flex-direction: column;
   }
+
+  // Respiro entre o último ícone (Instagram) e o copyright
+  .redes-sociais {
+    margin-bottom: 16px;
+  }
 }
 
 @media (max-width: 576px) {
   footer {
     padding: 32px 20px;
+  }
+}
+
+// Telas médias (tablet / notebook pequeno): a coluna de categorias ficava
+// estreita e cada categoria caía numa linha. Aqui as categorias ocupam a
+// largura toda em cima; conta, contato e newsletter ficam lado a lado embaixo.
+@media (min-width: 769px) and (max-width: 1279px) {
+  .primary-footer {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: space-evenly;
+    align-items: start;
+    gap: 36px 48px;
+  }
+
+  .acesso-rapido {
+    display: contents;
+  }
+
+  .acesso-rapido .categorias {
+    grid-column: 1 / -1;
+    width: 100%;
+
+    ul {
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 8px;
+    }
+  }
+
+  .subscribe {
+    gap: 15px;
+    align-items: center;
   }
 }
 

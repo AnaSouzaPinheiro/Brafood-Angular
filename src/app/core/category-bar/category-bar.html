@@ -18,8 +18,7 @@
   <ul #track [class.dragging]="isDragging" (pointerdown)="onPointerDown($event)">
     <li
       *ngFor="let categoria of categorias"
-      [ngClass]="categoria.css_class"
-      [style.background-color]="categoria.cor_primaria || null"
+      [style.background-color]="categoria.cor_primaria || '#8BACFF'"
       (mouseenter)="onHover($event, categoria)"
       (mouseleave)="onLeave($event, categoria)"
     >
@@ -39,8 +38,7 @@
       aria-hidden="true"
       tabindex="-1"
       class="clone"
-      [ngClass]="categoria.css_class"
-      [style.background-color]="categoria.cor_primaria || null"
+      [style.background-color]="categoria.cor_primaria || '#8BACFF'"
       (mouseenter)="onHover($event, categoria)"
       (mouseleave)="onLeave($event, categoria)"
     >

@@ -31,6 +31,11 @@ export class InputList implements OnInit, OnChanges {
 
   @Output() listChange = new EventEmitter<Item[]>();
 
+  /** Modo de preparo: numera os passos e o × fica dentro do campo. */
+  get ehPasso(): boolean {
+    return this.inType === 'textarea';
+  }
+
   titleControls: FormControl[] = [];
   subitemControls: FormControl[][] = [];
 

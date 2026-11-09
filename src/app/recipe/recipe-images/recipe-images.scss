@@ -116,10 +116,23 @@ img {
 }
 
 .close {
+  position: fixed;
   top: 20px;
-  right: 50px;
+  right: 40px;
+  z-index: 1;
   font-size: 2rem;
-  position: absolute;
+}
+
+.rodape-galeria {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+// Setas do rodapé só aparecem no celular
+.seta-rodape {
+  display: none;
 }
 
 .all {
@@ -221,20 +234,50 @@ img {
     gap: 1.5rem;
   }
 
+  // Lightbox no celular: imagem de ponta a ponta, sem bordas
+  .lightbox-viewer {
+    width: 100vw;
+    gap: 0;
+  }
+
   .lightbox-image {
-    max-width: 90vw;
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
     max-height: 70vh;
+    object-fit: contain;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .close {
-    right: 20px;
-    top: -50px;
+    top: 14px;
+    right: 16px;
+    font-size: 1.4rem;
   }
 
-  /* esconde setas laterais no mobile */
-  .all > .prev,
-  .all > .next {
+  // Setas saem das laterais da imagem e vão para os lados das miniaturas
+  .seta-lateral {
     display: none;
+  }
+
+  .seta-rodape {
+    display: block;
+    flex-shrink: 0;
+    font-size: 1.8rem;
+    padding: 0 6px;
+  }
+
+  .thumbnail-carousel {
+    width: auto;
+    max-width: calc(100vw - 90px);
+    justify-content: flex-start;
+  }
+
+  .thumbnail {
+    flex-basis: 64px;
+    width: 64px;
+    height: 48px;
   }
 
   /* mostra setas embaixo */

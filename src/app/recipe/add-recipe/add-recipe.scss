@@ -124,6 +124,20 @@
   margin-top: 0;
 }
 
+// Duas categorias: espaço entre um seletor e o outro
+.input-box ::ng-deep bra-dropdown .custom-dropdown + .custom-dropdown {
+  margin-top: 12px;
+}
+
+// Resumo aceita até 500 caracteres: campo mais alto
+.input-box.resumo ::ng-deep textarea {
+  height: 140px;
+
+  @media (max-width: 600px) {
+    height: 170px;
+  }
+}
+
 .field-error {
   display: flex;
   align-items: center;
@@ -195,5 +209,38 @@
 
   @media (max-width: 768px) {
     margin-top: 24px;
+  }
+}
+
+// Rascunho recuperado do navegador
+.aviso-rascunho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: #e6ecfa;
+  color: $secondary-blue;
+  font-size: 0.9rem;
+
+  i {
+    color: $primary-blue;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+  }
+
+  button {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: $alert-red;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }

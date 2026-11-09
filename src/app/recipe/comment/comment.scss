@@ -268,3 +268,21 @@ i {
     }
   }
 }
+
+// Contador de caracteres da resposta (aparece ao digitar)
+.reply-input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.char-counter {
+  align-self: flex-end;
+  margin-top: 4px;
+  font-size: 12px;
+  color: $primary-gray;
+
+  &.near-limit {
+    color: #e67e00;
+    font-weight: 500;
+  }
+}

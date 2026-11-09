@@ -1,0 +1,12 @@
+@use "variables" as *;
+@use "layout" as *;
+@use "admin" as *;
+@use "../../painel-comum";
+
+.filtro-row {
+  margin-bottom: 15px;
+}
+
+.contador.no-limite {
+  color: $alert-red;
+}

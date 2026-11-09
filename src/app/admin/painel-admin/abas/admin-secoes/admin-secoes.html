@@ -1,0 +1,569 @@
+<section class="section">
+  <div class="section-header">
+    <h2>Seções da Home <span class="count">{{ secoes.length }}</span></h2>
+    <button class="btn-add" (click)="abrirNovaSecao()">+ Nova Seção</button>
+  </div>
+
+  @if (showSecForm) {
+  <div class="form-card">
+    <h3>{{ secEditId ? 'Editar Seção' : 'Nova Seção' }}</h3>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Título *</label>
+        <input [(ngModel)]="secForm.titulo" placeholder="Ex: Festa Junina" />
+      </div>
+
+      <div class="field">
+        <label>Ordem de exibição</label>
+        <input
+          type="number"
+          [(ngModel)]="secForm.ordem"
+          placeholder="Ex: 1"
+          min="0"
+        />
+        <small class="hint">Usada só para seções fixadas; as demais rotacionam todo dia.</small>
+      </div>
+
+      <div class="field">
+        <label>Fixar no topo até</label>
+        <input type="date" [(ngModel)]="secForm.fixar_ate" [min]="hojeIso" />
+        <small class="hint">Deixe vazio para a seção entrar na rotação diária.</small>
+      </div>
+
+      <div class="field full">
+        <label>Período em que aparece (todo ano)</label>
+        <div class="periodo">
+          <input
+            [(ngModel)]="secPeriodoDe"
+            placeholder="DD/MM"
+            maxlength="5"
+            inputmode="numeric"
+            aria-label="Início do período"
+          />
+          <span>até</span>
+          <input
+            [(ngModel)]="secPeriodoAte"
+            placeholder="DD/MM"
+            maxlength="5"
+            inputmode="numeric"
+            aria-label="Fim do período"
+          />
+        </div>
+        <small class="hint">
+          Ex.: Festa Junina 01/06 até 31/07 · Natal 01/12 até 06/01. Vazio = o ano todo.
+        </small>
+      </div>
+
+      <div class="field full">
+        <label>Modo de exibição de receitas</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="modoSec"
+              value="aleatorio"
+              [(ngModel)]="secForm.modo"
+              (ngModelChange)="onModoChange()"
+            />
+            Aleatório
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="modoSec"
+              value="manual"
+              [(ngModel)]="secForm.modo"
+              (ngModelChange)="onModoChange()"
+            />
+            Manual (curado)
+          </label>
+        </div>
+        <span class="hint">
+          Aleatório: mostra receitas automaticamente (filtradas por
+          categoria/subcategoria se definidas). Manual: você escolhe cada
+          receita exibida.
+        </span>
+      </div>
+
+      <div class="field full">
+        <label>O que exibir nos cards</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="cardExibir"
+              value="categoria"
+              [(ngModel)]="secForm.card_exibir"
+            />
+            Categoria
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="cardExibir"
+              value="subcategoria"
+              [(ngModel)]="secForm.card_exibir"
+            />
+            Subcategoria
+          </label>
+        </div>
+        <span class="hint">
+          "Subcategoria" é ideal quando a seção já representa uma categoria
+          (ex: seção "Sobremesas" → exibe "Bolos", "Tortas" em cada card).
+        </span>
+      </div>
+
+      @if (secForm.modo === 'aleatorio') {
+      <div class="field">
+        <label>Filtrar por categoria (opcional)</label>
+        <select
+          [(ngModel)]="secForm.id_categoria"
+          (ngModelChange)="onCategoriaSecaoChange()"
+        >
+          <option [ngValue]="null">Qualquer categoria</option>
+          @for (cat of categoriasComReceitas; track cat.id) {
+          <option [ngValue]="cat.id">{{ cat.nome }}</option>
+          }
+        </select>
+        <span class="hint"
+          >Apenas categorias com receitas cadastradas são exibidas.</span
+        >
+      </div>
+
+      @if (secForm.id_categoria) {
+      <div class="field">
+        <label>Filtrar por subcategoria (opcional)</label>
+        <select [(ngModel)]="secForm.id_subcategoria">
+          <option [ngValue]="null">Qualquer subcategoria</option>
+          @for (sub of subcategoriasDaCategoria; track sub.id) {
+          <option [ngValue]="sub.id">{{ sub.nome }}</option>
+          }
+        </select>
+        <span class="hint">Restringe ainda mais as receitas da seção</span>
+      </div>
+      } }
+
+      <div class="field full">
+        <label>Tipo de fundo da seção</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="tipoFundo"
+              value="imagem"
+              [(ngModel)]="secTipoFundo"
+              (ngModelChange)="onTipoFundoChange()"
+            />
+            Imagem de fundo
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="tipoFundo"
+              value="cor"
+              [(ngModel)]="secTipoFundo"
+              (ngModelChange)="onTipoFundoChange()"
+            />
+            Cor de fundo
+          </label>
+        </div>
+      </div>
+
+      @if (secTipoFundo === 'imagem') {
+      <div class="field full">
+        <label>Imagem de fundo</label>
+        @if (previewFundoSecao || secForm.url_fundo) {
+        <img
+          [src]="previewFundoSecao || secForm.url_fundo | mediaUrl"
+          alt="preview fundo"
+          class="img-preview img-preview--wide"
+        />
+        }
+        @if (previewFundoSecao || secForm.url_fundo) {
+        <button
+          type="button"
+          class="btn-remover-img"
+          (click)="previewFundoSecao = null; secForm.url_fundo = null; inpFundoSecao.value = ''; iaSelecionada.fundo = undefined"
+        >
+          <i class="fa-solid fa-xmark"></i> Remover imagem
+        </button>
+        }
+        <input
+          #inpFundoSecao
+          type="file"
+          accept="image/*"
+          (change)="onFundoSecaoChange($event)"
+        />
+        <button type="button" class="btn-ia" (click)="abrirIa('fundo')">
+          ✨
+          {{ iaTipo === 'fundo' ? 'Fechar geração com IA' : 'Gerar com IA' }}
+        </button>
+        @if (iaTipo === 'fundo') {
+        <ng-container *ngTemplateOutlet="painelIa"></ng-container>
+        }
+        @if (uploadandoFundoSecao) {
+        <span class="loading">Enviando...</span> }
+        <span class="hint"
+          >Imagem exibida atrás das receitas (com sobreposição branca)</span
+        >
+      </div>
+      } @if (secTipoFundo === 'cor') {
+      <div class="field">
+        <label>Cor de fundo</label>
+        <div class="color-row">
+          <input
+            type="color"
+            [value]="secForm.cor_fundo || '#f5f5f5'"
+            (input)="secForm.cor_fundo = $any($event.target).value"
+          />
+          <input [(ngModel)]="secForm.cor_fundo" placeholder="#f5f5f5" />
+        </div>
+        <span class="hint">Cor sólida usada como fundo da seção</span>
+      </div>
+      }
+
+      <div class="field full">
+        <label>Cor do título</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="tipoTitulo"
+              value="solido"
+              [(ngModel)]="secForm.titulo_cor_tipo"
+            />
+            Cor sólida
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="tipoTitulo"
+              value="gradiente"
+              [(ngModel)]="secForm.titulo_cor_tipo"
+            />
+            Gradiente
+          </label>
+        </div>
+      </div>
+
+      @if (secForm.titulo_cor_tipo === 'solido') {
+      <div class="field">
+        <label>Cor sólida</label>
+        <div class="color-row">
+          <input
+            type="color"
+            [value]="secForm.titulo_cor_solid || '#0049ff'"
+            (input)="secForm.titulo_cor_solid = $any($event.target).value"
+          />
+          <input
+            [(ngModel)]="secForm.titulo_cor_solid"
+            placeholder="#0049ff"
+          />
+        </div>
+      </div>
+      } @if (secForm.titulo_cor_tipo === 'gradiente') {
+      <div class="field">
+        <label>Cor inicial</label>
+        <div class="color-row">
+          <input
+            type="color"
+            [value]="secForm.titulo_gradiente_1 || '#8aabff'"
+            (input)="secForm.titulo_gradiente_1 = $any($event.target).value"
+          />
+          <input
+            [(ngModel)]="secForm.titulo_gradiente_1"
+            placeholder="#8aabff"
+          />
+        </div>
+      </div>
+      <div class="field">
+        <label>Cor final</label>
+        <div class="color-row">
+          <input
+            type="color"
+            [value]="secForm.titulo_gradiente_2 || '#0049ff'"
+            (input)="secForm.titulo_gradiente_2 = $any($event.target).value"
+          />
+          <input
+            [(ngModel)]="secForm.titulo_gradiente_2"
+            placeholder="#0049ff"
+          />
+        </div>
+      </div>
+      }
+
+      <div class="field full">
+        <label>Imagem do fundo do título</label>
+        @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+        <img
+          [src]="previewFundoTituloSecao || secForm.fundo_titulo | mediaUrl"
+          alt="preview fundo título"
+          class="img-preview"
+        />
+        }
+        @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+        <button
+          type="button"
+          class="btn-remover-img"
+          (click)="previewFundoTituloSecao = null; secForm.fundo_titulo = null; inpFundoTitulo.value = ''; iaSelecionada.titulo = undefined"
+        >
+          <i class="fa-solid fa-xmark"></i> Remover imagem
+        </button>
+        }
+        <input
+          #inpFundoTitulo
+          type="file"
+          accept="image/*"
+          (change)="onFundoTituloSecaoChange($event)"
+        />
+        <button type="button" class="btn-ia" (click)="abrirIa('titulo')">
+          ✨
+          {{ iaTipo === 'titulo' ? 'Fechar geração com IA' : 'Gerar com IA' }}
+        </button>
+        @if (iaTipo === 'titulo') {
+        <ng-container *ngTemplateOutlet="painelIa"></ng-container>
+        }
+        @if (uploadandoFundoTituloSecao) {
+        <span class="loading">Enviando...</span> }
+        <span class="hint"
+          >Decoração que aparece atrás do título da seção (opcional)</span
+        >
+      </div>
+    </div>
+
+    <div class="preview-label">Preview do fundo:</div>
+    <div
+      class="sec-preview"
+      [ngStyle]="secTipoFundo === 'imagem' && (previewFundoSecao || secForm.url_fundo)
+        ? { 'background-image': 'url(' + ((previewFundoSecao || secForm.url_fundo) | mediaUrl) + ')', 'background-size': 'cover', 'background-position': 'center' }
+        : secTipoFundo === 'cor' && secForm.cor_fundo
+          ? { 'background-color': secForm.cor_fundo }
+          : { 'background-color': '#eee' }"
+    >
+      @if (previewFundoTituloSecao || secForm.fundo_titulo) {
+      <img
+        [src]="previewFundoTituloSecao || secForm.fundo_titulo | mediaUrl"
+        alt=""
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 260px; z-index: 0; pointer-events: none;"
+      />
+      }
+      <span class="sec-preview-title" [ngStyle]="getTituloPreviewStyle()">
+        {{ secForm.titulo || 'Título da seção' }}
+      </span>
+    </div>
+
+    @if (secForm.modo === 'manual') {
+    <div class="receitas-panel">
+      <h4>Receitas desta seção</h4>
+
+      @if (!secEditId) {
+      <p class="hint">
+        Salve a seção primeiro para depois vincular receitas.
+      </p>
+      } @else {
+      <div class="busca-receita">
+        <input
+          [(ngModel)]="termoBusca"
+          (ngModelChange)="onTermoBuscaChange()"
+          placeholder="Buscar receita por título..."
+          class="busca-input"
+        />
+        @if (sugestoesReceitas.length > 0) {
+        <ul class="sugestoes-list">
+          @for (s of sugestoesReceitas; track s.id) {
+          <li (click)="vincularReceita(s)">{{ s.titulo }}</li>
+          }
+        </ul>
+        }
+      </div>
+
+      @if (receitasCarregando) {
+      <p class="loading">Carregando receitas...</p>
+      } @else if (receitasDaSecao.length === 0) {
+      <p class="hint">
+        Nenhuma receita vinculada. Use a busca acima para adicionar.
+      </p>
+      } @else {
+      <ul class="receitas-list">
+        @for (r of receitasDaSecao; track r.id) {
+        <li class="receita-item">
+          @if (r.imagem1) {
+          <img
+            [src]="r.imagem1"
+            alt="{{ r.titulo }}"
+            class="receita-thumb"
+            onerror="this.style.display = 'none'"
+          />
+          }
+          <span class="receita-titulo">{{ r.titulo }}</span>
+          <button
+            class="btn-del btn-del--sm"
+            (click)="desvincularReceita(r.id)"
+            title="Remover"
+          >
+            ✕
+          </button>
+        </li>
+        }
+      </ul>
+      } }
+    </div>
+    }
+
+    <div class="form-actions">
+      <button
+        class="btn-save"
+        (click)="salvarSecao()"
+        [disabled]="secLoading || uploadandoFundoSecao || uploadandoFundoTituloSecao"
+      >
+        {{ secLoading ? 'Salvando...' : (secEditId ? 'Atualizar' : 'Criar') }}
+      </button>
+      <button class="btn-cancel" (click)="showSecForm = false">
+        Cancelar
+      </button>
+    </div>
+  </div>
+  }
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ordem</th>
+          <th>Título</th>
+          <th>Modo</th>
+          <th>Fundo</th>
+          <th>Fundo Título</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sec of secoes; track sec.id) {
+        <tr>
+          <td class="center">{{ sec.ordem }}</td>
+          <td>
+            <strong>{{ sec.titulo }}</strong>
+            @if (secaoFixada(sec)) {
+              <span class="badge badge-fixada" title="Fixada até {{ sec.fixar_ate }}">📌 Fixada</span>
+            }
+            @if (sec.ativo_de && sec.ativo_ate) {
+              <span
+                class="badge"
+                [class.badge-periodo-on]="secaoNoPeriodo(sec)"
+                [class.badge-periodo-off]="!secaoNoPeriodo(sec)"
+              >
+                📅 {{ mesDiaParaDiaMes(sec.ativo_de) }}–{{ mesDiaParaDiaMes(sec.ativo_ate) }}
+                {{ secaoNoPeriodo(sec) ? '' : '(fora do período)' }}
+              </span>
+            }
+          </td>
+          <td>
+            <span
+              class="badge"
+              [class.badge-manual]="sec.modo === 'manual'"
+              [class.badge-aleatorio]="sec.modo !== 'manual'"
+            >
+              {{ sec.modo === 'manual' ? '✎ Manual' : '🔀 Aleatório' }}
+            </span>
+          </td>
+          <td>
+            @if (sec.url_fundo) {
+            <span class="badge badge-img" title="{{ sec.url_fundo }}"
+              >🖼 Imagem</span
+            >
+            } @else if (sec.cor_fundo) {
+            <div
+              class="color-chip"
+              [style.background]="sec.cor_fundo"
+              [title]="sec.cor_fundo"
+            ></div>
+            } @else {
+            <span class="sem-cor">Nenhum</span>
+            }
+          </td>
+          <td>
+            @if (sec.fundo_titulo) {
+            <span class="badge badge-img" title="{{ sec.fundo_titulo }}"
+              >🖼 Sim</span
+            >
+            } @else { <span class="sem-cor">—</span> }
+          </td>
+          <td class="actions">
+            <button class="btn-edit" (click)="editarSecao(sec)">
+              Editar
+            </button>
+            <button
+              class="btn-del"
+              (click)="excluirSecao(sec.id, sec.titulo)"
+            >
+              Excluir
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Painel de geração de imagem com IA (usado no fundo da seção e no fundo do título) -->
+<ng-template #painelIa>
+  @if (iaTipo; as tipo) {
+  <div class="painel-ia">
+    <div class="painel-ia__campos">
+      <label>
+        Tema
+        <input [(ngModel)]="iaTema" placeholder="Ex.: Natal" />
+      </label>
+      <div class="painel-ia__cores">
+        <span>Cores de destaque (até {{ IA_MAX_CORES }})</span>
+        <div class="painel-ia__cores-lista">
+          @for (cor of iaCores; track $index; let i = $index) {
+          <span class="painel-ia__cor">
+            <input type="color" [value]="cor" (input)="trocarCorIa(i, $any($event.target).value)" />
+            @if (iaCores.length > 1) {
+            <button type="button" title="Remover cor" (click)="removerCorIa(i)">×</button>
+            }
+          </span>
+          }
+          @if (iaCores.length < IA_MAX_CORES) {
+          <button type="button" class="btn-ia" (click)="adicionarCorIa()">+ cor</button>
+          }
+        </div>
+      </div>
+      <label class="painel-ia__icones">
+        Ícones (em inglês, separados por vírgula)
+        <textarea [(ngModel)]="iaIcones" rows="2" placeholder="christmas tree, roast turkey, gift..."></textarea>
+      </label>
+    </div>
+
+    <div class="painel-ia__acoes">
+      <button type="button" class="btn-ia" (click)="sugerirIconesIa()" [disabled]="iaSugerindo || !iaTema.trim()">
+        {{ iaSugerindo ? 'Sugerindo...' : 'Sugerir ícones e cores' }}
+      </button>
+      <button type="button" class="btn-ia btn-ia--primario" (click)="gerarOpcoesIa()" [disabled]="!iaTema.trim()">
+        Gerar {{ IA_QTD_OPCOES }} opções
+      </button>
+    </div>
+
+    @if (iaOpcoes[tipo].length) {
+    <p class="hint">
+      Clique numa opção para ver no preview. Dá para trocar à vontade; a escolhida só é enviada ao salvar a seção.
+    </p>
+    <div class="painel-ia__opcoes">
+      @for (opcao of iaOpcoes[tipo]; track $index) {
+      <div class="painel-ia__opcao" [class.selecionada]="opcao.src && iaSelecionada[tipo] === opcao.src">
+        @if (opcao.src) {
+        <img [src]="opcao.src" alt="Opção gerada" (click)="escolherOpcaoIa(tipo, opcao.src)" />
+        } @else if (opcao.erro) {
+        <span>Falhou — gere de novo</span>
+        } @else {
+        <span class="loading">Gerando...</span>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+  }
+</ng-template>

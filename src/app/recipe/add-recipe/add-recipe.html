@@ -3,6 +3,14 @@
   <form [formGroup]="form" class="adding">
     <h1 class="title">Adicionando minha receita</h1>
 
+    @if (rascunhoRecuperado) {
+      <div class="aviso-rascunho" role="status">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Recuperamos o rascunho que você começou. As fotos precisam ser adicionadas de novo.</span>
+        <button type="button" (click)="descartarRascunho()">Descartar</button>
+      </div>
+    }
+
     <!-- Imagens -->
     <h3>Anexe até 8 imagens da receita:</h3>
     <bra-input-images
@@ -26,7 +34,7 @@
         ></bra-input>
       </div>
 
-      <div class="input-box">
+      <div class="input-box resumo">
         <bra-input
           [label]="'Resumo da receita*'"
           [inType]="'textarea'"
@@ -34,7 +42,12 @@
           formControlName="resumo"
           name="resumoReceita"
           autocomplete="recipe-description"
-          [errorMessages]="{ required: 'Escreva um resumo da receita.', minlength: 'Escreva pelo menos 10 caracteres para o resumo.' }"
+          [maxChars]="255"
+          [errorMessages]="{
+            required: 'Escreva um resumo da receita.',
+            minlength: 'Escreva pelo menos 20 caracteres para o resumo.',
+            maxlength: 'O resumo não pode ultrapassar 255 caracteres.'
+          }"
         ></bra-input>
       </div>
 

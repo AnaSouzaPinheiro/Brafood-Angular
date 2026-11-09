@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -36,7 +38,7 @@ import { toSlug } from '../../utils/slug';
     FormsModule,
   ],
   templateUrl: './minhas-receitas.html',
-  styleUrls: ['./minhas-receitas.scss'],
+  styleUrls: ['./minhas-receitas.scss', '../quadro/barra-selecao.scss'],
 })
 export class MinhasReceitas {
   // ── "Ver mais" ────────────────────────────────────────────────────────────
@@ -155,6 +157,92 @@ export class MinhasReceitas {
       id: i + 1,
       nome: c as string,
     }));
+  }
+
+  // ── Seleção em massa ──────────────────────────────────────────────────────
+  selecionando = false;
+  selecionadas = new Set<number>();
+
+  entrarSelecao() {
+    this.selecionando = true;
+    this.selecionadas = new Set();
+  }
+
+  sairSelecao() {
+    this.selecionando = false;
+    this.selecionadas = new Set();
+  }
+
+  toggleSelecao(id: number) {
+    const s = new Set(this.selecionadas);
+    s.has(id) ? s.delete(id) : s.add(id);
+    this.selecionadas = s;
+  }
+
+  get todasSelecionadas(): boolean {
+    return (
+      this.RecipesFiltradas.length > 0 &&
+      this.RecipesFiltradas.every((r) => this.selecionadas.has(+r.id))
+    );
+  }
+
+  toggleTodas() {
+    this.selecionadas = this.todasSelecionadas
+      ? new Set()
+      : new Set(this.RecipesFiltradas.map((r) => +r.id));
+  }
+
+  excluirSelecionadas() {
+    const ids = [...this.selecionadas];
+    if (!ids.length) return;
+    const n = ids.length;
+    this.modalService.open({
+      type: 'warning',
+      title: n === 1 ? 'Excluir receita' : `Excluir ${n} receitas`,
+      message:
+        n === 1
+          ? 'Tem certeza que deseja excluir a receita selecionada? Essa ação não pode ser desfeita.'
+          : `Tem certeza que deseja excluir as ${n} receitas selecionadas? Essa ação não pode ser desfeita.`,
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      onConfirm: () => this.confirmarExclusaoEmMassa(ids),
+    });
+  }
+
+  private confirmarExclusaoEmMassa(ids: number[]) {
+    forkJoin(
+      ids.map((id) =>
+        this.receitaServices.excluir(id).pipe(
+          map(() => id),
+          catchError(() => of(null)),
+        ),
+      ),
+    ).subscribe((resultado) => {
+      const excluidas = new Set(resultado.filter((id): id is number => id !== null));
+      this.Recipes = this.Recipes.filter((r) => !excluidas.has(+r.id));
+      this.montarCategorias();
+      this.aplicarFiltros();
+      this.sairSelecao();
+
+      const falhas = ids.length - excluidas.size;
+      this.modalService.open(
+        falhas === 0
+          ? {
+              type: 'success',
+              title: excluidas.size === 1 ? 'Receita excluída' : 'Receitas excluídas',
+              message:
+                excluidas.size === 1
+                  ? 'A receita foi excluída com sucesso!'
+                  : `${excluidas.size} receitas foram excluídas com sucesso!`,
+              confirmText: 'OK',
+            }
+          : {
+              type: 'error',
+              title: 'Erro',
+              message: `Não foi possível excluir ${falhas === 1 ? '1 receita' : falhas + ' receitas'}. Tente novamente.`,
+            },
+      );
+    });
   }
 
   // ── Editar / Excluir ──────────────────────────────────────────────────────

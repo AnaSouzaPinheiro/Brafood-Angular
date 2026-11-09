@@ -6,6 +6,10 @@ import {
   OnInit,
   Output,
   EventEmitter,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnChanges,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -32,7 +36,7 @@ const DEFAULT_ERRORS: Record<string, string> = {
   templateUrl: './input.html',
   styleUrl: './input.scss',
 })
-export class BraInput implements OnInit, ControlValueAccessor {
+export class BraInput implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
   @Input() label: string = '';
   @Input() type: string = 'text';
   @Input() placeholder: string = '';
@@ -41,6 +45,10 @@ export class BraInput implements OnInit, ControlValueAccessor {
   @Input() value: string | null = null;
   @Input() maxChars: number | null = null;
   @Input() errorMessages: Record<string, string> = {};
+  /** Textarea cresce conforme o texto, em vez de mostrar barra de rolagem. */
+  @Input() autoGrow = false;
+
+  @ViewChild('campoTexto') private campoTexto?: ElementRef<HTMLTextAreaElement>;
 
   @Output() valueChange = new EventEmitter<string>();
 
@@ -67,8 +75,28 @@ export class BraInput implements OnInit, ControlValueAccessor {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.ajustarAltura();
+  }
+
+  ngOnChanges(): void {
+    this.ajustarAltura();
+  }
+
   writeValue(value: string): void {
     this.value = value ?? '';
+    this.ajustarAltura();
+  }
+
+  /** Espera o valor chegar no DOM e ajusta a altura ao conteúdo. */
+  private ajustarAltura(): void {
+    if (!this.autoGrow) return;
+    queueMicrotask(() => {
+      const el = this.campoTexto?.nativeElement;
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 2 + 'px';
+    });
   }
   registerOnChange(fn: any): void {
     this._onChange = fn;
@@ -83,6 +111,7 @@ export class BraInput implements OnInit, ControlValueAccessor {
     this.value = value;
     this._onChange?.(value);
     this.valueChange.emit(value);
+    this.ajustarAltura();
   }
 
   onBlur(): void {

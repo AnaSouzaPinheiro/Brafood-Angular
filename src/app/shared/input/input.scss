@@ -44,6 +44,12 @@ label {
 .textarea {
   height: 125px;
   resize: none;
+
+  &.auto-grow {
+    height: auto;
+    min-height: 88px;
+    overflow-y: hidden;
+  }
 }
 
 .input-error {
@@ -97,5 +103,13 @@ label {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// Celular: placeholder menor. O texto digitado continua em 16px,
+// porque abaixo disso o iPhone dá zoom na tela ao tocar no campo.
+@media (max-width: 600px) {
+  .input-text::placeholder {
+    font-size: 14px;
   }
 }

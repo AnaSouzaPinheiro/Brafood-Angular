@@ -77,6 +77,22 @@ button.add {
   }
 }
 
+/* CANCEL — ação secundária/destrutiva: branco com texto e borda vermelhos */
+button.cancel {
+  font-weight: 400;
+
+  padding: 8px 26px;
+  border-radius: 20px;
+
+  color: $alert-red;
+  background: #fff;
+  border: 1.5px solid $alert-red;
+
+  &:hover {
+    background: rgba($alert-red, 0.08);
+  }
+}
+
 /* COMMENT */
 button.comment {
   height: 36px;

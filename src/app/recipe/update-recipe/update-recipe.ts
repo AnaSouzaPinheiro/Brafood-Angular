@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -40,6 +40,26 @@ import { BraInput } from '../../shared/input/input';
   styleUrl: './update-recipe.scss',
 })
 export class UpdateRecipe implements OnInit {
+  // ---- Alterações não salvas ----
+  private alterou = false;
+  private salvou = false;
+
+  temAlteracoes(): boolean {
+    return !this.salvou && (this.alterou || this.form.dirty);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  avisarAoFecharAba(e: BeforeUnloadEvent) {
+    if (this.temAlteracoes()) e.preventDefault();
+  }
+
+  /** Só conta alterações depois que a receita terminou de carregar. */
+  private carregado = false;
+
+  private marcarAlteracao() {
+    if (this.carregado) this.alterou = true;
+  }
+
   form: FormGroup;
 
   categorias: Categoria[] = [];
@@ -117,7 +137,7 @@ export class UpdateRecipe implements OnInit {
         [
           Validators.required,
           Validators.minLength(10),
-          Validators.maxLength(500),
+          Validators.maxLength(255),
         ],
       ],
       categoria: [null, Validators.required],
@@ -148,6 +168,7 @@ export class UpdateRecipe implements OnInit {
   }
 
   onReceitaPropriaChange(propria: boolean) {
+    this.marcarAlteracao();
     this.receitaPropria = propria;
 
     const fonteAutorCtrl = this.form.get('fonte_autor');
@@ -210,6 +231,11 @@ export class UpdateRecipe implements OnInit {
         }
 
         this.prepararCategoriaESub(receita);
+        setTimeout(() => {
+          this.form.markAsPristine();
+          this.alterou = false;
+          this.carregado = true;
+        });
       });
     });
   }
@@ -288,6 +314,7 @@ export class UpdateRecipe implements OnInit {
   }
 
   onCategoriaSelecionada(event: Option[]) {
+    this.marcarAlteracao();
     this.categoriasSelecionadas = [...event];
 
     const categoriasIds = event.map((e) => e.value);
@@ -309,6 +336,7 @@ export class UpdateRecipe implements OnInit {
   }
 
   onSubcategoriaSelecionada(catId: string, selecionadas: Option[]) {
+    this.marcarAlteracao();
     this.subcategoriasSelecionadas = {
       ...this.subcategoriasSelecionadas,
       [catId]: [...selecionadas],
@@ -324,11 +352,13 @@ export class UpdateRecipe implements OnInit {
   }
 
   onPorcaoSelecionada(event: Option[]) {
+    this.marcarAlteracao();
     this.porcaoSelecionada = event;
     this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
   onCapaSelecionada(file: File | null) {
+    this.marcarAlteracao();
     this.capaSelecionada = file;
 
     if (file) {
@@ -339,11 +369,13 @@ export class UpdateRecipe implements OnInit {
   }
 
   onGaleriaSelecionada(event: { mantidas: string[]; novas: File[] }) {
+    this.marcarAlteracao();
     this.galeriaAtual = event.mantidas;
     this.galeriaNova = event.novas;
   }
 
   atualizarIngredientes(lista: any[]) {
+    this.marcarAlteracao();
     this.receita.ingredientes = lista.map((i) => ({
       titulo: i.title,
       itens: i.subitems,
@@ -351,6 +383,7 @@ export class UpdateRecipe implements OnInit {
   }
 
   atualizarEtapas(lista: any[]) {
+    this.marcarAlteracao();
     this.receita.etapas = lista.map((et, i) => ({
       titulo: et.title,
       ordem: i + 1,
@@ -432,6 +465,7 @@ export class UpdateRecipe implements OnInit {
       .subscribe({
         next: (res) => {
           if (res?.success) {
+            this.salvou = true;
             const idUsuario =
               this.authService.getUserId() ??
               Number(this.route.snapshot.queryParamMap.get('user'));

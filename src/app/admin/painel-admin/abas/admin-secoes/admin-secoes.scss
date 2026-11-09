@@ -1,0 +1,97 @@
+@use "variables" as *;
+@use "layout" as *;
+@use "admin" as *;
+@use "../../painel-comum";
+
+.sec-preview {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 80px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+
+  @include flex-center;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgb(255 255 255 / 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .sec-preview-title {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 2px 0;
+  }
+}
+
+// RECEITAS
+.receitas-panel {
+  @include admin-card;
+
+  margin-top: 20px;
+  background: #f9fafb;
+}
+
+.busca-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  @include admin-input;
+}
+
+.receitas-list {
+  @include flex-column;
+
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.receita-item {
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+
+  @include flex-between;
+}
+
+.periodo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input {
+    width: 90px;
+    text-align: center;
+  }
+}
+
+.badge-fixada {
+  margin-left: 6px;
+  background: #fff3cd;
+  color: #8a6d00;
+}
+
+.badge-periodo-on {
+  margin-left: 6px;
+  background: #e3f6e8;
+  color: #1e7b3a;
+}
+
+.badge-periodo-off {
+  margin-left: 6px;
+  background: #eee;
+  color: #888;
+}

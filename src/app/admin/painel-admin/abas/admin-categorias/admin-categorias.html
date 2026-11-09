@@ -1,0 +1,236 @@
+<section class="section">
+  <div class="section-header">
+    <h2>Categorias <span class="count">{{ categorias.length }}</span></h2>
+    <button class="btn-add" (click)="abrirNovaCat()">+ Nova Categoria</button>
+  </div>
+
+  @if (showCatForm) {
+  <div class="form-card">
+    <h3>{{ catEditId ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Nome *</label>
+        <input [(ngModel)]="catForm.nome" placeholder="Ex: Sobremesas" [attr.maxlength]="LIMITE_NOME" />
+        <span class="hint contador" [class.no-limite]="(catForm.nome || '').length >= LIMITE_NOME">
+          {{ (catForm.nome || '').length }}/{{ LIMITE_NOME }} caracteres — limite para caber no menu de categorias
+        </span>
+      </div>
+      <div class="field">
+        <label>Ordem no menu</label>
+        <input
+          type="number"
+          [(ngModel)]="catForm.ordem"
+          placeholder="Ex: 1"
+          min="1"
+        />
+      </div>
+      <div class="field">
+        <label>Cor principal</label>
+        <div class="color-row">
+          <input
+            type="color"
+            [value]="catForm.cor_primaria || '#8BACFF'"
+            (input)="mudarCor($any($event.target).value)"
+          />
+          <input [ngModel]="catForm.cor_primaria" (ngModelChange)="mudarCor($event)" placeholder="#8BACFF" />
+        </div>
+        <span class="hint">Cor de fundo do item no menu</span>
+      </div>
+      <div class="field">
+        <label>Gradiente ao passar o mouse</label>
+        <div class="color-row gradiente-row">
+          <input
+            type="color"
+            [value]="coresGradiente[0]"
+            (input)="mudarCorGradiente(0, $any($event.target).value)"
+            title="Cor de cima"
+            aria-label="Cor de cima do gradiente"
+          />
+          <span class="faixa" [style.background]="catForm.gradiente_hover"></span>
+          <input
+            type="color"
+            [value]="coresGradiente[1]"
+            (input)="mudarCorGradiente(1, $any($event.target).value)"
+            title="Cor de baixo"
+            aria-label="Cor de baixo do gradiente"
+          />
+        </div>
+        <span class="hint">
+          @if (gradienteManual) {
+            Cores personalizadas.
+            <button type="button" class="link-hint" (click)="gerarGradiente()">Voltar a gerar pela cor principal</button>
+          } @else {
+            Gerado pela cor principal. Clique numa cor para trocar.
+          }
+        </span>
+      </div>
+
+      <div class="field">
+        <label>Ícone da categoria</label>
+        @if (previewIconeCat || catForm.icone) {
+        <img
+          [src]="previewIconeCat || catForm.icone"
+          alt="preview ícone"
+          class="img-preview"
+        />
+        }
+        @if (previewIconeCat || catForm.icone) {
+        <button
+          type="button"
+          class="btn-remover-img"
+          (click)="previewIconeCat = null; catForm.icone = null; inpIconeCat.value = ''"
+        >
+          <i class="fa-solid fa-xmark"></i> Remover imagem
+        </button>
+        }
+        <input
+          #inpIconeCat
+          type="file"
+          accept="image/*"
+          (change)="onIconeCatChange($event)"
+        />
+        @if (uploadandoIconeCat) { <span class="loading">Enviando...</span> }
+        <span class="hint">Ícone exibido no menu de categorias</span>
+      </div>
+
+      <div class="field">
+        <label>Imagem de fundo</label>
+        @if (previewFundoCat || catForm.fundo) {
+        <img
+          [src]="previewFundoCat || catForm.fundo"
+          alt="preview fundo"
+          class="img-preview"
+        />
+        }
+        @if (previewFundoCat || catForm.fundo) {
+        <button
+          type="button"
+          class="btn-remover-img"
+          (click)="previewFundoCat = null; catForm.fundo = null; inpFundoCat.value = ''"
+        >
+          <i class="fa-solid fa-xmark"></i> Remover imagem
+        </button>
+        }
+        <input
+          #inpFundoCat
+          type="file"
+          accept="image/*"
+          (change)="onFundoCatChange($event)"
+        />
+        @if (uploadandoFundoCat) { <span class="loading">Enviando...</span> }
+        <span class="hint">Imagem de fundo da página da categoria</span>
+      </div>
+    </div>
+
+    <div class="preview-label">Preview do item no menu (tamanho real):</div>
+    <div class="preview-row">
+      <div class="preview-item">
+        <div
+          class="cat-preview"
+          [style.background-color]="catForm.cor_primaria || '#8BACFF'"
+        >
+          @if (previewIconeCat || catForm.icone) {
+          <img
+            [src]="previewIconeCat || catForm.icone"
+            alt="ícone"
+            onerror="this.style.display = 'none'"
+          />
+          }
+          <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+        </div>
+        <small>Normal</small>
+      </div>
+      @if (catForm.gradiente_hover) {
+      <div class="preview-item">
+        <div
+          class="cat-preview-hover"
+          [style.background]="catForm.gradiente_hover"
+        >
+          @if (previewIconeCat || catForm.icone) {
+          <img
+            [src]="previewIconeCat || catForm.icone"
+            alt="ícone"
+            onerror="this.style.display = 'none'"
+          />
+          }
+          <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+        </div>
+        <small>Hover</small>
+      </div>
+      } @if (previewFundoCat || catForm.fundo) {
+      <div class="preview-item intern"
+      >
+        <div class="cat-intern">
+          <img alt="ícone"
+            onerror="this.style.display = 'none'"
+            [src]="previewFundoCat || catForm.fundo"
+          />
+          <span>{{ catForm.nome || 'Nome da categoria' }}</span>
+        </div>
+        <small>Página interna</small>
+      </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="btn-save"
+        (click)="salvarCat()"
+        [disabled]="catLoading || uploadandoIconeCat || uploadandoFundoCat"
+      >
+        {{ catLoading ? 'Salvando...' : (catEditId ? 'Atualizar' : 'Criar') }}
+      </button>
+      <button class="btn-cancel" (click)="showCatForm = false">
+        Cancelar
+      </button>
+    </div>
+  </div>
+  }
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ordem</th>
+          <th>Nome</th>
+          <th>Cor</th>
+          <th>Ícone</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of categorias; track cat.id) {
+        <tr>
+          <td class="center">{{ cat.ordem }}</td>
+          <td><strong>{{ cat.nome }}</strong></td>
+          <td>
+            @if (cat.cor_primaria) {
+            <div
+              class="color-chip"
+              [style.background]="cat.cor_primaria"
+              [title]="cat.cor_primaria"
+            ></div>
+            } @else { <span class="sem-cor">—</span> }
+          </td>
+          <td>
+            @if (cat.icone) {
+            <img
+              class="icon-thumb"
+              [src]="cat.icone"
+              alt="ícone"
+              onerror="this.style.display = 'none'"
+            />
+            } @else { — }
+          </td>
+          <td class="actions">
+            <button class="btn-edit" (click)="editarCat(cat)">Editar</button>
+            <button class="btn-del" (click)="excluirCat(cat.id, cat.nome)">
+              Excluir
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

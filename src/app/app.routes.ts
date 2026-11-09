@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth/auth-guard';
+import { alteracoesGuard } from './services/auth/alteracoes-guard';
 import { AdminGuard } from './services/admin/admin-guard';
 
 export const routes: Routes = [
@@ -79,12 +80,14 @@ export const routes: Routes = [
         (m) => m.UpdateRecipe,
       ),
     canActivate: [AuthGuard],
+    canDeactivate: [alteracoesGuard],
   },
   {
     path: 'adicionar-receita',
     loadComponent: () =>
       import('./recipe/add-recipe/add-recipe').then((m) => m.AddRecipe),
     canActivate: [AuthGuard],
+    canDeactivate: [alteracoesGuard],
   },
   {
     path: 'adicionar-receita/hub',
@@ -141,8 +144,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/contact/contact').then((m) => m.Contact),
   },
+  // Cada aba do painel tem a própria rota: recarregar a página mantém a aba
+  { path: 'admin', pathMatch: 'full', redirectTo: 'admin/categorias' },
   {
-    path: 'admin',
+    path: 'admin/:aba',
     loadComponent: () =>
       import('./admin/painel-admin/painel-admin').then((m) => m.PainelAdmin),
     canActivate: [AuthGuard, AdminGuard],

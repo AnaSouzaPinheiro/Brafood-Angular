@@ -15,6 +15,8 @@ export interface ReceitaDestaque {
   autor:            string | null;
   categoria:        string | null;
   subcategoria:     string | null;
+  /** true quando o admin escolheu esta receita para a semana */
+  manual?:          boolean;
 }
 
 @Injectable({ providedIn: 'root' })

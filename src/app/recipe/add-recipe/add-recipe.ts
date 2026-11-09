@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -22,6 +22,8 @@ import { ReceitaService } from '../../services/receita/receita.service';
 import { StorageService } from '../../services/storage/storage.service';
 import { CustomButton } from '../../shared/custom-button/custom-button';
 import { BraInput } from '../../shared/input/input';
+
+const CHAVE_RASCUNHO = 'rascunho_receita';
 
 @Component({
   selector: 'bra-add-recipe',
@@ -86,6 +88,92 @@ export class AddRecipe {
   capaSelecionada: File | null = null;
   galeriaSelecionada: File[] = [];
 
+  /** Mostra o aviso "rascunho recuperado" no topo do formulário. */
+  rascunhoRecuperado = false;
+
+  // ---- Alterações não salvas ----
+  private alterou = false;
+  private salvou = false;
+
+  temAlteracoes(): boolean {
+    return !this.salvou && (this.alterou || this.form.dirty);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  avisarAoFecharAba(e: BeforeUnloadEvent) {
+    if (this.temAlteracoes()) e.preventDefault();
+  }
+
+  avisoSaida(): string {
+    return this.temFotos()
+      ? 'O texto fica guardado como rascunho neste navegador, mas as fotos precisarão ser adicionadas de novo.'
+      : 'O que você escreveu fica guardado como rascunho neste navegador.';
+  }
+
+  private temFotos(): boolean {
+    return !!this.capaSelecionada || this.galeriaSelecionada.length > 0;
+  }
+
+  // ---- Rascunho automático (só o texto; fotos não cabem no navegador) ----
+  private timerRascunho: ReturnType<typeof setTimeout> | null = null;
+
+  private marcarAlteracao() {
+    this.alterou = true;
+    if (this.timerRascunho) clearTimeout(this.timerRascunho);
+    this.timerRascunho = setTimeout(() => this.salvarRascunho(), 800);
+  }
+
+  private salvarRascunho() {
+    if (this.salvou) return;
+    const fv = this.form.getRawValue();
+    const rascunho = {
+      ...fv,
+      idCategoria: (fv.categoria ?? []).join(','),
+      idSubcategoria: (fv.subcategoria ?? []).join(','),
+      receitaPropria: this.receitaPropria,
+      ingredientes: this.receita.ingredientes,
+      etapas: this.receita.etapas,
+    };
+    this.storage.setItem(CHAVE_RASCUNHO, JSON.stringify(rascunho));
+  }
+
+  private recuperarRascunho(): boolean {
+    const bruto = this.storage.getItem(CHAVE_RASCUNHO);
+    if (!bruto) return false;
+    try {
+      const r = JSON.parse(bruto);
+      this.preencherFormularioComIA(r);
+      if (r.receitaPropria === false) {
+        this.onReceitaPropriaChange(false);
+        this.form.patchValue({
+          fonte_autor: r.fonte_autor ?? '',
+          fonte_url: r.fonte_url ?? '',
+          video_url: r.video_url ?? '',
+        });
+      }
+      this.alterou = false;
+      return true;
+    } catch {
+      this.storage.removeItem(CHAVE_RASCUNHO);
+      return false;
+    }
+  }
+
+  descartarRascunho() {
+    this.storage.removeItem(CHAVE_RASCUNHO);
+    this.rascunhoRecuperado = false;
+    this.form.reset();
+    this.categoriasSelecionadas = [];
+    this.subcategoriasSelecionadas = {};
+    this.porcaoSelecionada = [];
+    this.receitaPropria = true;
+    this.receita.ingredientes = [{ titulo: '', itens: [] }];
+    this.receita.etapas = [{ titulo: '', ordem: 1, descricoes: [] }];
+    this.alterou = false;
+    this.form.markAsPristine();
+  }
+
+
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
@@ -141,6 +229,7 @@ export class AddRecipe {
   }
 
   onReceitaPropriaChange(propria: boolean) {
+    this.marcarAlteracao();
     this.receitaPropria = propria;
 
     const fonteAutorCtrl = this.form.get('fonte_autor');
@@ -175,13 +264,21 @@ export class AddRecipe {
         if (aiData) {
           this.preencherFormularioComIA(JSON.parse(aiData));
           this.storage.removeItem('ai_recipe');
+          this.storage.removeItem(CHAVE_RASCUNHO);
+        } else {
+          this.rascunhoRecuperado = this.recuperarRascunho();
         }
+
+        this.form.valueChanges.subscribe(() => {
+          if (this.form.dirty) this.marcarAlteracao();
+        });
       },
       error: (err: any) => this.logger.error('Erro ao carregar categorias:', err),
     });
   }
   
   onCategoriaSelecionada(event: Option[]) {
+    this.marcarAlteracao();
     this.categoriasSelecionadas = event;
     this.subcategoriasSelecionadas = {};
     this.form.patchValue({
@@ -191,20 +288,24 @@ export class AddRecipe {
   }
 
   onSubcategoriaSelecionada(catId: string, selecionadas: Option[]) {
+    this.marcarAlteracao();
     this.subcategoriasSelecionadas[catId] = selecionadas;
     this.form.patchValue({ subcategoria: selecionadas[0]?.value ?? null });
   }
 
   onPorcaoSelecionada(event: Option[]) {
+    this.marcarAlteracao();
     this.form.patchValue({ tipo_porcao: event[0]?.value ?? null });
   }
 
   onCapaSelecionada(file: File | null) {
+    this.marcarAlteracao();
     this.capaSelecionada = file;
     if (file) this.erroImagem = null;
   }
 
   onGaleriaSelecionada(event: { mantidas: string[]; novas: File[] }) {
+    this.marcarAlteracao();
     this.galeriaSelecionada = event.novas;
   }
 
@@ -223,6 +324,7 @@ export class AddRecipe {
   }
 
   atualizarIngredientes(lista: any[]) {
+    this.marcarAlteracao();
     this.receita.ingredientes = lista.map((ing: any) => ({
       titulo: ing.title,
       itens: ing.subitems,
@@ -230,6 +332,7 @@ export class AddRecipe {
   }
 
   atualizarEtapas(lista: any[]) {
+    this.marcarAlteracao();
     this.receita.etapas = lista.map((etapa: any, i: number) => ({
       titulo: etapa.title,
       ordem: i + 1,
@@ -360,6 +463,9 @@ export class AddRecipe {
       .subscribe({
         next: (res) => {
           if (res?.success) {
+            this.salvou = true;
+            if (this.timerRascunho) clearTimeout(this.timerRascunho);
+            this.storage.removeItem(CHAVE_RASCUNHO);
             this.form.reset();
             this.capaSelecionada = null;
             this.galeriaSelecionada = [];

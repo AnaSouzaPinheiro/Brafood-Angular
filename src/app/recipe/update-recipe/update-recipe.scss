@@ -118,6 +118,20 @@
   margin-top: 0;
 }
 
+// Duas categorias: espaço entre um seletor e o outro
+.input-box ::ng-deep bra-dropdown .custom-dropdown + .custom-dropdown {
+  margin-top: 12px;
+}
+
+// Resumo aceita até 500 caracteres: campo mais alto
+.input-box.resumo ::ng-deep textarea {
+  height: 140px;
+
+  @media (max-width: 600px) {
+    height: 170px;
+  }
+}
+
 @media (max-width: 768px) {
   .adding {
     gap: 35px !important;
@@ -139,9 +153,9 @@
       text-align: center;
     }
 
+    // Lado a lado também no celular
     .buttons {
-      flex-direction: column;
-      align-items: center;
+      gap: 12px;
     }
   }
 }

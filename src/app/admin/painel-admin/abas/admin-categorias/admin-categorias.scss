@@ -1,0 +1,151 @@
+@use "variables" as *;
+@use "layout" as *;
+@use "admin" as *;
+@use "../../painel-comum";
+
+// Labels de preview
+.preview-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: $primary-gray;
+}
+
+.preview-row {
+  gap: 16px;
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 20px;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.preview-item {
+  gap: 6px;
+
+  @include flex-column-center;
+
+  small {
+    font-size: 11px;
+    color: $primary-gray;
+  }
+}
+
+// Preview de hover da categoria
+// Mesmo tamanho do item real do menu de categorias (category-bar)
+.cat-preview-hover,
+.cat-preview {
+  gap: 6px;
+  width: 200px;
+  height: 90px;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: background 0.2s;
+
+  @include flex-column-center;
+
+  img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+.cat-preview span {
+  color: #000;
+}
+
+.cat-preview-hover {
+  img {
+    filter: brightness(0) invert(1); // ícone branco sobre gradiente
+  }
+  span {
+    color: #fff;
+  }
+}
+
+.intern {
+  width: 100%;
+
+  .cat-intern {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      opacity: 0.5;
+      max-height: 115px;
+      border-radius: 15px;
+      object-fit: cover;
+    }
+
+    span {
+      font-size: 36px;
+      position: absolute;
+      text-align: center;
+      color: #000;
+      font-weight: bold;
+      font-size: 25px;
+    }
+  }
+}
+
+// Contador de caracteres do nome
+.contador.no-limite {
+  color: $alert-red;
+}
+
+.link-hint {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: $primary-blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+// Botão "Remover imagem"
+.btn-remover-img {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  background: transparent;
+  color: #e5484d;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: #e5484d;
+    color: #fff;
+  }
+}
+
+// Gradiente: cor de cima → faixa com o resultado → cor de baixo
+.gradiente-row .faixa {
+  flex: 1;
+  height: 42px;
+  border-radius: 6px;
+  border: 1px solid rgb(0 0 0 / 10%);
+}
