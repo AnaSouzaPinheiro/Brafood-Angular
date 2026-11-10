@@ -4,6 +4,13 @@
       <li class="enter" [routerLink]="'/login'">Entrar</li>
       <hr />
       <li class="register" [routerLink]="'/cadastro'">Cadastrar</li>
+      @if (pwa.disponivel()) {
+      <hr />
+      <li class="instalar" (click)="pwa.instalar()">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        Instalar aplicativo
+      </li>
+      }
     </ul>
   </ng-container>
 
@@ -29,6 +36,13 @@
         <a [routerLink]="modalLogged.adminLink" class="click admin-link">
           <li>⚙ Painel Admin</li>
         </a>
+        }
+
+        @if (pwa.disponivel()) {
+        <li class="instalar" (click)="pwa.instalar()">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          Instalar aplicativo
+        </li>
         }
 
         <li class="logOut" (click)="logout()">

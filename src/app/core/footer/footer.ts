@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { PwaInstallService } from '../../services/pwa-install/pwa-install.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Categoria } from '../../model/categoria';
@@ -24,6 +25,8 @@ export class Footer implements OnInit {
   newsletterStatus: 'idle' | 'loading' | 'success' | 'error' | 'duplicate' =
     'idle';
   newsletterMsg = '';
+
+  pwa = inject(PwaInstallService);
 
   constructor(
     public auth: AuthService,

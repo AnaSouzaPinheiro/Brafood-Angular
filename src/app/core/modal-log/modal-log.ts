@@ -1,4 +1,5 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import { PwaInstallService } from '../../services/pwa-install/pwa-install.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -20,4 +21,6 @@ export class ModalLog {
   };
 
   @Input() logout!: () => void; // recebe função de logout do Navbar
+
+  pwa = inject(PwaInstallService);
 }

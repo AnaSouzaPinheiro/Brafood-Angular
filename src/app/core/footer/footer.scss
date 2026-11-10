@@ -256,24 +256,26 @@ hr {
   }
 }
 
-// Telas médias (tablet / notebook pequeno): a coluna de categorias ficava
-// estreita e cada categoria caía numa linha. Aqui as categorias ocupam a
-// largura toda em cima; conta, contato e newsletter ficam lado a lado embaixo.
+// Telas médias (tablet / notebook pequeno): categorias na largura toda em cima;
+// conta, contato e aplicativo centralizados na linha de baixo; newsletter
+// centralizada na última linha.
 @media (min-width: 769px) and (max-width: 1279px) {
   .primary-footer {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    justify-content: space-evenly;
-    align-items: start;
-    gap: 36px 48px;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
   }
 
   .acesso-rapido {
-    display: contents;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 36px 64px;
   }
 
   .acesso-rapido .categorias {
-    grid-column: 1 / -1;
+    flex-basis: 100%;
     width: 100%;
 
     ul {
@@ -286,6 +288,7 @@ hr {
   .subscribe {
     gap: 15px;
     align-items: center;
+    text-align: center;
   }
 }
 

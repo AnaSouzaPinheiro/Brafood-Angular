@@ -37,6 +37,19 @@
           <li><a [routerLink]="'/contato'">Fale Conosco</a></li>
         </ul>
       </div>
+
+      @if (pwa.disponivel()) {
+      <div class="app">
+        <h3>Aplicativo</h3>
+        <ul>
+          <li>
+            <a href="#" (click)="$event.preventDefault(); pwa.instalar()">
+              <i class="fa-solid fa-mobile-screen-button"></i> Instalar aplicativo
+            </a>
+          </li>
+        </ul>
+      </div>
+      }
     </div>
 
     <!-- Newsletter -->

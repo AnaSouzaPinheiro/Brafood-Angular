@@ -37,6 +37,12 @@
     border-bottom: 2px solid $quaternary-gray;
   }
 
+  .instalar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .logOut {
     display: flex;
     align-items: center;
