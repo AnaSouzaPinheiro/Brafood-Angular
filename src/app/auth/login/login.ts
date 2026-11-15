@@ -53,7 +53,11 @@ export class Login {
         }
       },
       (err) => {
-        this.erro = err.error?.message || 'Erro ao conectar com o servidor.';
+        // A API responde 401 (credenciais) e 429 (muitas tentativas) com a mensagem pronta
+        this.erro =
+          err.error?.message ||
+          err.error?.mensagem ||
+          'Erro ao conectar com o servidor.';
       },
     );
   }

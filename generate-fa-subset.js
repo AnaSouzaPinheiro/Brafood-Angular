@@ -13,6 +13,8 @@ const solid = [
   // quadros de receitas salvas
   'arrow-left', 'check', 'circle', 'ellipsis', 'pen', 'table-cells-large', 'trash',
   'cart-shopping', 'grip-vertical', 'link', 'globe', 'arrow-down-short-wide',
+  // instalar aplicativo (PWA) e histórico de rascunho
+  'mobile-screen-button', 'clock-rotate-left',
 ];
 
 const regular = [
