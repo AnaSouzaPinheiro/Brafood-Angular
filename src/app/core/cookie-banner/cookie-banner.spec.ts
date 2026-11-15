@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { CookieBanner } from './cookie-banner';
 
@@ -8,6 +9,7 @@ describe('CookieBanner', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [CookieBanner]
     })
     .compileComponents();

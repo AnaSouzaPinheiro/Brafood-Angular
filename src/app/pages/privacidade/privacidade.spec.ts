@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { Privacidade } from './privacidade';
 
@@ -8,6 +9,7 @@ describe('Privacidade', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [Privacidade]
     })
     .compileComponents();

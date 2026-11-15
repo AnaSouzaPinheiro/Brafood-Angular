@@ -63,7 +63,7 @@ As telas que exigem login ainda não têm captura (cadastro de receita, favorita
 
 **Outros**
 - Newsletter, formulário de contato, páginas de termos, privacidade e cookies, banner de consentimento de cookies.
-- `sitemap.xml` dinâmico gerado no servidor SSR (`src/sitemap.ts`).
+- `sitemap.xml` com as páginas públicas, receitas e categorias, gerado pela API.
 
 ## Rotas
 
@@ -120,7 +120,7 @@ BraFood-Angular/
 │   ├── environments/              # environment.ts (produção) e environment.development.ts
 │   ├── server.ts                  # Servidor Express (SSR e sitemap)
 │   └── sitemap.ts
-├── angular.json
+└── angular.json
 ```
 
 - **Serviços:** `BaseService` monta a URL da API; cada domínio estende essa classe (`ReceitaService`, `AuthService`, `FavoritoService`, `QuadroService`, `ComentarioService`, `AvaliacaoService`, `CategoriaService`, `AdminCategoriaService`, `AdminSecaoService`, `AiService`, entre outros).
@@ -160,7 +160,7 @@ O Angular CLI é uma dependência de desenvolvimento do projeto (`@angular/cli` 
 | `npm start` | Servidor de desenvolvimento |
 | `npm run build` | Build de produção (configuração padrão), saída em `dist/BraFood-Angular/` |
 | `npm run watch` | Build contínuo em modo de desenvolvimento |
-| `npm test` | Testes unitários (Karma/Jasmine). O projeto tem 80 arquivos `.spec.ts`.
+| `npm test` | Testes unitários (Karma/Jasmine): 92 testes, todos passando. Em modo único e sem janela: `npm test -- --watch=false --browsers=ChromeHeadless` |
 | `npm run lint` | ESLint |
 | `npm run serve:ssr:BraFood-Angular` | Executa o servidor SSR gerado pelo build |
 | `npm run icons:subset` | Regera o subset do Font Awesome |
@@ -174,6 +174,8 @@ O workflow `.github/workflows/deploy.yml` roda a cada push na branch `main` (ou 
 3. Executa `npm run build -- --configuration production`.
 4. Verifica se `index.csr.html` e `.htaccess` existem na saída.
 5. Envia `dist/BraFood-Angular/browser/` por FTP para o servidor.
+
+O app é publicado como arquivos estáticos (páginas prerenderizadas e o shell `index.csr.html`). O `.htaccess` redireciona as demais rotas do Angular para o shell e encaminha `/sitemap.xml` para a API.
 
 ## Minha parte
 

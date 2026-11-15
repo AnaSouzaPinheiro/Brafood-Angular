@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { FilterPanel } from './filter-panel';
 
@@ -8,6 +9,7 @@ describe('FilterPanel', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [FilterPanel]
     })
     .compileComponents();

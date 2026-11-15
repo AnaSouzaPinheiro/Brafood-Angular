@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { BraInput } from './input';
 
@@ -8,6 +9,7 @@ describe('BraInput', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [BraInput]
     })
     .compileComponents();

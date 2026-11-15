@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { ModalFeedback } from './modal-feedback';
 
@@ -8,6 +9,7 @@ describe('ModalFeedback', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [ModalFeedback]
     })
     .compileComponents();

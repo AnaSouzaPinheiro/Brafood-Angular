@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { InputImages } from './input-images';
 
@@ -8,6 +9,7 @@ describe('InputImages', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [InputImages]
     })
     .compileComponents();

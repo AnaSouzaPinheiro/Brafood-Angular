@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { RecuperarSenha } from './recuperar-senha';
 
@@ -8,6 +9,7 @@ describe('RecuperarSenha', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [RecuperarSenha]
     })
     .compileComponents();

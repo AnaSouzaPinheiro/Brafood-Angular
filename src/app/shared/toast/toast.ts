@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 export class Toast implements OnInit, OnDestroy {
   toast: ToastMessage | null = null;
   visible = false;
-  private sub!: Subscription;
+  private sub?: Subscription;
 
   constructor(private toastService: ToastService) {}
 
@@ -25,7 +25,7 @@ export class Toast implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.sub?.unsubscribe();
   }
 
   get icon(): string {
