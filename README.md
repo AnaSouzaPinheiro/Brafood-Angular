@@ -7,9 +7,17 @@ Aplicação web de receitas em Angular. Permite buscar e filtrar receitas, publi
 
 ## Telas
 
-![Home](docs/home.png)
-![Catálogo por categoria, com filtros](docs/categoria.png)
-![Página de receita](docs/receita.png)
+| | |
+| --- | --- |
+| ![Home](docs/home.png) | ![Catálogo por categoria, com subcategorias, busca, ordenação e filtros](docs/categoria.png) |
+| Home: slide, categorias e seções | Categoria: subcategorias, busca, ordenação e filtros |
+| ![Página de receita](docs/receita.png) | ![Ingredientes e modo de preparo](docs/receita-detalhes.png) |
+| Receita: resumo, dificuldade, tempo, porções e ações | Ingredientes, lista por WhatsApp e modo de preparo |
+| ![Resultado de busca](docs/pesquisa.png) | ![Home no celular](docs/home-mobile.png) |
+| Busca com filtro por categoria | Home em tela de celular |
+
+As telas que exigem login ainda não têm captura (cadastro de receita, favoritas e quadros, painel administrativo):
+
 ![Cadastro de receita](docs/adicionar-receita.png)
 ![Favoritas e quadros](docs/favoritas.png)
 ![Painel administrativo](docs/admin.png)
