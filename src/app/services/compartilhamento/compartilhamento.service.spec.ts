@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { CompartilhamentoService } from './compartilhamento.service';
 
@@ -6,7 +7,7 @@ describe('CompartilhamentoService', () => {
   let service: CompartilhamentoService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: providersDeTeste });
     service = TestBed.inject(CompartilhamentoService);
   });
 

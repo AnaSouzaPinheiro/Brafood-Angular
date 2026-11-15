@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { SectionSkeleton } from './section-skeleton';
 
@@ -8,6 +9,7 @@ describe('SectionSkeleton', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [SectionSkeleton]
     })
     .compileComponents();

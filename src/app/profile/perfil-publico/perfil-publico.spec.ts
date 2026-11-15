@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { PerfilPublicoPage } from './perfil-publico';
 
@@ -8,6 +9,7 @@ describe('PerfilPublicoPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [PerfilPublicoPage]
     })
     .compileComponents();

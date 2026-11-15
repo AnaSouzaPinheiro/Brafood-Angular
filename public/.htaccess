@@ -11,6 +11,9 @@ DirectoryIndex index.csr.html index.html
 # A API (/api) tem seu próprio .htaccess e não passa por aqui
 RewriteRule ^api(/|$) - [L]
 
+# sitemap.xml é gerado pela API
+RewriteRule ^sitemap\.xml$ /api/routes/sitemap.php [L]
+
 # Arquivos e pastas que existem (js, css, imagens, rotas pré-renderizadas)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { CategoryBar } from './category-bar';
 
@@ -8,6 +9,7 @@ describe('CategoryBar', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [CategoryBar]
     })
     .compileComponents();

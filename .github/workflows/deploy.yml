@@ -1,4 +1,4 @@
-name: Deploy Front (InfinityFree)
+name: Deploy Front
 
 on:
   push:

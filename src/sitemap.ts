@@ -1,4 +1,5 @@
 import { environment } from './environments/environment';
+import { toSlug } from './app/utils/slug';
 
 const SITE_URL = 'https://brafood.page.gd';
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
@@ -25,7 +26,7 @@ const STATIC_URLS: SitemapUrl[] = [
 
 async function fetchJson<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${environment.apiUrl}/${path}`);
+    const res = await fetch(`${environment.apiUrl}/routes/${path}`);
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
@@ -70,16 +71,17 @@ export async function generateSitemap(): Promise<string> {
   const urls: SitemapUrl[] = [...STATIC_URLS];
 
   const [receitas, categorias] = await Promise.all([
-    fetchJson<Array<{ url: string }>>('receitas.php'),
-    fetchJson<Array<{ url: string }>>('categorias.php'),
+    fetchJson<Array<{ id: number; titulo: string }>>('receitas.php'),
+    fetchJson<Array<{ id: number; nome: string }>>('categorias.php'),
   ]);
 
+  // As mesmas URLs que o app monta (slug do título/nome + id)
   receitas?.forEach((r) => {
-    if (r.url) urls.push({ loc: r.url, changefreq: 'weekly', priority: '0.8' });
+    urls.push({ loc: `/receita/${toSlug(r.titulo)}/${r.id}`, changefreq: 'weekly', priority: '0.8' });
   });
 
   categorias?.forEach((c) => {
-    if (c.url) urls.push({ loc: c.url, changefreq: 'weekly', priority: '0.6' });
+    urls.push({ loc: `/categoria/${toSlug(c.nome)}/${c.id}`, changefreq: 'weekly', priority: '0.6' });
   });
 
   cachedXml = buildXml(urls);

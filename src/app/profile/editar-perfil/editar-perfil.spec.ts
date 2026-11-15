@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { providersDeTeste } from '../../testing/providers';
 
 import { EditarPerfil } from './editar-perfil';
 
@@ -8,6 +9,7 @@ describe('EditarPerfil', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: providersDeTeste,
       imports: [EditarPerfil]
     })
     .compileComponents();
