@@ -1,7 +1,7 @@
 {
-  "name": "BraFood — Receitas Brasileiras",
+  "name": "BraFood — Suas receitas favoritas",
   "short_name": "BraFood",
-  "description": "Descubra e compartilhe receitas da culinária brasileira.",
+  "description": "O melhor lugar para descobrir, guardar e compartilhar suas receitas.",
   "lang": "pt-BR",
   "id": "/home",
   "start_url": "/home",
